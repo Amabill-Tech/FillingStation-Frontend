@@ -2,6 +2,7 @@ import './App.scss';
 import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
 import ProtectedRoute from './screens/ProtectedRoute';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 
 function App() {
   return (
