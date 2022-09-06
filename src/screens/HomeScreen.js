@@ -26,6 +26,17 @@ import recordSales2 from '../assets/recordSales2.png';
 import regulatory2 from '../assets/regulatory2.png';
 import settings2 from '../assets/settings2.png';
 import tank2 from '../assets/tank2.png';
+import note from '../assets/note.png';
+import search from '../assets/search.png';
+import switchT from '../assets/switchT.png';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import Dashboard from '../components/Home/Dashboard';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import Drawer from 'react-modern-drawer';
+import 'react-modern-drawer/dist/index.css';
 
 const HomeScreen = () => {
 
@@ -61,6 +72,11 @@ const HomeScreen = () => {
         )
     }
 
+    const [isOpen, setIsOpen] = React.useState(false)
+    const toggleDrawer = () => {
+        setIsOpen((prevState) => !prevState)
+    }
+
     return(
         <div className='home-container'>
             <div className='side-bar'>
@@ -80,8 +96,80 @@ const HomeScreen = () => {
                     <SideItems id={11} marginT={"550px"} name={"Settings"} icon={settings2} icon2={settings} />
                 </div>
             </div>
+            <Drawer
+                open={isOpen}
+                onClose={toggleDrawer}
+                direction='left'
+            >
+                <div style={{display:'flex', width:'100%', flexDirection:'row', justifyContent:'flex-end'}} className='side-bar'>
+                    <div style={{width:'90%'}} className='inner-side-bar'>
+                        <img className='home-logo' src={homeLogo} alt="icon" />
+                        <SideItems id={0} marginT={"0px"} name={"Dashboard"} icon={dashboard} icon2={dashboard2} />
+                        <SideItems id={1} marginT={"50px"} name={"Daily Sales"} icon={dailySales2} icon2={dailySales} />
+                        <SideItems id={2} marginT={"100px"} name={"Payments"} icon={payments2} icon2={payments} />
+                        <SideItems id={3} marginT={"150px"} name={"My Outlets"} icon={outlet2} icon2={outlet} />
+                        <SideItems id={4} marginT={"200px"} name={"Record Sales"} icon={recordSales2} icon2={recordSales} />
+                        <SideItems id={5} marginT={"250px"} name={"Expenses"} icon={expenses2} icon2={expenses} />
+                        <SideItems id={6} marginT={"300px"} name={"Product Orders"} icon={productOrders2} icon2={productOrders} />
+                        <SideItems id={7} marginT={"350px"} name={"Regulatory Pay"} icon={regulatory2} icon2={regulatory} />
+                        <SideItems id={8} marginT={"400px"} name={"Incoming Orders"} icon={incOrders2} icon2={incOrders} />
+                        <SideItems id={9} marginT={"450px"} name={"Tank Update"} icon={tank2} icon2={tank} />
+                        <SideItems id={10} marginT={"500px"} name={"Human Resources"} icon={hr2} icon2={hr} />
+                        <SideItems id={11} marginT={"550px"} name={"Settings"} icon={settings2} icon2={settings} />
+                    </div>
+                </div>
+            </Drawer>
             <div className='main-content'>
-
+                <div className='mobile-bar'>
+                    <AppBar sx={{background:'#06805B'}} position="static">
+                        <Toolbar>
+                            <IconButton
+                                size="large"
+                                edge="start"
+                                color="inherit"
+                                aria-label="menu"
+                                sx={{ mr: 2 }}
+                                onClick={toggleDrawer}
+                            >
+                                <MenuIcon />
+                            </IconButton>
+                            <div className='side-app-bar'>
+                                <IconButton
+                                    size="large"
+                                    edge="start"
+                                    color="inherit"
+                                    aria-label="menu"
+                                    sx={{ marginRight: '0px' }}
+                                >
+                                    <img style={{width:'35px', height:'35px'}} src={search} alt="icon" />
+                                </IconButton>
+                                <IconButton
+                                    size="large"
+                                    edge="start"
+                                    color="inherit"
+                                    aria-label="menu"
+                                    sx={{ marginRight: '0px' }}
+                                >
+                                    <img style={{width:'35px', height:'35px'}} src={note} alt="icon" />
+                                </IconButton>
+                                <IconButton
+                                    size="large"
+                                    edge="start"
+                                    color="inherit"
+                                    aria-label="menu"
+                                    sx={{ marginRight: '0px' }}
+                                >
+                                    <img style={{width:'35px', height:'35px'}} src={switchT} alt="icon" />
+                                </IconButton>
+                            </div>
+                        </Toolbar>
+                    </AppBar>
+                </div>
+                <Switch>
+                    <Route exact path='/'>
+                        <Dashboard/>
+                    </Route>
+                </Switch>
             </div>
         </div>
     )

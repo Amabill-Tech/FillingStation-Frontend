@@ -2,6 +2,7 @@ import React from 'react';
 import '../styles/login.scss';
 import station from '../assets/station.png';
 import logo from '../assets/logo.png';
+import Button from '@mui/material/Button';
 
 const LoginScreen = ({history}) => {
 
@@ -28,7 +29,16 @@ const LoginScreen = ({history}) => {
                                     type={'password'} 
                                     placeholder="Password" required />
                                 <div className='forget-password'>Forgot password</div>
-                                <button className='login-button' type={'submit'} onClick={handleLogin}>Login</button>
+                                <Button sx={{
+                                    width:'100%', 
+                                    height:'35px', 
+                                    background:'#076146', 
+                                    borderRadius:'24px', 
+                                    marginTop:'30px',
+                                    '&:hover': {
+                                        backgroundColor: '#076146'
+                                    }
+                                }}  variant="contained">Login</Button>
                             </form>
                         </div>
                     </div>

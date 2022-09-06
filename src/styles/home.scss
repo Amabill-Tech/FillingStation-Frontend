@@ -93,5 +93,30 @@
         width: 100%;
         height: 100%;
         background-color: red;
+
+        .mobile-bar{
+            display: none;
+        }
+    }
+}
+
+@media (max-width: 1000px){
+    .home-container{
+        .side-bar{
+            display: none;
+        }
+
+        .main-content{
+            .mobile-bar{
+                display: block;
+
+                .side-app-bar{
+                    width: 100%;
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: flex-end;
+                }
+            }
+        }
     }
 }
