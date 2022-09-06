@@ -53,7 +53,7 @@ const HomeScreen = () => {
                         </div>
                     </div>:
                     <div className='side-item2'>
-                        <img style={{width:'20px', height:'20px', marginRight:'10px', marginLeft:'30px'}} src={props.icon2} alt="icon" />
+                        <img className='normal-image' src={props.icon2} alt="icon" />
                         <div style={{fontFamily:'Nunito-Regular', color:'#fff'}}>{props.name}</div>
                     </div>
                 }
