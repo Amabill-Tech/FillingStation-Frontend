@@ -1,0 +1,82 @@
+.home-container{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+
+    .side-bar{
+        width: 16%;
+        height: 100%;
+        background: #054834;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-end;
+
+        .inner-side-bar{
+            width: 90%;
+            height: 94%;
+
+            .home-logo{
+                width: 180px;
+                height: 60px;
+                margin-right: 10%;
+            }
+
+            .item-container{
+                position: relative;
+
+                .side-item{
+                    width: 100%;
+                    height: 60px;
+                    margin-top: 30px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    position: absolute;
+                    z-index: 4;
+    
+                    .side-focus{
+                        width: 100%;
+                        height: 80px;
+                        position: relative;
+    
+                        .side-focus-image{
+                            width: 100%;
+                            height: 80px;
+                            position: absolute;
+                            z-index: 1;
+                        }
+    
+                        .side-focus-text{
+                            width: 100%;
+                            height: 80px;
+                            position: absolute;
+                            z-index: 2;
+                            display: flex;
+                            flex-direction: row;
+                            align-items: center;
+                            margin-left: 30px;
+                        }
+                    }
+                }
+                
+                .side-item2{
+                    width: 100%;
+                    height: 40px;
+                    margin-top: 40px;
+                    display: flex;
+                    align-items: center;
+                    position: absolute;
+                    z-index: 3;
+                }
+            }
+        }
+    }
+
+    .main-content{
+        width: 84%;
+        height: 100%;
+        background-color: #fff;
+    }
+}

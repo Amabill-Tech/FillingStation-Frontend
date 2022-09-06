@@ -1,0 +1,133 @@
+.container{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+    
+    .left-block{
+        width: 50%;
+        height: 100%;
+
+        .upper-block{
+            width: 100%;
+            height: 94%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            .login-form-container{
+                width: 400px;
+                height: 500px;
+                margin-top: 50px;
+                background: #FBFBFB;
+                box-shadow: 0px 3.6904px 3.6904px rgba(0, 0, 0, 0.25);
+                border-radius: 8.30341px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                .inner-form-container{
+                    width: 90%;
+                    height: 80%;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-start;
+
+                    .logo{
+                        width: 180px;
+                        height: 60px;
+                    }
+
+                    .login-text{
+                        font-family: 'Nunito-Regular';
+                        font-style: normal;
+                        font-weight: 700;
+                        font-size: 24px;
+                        line-height: 37px;
+                        color: #0AA677;
+                        margin-top: 30px;
+                    }
+
+                    .main-form{
+                        width: 100%;
+                        margin-top: 20px;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: flex-start;
+
+                        .input-field{
+                            width: 96%;
+                            height: 35px;
+                            background: #E6F5F1;
+                            border: 0.804764px solid #000000;
+                            border-radius: 24.1472px;
+                            padding-left: 10px;
+                            outline: none;
+                        }
+
+                        .forget-password{
+                            font-family: 'Nunito-Regular';
+                            font-style: normal;
+                            font-weight: 600;
+                            font-size: 14.6347px;
+                            line-height: 20px;
+                            color: #3400FF;
+                            margin-top: 30px;
+                        }
+
+                        .login-button{
+                            width: 100%;
+                            height: 35px;
+                            background: #076146;
+                            border-radius: 24.1472px;
+                            color: #fff;
+                            margin-top: 30px;
+                            outline: none;
+                            border: none;
+                        }
+                    }
+                }
+            }
+        }
+
+        .lower-block{
+            width: 100%;
+            height: 6%;
+        }
+    }
+
+    .right-block{
+        width: 50%;
+        height: 100%;
+
+        .station{
+            width: 100%;
+            height: 100%;
+        }
+    }
+}
+
+@media (max-width: 1000px){
+    .container{
+
+        .right-block{
+            display: none;
+        }
+
+        .left-block{
+            width: 100%;
+        }
+    }
+}
+
+@media (max-width: 400px){
+    .container{
+        .left-block{
+            .upper-block{
+                .login-form-container{
+                    width: 96%;
+                }
+            }
+        }
+    }
+}

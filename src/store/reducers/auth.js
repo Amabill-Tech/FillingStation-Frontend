@@ -3,7 +3,8 @@ import { LOGIN, LOGOUT } from '../types'
 const initialState = {
     user: JSON.parse(localStorage.getItem('user')) || {},
     token: localStorage.getItem('token') || '',
-    isLoggedIn: !!JSON.parse(localStorage.getItem('user')),
+    //isLoggedIn: !!JSON.parse(localStorage.getItem('user')),
+    isLoggedIn: true,
 
     //user: {},
     //token: '',
