@@ -10,6 +10,7 @@ function App() {
       <div className="App">
         <Switch>
           <ProtectedRoute exact path='/' component={HomeScreen}/>
+          <Route path='/daily-sales' component={HomeScreen} />
           <Route path='/login' component={LoginScreen} />
           <Route render = {() => <h1>404 page not found</h1>} />
         </Switch>

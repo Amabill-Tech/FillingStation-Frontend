@@ -31,6 +31,7 @@ import search from '../assets/search.png';
 import switchT from '../assets/switchT.png';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import Dashboard from '../components/Home/Dashboard';
+import DailySales from '../components/Home/DailySales';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
@@ -82,8 +83,12 @@ const HomeScreen = () => {
             <div className='side-bar'>
                 <div className='inner-side-bar'>
                     <img className='home-logo' src={homeLogo} alt="icon" />
-                    <SideItems id={0} marginT={"0px"} name={"Dashboard"} icon={dashboard} icon2={dashboard2} />
-                    <SideItems id={1} marginT={"50px"} name={"Daily Sales"} icon={dailySales2} icon2={dailySales} />
+                    <Link className='link' to='/'>
+                        <SideItems id={0} marginT={"0px"} name={"Dashboard"} icon={dashboard} icon2={dashboard2} />
+                    </Link>
+                    <Link className='link' to='/daily-sales'>
+                        <SideItems id={1} marginT={"50px"} name={"Daily Sales"} icon={dailySales2} icon2={dailySales} />
+                    </Link>
                     <SideItems id={2} marginT={"100px"} name={"Payments"} icon={payments2} icon2={payments} />
                     <SideItems id={3} marginT={"150px"} name={"My Outlets"} icon={outlet2} icon2={outlet} />
                     <SideItems id={4} marginT={"200px"} name={"Record Sales"} icon={recordSales2} icon2={recordSales} />
@@ -168,6 +173,9 @@ const HomeScreen = () => {
                 <Switch>
                     <Route exact path='/'>
                         <Dashboard/>
+                    </Route>
+                    <Route exact path='/daily-sales'>
+                        <DailySales/>
                     </Route>
                 </Switch>
             </div>
