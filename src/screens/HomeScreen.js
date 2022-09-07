@@ -52,10 +52,14 @@ import 'react-modern-drawer/dist/index.css';
 const HomeScreen = ({history}) => {
 
     const [activeRoute, setActiveRoute] = useState('/');
+    const [isOpen, setIsOpen] = useState(false);
+
+    const toggleDrawer = () => {
+        setIsOpen((prevState) => !prevState)
+    }
 
     history.listen((location) => {
         setActiveRoute(location.pathname);
-        console.log(location.pathname)
     })
 
     const SideItems = (props) => {
@@ -84,11 +88,6 @@ const HomeScreen = ({history}) => {
                 </div>
             </Link>
         )
-    }
-
-    const [isOpen, setIsOpen] = React.useState(false)
-    const toggleDrawer = () => {
-        setIsOpen((prevState) => !prevState)
     }
 
     return(
@@ -183,37 +182,37 @@ const HomeScreen = ({history}) => {
                     <Route exact path='/'>
                         <Dashboard/>
                     </Route>
-                    <Route exact path='/daily-sales'>
+                    <Route path='/daily-sales'>
                         <DailySales/>
                     </Route>
-                    <Route exact path='/expenses'>
+                    <Route path='/expenses'>
                         <Expenses/>
                     </Route>
-                    <Route exact path='/hr'>
+                    <Route path='/hr'>
                         <HumanResources/>
                     </Route>
-                    <Route exact path='/inc-orders'>
+                    <Route path='/inc-orders'>
                         <IncomingOrders/>
                     </Route>
-                    <Route exact path='/outlets'>
+                    <Route path='/outlets'>
                         <Outlets/>
                     </Route>
-                    <Route exact path='/payments'>
+                    <Route path='/payments'>
                         <Payments/>
                     </Route>
-                    <Route exact path='/product-orders'>
+                    <Route path='/product-orders'>
                         <ProductOrders/>
                     </Route>
-                    <Route exact path='/record-sales'>
+                    <Route path='/record-sales'>
                         <RecordSales/>
                     </Route>
-                    <Route exact path='/regulatory'>
+                    <Route path='/regulatory'>
                         <Regulatory/>
                     </Route>
-                    <Route exact path='/tank'>
+                    <Route path='/tank'>
                         <TankUpdate/>
                     </Route>
-                    <Route exact path='/settings'>
+                    <Route path='/settings'>
                         <Settings/>
                     </Route>
                 </Switch>

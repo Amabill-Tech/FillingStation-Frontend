@@ -38,7 +38,8 @@ const LoginScreen = ({history}) => {
                                     '&:hover': {
                                         backgroundColor: '#076146'
                                     }
-                                }}  variant="contained">Login</Button>
+                                }}  variant="contained"
+                                    onClick={handleLogin}>Login</Button>
                             </form>
                         </div>
                     </div>
