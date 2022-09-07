@@ -51,7 +51,7 @@ import 'react-modern-drawer/dist/index.css';
 
 const HomeScreen = ({history}) => {
 
-    const [activeRoute, setActiveRoute] = useState('');
+    const [activeRoute, setActiveRoute] = useState('/');
 
     history.listen((location) => {
         setActiveRoute(location.pathname);
@@ -64,7 +64,7 @@ const HomeScreen = ({history}) => {
             <Link className='link' to={props.link}>
                 <div style={{marginTop: props.marginT}} className='item-container'>
                     {
-                        activeRoute === '/'?
+                        activeRoute === props.link?
                         <div className='side-item'>
                             <div className='side-focus'>
                                 <div className='side-focus-image'>
