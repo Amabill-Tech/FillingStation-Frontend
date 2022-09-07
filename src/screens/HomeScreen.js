@@ -29,9 +29,19 @@ import tank2 from '../assets/tank2.png';
 import note from '../assets/note.png';
 import search from '../assets/search.png';
 import switchT from '../assets/switchT.png';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { Switch, Route, Link, withRouter } from 'react-router-dom';
 import Dashboard from '../components/Home/Dashboard';
 import DailySales from '../components/Home/DailySales';
+import Expenses from '../components/Home/Expenses';
+import HumanResources from '../components/Home/HumanResource';
+import IncomingOrders from '../components/Home/IncomingOrders';
+import Outlets from '../components/Home/Outlets';
+import Payments from '../components/Home/Payments';
+import ProductOrders from '../components/Home/ProductOrders';
+import RecordSales from '../components/Home/RecordSales';
+import Regulatory from '../components/Home/Regulatory';
+import Settings from '../components/Home/Settings';
+import TankUpdate from '../components/Home/TankUpdate';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
@@ -39,37 +49,40 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Drawer from 'react-modern-drawer';
 import 'react-modern-drawer/dist/index.css';
 
-const HomeScreen = () => {
+const HomeScreen = ({history}) => {
 
-    const [activeRoute, setActiveRoute] = useState(0);
+    const [activeRoute, setActiveRoute] = useState('');
+
+    history.listen((location) => {
+        setActiveRoute(location.pathname);
+        console.log(location.pathname)
+    })
 
     const SideItems = (props) => {
 
-        const handleActiveRoute = (index) => {
-            setActiveRoute(index);
-        }
-
         return(
-            <div onClick={()=>{handleActiveRoute(props.id)}} style={{marginTop: props.marginT}} className='item-container'>
-                {
-                    props.id === activeRoute?
-                    <div className='side-item'>
-                        <div className='side-focus'>
-                            <div className='side-focus-image'>
-                                <img style={{width:'100%', height:'100%'}} src={active} alt="icon" />
+            <Link className='link' to={props.link}>
+                <div style={{marginTop: props.marginT}} className='item-container'>
+                    {
+                        activeRoute === '/'?
+                        <div className='side-item'>
+                            <div className='side-focus'>
+                                <div className='side-focus-image'>
+                                    <img style={{width:'100%', height:'100%'}} src={active} alt="icon" />
+                                </div>
+                                <div className='side-focus-text'>
+                                    <img style={{width:'20px', height:'20px', marginRight:'10px'}} src={props.icon} alt="icon" />
+                                    <div style={{fontFamily:'Nunito-Regular', color:'#054834'}}>{props.name}</div>
+                                </div>
                             </div>
-                            <div className='side-focus-text'>
-                                <img style={{width:'20px', height:'20px', marginRight:'10px'}} src={props.icon} alt="icon" />
-                                <div style={{fontFamily:'Nunito-Regular', color:'#054834'}}>{props.name}</div>
-                            </div>
+                        </div>:
+                        <div className='side-item2'>
+                            <img className='normal-image' src={props.icon2} alt="icon" />
+                            <div style={{fontFamily:'Nunito-Regular', color:'#fff'}}>{props.name}</div>
                         </div>
-                    </div>:
-                    <div className='side-item2'>
-                        <img className='normal-image' src={props.icon2} alt="icon" />
-                        <div style={{fontFamily:'Nunito-Regular', color:'#fff'}}>{props.name}</div>
-                    </div>
-                }
-            </div>
+                    }
+                </div>
+            </Link>
         )
     }
 
@@ -83,22 +96,18 @@ const HomeScreen = () => {
             <div className='side-bar'>
                 <div className='inner-side-bar'>
                     <img className='home-logo' src={homeLogo} alt="icon" />
-                    <Link className='link' to='/'>
-                        <SideItems id={0} marginT={"0px"} name={"Dashboard"} icon={dashboard} icon2={dashboard2} />
-                    </Link>
-                    <Link className='link' to='/daily-sales'>
-                        <SideItems id={1} marginT={"50px"} name={"Daily Sales"} icon={dailySales2} icon2={dailySales} />
-                    </Link>
-                    <SideItems id={2} marginT={"100px"} name={"Payments"} icon={payments2} icon2={payments} />
-                    <SideItems id={3} marginT={"150px"} name={"My Outlets"} icon={outlet2} icon2={outlet} />
-                    <SideItems id={4} marginT={"200px"} name={"Record Sales"} icon={recordSales2} icon2={recordSales} />
-                    <SideItems id={5} marginT={"250px"} name={"Expenses"} icon={expenses2} icon2={expenses} />
-                    <SideItems id={6} marginT={"300px"} name={"Product Orders"} icon={productOrders2} icon2={productOrders} />
-                    <SideItems id={7} marginT={"350px"} name={"Regulatory Pay"} icon={regulatory2} icon2={regulatory} />
-                    <SideItems id={8} marginT={"400px"} name={"Incoming Orders"} icon={incOrders2} icon2={incOrders} />
-                    <SideItems id={9} marginT={"450px"} name={"Tank Update"} icon={tank2} icon2={tank} />
-                    <SideItems id={10} marginT={"500px"} name={"Human Resources"} icon={hr2} icon2={hr} />
-                    <SideItems id={11} marginT={"550px"} name={"Settings"} icon={settings2} icon2={settings} />
+                    <SideItems id={0} marginT={"0px"} link={'/'} name={"Dashboard"} icon={dashboard} icon2={dashboard2} />
+                    <SideItems id={1} marginT={"50px"} link={'/daily-sales'} name={"Daily Sales"} icon={dailySales2} icon2={dailySales} />
+                    <SideItems id={2} marginT={"100px"} link={'/payments'} name={"Payments"} icon={payments2} icon2={payments} />
+                    <SideItems id={3} marginT={"150px"} link={'/outlets'} name={"My Outlets"} icon={outlet2} icon2={outlet} />
+                    <SideItems id={4} marginT={"200px"} link={'/record-sales'} name={"Record Sales"} icon={recordSales2} icon2={recordSales} />
+                    <SideItems id={5} marginT={"250px"} link={'/expenses'} name={"Expenses"} icon={expenses2} icon2={expenses} />
+                    <SideItems id={6} marginT={"300px"} link={'/product-orders'} name={"Product Orders"} icon={productOrders2} icon2={productOrders} />
+                    <SideItems id={7} marginT={"350px"} link={'/regulatory'} name={"Regulatory Pay"} icon={regulatory2} icon2={regulatory} />
+                    <SideItems id={8} marginT={"400px"} link={'/inc-orders'} name={"Incoming Orders"} icon={incOrders2} icon2={incOrders} />
+                    <SideItems id={9} marginT={"450px"} link={'/tank'} name={"Tank Update"} icon={tank2} icon2={tank} />
+                    <SideItems id={10} marginT={"500px"} link={'/hr'} name={"Human Resources"} icon={hr2} icon2={hr} />
+                    <SideItems id={11} marginT={"550px"} link={'/settings'} name={"Settings"} icon={settings2} icon2={settings} />
                 </div>
             </div>
             <Drawer
@@ -177,10 +186,40 @@ const HomeScreen = () => {
                     <Route exact path='/daily-sales'>
                         <DailySales/>
                     </Route>
+                    <Route exact path='/expenses'>
+                        <Expenses/>
+                    </Route>
+                    <Route exact path='/hr'>
+                        <HumanResources/>
+                    </Route>
+                    <Route exact path='/inc-orders'>
+                        <IncomingOrders/>
+                    </Route>
+                    <Route exact path='/outlets'>
+                        <Outlets/>
+                    </Route>
+                    <Route exact path='/payments'>
+                        <Payments/>
+                    </Route>
+                    <Route exact path='/product-orders'>
+                        <ProductOrders/>
+                    </Route>
+                    <Route exact path='/record-sales'>
+                        <RecordSales/>
+                    </Route>
+                    <Route exact path='/regulatory'>
+                        <Regulatory/>
+                    </Route>
+                    <Route exact path='/tank'>
+                        <TankUpdate/>
+                    </Route>
+                    <Route exact path='/settings'>
+                        <Settings/>
+                    </Route>
                 </Switch>
             </div>
         </div>
     )
 }
 
-export default HomeScreen;
+export default withRouter(HomeScreen);
