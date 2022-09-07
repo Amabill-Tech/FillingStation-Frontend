@@ -45,7 +45,6 @@ const LoginScreen = ({history}) => {
                     </div>
                 </div>
                 <div className='lower-block'>
-
                 </div>
             </div>
             <div className='right-block'>

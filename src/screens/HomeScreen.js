@@ -176,6 +176,7 @@ const HomeScreen = ({history}) => {
                                     color="inherit"
                                     aria-label="menu"
                                     sx={{ marginRight: '0px' }}
+                                    onClick={()=>{history.push('/login')}}
                                 >
                                     <img style={{width:'35px', height:'35px'}} src={switchT} alt="icon" />
                                 </IconButton>
@@ -207,6 +208,7 @@ const HomeScreen = ({history}) => {
                             color="inherit"
                             aria-label="menu"
                             sx={{ marginRight: '0px' }}
+                            onClick={()=>{history.push('/login')}}
                         >
                             <img style={{width:'35px', height:'35px'}} src={switchT} alt="icon" />
                         </IconButton>
@@ -256,3 +258,4 @@ const HomeScreen = ({history}) => {
 }
 
 export default withRouter(HomeScreen);
+//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
