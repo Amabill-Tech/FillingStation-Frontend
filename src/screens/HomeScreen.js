@@ -178,6 +178,35 @@ const HomeScreen = ({history}) => {
                         </Toolbar>
                     </AppBar>
                 </div>
+                <div className='top-bar-menu'>
+                    <div className='left-lobe'>
+                        Dashboard
+                    </div>
+                    <div className='right-lobe'>
+                        <div className='search-icon'>
+                            <input className='search-content' type={'text'} placeholder="Search" />
+                            <img style={{width:'35px', height:'35px', marginRight:'1px'}} src={search} alt="icon" />
+                        </div>
+                        <IconButton
+                            size="large"
+                            edge="start"
+                            color="inherit"
+                            aria-label="menu"
+                            sx={{ marginRight: '0px' }}
+                        >
+                            <img style={{width:'35px', height:'35px'}} src={note} alt="icon" />
+                        </IconButton>
+                        <IconButton
+                            size="large"
+                            edge="start"
+                            color="inherit"
+                            aria-label="menu"
+                            sx={{ marginRight: '0px' }}
+                        >
+                            <img style={{width:'35px', height:'35px'}} src={switchT} alt="icon" />
+                        </IconButton>
+                    </div>
+                </div>
                 <Switch>
                     <Route exact path='/'>
                         <Dashboard/>
