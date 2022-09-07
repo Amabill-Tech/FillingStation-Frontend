@@ -1,3 +1,64 @@
 .dashboardContainer{
-    width: 100%;
+    width: 96%;
+    display: flex;
+    flex-direction: row;
+
+    .left-dash{
+        width: 50%;
+        height: 200px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+
+        .selectItem{
+            width: 420px;
+            justify-content: space-between;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+    }
+
+    .right-dash{
+        width: 50%;
+        height: 200px;
+        background-color: red;
+    }
+}
+
+@media (max-width: 1000px){
+    .dashboardContainer{
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+
+        .left-dash{
+            width: 98%;
+            margin-top: 20px;
+
+            .selectItem{
+                width: 420px;
+                justify-content: space-between;
+            }
+        }
+
+        .right-dash{
+            width: 100%;
+        }
+    }
+}
+
+@media (max-width: 420px){
+    .dashboardContainer{
+        .left-dash{
+            .selectItem{
+                width: 100%;
+                flex-direction: column;
+                align-items: center;
+                height: 80px;
+                justify-content: space-between;
+                background-color: green;
+            }
+        }
+    }
 }
