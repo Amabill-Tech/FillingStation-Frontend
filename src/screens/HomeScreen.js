@@ -51,8 +51,9 @@ import 'react-modern-drawer/dist/index.css';
 
 const HomeScreen = ({history}) => {
 
-    const [activeRoute, setActiveRoute] = useState('/');
+    const [activeRoute, setActiveRoute] = useState('/home');
     const [isOpen, setIsOpen] = useState(false);
+    const [name, setName] = useState('Dashboard');
 
     const toggleDrawer = () => {
         setIsOpen((prevState) => !prevState)
@@ -62,11 +63,15 @@ const HomeScreen = ({history}) => {
         setActiveRoute(location.pathname);
     })
 
+    const setNames = (name) => {
+        setName(name)
+    }
+
     const SideItems = (props) => {
 
         return(
             <Link className='link' to={props.link}>
-                <div style={{marginTop: props.marginT}} className='item-container'>
+                <div onClick={()=>{setNames(props.name)}} style={{marginTop: props.marginT}} className='item-container'>
                     {
                         activeRoute === props.link?
                         <div className='side-item'>
@@ -95,18 +100,18 @@ const HomeScreen = ({history}) => {
             <div className='side-bar'>
                 <div className='inner-side-bar'>
                     <img className='home-logo' src={homeLogo} alt="icon" />
-                    <SideItems marginT={"0px"} link={'/'} name={"Dashboard"} icon={dashboard} icon2={dashboard2} />
-                    <SideItems marginT={"50px"} link={'/daily-sales'} name={"Daily Sales"} icon={dailySales2} icon2={dailySales} />
-                    <SideItems marginT={"100px"} link={'/payments'} name={"Payments"} icon={payments2} icon2={payments} />
-                    <SideItems marginT={"150px"} link={'/outlets'} name={"My Outlets"} icon={outlet2} icon2={outlet} />
-                    <SideItems marginT={"200px"} link={'/record-sales'} name={"Record Sales"} icon={recordSales2} icon2={recordSales} />
-                    <SideItems marginT={"250px"} link={'/expenses'} name={"Expenses"} icon={expenses2} icon2={expenses} />
-                    <SideItems marginT={"300px"} link={'/product-orders'} name={"Product Orders"} icon={productOrders2} icon2={productOrders} />
-                    <SideItems marginT={"350px"} link={'/regulatory'} name={"Regulatory Pay"} icon={regulatory2} icon2={regulatory} />
-                    <SideItems marginT={"400px"} link={'/inc-orders'} name={"Incoming Orders"} icon={incOrders2} icon2={incOrders} />
-                    <SideItems marginT={"450px"} link={'/tank'} name={"Tank Update"} icon={tank2} icon2={tank} />
-                    <SideItems marginT={"500px"} link={'/hr'} name={"Human Resources"} icon={hr2} icon2={hr} />
-                    <SideItems marginT={"550px"} link={'/settings'} name={"Settings"} icon={settings2} icon2={settings} />
+                    <SideItems marginT={"0px"} link={'/home'} name={"Dashboard"} icon={dashboard} icon2={dashboard2} />
+                    <SideItems marginT={"50px"} link={'/home/daily-sales'} name={"Daily Sales"} icon={dailySales2} icon2={dailySales} />
+                    <SideItems marginT={"100px"} link={'/home/payments'} name={"Payments"} icon={payments2} icon2={payments} />
+                    <SideItems marginT={"150px"} link={'/home/outlets'} name={"My Outlets"} icon={outlet2} icon2={outlet} />
+                    <SideItems marginT={"200px"} link={'/home/record-sales'} name={"Record Sales"} icon={recordSales2} icon2={recordSales} />
+                    <SideItems marginT={"250px"} link={'/home/expenses'} name={"Expenses"} icon={expenses2} icon2={expenses} />
+                    <SideItems marginT={"300px"} link={'/home/product-orders'} name={"Product Orders"} icon={productOrders2} icon2={productOrders} />
+                    <SideItems marginT={"350px"} link={'/home/regulatory'} name={"Regulatory Pay"} icon={regulatory2} icon2={regulatory} />
+                    <SideItems marginT={"400px"} link={'/home/inc-orders'} name={"Incoming Orders"} icon={incOrders2} icon2={incOrders} />
+                    <SideItems marginT={"450px"} link={'/home/tank'} name={"Tank Update"} icon={tank2} icon2={tank} />
+                    <SideItems marginT={"500px"} link={'/home/hr'} name={"Human Resources"} icon={hr2} icon2={hr} />
+                    <SideItems marginT={"550px"} link={'/home/settings'} name={"Settings"} icon={settings2} icon2={settings} />
                 </div>
             </div>
             <Drawer
@@ -117,18 +122,18 @@ const HomeScreen = ({history}) => {
                 <div style={{display:'flex', width:'100%', flexDirection:'row', justifyContent:'flex-end'}} className='side-bar'>
                     <div style={{width:'90%'}} className='inner-side-bar'>
                         <img className='home-logo' src={homeLogo} alt="icon" />
-                        <SideItems marginT={"0px"} link={'/'} name={"Dashboard"} icon={dashboard} icon2={dashboard2} />
-                        <SideItems marginT={"50px"} link={'/daily-sales'} name={"Daily Sales"} icon={dailySales2} icon2={dailySales} />
-                        <SideItems marginT={"100px"} link={'/payments'} name={"Payments"} icon={payments2} icon2={payments} />
-                        <SideItems marginT={"150px"} link={'/outlets'} name={"My Outlets"} icon={outlet2} icon2={outlet} />
-                        <SideItems marginT={"200px"} link={'/record-sales'} name={"Record Sales"} icon={recordSales2} icon2={recordSales} />
-                        <SideItems marginT={"250px"} link={'/expenses'} name={"Expenses"} icon={expenses2} icon2={expenses} />
-                        <SideItems marginT={"300px"} link={'/product-orders'} name={"Product Orders"} icon={productOrders2} icon2={productOrders} />
-                        <SideItems marginT={"350px"} link={'/regulatory'} name={"Regulatory Pay"} icon={regulatory2} icon2={regulatory} />
-                        <SideItems marginT={"400px"} link={'/inc-orders'} name={"Incoming Orders"} icon={incOrders2} icon2={incOrders} />
-                        <SideItems marginT={"450px"} link={'/tank'} name={"Tank Update"} icon={tank2} icon2={tank} />
-                        <SideItems marginT={"500px"} link={'/hr'} name={"Human Resources"} icon={hr2} icon2={hr} />
-                        <SideItems marginT={"550px"} link={'/settings'} name={"Settings"} icon={settings2} icon2={settings} />
+                        <SideItems marginT={"0px"} link={'/home'} name={"Dashboard"} icon={dashboard} icon2={dashboard2} />
+                        <SideItems marginT={"50px"} link={'/home/daily-sales'} name={"Daily Sales"} icon={dailySales2} icon2={dailySales} />
+                        <SideItems marginT={"100px"} link={'/home/payments'} name={"Payments"} icon={payments2} icon2={payments} />
+                        <SideItems marginT={"150px"} link={'/home/outlets'} name={"My Outlets"} icon={outlet2} icon2={outlet} />
+                        <SideItems marginT={"200px"} link={'/home/record-sales'} name={"Record Sales"} icon={recordSales2} icon2={recordSales} />
+                        <SideItems marginT={"250px"} link={'/home/expenses'} name={"Expenses"} icon={expenses2} icon2={expenses} />
+                        <SideItems marginT={"300px"} link={'/home/product-orders'} name={"Product Orders"} icon={productOrders2} icon2={productOrders} />
+                        <SideItems marginT={"350px"} link={'/home/regulatory'} name={"Regulatory Pay"} icon={regulatory2} icon2={regulatory} />
+                        <SideItems marginT={"400px"} link={'/home/inc-orders'} name={"Incoming Orders"} icon={incOrders2} icon2={incOrders} />
+                        <SideItems marginT={"450px"} link={'/home/tank'} name={"Tank Update"} icon={tank2} icon2={tank} />
+                        <SideItems marginT={"500px"} link={'/home/hr'} name={"Human Resources"} icon={hr2} icon2={hr} />
+                        <SideItems marginT={"550px"} link={'/home/settings'} name={"Settings"} icon={settings2} icon2={settings} />
                     </div>
                 </div>
             </Drawer>
@@ -180,7 +185,7 @@ const HomeScreen = ({history}) => {
                 </div>
                 <div className='top-bar-menu'>
                     <div className='left-lobe'>
-                        Dashboard
+                        {name}
                     </div>
                     <div className='right-lobe'>
                         <div className='search-icon'>
@@ -208,40 +213,40 @@ const HomeScreen = ({history}) => {
                     </div>
                 </div>
                 <Switch>
-                    <Route exact path='/'>
+                    <Route exact path='/home'>
                         <Dashboard/>
                     </Route>
-                    <Route path='/daily-sales'>
+                    <Route path='/home/daily-sales'>
                         <DailySales/>
                     </Route>
-                    <Route path='/expenses'>
+                    <Route path='/home/expenses'>
                         <Expenses/>
                     </Route>
-                    <Route path='/hr'>
+                    <Route path='/home/hr'>
                         <HumanResources/>
                     </Route>
-                    <Route path='/inc-orders'>
+                    <Route path='/home/inc-orders'>
                         <IncomingOrders/>
                     </Route>
-                    <Route path='/outlets'>
+                    <Route path='/home/outlets'>
                         <Outlets/>
                     </Route>
-                    <Route path='/payments'>
+                    <Route path='/home/payments'>
                         <Payments/>
                     </Route>
-                    <Route path='/product-orders'>
+                    <Route path='/home/product-orders'>
                         <ProductOrders/>
                     </Route>
-                    <Route path='/record-sales'>
+                    <Route path='/home/record-sales'>
                         <RecordSales/>
                     </Route>
-                    <Route path='/regulatory'>
+                    <Route path='/home/regulatory'>
                         <Regulatory/>
                     </Route>
-                    <Route path='/tank'>
+                    <Route path='/home/tank'>
                         <TankUpdate/>
                     </Route>
-                    <Route path='/settings'>
+                    <Route path='/home/settings'>
                         <Settings/>
                     </Route>
                 </Switch>

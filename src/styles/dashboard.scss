@@ -17,12 +17,33 @@
             flex-direction: row;
             align-items: center;
         }
+
+        .dash-records{
+            width: 100%;
+            background-color: green;
+            margin-top: 20px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+
+            .first{
+                width: 46%;
+                height: 100px;
+                background-color: blue;
+            }
+
+            .second{
+                width: 46%;
+                height: 100px;
+                margin-right: 25px;
+                background-color: yellow;
+            }
+        }
     }
 
     .right-dash{
         width: 50%;
         height: 200px;
-        background-color: red;
     }
 }
 

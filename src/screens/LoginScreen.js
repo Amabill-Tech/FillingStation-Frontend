@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 const LoginScreen = ({history}) => {
 
     const handleLogin = () => {
-        history.push('/');
+        history.push('/home');
     }
 
     return(
