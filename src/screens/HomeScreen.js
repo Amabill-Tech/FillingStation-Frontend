@@ -96,18 +96,18 @@ const HomeScreen = ({history}) => {
             <div className='side-bar'>
                 <div className='inner-side-bar'>
                     <img className='home-logo' src={homeLogo} alt="icon" />
-                    <SideItems id={0} marginT={"0px"} link={'/'} name={"Dashboard"} icon={dashboard} icon2={dashboard2} />
-                    <SideItems id={1} marginT={"50px"} link={'/daily-sales'} name={"Daily Sales"} icon={dailySales2} icon2={dailySales} />
-                    <SideItems id={2} marginT={"100px"} link={'/payments'} name={"Payments"} icon={payments2} icon2={payments} />
-                    <SideItems id={3} marginT={"150px"} link={'/outlets'} name={"My Outlets"} icon={outlet2} icon2={outlet} />
-                    <SideItems id={4} marginT={"200px"} link={'/record-sales'} name={"Record Sales"} icon={recordSales2} icon2={recordSales} />
-                    <SideItems id={5} marginT={"250px"} link={'/expenses'} name={"Expenses"} icon={expenses2} icon2={expenses} />
-                    <SideItems id={6} marginT={"300px"} link={'/product-orders'} name={"Product Orders"} icon={productOrders2} icon2={productOrders} />
-                    <SideItems id={7} marginT={"350px"} link={'/regulatory'} name={"Regulatory Pay"} icon={regulatory2} icon2={regulatory} />
-                    <SideItems id={8} marginT={"400px"} link={'/inc-orders'} name={"Incoming Orders"} icon={incOrders2} icon2={incOrders} />
-                    <SideItems id={9} marginT={"450px"} link={'/tank'} name={"Tank Update"} icon={tank2} icon2={tank} />
-                    <SideItems id={10} marginT={"500px"} link={'/hr'} name={"Human Resources"} icon={hr2} icon2={hr} />
-                    <SideItems id={11} marginT={"550px"} link={'/settings'} name={"Settings"} icon={settings2} icon2={settings} />
+                    <SideItems marginT={"0px"} link={'/'} name={"Dashboard"} icon={dashboard} icon2={dashboard2} />
+                    <SideItems marginT={"50px"} link={'/daily-sales'} name={"Daily Sales"} icon={dailySales2} icon2={dailySales} />
+                    <SideItems marginT={"100px"} link={'/payments'} name={"Payments"} icon={payments2} icon2={payments} />
+                    <SideItems marginT={"150px"} link={'/outlets'} name={"My Outlets"} icon={outlet2} icon2={outlet} />
+                    <SideItems marginT={"200px"} link={'/record-sales'} name={"Record Sales"} icon={recordSales2} icon2={recordSales} />
+                    <SideItems marginT={"250px"} link={'/expenses'} name={"Expenses"} icon={expenses2} icon2={expenses} />
+                    <SideItems marginT={"300px"} link={'/product-orders'} name={"Product Orders"} icon={productOrders2} icon2={productOrders} />
+                    <SideItems marginT={"350px"} link={'/regulatory'} name={"Regulatory Pay"} icon={regulatory2} icon2={regulatory} />
+                    <SideItems marginT={"400px"} link={'/inc-orders'} name={"Incoming Orders"} icon={incOrders2} icon2={incOrders} />
+                    <SideItems marginT={"450px"} link={'/tank'} name={"Tank Update"} icon={tank2} icon2={tank} />
+                    <SideItems marginT={"500px"} link={'/hr'} name={"Human Resources"} icon={hr2} icon2={hr} />
+                    <SideItems marginT={"550px"} link={'/settings'} name={"Settings"} icon={settings2} icon2={settings} />
                 </div>
             </div>
             <Drawer
@@ -118,18 +118,18 @@ const HomeScreen = ({history}) => {
                 <div style={{display:'flex', width:'100%', flexDirection:'row', justifyContent:'flex-end'}} className='side-bar'>
                     <div style={{width:'90%'}} className='inner-side-bar'>
                         <img className='home-logo' src={homeLogo} alt="icon" />
-                        <SideItems id={0} marginT={"0px"} name={"Dashboard"} icon={dashboard} icon2={dashboard2} />
-                        <SideItems id={1} marginT={"50px"} name={"Daily Sales"} icon={dailySales2} icon2={dailySales} />
-                        <SideItems id={2} marginT={"100px"} name={"Payments"} icon={payments2} icon2={payments} />
-                        <SideItems id={3} marginT={"150px"} name={"My Outlets"} icon={outlet2} icon2={outlet} />
-                        <SideItems id={4} marginT={"200px"} name={"Record Sales"} icon={recordSales2} icon2={recordSales} />
-                        <SideItems id={5} marginT={"250px"} name={"Expenses"} icon={expenses2} icon2={expenses} />
-                        <SideItems id={6} marginT={"300px"} name={"Product Orders"} icon={productOrders2} icon2={productOrders} />
-                        <SideItems id={7} marginT={"350px"} name={"Regulatory Pay"} icon={regulatory2} icon2={regulatory} />
-                        <SideItems id={8} marginT={"400px"} name={"Incoming Orders"} icon={incOrders2} icon2={incOrders} />
-                        <SideItems id={9} marginT={"450px"} name={"Tank Update"} icon={tank2} icon2={tank} />
-                        <SideItems id={10} marginT={"500px"} name={"Human Resources"} icon={hr2} icon2={hr} />
-                        <SideItems id={11} marginT={"550px"} name={"Settings"} icon={settings2} icon2={settings} />
+                        <SideItems marginT={"0px"} link={'/'} name={"Dashboard"} icon={dashboard} icon2={dashboard2} />
+                        <SideItems marginT={"50px"} link={'/daily-sales'} name={"Daily Sales"} icon={dailySales2} icon2={dailySales} />
+                        <SideItems marginT={"100px"} link={'/payments'} name={"Payments"} icon={payments2} icon2={payments} />
+                        <SideItems marginT={"150px"} link={'/outlets'} name={"My Outlets"} icon={outlet2} icon2={outlet} />
+                        <SideItems marginT={"200px"} link={'/record-sales'} name={"Record Sales"} icon={recordSales2} icon2={recordSales} />
+                        <SideItems marginT={"250px"} link={'/expenses'} name={"Expenses"} icon={expenses2} icon2={expenses} />
+                        <SideItems marginT={"300px"} link={'/product-orders'} name={"Product Orders"} icon={productOrders2} icon2={productOrders} />
+                        <SideItems marginT={"350px"} link={'/regulatory'} name={"Regulatory Pay"} icon={regulatory2} icon2={regulatory} />
+                        <SideItems marginT={"400px"} link={'/inc-orders'} name={"Incoming Orders"} icon={incOrders2} icon2={incOrders} />
+                        <SideItems marginT={"450px"} link={'/tank'} name={"Tank Update"} icon={tank2} icon2={tank} />
+                        <SideItems marginT={"500px"} link={'/hr'} name={"Human Resources"} icon={hr2} icon2={hr} />
+                        <SideItems marginT={"550px"} link={'/settings'} name={"Settings"} icon={settings2} icon2={settings} />
                     </div>
                 </div>
             </Drawer>
