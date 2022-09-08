@@ -29,10 +29,11 @@ const Dashboard = () => {
                         <MenuItem value={30}>Thirty</MenuItem>
                     </Select>
                 </div>
-                {/*<div className='dash-records'>
-                    <div className='first'>1</div>
-                    <div className='second'>2</div>
-    </div>*/}
+                <div className='dash-records'>
+                    <div className='padding-container'>
+
+                    </div>
+                </div>
             </div>
             <div className='right-dash'>
 

@@ -2,10 +2,10 @@
     width: 96%;
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
 
     .left-dash{
-        width: 50%;
-        height: 200px;
+        width: 49%;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
@@ -20,34 +20,30 @@
 
         .dash-records{
             width: 100%;
-            background-color: green;
+            height: 400px;
+            background-color: #F6F6F6B2;
             margin-top: 20px;
             display: flex;
             flex-direction: row;
-            justify-content: space-between;
+            justify-content: center;
+            align-items: center;
 
-            .first{
-                width: 46%;
-                height: 100px;
-                background-color: blue;
-            }
-
-            .second{
-                width: 46%;
-                height: 100px;
-                margin-right: 25px;
-                background-color: yellow;
+            .padding-container{
+                width: 96%;
+                height: 370px;
+                background-color: green;
             }
         }
     }
 
     .right-dash{
-        width: 50%;
+        width: 49%;
         height: 200px;
+        background-color: red;
     }
 }
 
-@media (max-width: 1000px){
+@media (max-width: 1300px){
     .dashboardContainer{
         width: 100%;
         flex-direction: column;
@@ -60,6 +56,9 @@
             .selectItem{
                 width: 420px;
                 justify-content: space-between;
+            }
+
+            .dash-records{
             }
         }
 
