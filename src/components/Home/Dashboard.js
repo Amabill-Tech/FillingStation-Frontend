@@ -31,7 +31,23 @@ const Dashboard = () => {
                 </div>
                 <div className='dash-records'>
                     <div className='padding-container'>
+                        <div className='type'>
+                            <div className='single-type'>
+                                <div className='color'></div>
+                                <div className='name'>PMS</div>
+                            </div>
+                            <div style={{marginLeft:'10px'}} className='single-type'>
+                                <div style={{background:'#FFA010'}} className='color'></div>
+                                <div className='name'>AGO</div>
+                            </div>
+                            <div style={{marginLeft:'10px'}} className='single-type'>
+                                <div style={{background:'#35393E'}} className='color'></div>
+                                <div className='name'>DPK</div>
+                            </div>
+                        </div>
+                        <div className='graph'>
 
+                        </div>
                     </div>
                 </div>
             </div>
