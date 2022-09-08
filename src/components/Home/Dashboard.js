@@ -2,6 +2,52 @@ import React from 'react';
 import '../../styles/dashboard.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend,
+} from 'chart.js';
+import { Line } from 'react-chartjs-2';
+
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend
+);
+
+const labels = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+];
+
+const data = {
+    labels: labels,
+    datasets: [
+        {
+            label: 'AGO',
+            borderColor: '#399A19',
+            data: [0, 10, 5, 2, 20, 30, 45],
+        },
+        {
+            label: 'PMS',
+            borderColor: '#FFA010',
+            data: [40, 10,20, 26, 20, 10, 45],
+        }
+    ]
+};
 
 const Dashboard = () => {
     return(
@@ -46,7 +92,7 @@ const Dashboard = () => {
                             </div>
                         </div>
                         <div className='graph'>
-
+                            <Line data={data} />
                         </div>
                     </div>
                 </div>
