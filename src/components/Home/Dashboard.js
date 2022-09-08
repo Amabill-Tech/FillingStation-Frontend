@@ -69,6 +69,27 @@ const options = {
     maintainAspectRatio: false,
 }
 
+const DashboardImage = () => {
+    return(
+        <div className='first-image'>
+            <div className='inner-first-image'>
+                <div className='top-first-image'>
+                    <div className='top-icon'>
+                        <img style={{width:'60px', height:'70px'}} src={me1} alt="icon" />
+                    </div>
+                    <div className='top-text'>
+                        <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>Current staff</div>
+                        <div style={{fontSize:'16px', fontWeight:'bold', fontFamily:'Nunito-Regular'}}>41</div>
+                    </div>
+                </div>
+                <div className='bottom-first-image'>
+                    <img style={{width:'30px', height:'10px'}} src={me6} alt="icon" />
+                </div>
+            </div>
+        </div>
+    )
+}
+
 const Dashboard = () => {
     return(
         <div className='dashboardContainer'>
@@ -96,22 +117,7 @@ const Dashboard = () => {
                     </Select>
                 </div>
                 <div className='dashImages'>
-                    <div className='first-image'>
-                        <div className='inner-first-image'>
-                            <div className='top-first-image'>
-                                <div className='top-icon'>
-                                    <img style={{width:'60px', height:'70px'}} src={me1} alt="icon" />
-                                </div>
-                                <div className='top-text'>
-                                    <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>Current staff</div>
-                                    <div style={{fontSize:'16px', fontWeight:'bold', fontFamily:'Nunito-Regular'}}>41</div>
-                                </div>
-                            </div>
-                            <div className='bottom-first-image'>
-                                <img style={{width:'30px', height:'10px'}} src={me6} alt="icon" />
-                            </div>
-                        </div>
-                    </div>
+                    <DashboardImage />
                     <div className='first-image'>
                         <div className='inner-first-image'>
                             <div className='top-first-image'>
@@ -157,7 +163,14 @@ const Dashboard = () => {
                 </div>
             </div>
             <div className='right-dash'>
-
+                <div className='dashImages'>
+                    <DashboardImage />
+                    <DashboardImage />
+                </div>
+                <div style={{marginTop:'15px'}} className='dashImages'>
+                    <DashboardImage />
+                    <DashboardImage />
+                </div>
             </div>
         </div>
     )
