@@ -45,9 +45,23 @@ const data = {
             label: 'PMS',
             borderColor: '#FFA010',
             data: [40, 10,20, 26, 20, 10, 45],
+        },
+        {
+            label: 'DPK',
+            borderColor: '#000',
+            data: [20, 40,10, 20, 30, 5, 18],
         }
     ]
 };
+
+const options = {
+    plugins: {
+        legend: {
+            display: false,
+        }
+    },
+    maintainAspectRatio: false,
+}
 
 const Dashboard = () => {
     return(
@@ -92,7 +106,7 @@ const Dashboard = () => {
                             </div>
                         </div>
                         <div className='graph'>
-                            <Line data={data} />
+                            <Line options={options} data={data} />
                         </div>
                     </div>
                 </div>
