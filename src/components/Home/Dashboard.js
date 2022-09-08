@@ -2,6 +2,12 @@ import React from 'react';
 import '../../styles/dashboard.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import me1 from '../../assets/me1.png';
+import me2 from '../../assets/me2.png';
+import me3 from '../../assets/me3.png';
+import me4 from '../../assets/me4.png';
+import me5 from '../../assets/me5.png';
+import me6 from '../../assets/me6.png';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -88,6 +94,45 @@ const Dashboard = () => {
                         <MenuItem value={20}>Twenty</MenuItem>
                         <MenuItem value={30}>Thirty</MenuItem>
                     </Select>
+                </div>
+                <div className='dashImages'>
+                    <div className='first-image'>
+                        <div className='inner-first-image'>
+                            <div className='top-first-image'>
+                                <div className='top-icon'>
+                                    <img style={{width:'60px', height:'70px'}} src={me1} alt="icon" />
+                                </div>
+                                <div className='top-text'>
+                                    <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>Current staff</div>
+                                    <div style={{fontSize:'16px', fontWeight:'bold', fontFamily:'Nunito-Regular'}}>41</div>
+                                </div>
+                            </div>
+                            <div className='bottom-first-image'>
+                                <img style={{width:'30px', height:'10px'}} src={me6} alt="icon" />
+                            </div>
+                        </div>
+                    </div>
+                    <div className='first-image'>
+                        <div className='inner-first-image'>
+                            <div className='top-first-image'>
+                                <div className='top-icon'>
+                                    <img style={{width:'60px', height:'70px'}} src={me2} alt="icon" />
+                                </div>
+                                <div className='top-text'>
+                                    <div style={{fontSize:'14px', textAlign:'left', fontFamily:'Nunito-Regular'}}>
+                                        <div style={{marginTop:'10px'}}>
+                                            Total Sales: <span style={{fontWeight:'bold'}}>#183,000</span>
+                                        </div>
+                                        <div style={{marginTop:'5px'}}>Liter: <span>197,822.00</span> LTR</div>
+                                    </div>
+                                    <div style={{fontSize:'16px', fontWeight:'bold', fontFamily:'Nunito-Regular'}}>41</div>
+                                </div>
+                            </div>
+                            <div className='bottom-first-image'>
+                                <img style={{width:'30px', height:'10px'}} src={me6} alt="icon" />
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div className='dash-records'>
                     <div className='padding-container'>
