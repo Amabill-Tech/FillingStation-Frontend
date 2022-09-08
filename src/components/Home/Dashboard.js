@@ -173,7 +173,27 @@ const Dashboard = () => {
                     <DashboardImage image={me5} name={'Inactive Pump'} value={'41'}/>
                 </div>
 
-                <div className='section'>hello</div>
+                <div className='section'>
+                    <div className='bank'>Net to Bank</div>
+                    <div className='inner-section'>
+                        <div className='inner-content'>
+                            <div className='conts'>
+                                <div className='row-count'>
+                                    <div className='item-count'>Net to bank</div>
+                                    <div className='item-count'>Log to bank</div>
+                                    <div className='item-count'>Teller Amount</div>
+                                    <div className='item-count'>POS Amount</div>
+                                </div>
+                                <div className='row-count'>
+                                    <div className='item-count'>#213,093</div>
+                                    <div className='item-count'>#213,093</div>
+                                    <div className='item-count'>#213,093</div>
+                                    <div className='item-count'>#0,000</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     )
