@@ -19,6 +19,7 @@ import {
     Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import { PropaneSharp } from '@mui/icons-material';
 
 ChartJS.register(
     CategoryScale,
@@ -69,17 +70,17 @@ const options = {
     maintainAspectRatio: false,
 }
 
-const DashboardImage = () => {
+const DashboardImage = (props) => {
     return(
         <div className='first-image'>
             <div className='inner-first-image'>
                 <div className='top-first-image'>
                     <div className='top-icon'>
-                        <img style={{width:'60px', height:'70px'}} src={me1} alt="icon" />
+                        <img style={{width:'60px', height:'60px'}} src={props.image} alt="icon" />
                     </div>
                     <div className='top-text'>
-                        <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>Current staff</div>
-                        <div style={{fontSize:'16px', fontWeight:'bold', fontFamily:'Nunito-Regular'}}>41</div>
+                        <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>{props.name}</div>
+                        <div style={{fontSize:'16px', fontWeight:'bold', fontFamily:'Nunito-Regular'}}>{props.value}</div>
                     </div>
                 </div>
                 <div className='bottom-first-image'>
@@ -117,7 +118,7 @@ const Dashboard = () => {
                     </Select>
                 </div>
                 <div className='dashImages'>
-                    <DashboardImage />
+                    <DashboardImage image={me1} name={'Current staff'} value={'41'}/>
                     <div className='first-image'>
                         <div className='inner-first-image'>
                             <div className='top-first-image'>
@@ -164,13 +165,15 @@ const Dashboard = () => {
             </div>
             <div className='right-dash'>
                 <div className='dashImages'>
-                    <DashboardImage />
-                    <DashboardImage />
+                    <DashboardImage image={me4} name={'Active Tank'} value={'41'} />
+                    <DashboardImage image={me4} name={'Inactive Tank'} value={'41'}/>
                 </div>
                 <div style={{marginTop:'15px'}} className='dashImages'>
-                    <DashboardImage />
-                    <DashboardImage />
+                    <DashboardImage image={me5} name={'Active Pump'} value={'41'}/>
+                    <DashboardImage image={me5} name={'Inactive Pump'} value={'41'}/>
                 </div>
+
+                <div className='section'>hello</div>
             </div>
         </div>
     )
