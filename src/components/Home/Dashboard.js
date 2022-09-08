@@ -181,14 +181,93 @@ const Dashboard = () => {
                                 <div className='row-count'>
                                     <div className='item-count'>Net to bank</div>
                                     <div className='item-count'>Log to bank</div>
-                                    <div className='item-count'>Teller Amount</div>
+                                    <div style={{color:'#0872D4'}} className='item-count'>Teller Amount</div>
                                     <div className='item-count'>POS Amount</div>
                                 </div>
                                 <div className='row-count'>
                                     <div className='item-count'>#213,093</div>
                                     <div className='item-count'>#213,093</div>
-                                    <div className='item-count'>#213,093</div>
+                                    <div style={{color:'#0872D4'}} className='item-count'>#213,093</div>
                                     <div className='item-count'>#0,000</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className='station'>
+                    <div className='bank'>Station</div>
+                    <div className='station-container'>
+                        <div className='station-content'>
+                            <div className='inner-stat'>
+                                <div className='inner-header'>Ammasco Oil, Albasu, Kano</div>
+                                <div className='station-slider'>
+                                    <div className='slideName'>
+                                        <div className='pms'>PMS</div>
+                                        <progress className='prog' value="70" max="100"> 70% </progress>
+                                    </div>
+                                    <div className='slideQty'>2500 Ltr</div>
+                                </div>
+                                <div className='station-slider'>
+                                    <div className='slideName'>
+                                        <div className='pms'>AGO</div>
+                                        <progress className='prog' value="50" max="100"> 50% </progress>
+                                    </div>
+                                    <div className='slideQty'>2500 Ltr</div>
+                                </div>
+                                <div className='station-slider'>
+                                    <div className='slideName'>
+                                        <div className='pms'>DPK</div>
+                                        <progress className='prog' value="32" max="100"> 32% </progress>
+                                    </div>
+                                    <div className='slideQty'>2500 Ltr</div>
+                                </div>
+                                <div className='butom'>
+                                    <div className='pump-cont'>
+                                        <div>No of Pump</div>
+                                        <div className='amount'>2</div>
+                                    </div>
+                                    <div style={{marginLeft:'20px'}} className='pump-cont'>
+                                        <div>No of Pump</div>
+                                        <div className='amount'>2</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style={{marginTop:'0px'}} className='station-content'>
+                            <div className='inner-stat'>
+                                <div className='inner-header'>Ammasco Oil, Albasu, Kano</div>
+                                <div className='station-slider'>
+                                    <div className='slideName'>
+                                        <div className='pms'>PMS</div>
+                                        <progress className='prog' value="70" max="100"> 70% </progress>
+                                    </div>
+                                    <div className='slideQty'>2500 Ltr</div>
+                                </div>
+                                <div className='station-slider'>
+                                    <div className='slideName'>
+                                        <div className='pms'>AGO</div>
+                                        <progress className='prog' value="50" max="100"> 50% </progress>
+                                    </div>
+                                    <div className='slideQty'>2500 Ltr</div>
+                                </div>
+                                <div className='station-slider'>
+                                    <div className='slideName'>
+                                        <div className='pms'>DPK</div>
+                                        <progress className='prog' value="32" max="100"> 32% </progress>
+                                    </div>
+                                    <div className='slideQty'>2500 Ltr</div>
+                                </div>
+                                <div className='butom'>
+                                    <div className='pump-cont'>
+                                        <div>No of Pump</div>
+                                        <div className='amount'>2</div>
+                                    </div>
+                                    <div style={{marginLeft:'20px'}} className='pump-cont'>
+                                        <div>No of Pump</div>
+                                        <div className='amount'>2</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

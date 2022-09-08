@@ -255,6 +255,117 @@
                 }
             }
         }
+
+        .station{
+            width: 100%;
+            margin-top: 20px;
+
+            .bank{
+                font-family: 'Nunito-Regular';
+                font-size: 16px;
+                font-weight: 900;
+                display: flex;
+                flex-direction: row;
+                justify-content: flex-start;
+            }
+
+            .station-container{
+                width: 100%;
+                background-color: #F6F6F6B2;
+                margin-top: 8px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+
+                .station-content{
+                    width: 96%;
+                    margin-top: 15px;
+                    background-color: #E6F5F1;
+                    margin-bottom: 15px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+
+                    .inner-stat{
+                        width: 96%;
+                        margin-top: 10px;
+                        margin-bottom: 10px;
+
+                        .inner-header{
+                            font-family: 'Nunito-Regular';
+                            font-style: normal;
+                            font-weight: 700;
+                            font-size: 14px;
+                            line-height: 25px;
+                            color: #201F1F;
+                            text-align: left;
+                        }
+
+                        .station-slider{
+                            width: 100%;
+                            display: flex;
+                            flex-direction: row;
+                            margin-top: 15px;
+
+                            .slideName{
+                                width: 80%;
+                                display: flex;
+                                flex-direction: row;
+                                align-items: center;
+                                font-size: 12px;
+
+                                .pms{
+                                    font-weight: bold;
+                                    margin-right: 10px;
+                                }
+
+                                .prog{
+                                    width: 100%;
+                                    height: 15px;
+                                }
+                            }
+
+                            .slideQty{
+                                width: 20%;
+                                font-size: 12px;
+                            }
+                        }
+
+                        .butom{
+                            width: 100%;
+                            margin-top: 20px;
+                            display: flex;
+                            flex-direction: row;
+                            align-items: center;
+
+                            .pump-cont{
+                                display: flex;
+                                flex-direction: row;
+                                align-items: center;
+                                font-family: 'Nunito-Regular';
+                                font-style: normal;
+                                font-weight: 500;
+                                font-size: 15px;
+                                line-height: 25px;
+                                color: #06805B;
+
+                                .amount{
+                                    width: 40px;
+                                    height: 25px;
+                                    border: 1px solid #000;
+                                    margin-left: 15px;
+                                    text-align: left;
+                                    padding-left: 10px;
+                                    display: flex;
+                                    align-items: center;
+                                    color: #000;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -304,6 +415,20 @@
                     width: 100%;
                     height: 120px;
                     margin-bottom: 15px;
+                }
+            }
+
+            .section{
+                .inner-section{
+                    .inner-content{
+                        .conts{
+                            .row-count{
+                                .item-count{
+                                    font-size: 12px;
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
