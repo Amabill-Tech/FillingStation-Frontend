@@ -6,8 +6,68 @@ import me5 from '../../assets/me5.png';
 import PMS from '../../assets/PMS.png';
 import AGO from '../../assets/AGO.png';
 import DPK from '../../assets/DPK.png';
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend,
+} from 'chart.js';
+import { Bar } from 'react-chartjs-2';
+
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend
+);
+
+const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+
+export const data = {
+    labels,
+    datasets: [
+      {
+        label: 'Dataset 1',
+        data: [40, 10, 5, 2, 20, 30, 35],
+        backgroundColor: '#06805B',
+      },
+      {
+        label: 'Dataset 2',
+        data: [30, 10, 5, 2, 20, 30, 45],
+        backgroundColor: '#108CFF',
+      },
+    ],
+};
+
+
+const options = {
+    plugins: {
+        legend: {
+            display: false,
+        }
+    },
+    maintainAspectRatio: false,
+    scales: {
+        x: {
+            grid: {
+                display: false,
+            }
+        },
+        y: {
+            grid: {
+                display: false,
+            }
+        }
+    }
+}
 
 const DailySales = () => {
+
     return(
         <div className='daily-sales-container'>
             <div className='daily-left'>
@@ -91,7 +151,14 @@ const DailySales = () => {
                     </div>
                 </div>
             </div>
-            <div className='daily-right'>second</div>
+            <div className='daily-right'>
+                <div className="tank-text">Expenses And Payments</div>
+                <div className='bar-chart'>
+                    <div className='bar'>
+                        <Bar options={options} data={data} />
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }
