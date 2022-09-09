@@ -6,6 +6,8 @@ import me5 from '../../assets/me5.png';
 import PMS from '../../assets/PMS.png';
 import AGO from '../../assets/AGO.png';
 import DPK from '../../assets/DPK.png';
+import slideMenu from '../../assets/slideMenu.png';
+import Button from '@mui/material/Button';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -158,6 +160,94 @@ const DailySales = () => {
                         <Bar options={options} data={data} />
                     </div>
                 </div>
+
+                <div className='section'>
+                    <div className='bank'>Net to Bank</div>
+                    <div className='inner-section'>
+                        <div className='inner-content'>
+                            <div className='conts'>
+                                <div className='row-count'>
+                                    <div className='item-count'>Net to bank</div>
+                                    <div className='item-count'>Log to bank</div>
+                                    <div style={{color:'#0872D4'}} className='item-count'>Teller Amount</div>
+                                    <div className='item-count'>POS Amount</div>
+                                </div>
+                                <div className='row-count'>
+                                    <div className='item-count'>#213,093</div>
+                                    <div className='item-count'>#213,093</div>
+                                    <div style={{color:'#0872D4'}} className='item-count'>#213,093</div>
+                                    <div className='item-count'>#0,000</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style={{display:'flex', flexDirection:'row', width:'100%', marginTop:'30px', justifyContent:'space-between'}} className="tank-text">
+                    <div>Incoming Order</div>
+                    <Button 
+                        variant="contained" 
+                        startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} src={slideMenu} />}
+                        sx={{
+                            width:'165px',
+                            height:'30px',
+                            background:'#06805B',
+                            fontSize:'11px',
+                            '&:hover': {
+                                backgroundColor: '#06805B'
+                            }
+                        }}
+                    >
+                        View in details
+                    </Button>
+                </div>
+
+                <div style={{width:'100%', marginBottom:'40px'}}>
+                    <div className='table-view'>
+                        <div className='table-text'>Outlets</div>
+                        <div className='table-text'>Date approved</div>
+                        <div className='table-text'>Depot</div>
+                        <div className='table-text'>Products</div>
+                        <div className='table-text'>Quantity</div>
+                    </div>
+                    
+                    <div className='table-view2'>
+                        <div className='table-text'>Ammasco</div>
+                        <div className='table-text'>Date approved</div>
+                        <div className='table-text'>Abuja</div>
+                        <div className='table-text'>12-23-23</div>
+                        <div className='table-text'>245900</div>
+                    </div>
+                    <div className='table-view2'>
+                        <div className='table-text'>Ammasco</div>
+                        <div className='table-text'>Date approved</div>
+                        <div className='table-text'>Abuja</div>
+                        <div className='table-text'>12-23-23</div>
+                        <div className='table-text'>245900</div>
+                    </div>
+                    <div className='table-view2'>
+                        <div className='table-text'>Ammasco</div>
+                        <div className='table-text'>Date approved</div>
+                        <div className='table-text'>Abuja</div>
+                        <div className='table-text'>12-23-23</div>
+                        <div className='table-text'>245900</div>
+                    </div>
+                    <div className='table-view2'>
+                        <div className='table-text'>Ammasco</div>
+                        <div className='table-text'>Date approved</div>
+                        <div className='table-text'>Abuja</div>
+                        <div className='table-text'>12-23-23</div>
+                        <div className='table-text'>245900</div>
+                    </div>
+                    <div className='table-view2'>
+                        <div className='table-text'>Ammasco</div>
+                        <div className='table-text'>Date approved</div>
+                        <div className='table-text'>Abuja</div>
+                        <div className='table-text'>12-23-23</div>
+                        <div className='table-text'>245900</div>
+                    </div>
+                </div>
+                
             </div>
         </div>
     )

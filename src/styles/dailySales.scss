@@ -150,6 +150,105 @@
                 height: 310px;
             }
         }
+
+        .section{
+            width: 100%;
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            flex-direction: column;
+
+            .bank{
+                font-family: 'Nunito-Regular';
+                font-size: 16px;
+                font-weight: 900;
+                margin-top: 10px;
+            }
+
+            .inner-section{
+                width: 100%;
+                height: 90px;
+                margin-top: 8px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                .inner-content{
+                    width: 100%;
+                    height: 90%;
+                    background: #E6F5F1;
+                    border-radius: 3.56164px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+
+                    .conts{
+                        width: 90%;
+                        height: 60px;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: space-around;
+
+                        .row-count{
+                            width: 100%;
+                            height: 20px;
+                            display: flex;
+                            flex-direction: row;
+                            justify-content: space-between;
+
+                            .item-count{
+                                width: 25%;
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                font-family: 'Nunito-Regular';
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .table-view{
+            width: 100%;
+            height: 30px;
+            background: #EFEFEF;
+            border-radius: 4.47339px;
+            margin-top: 20px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+
+            .table-text{
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-family: 'Nunito-Regular';
+                font-size: 12px;
+            }
+        }
+
+        .table-view2{
+            width: 100%;
+            height: 30px;
+            background: #FAFAFA;
+            border-radius: 4.47339px;
+            margin-top: 5px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+
+            .table-text{
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-family: 'Nunito-Regular';
+                font-size: 12px;
+            }
+        }
     }
 }
 
@@ -163,6 +262,24 @@
 
         .daily-right{
             width: 100%;
+
+            .tank-text{
+                margin-top: 30px;
+            }
+
+            .section{
+                .inner-section{
+                    .inner-content{
+                        .conts{
+                            .row-count{
+                                .item-count{
+                                    font-size: 12px;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
