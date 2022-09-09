@@ -94,26 +94,30 @@ const Dashboard = () => {
         <div className='dashboardContainer'>
             <div className='left-dash'>
                 <div className='selectItem'>
-                    <Select
-                        labelId="demo-select-small"
-                        id="demo-select-small"
-                        value={10}
-                        sx={selectStyle}
-                    >
-                        <MenuItem value={10}>07 August, 2022</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
-                    </Select>
-                    <Select
-                        labelId="demo-select-small"
-                        id="demo-select-small"
-                        value={10}
-                        sx={selectStyle2}
-                    >
-                        <MenuItem value={10}>07 August, 2022</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
-                    </Select>
+                    <div className='first-select'>
+                        <Select
+                            labelId="demo-select-small"
+                            id="demo-select-small"
+                            value={10}
+                            sx={selectStyle}
+                        >
+                            <MenuItem value={10}>07 August, 2022</MenuItem>
+                            <MenuItem value={20}>Twenty</MenuItem>
+                            <MenuItem value={30}>Thirty</MenuItem>
+                        </Select>
+                    </div>
+                    <div className='second-select'>
+                        <Select
+                            labelId="demo-select-small"
+                            id="demo-select-small"
+                            value={10}
+                            sx={selectStyle2}
+                        >
+                            <MenuItem value={10}>07 August, 2022</MenuItem>
+                            <MenuItem value={20}>Twenty</MenuItem>
+                            <MenuItem value={30}>Thirty</MenuItem>
+                        </Select>
+                    </div>
                 </div>
                 <div className='dashImages'>
                     <DashboardImage image={me1} name={'Current staff'} value={'41'}/>
@@ -277,7 +281,7 @@ const Dashboard = () => {
 }
 
 const selectStyle = {
-    width:'200px', 
+    width:'100%', 
     height:'35px', 
     borderRadius:'5px',
     background: 'linear-gradient(264.74deg, #0A6147 -18.7%, rgba(10, 97, 71, 0.88) 54.22%)',
@@ -288,7 +292,7 @@ const selectStyle = {
 }
 
 const selectStyle2 = {
-    width:'200px', 
+    width:'100%', 
     height:'35px', 
     borderRadius:'5px',
     background: '#F2F1F1B2',

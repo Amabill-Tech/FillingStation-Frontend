@@ -11,11 +11,19 @@
         align-items: flex-start;
 
         .selectItem{
-            width: 420px;
+            width: 380px;
             justify-content: space-between;
             display: flex;
             flex-direction: row;
             align-items: center;
+
+            .first-select{
+                width: 48%;
+            }
+
+            .second-select{
+                width: 48%;
+            }
         }
 
         .dashImages{
@@ -374,15 +382,14 @@
         width: 100%;
         flex-direction: column;
         align-items: center;
-        margin-top: 60px;
 
         .left-dash{
             width: 98%;
-            margin-top: 20px;
 
             .selectItem{
                 width: 420px;
                 justify-content: space-between;
+                margin-top: 20px;
             }
 
             .dashImages{
@@ -436,15 +443,32 @@
     }
 }
 
+@media (max-width: 1300px){
+    .dashboardContainer{
+        margin-top: 60px;
+    }
+}
+
 @media (max-width: 420px){
     .dashboardContainer{
+        margin-top: 60px;
+        
         .left-dash{
             .selectItem{
                 width: 100%;
                 flex-direction: column;
                 align-items: center;
-                height: 80px;
+                height: 90px;
                 justify-content: space-between;
+                margin-bottom: 10px;
+
+                .first-select{
+                    width: 100%;
+                }
+
+                .second-select{
+                    width: 100%;
+                }
             }
         }
     }
