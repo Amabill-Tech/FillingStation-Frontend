@@ -139,7 +139,7 @@ const HomeScreen = ({history}) => {
             </Drawer>
             <div className='main-content'>
                 <div className='mobile-bar'>
-                    <AppBar sx={{background:'#06805B'}} position="static">
+                    <AppBar sx={{background:'#06805B', zIndex:'1'}} position="absolute">
                         <Toolbar>
                             <IconButton
                                 size="large"
@@ -258,4 +258,8 @@ const HomeScreen = ({history}) => {
 }
 
 export default withRouter(HomeScreen);
+//filling station
 //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
+
+// laravel
+//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

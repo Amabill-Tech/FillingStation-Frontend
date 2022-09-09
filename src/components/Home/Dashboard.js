@@ -4,7 +4,6 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import me1 from '../../assets/me1.png';
 import me2 from '../../assets/me2.png';
-import me3 from '../../assets/me3.png';
 import me4 from '../../assets/me4.png';
 import me5 from '../../assets/me5.png';
 import me6 from '../../assets/me6.png';
@@ -19,7 +18,6 @@ import {
     Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { PropaneSharp } from '@mui/icons-material';
 
 ChartJS.register(
     CategoryScale,
