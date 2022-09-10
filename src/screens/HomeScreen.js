@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../styles/home.scss';
 import homeLogo from '../assets/homeLogo.png';
 import active from '../assets/active.png';
@@ -51,9 +51,9 @@ import 'react-modern-drawer/dist/index.css';
 
 const HomeScreen = ({history}) => {
 
-    const [activeRoute, setActiveRoute] = useState('/home');
+    const [activeRoute, setActiveRoute] = useState('');
     const [isOpen, setIsOpen] = useState(false);
-    const [name, setName] = useState('Dashboard');
+    const [name, setName] = useState('');
 
     const toggleDrawer = () => {
         setIsOpen((prevState) => !prevState)
@@ -61,11 +61,17 @@ const HomeScreen = ({history}) => {
 
     history.listen((location) => {
         setActiveRoute(location.pathname);
+        setName(routes[history.location.pathname]);
     })
 
     const setNames = (name) => {
         setName(name)
     }
+
+    useEffect(()=>{
+        setActiveRoute(history.location.pathname);
+        setName(routes[history.location.pathname]);
+    },[])
 
     const SideItems = (props) => {
 
@@ -93,6 +99,21 @@ const HomeScreen = ({history}) => {
                 </div>
             </Link>
         )
+    }
+
+    const routes = {
+        '/home': 'Dashboard',
+        '/home/daily-sales': 'Daily Sales',
+        '/home/payments': 'Payments',
+        '/home/outlets': 'My Outlets',
+        '/home/record-sales': 'Record Sales',
+        '/home/expenses': 'Expenses',
+        '/home/product-orders': 'Product Orders',
+        '/home/regulatory': 'Regulatory Pay',
+        '/home/inc-orders': 'Incoming Orders',
+        '/home/tank': 'Tank Update',
+        '/home/hr': 'Human Resources',
+        '/home/settings': 'Settings'
     }
 
     return(
