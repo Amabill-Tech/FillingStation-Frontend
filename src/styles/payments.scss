@@ -1,0 +1,234 @@
+.paymentsCaontainer{
+    width: 96%;
+    height: 88%;
+    background: #F0F9F7;
+    border-radius: 4px;
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .inner-pay{
+        width: 97%;
+        height: 95%;
+
+        .action{
+            display: none;
+        }
+
+        .search{
+            width: 100%;
+            height: 35px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+
+            .input-cont{
+                width: 30%;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+
+                .second-select{
+                    width: 49%;
+                }
+
+                .second-select2{
+                    width: 49%;
+                }
+            }
+
+            .input-cont2{
+                width: 30%;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+
+                .second-select{
+                    width: 49%;
+                }
+
+                .second-select2{
+                    width: 49%;
+                }
+            }
+
+            .butt{
+                width: 150px;
+            }
+        }
+
+        .search2{
+            width: 100%;
+            height: 35px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+
+            .input-cont{
+                width: 30%;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+
+                .second-select{
+                    width: 49%;
+                }
+
+                .second-select2{
+                    width: 49%;
+                }
+            }
+
+            .input-cont2{
+                width: 30%;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+
+                .second-select{
+                    width: 49%;
+                }
+
+                .second-select2{
+                    width: 49%;
+                }
+            }
+
+            .butt{
+                width: 150px;
+            }
+        }
+    }
+}
+
+@media (max-width: 1000px){
+    .paymentsCaontainer{
+        margin-top: 80px;
+
+        .inner-pay{
+            .search{
+                .input-cont{
+                    width: 60%;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 530px){
+    .paymentsCaontainer{
+        .inner-pay{
+            .action{
+                display: flex;
+                width: 100%;
+                height: 35px;
+                margin-bottom: 20px;
+                flex-direction: row;
+                justify-content: flex-end;
+            }
+
+            .search{
+                width: 100%;
+                height: auto;
+                flex-direction: column;
+                align-items: flex-end;
+                justify-content: center;
+
+                .input-cont{
+                    width: 100%;
+                    flex-direction: column;
+
+                    .second-select{
+                        width: 100%;
+                        margin-bottom: 20px;
+                    }
+
+                    .second-select2{
+                        width: 100%;
+                        margin-bottom: 20px;
+                        display: none;
+                    }
+                }
+
+                .input-cont2{
+                    width: 100%;
+                    flex-direction: column;
+
+                    .second-select{
+                        width: 100%;
+                        margin-bottom: 20px;
+                    }
+
+                    .second-select2{
+                        width: 100%;
+                        margin-bottom: 20px;
+                        display: none;
+                    }
+                }
+
+                .butt{
+                    width: 100%;
+                    display: none;
+                }
+
+                .butt2{
+                    width: 100%;
+                }
+            }
+
+            .search2{
+                width: 100%;
+                height: auto;
+                flex-direction: column;
+                align-items: flex-end;
+                justify-content: center;
+                margin-top: 0px;
+
+                .input-cont{
+                    width: 100%;
+                    flex-direction: column;
+
+                    .second-select{
+                        width: 100%;
+                        margin-bottom: 20px;
+                    }
+
+                    .second-select2{
+                        width: 100%;
+                        margin-bottom: 20px;
+                        display: none;
+                    }
+                }
+
+                .input-cont2{
+                    width: 100%;
+                    flex-direction: column;
+
+                    .second-select{
+                        width: 100%;
+                        margin-bottom: 20px;
+                    }
+
+                    .second-select2{
+                        width: 100%;
+                        margin-bottom: 20px;
+                        display: none;
+                    }
+                }
+
+                .butt{
+                    width: 100%;
+                    display: none;
+                }
+
+                .butt2{
+                    width: 100%;
+                }
+            }
+        }
+    }
+}
