@@ -1,6 +1,6 @@
 .paymentsCaontainer{
     width: 96%;
-    height: 88%;
+    height: auto;
     background: #F0F9F7;
     border-radius: 4px;
     margin-top: 10px;
@@ -10,7 +10,9 @@
 
     .inner-pay{
         width: 97%;
-        height: 95%;
+        height: auto;
+        margin-top: 20px;
+        margin-bottom: 20px;
 
         .action{
             display: none;
@@ -55,7 +57,8 @@
             }
 
             .butt{
-                width: 150px;
+                width: 130px;
+                font-size: 10px;
             }
         }
 
@@ -81,6 +84,10 @@
                 .second-select2{
                     width: 49%;
                 }
+
+                .second-select3{
+                    width: 30%;
+                }
             }
 
             .input-cont2{
@@ -94,12 +101,109 @@
                 }
 
                 .second-select2{
-                    width: 49%;
+                    width: 65%;
+                }
+
+                .second-select3{
+                    width: 30%;
                 }
             }
 
             .butt{
-                width: 150px;
+                width: 130px;
+            }
+        }
+
+        .table-container{
+            width: 100%;
+            height: auto;
+            margin-top: 20px;
+
+            .table-head{
+                width: 100%;
+                //min-width: 1245px;
+                height: 35px;
+                background-color: #525252;
+                display: flex;
+                flex-direction: row;
+                border-radius: 4px;
+    
+                .column{
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: center;
+                    color: #fff;
+                    font-family: 'Nunito-Regular';
+                    font-size: 14px;
+                }
+            }
+
+            .table-head2{
+                width: 100%;
+                height: 50px;
+                background-color: #EDEDED;
+                display: flex;
+                flex-direction: row;
+                border-radius: 4px;
+                margin-top: 5px;
+    
+                .column{
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: center;
+                    color: #000;
+                    font-family: 'Nunito-Regular';
+                    font-size: 14px;
+                }
+
+                
+            }
+        }
+
+        .footer{
+            width: 100%;
+            margin-top: 20px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+
+            .nav{
+                height: 30px;
+                display: flex;
+                flex-direction: row;
+
+                .but{
+                    width: 60px;
+                    border: 1px solid #000;
+                    border-right-color: transparent;
+                    border-radius: 0px;
+                    font-size: 12px;
+                }
+
+                .but2{
+                    width: 60px;
+                    border: 1px solid #000;
+                    border-left-color: transparent;
+                    border-radius: 0px;
+                    font-size: 12px;
+                }
+
+                .num{
+                    width: 20px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    border: 1px solid #000;
+                    background-color: #06805B;
+                    color: #fff;
+                }
             }
         }
     }
@@ -113,6 +217,18 @@
             .search{
                 .input-cont{
                     width: 60%;
+                }
+            }
+
+            .table-container{
+                overflow-x: scroll;
+
+                .table-head{
+                    width: 1245px;
+                }
+
+                .table-head2{
+                    width: 1245px;
                 }
             }
         }
@@ -202,6 +318,13 @@
                         margin-bottom: 20px;
                         display: none;
                     }
+
+                    .second-select3{
+                        width: 100%;
+                        margin-bottom: 20px;
+                        display: none;
+                    }
+                
                 }
 
                 .input-cont2{
@@ -214,6 +337,12 @@
                     }
 
                     .second-select2{
+                        width: 100%;
+                        margin-bottom: 20px;
+                        display: none;
+                    }
+
+                    .second-select3{
                         width: 100%;
                         margin-bottom: 20px;
                         display: none;
