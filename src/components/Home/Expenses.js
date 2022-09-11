@@ -39,13 +39,13 @@ const Expenses = () => {
                             />
                         </div>
                     </div>
-                    <div style={{width:'160px'}} className='butt'>
+                    <div style={{width:'140px'}} className='butt'>
                         <Button sx={{
                             width:'100%', 
                             height:'30px',  
                             background: '#427BBE',
                             borderRadius: '3px',
-                            fontSize:'12px',
+                            fontSize:'10px',
                             '&:hover': {
                                 backgroundColor: '#427BBE'
                             }
@@ -74,7 +74,7 @@ const Expenses = () => {
                                 height:'30px',  
                                 background: '#58A0DF',
                                 borderRadius: '3px',
-                                fontSize:'12px',
+                                fontSize:'10px',
                                 '&:hover': {
                                     backgroundColor: '#58A0DF'
                                 }
@@ -87,7 +87,7 @@ const Expenses = () => {
                                 height:'30px',  
                                 background: '#F36A4C',
                                 borderRadius: '3px',
-                                fontSize:'12px',
+                                fontSize:'10px',
                                 '&:hover': {
                                     backgroundColor: '#F36A4C'
                                 }
@@ -100,26 +100,24 @@ const Expenses = () => {
                 <div className='table-container'>
                     <div className='table-head'>
                         <div className='column'>S/N</div>
-                        <div className='column'>Payment Date</div>
-                        <div className='column'>Bank Name</div>
-                        <div className='column'>Teller no</div>
-                        <div className='column'>Teller (Amount)</div>
-                        <div className='column'>POS (Amount)</div>
-                        <div className='column'>Total</div>
-                        <div className='column'>Difference</div>
+                        <div className='column'>Date Created</div>
+                        <div className='column'>Expense Date</div>
+                        <div className='column'>Expense Name</div>
+                        <div className='column'>Description</div>
+                        <div className='column'>Expenses Amount</div>
                         <div className='column'>Action</div>
                     </div>
 
                     <div className='row-container'>
-                        <div className='table-head2'>
+                        <div style={{height:'auto', display:'flex', justifyContent:'center', alignItems:'center'}} className='table-head2'>
                             <div className='column'>01</div>
                             <div className='column'>09 June, 2022</div>
-                            <div className='column'>Wema bank</div>
-                            <div className='column'>1524353625262</div>
+                            <div className='column'>09 June, 2022</div>
+                            <div className='column'>Electricity Supply</div>
+                            <div style={{textAlign:'left', lineHeight:'20px'}} className='column'>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Posuere  
+                            </div>
                             <div className='column'>150,000</div>
-                            <div className='column'>352,000</div>
-                            <div className='column'>170,000</div>
-                            <div className='column'>230,000</div>
                             <div className='column'>
                                 <div className='butt'>
                                     <Button sx={{
@@ -127,25 +125,27 @@ const Expenses = () => {
                                         height:'30px',  
                                         background: '#427BBE',
                                         borderRadius: '3px',
-                                        fontSize:'12px',
+                                        fontSize:'10px',
+                                        marginTop:'10px',
+                                        marginBottom:'10px',
                                         '&:hover': {
                                             backgroundColor: '#427BBE'
                                         }
-                                        }}  variant="contained"> Confirm
+                                        }}  variant="contained"> View Invoice
                                     </Button>
                                 </div>
                             </div>
-                        </div>
+                        </div> 
 
-                        <div className='table-head2'>
+                        <div style={{height:'auto', display:'flex', justifyContent:'center', alignItems:'center'}} className='table-head2'>
                             <div className='column'>01</div>
                             <div className='column'>09 June, 2022</div>
-                            <div className='column'>Wema bank</div>
-                            <div className='column'>1524353625262</div>
+                            <div className='column'>09 June, 2022</div>
+                            <div className='column'>Electricity Supply</div>
+                            <div style={{textAlign:'left', lineHeight:'20px'}} className='column'>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Posuere  
+                            </div>
                             <div className='column'>150,000</div>
-                            <div className='column'>352,000</div>
-                            <div className='column'>170,000</div>
-                            <div className='column'>230,000</div>
                             <div className='column'>
                                 <div className='butt'>
                                     <Button sx={{
@@ -153,25 +153,27 @@ const Expenses = () => {
                                         height:'30px',  
                                         background: '#427BBE',
                                         borderRadius: '3px',
-                                        fontSize:'12px',
+                                        fontSize:'10px',
+                                        marginTop:'10px',
+                                        marginBottom:'10px',
                                         '&:hover': {
                                             backgroundColor: '#427BBE'
                                         }
-                                        }}  variant="contained"> Confirm
+                                        }}  variant="contained"> View Invoice
                                     </Button>
                                 </div>
                             </div>
-                        </div>
+                        </div> 
 
-                        <div className='table-head2'>
+                        <div style={{height:'auto', display:'flex', justifyContent:'center', alignItems:'center'}} className='table-head2'>
                             <div className='column'>01</div>
                             <div className='column'>09 June, 2022</div>
-                            <div className='column'>Wema bank</div>
-                            <div className='column'>1524353625262</div>
+                            <div className='column'>09 June, 2022</div>
+                            <div className='column'>Electricity Supply</div>
+                            <div style={{textAlign:'left', lineHeight:'20px'}} className='column'>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Posuere  
+                            </div>
                             <div className='column'>150,000</div>
-                            <div className='column'>352,000</div>
-                            <div className='column'>170,000</div>
-                            <div className='column'>230,000</div>
                             <div className='column'>
                                 <div className='butt'>
                                     <Button sx={{
@@ -179,25 +181,27 @@ const Expenses = () => {
                                         height:'30px',  
                                         background: '#427BBE',
                                         borderRadius: '3px',
-                                        fontSize:'12px',
+                                        fontSize:'10px',
+                                        marginTop:'10px',
+                                        marginBottom:'10px',
                                         '&:hover': {
                                             backgroundColor: '#427BBE'
                                         }
-                                        }}  variant="contained"> Confirm
+                                        }}  variant="contained"> View Invoice
                                     </Button>
                                 </div>
                             </div>
-                        </div>
+                        </div> 
 
-                        <div className='table-head2'>
+                        <div style={{height:'auto', display:'flex', justifyContent:'center', alignItems:'center'}} className='table-head2'>
                             <div className='column'>01</div>
                             <div className='column'>09 June, 2022</div>
-                            <div className='column'>Wema bank</div>
-                            <div className='column'>1524353625262</div>
+                            <div className='column'>09 June, 2022</div>
+                            <div className='column'>Electricity Supply</div>
+                            <div style={{textAlign:'left', lineHeight:'20px'}} className='column'>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Posuere  
+                            </div>
                             <div className='column'>150,000</div>
-                            <div className='column'>352,000</div>
-                            <div className='column'>170,000</div>
-                            <div className='column'>230,000</div>
                             <div className='column'>
                                 <div className='butt'>
                                     <Button sx={{
@@ -205,25 +209,27 @@ const Expenses = () => {
                                         height:'30px',  
                                         background: '#427BBE',
                                         borderRadius: '3px',
-                                        fontSize:'12px',
+                                        fontSize:'10px',
+                                        marginTop:'10px',
+                                        marginBottom:'10px',
                                         '&:hover': {
                                             backgroundColor: '#427BBE'
                                         }
-                                        }}  variant="contained"> Confirm
+                                        }}  variant="contained"> View Invoice
                                     </Button>
                                 </div>
                             </div>
-                        </div>
+                        </div> 
 
-                        <div className='table-head2'>
+                        <div style={{height:'auto', display:'flex', justifyContent:'center', alignItems:'center'}} className='table-head2'>
                             <div className='column'>01</div>
                             <div className='column'>09 June, 2022</div>
-                            <div className='column'>Wema bank</div>
-                            <div className='column'>1524353625262</div>
+                            <div className='column'>09 June, 2022</div>
+                            <div className='column'>Electricity Supply</div>
+                            <div style={{textAlign:'left', lineHeight:'20px'}} className='column'>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Posuere  
+                            </div>
                             <div className='column'>150,000</div>
-                            <div className='column'>352,000</div>
-                            <div className='column'>170,000</div>
-                            <div className='column'>230,000</div>
                             <div className='column'>
                                 <div className='butt'>
                                     <Button sx={{
@@ -231,25 +237,27 @@ const Expenses = () => {
                                         height:'30px',  
                                         background: '#427BBE',
                                         borderRadius: '3px',
-                                        fontSize:'12px',
+                                        fontSize:'10px',
+                                        marginTop:'10px',
+                                        marginBottom:'10px',
                                         '&:hover': {
                                             backgroundColor: '#427BBE'
                                         }
-                                        }}  variant="contained"> Confirm
+                                        }}  variant="contained"> View Invoice
                                     </Button>
                                 </div>
                             </div>
-                        </div>
+                        </div> 
 
-                        <div className='table-head2'>
+                        <div style={{height:'auto', display:'flex', justifyContent:'center', alignItems:'center'}} className='table-head2'>
                             <div className='column'>01</div>
                             <div className='column'>09 June, 2022</div>
-                            <div className='column'>Wema bank</div>
-                            <div className='column'>1524353625262</div>
+                            <div className='column'>09 June, 2022</div>
+                            <div className='column'>Electricity Supply</div>
+                            <div style={{textAlign:'left', lineHeight:'20px'}} className='column'>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Posuere  
+                            </div>
                             <div className='column'>150,000</div>
-                            <div className='column'>352,000</div>
-                            <div className='column'>170,000</div>
-                            <div className='column'>230,000</div>
                             <div className='column'>
                                 <div className='butt'>
                                     <Button sx={{
@@ -257,68 +265,17 @@ const Expenses = () => {
                                         height:'30px',  
                                         background: '#427BBE',
                                         borderRadius: '3px',
-                                        fontSize:'12px',
+                                        fontSize:'10px',
+                                        marginTop:'10px',
+                                        marginBottom:'10px',
                                         '&:hover': {
                                             backgroundColor: '#427BBE'
                                         }
-                                        }}  variant="contained"> Confirm
+                                        }}  variant="contained"> View Invoice
                                     </Button>
                                 </div>
                             </div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>09 June, 2022</div>
-                            <div className='column'>Wema bank</div>
-                            <div className='column'>1524353625262</div>
-                            <div className='column'>150,000</div>
-                            <div className='column'>352,000</div>
-                            <div className='column'>170,000</div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div className='butt'>
-                                    <Button sx={{
-                                        width:'100%', 
-                                        height:'30px',  
-                                        background: '#427BBE',
-                                        borderRadius: '3px',
-                                        fontSize:'12px',
-                                        '&:hover': {
-                                            backgroundColor: '#427BBE'
-                                        }
-                                        }}  variant="contained"> Confirm
-                                    </Button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>09 June, 2022</div>
-                            <div className='column'>Wema bank</div>
-                            <div className='column'>1524353625262</div>
-                            <div className='column'>150,000</div>
-                            <div className='column'>352,000</div>
-                            <div className='column'>170,000</div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div className='butt'>
-                                    <Button sx={{
-                                        width:'100%', 
-                                        height:'30px',  
-                                        background: '#427BBE',
-                                        borderRadius: '3px',
-                                        fontSize:'12px',
-                                        '&:hover': {
-                                            backgroundColor: '#427BBE'
-                                        }
-                                        }}  variant="contained"> Confirm
-                                    </Button>
-                                </div>
-                            </div>
-                        </div>
-                        
+                        </div> 
                     </div>
                 </div>
 
