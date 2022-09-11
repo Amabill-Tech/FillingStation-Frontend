@@ -42,7 +42,16 @@ const Outlets = () => {
                             </Select>
                         </div>
                         <div className='second-select'>
-                            <OutlinedInput placeholder="Search" sx={{height:'35px', fontSize:'12px'}} />
+                            <OutlinedInput 
+                                placeholder="Search" 
+                                sx={{
+                                    width:'100%',
+                                    height:'35px', 
+                                    fontSize:'12px',
+                                    background:'#F2F1F1',
+                                    color:'#000'
+                                }} 
+                            />
                         </div>
                     </div>
                     <div style={{width:'195px'}} className='butt'>
