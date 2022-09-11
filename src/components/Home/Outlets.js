@@ -6,6 +6,7 @@ import Button from '@mui/material/Button';
 import tan from '../../assets/tan.png';
 import eye from '../../assets/eye.png';
 import filling from '../../assets/filling.png';
+import OutlinedInput from '@mui/material/OutlinedInput';
 
 const Outlets = () => {
     return(
@@ -41,16 +42,7 @@ const Outlets = () => {
                             </Select>
                         </div>
                         <div className='second-select'>
-                            <Select
-                                labelId="demo-select-small"
-                                id="demo-select-small"
-                                value={10}
-                                sx={selectStyle2}
-                            >
-                                <MenuItem value={10}>07 August, 2022</MenuItem>
-                                <MenuItem value={20}>Twenty</MenuItem>
-                                <MenuItem value={30}>Thirty</MenuItem>
-                            </Select>
+                            <OutlinedInput placeholder="Search" sx={{height:'35px', fontSize:'12px'}} />
                         </div>
                     </div>
                     <div style={{width:'195px'}} className='butt'>
