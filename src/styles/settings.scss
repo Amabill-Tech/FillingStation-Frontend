@@ -78,7 +78,7 @@
                         text-align: left;
 
                         .title{
-                            font-family: 'Nunito';
+                            font-family: 'Nunito-Regular';
                             font-style: normal;
                             font-weight: 700;
                             font-size: 18px;
@@ -131,7 +131,115 @@
                 .appearance{
                     width: 100%;
                     height: 100%;
-                    background: green;
+                    display: flex;
+                    flex-direction: row;
+
+                    .app{
+                        width: 30%;
+                        height: 100%;
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: flex-start;
+
+                        .head{
+                            font-family: 'Nunito-Regular';
+                            font-style: normal;
+                            font-weight: 700;
+                            font-size: 18px;
+                            line-height: 30px;
+                            color: #000000;
+                            margin-left: 20px;
+                        }
+                    }
+
+                    .details{
+                        width: 70%;
+                        height: 100%;
+
+                        .detail-text{
+                            width: 70%;
+                            text-align: left;
+                            margin-top: 40px;
+                            font-family: 'Nunito-Regular';
+                            font-size: 14px;
+                        }
+
+                        .browse{
+                            width: 80%;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: flex-start;
+                            margin-top: 20px;
+                        }
+
+                        .theme{
+                            width: 70%;
+                            margin-top: 20px;
+                            display: flex;
+                            flex-direction: row;
+                            justify-content: space-between;
+
+                            .col{
+                                width: 46%;
+                                display: flex;
+                                flex-direction: column;
+                                align-items: flex-start;
+
+                                .radio{
+                                    display: flex;
+                                    flex-direction: row;
+                                    justify-content: space-between;
+                                    align-items: center;
+                                }
+
+                                .color-group{
+                                    width: 80px;
+                                    display: flex;
+                                    flex-direction: row;
+                                    align-items: center;
+                                    margin-right: 20px;
+
+                                    .colors{
+                                        width: 30px;
+                                        height: 30px;
+                                        border-radius: 30px;
+                                        background-color: green;
+                                        margin-right: 10px;
+                                    }
+                                }
+                            }
+
+                            .col2{
+                                width: 46%;
+                                display: flex;
+                                flex-direction: column;
+                                align-items: flex-start;
+
+                                .radio{
+                                    display: flex;
+                                    flex-direction: row;
+                                    justify-content: space-between;
+                                    align-items: center;
+                                }
+
+                                .color-group{
+                                    width: 80px;
+                                    display: flex;
+                                    flex-direction: row;
+                                    align-items: center;
+                                    margin-right: 20px;
+
+                                    .colors{
+                                        width: 30px;
+                                        height: 30px;
+                                        border-radius: 30px;
+                                        background-color: green;
+                                        margin-right: 10px;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -185,6 +293,33 @@
 
                         .rig{
                             width: 100%;
+                        }
+                    }
+
+                    .appearance{
+                        flex-direction: column;
+
+                        .app{
+                            .head{
+                                margin-left: 0px;
+                            }
+                        }
+
+                        .details{
+                            width: 100%;
+
+                            .theme{
+                                width: 100%;
+                                flex-direction: column;
+
+                                .col{
+                                    margin-top: 30px;
+                                }
+
+                                .col2{
+                                    margin-top: 30px;
+                                }
+                            }
                         }
                     }
                 }

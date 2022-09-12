@@ -1,9 +1,13 @@
 import React, {useState} from 'react';
 import '../../styles/settings.scss';
 import rightArrow from '../../assets/rightArrow.png';
+import dark from '../../assets/dark.png';
+import light from '../../assets/light.png';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import Radio from '@mui/material/Radio';
+import Button from '@mui/material/Button';
 
 const Settings = ({history}) => {
 
@@ -114,7 +118,69 @@ const Settings = ({history}) => {
     const Appearances = () => {
         return(
             <div className='appearance'>
+                <div className='app'>
+                    <div className='head'>Appearances</div>
+                </div>
+                <div className='details'>
+                    <div className='detail-text'>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Posuere
+                    </div>
+                    <div className='theme'>
+                        <div className='col'> 
+                            <div style={{fontFamily:'Nunito-Regular', fontSize:'14px'}}>Color</div>
+                            <div style={{marginTop:'10px'}} className='radio'>
+                                <div style={{marginRight:'10px'}} className='color-group'>
+                                    <div className='colors'>
+                                        <img src={dark} alt="icon" style={{width:'30px', height:'30px'}} />
+                                    </div>
+                                    <div style={{fontFamily:'Nunito-Regular', fontSize:'12px'}}>Light</div>
+                                </div>
+                                <Radio />
+                            </div>
+                            <div style={{marginTop:'10px'}} className='radio'>
+                                <div style={{marginRight:'10px'}} className='color-group'>
+                                    <div style={{background:'#fff'}} className='colors'>
+                                        <img src={light} alt="icon" style={{width:'30px', height:'30px'}} />
+                                    </div>
+                                    <div style={{fontFamily:'Nunito-Regular', fontSize:'12px'}}>Dark</div>
+                                </div>
+                                <Radio />
+                            </div>
+                        </div>
 
+                        <div className='col2'>
+                            <div style={{fontFamily:'Nunito-Regular', fontSize:'14px'}}>Theme</div>
+                            <div style={{marginTop:'10px'}} className='radio'>
+                                <div className='color-group'>
+                                    <div className='colors'></div>
+                                    <div style={{fontFamily:'Nunito-Regular', fontSize:'12px'}}>Green</div>
+                                </div>
+                                <Radio />
+                            </div>
+                            <div className='radio'>
+                                <div className='color-group'>
+                                    <div style={{background:'yellow'}} className='colors'></div>
+                                    <div style={{fontFamily:'Nunito-Regular', fontSize:'12px'}}>Yellow</div>
+                                </div>
+                                <Radio />
+                            </div>
+                            <div className='radio'>
+                                <div className='color-group'>
+                                    <div style={{background:'orange'}} className='colors'></div>
+                                    <div style={{fontFamily:'Nunito-Regular', fontSize:'12px'}}>Orange</div>
+                                </div>
+                                <Radio />
+                            </div>
+                            <div style={{marginBottom:'20px'}} className='radio'>
+                                <div className='color-group'>
+                                    <div style={{background:'blue'}} className='colors'></div>
+                                    <div>Blue</div>
+                                </div>
+                                <Radio />
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         )
     }
@@ -122,7 +188,81 @@ const Settings = ({history}) => {
     const Logo = () => {
         return(
             <div className='appearance'>
+                <div className='app'>
+                    <div className='head'>Logo (Branding)</div>
+                </div>
+                <div className='details'>
+                    <div style={{
+                        fontSize:'14px',
+                        fontFamily:'Nunito-Regular',
+                        display:'flex',
+                        flexDirection:'row',
+                        justifyContent:'flex-start',
+                        marginTop:'40px',
+                        fontWeight:'bold'
+                    }}>
+                        Logo
+                    </div>
+                    <div style={{marginTop:'10px'}} className='detail-text'>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Posuere
+                    </div>
 
+                    <div className='browse'>
+                        <Button 
+                            variant="contained" 
+                            sx={{
+                                width:'110px',
+                                height:'30px',
+                                background:'#06805B',
+                                fontSize:'11px',
+                                '&:hover': {
+                                    backgroundColor: '#06805B'
+                                }
+                            }}
+                        >
+                            Browse
+                        </Button>
+
+                        <div style={{
+                            fontSize:'14px',
+                            fontFamily:'Nunito-Regular',
+                            display:'flex',
+                            flexDirection:'row',
+                            justifyContent:'flex-start',
+                            marginTop:'20px',
+                            fontWeight:'bold'
+                        }}>
+                            Branding Alias
+                        </div>
+
+                        <OutlinedInput 
+                            sx={{
+                                width:'100%',
+                                height: '35px', 
+                                marginTop:'10px', 
+                                background:'#EEF2F1', 
+                                border:'1px solid #777777'
+                            }} placeholder="" 
+                        />
+
+                        <Button 
+                            variant="contained" 
+                            sx={{
+                                width:'100%',
+                                height:'30px',
+                                background:'blue',
+                                fontSize:'11px',
+                                marginTop:'20px',
+                                marginBottom:'20px',
+                                '&:hover': {
+                                    backgroundColor: 'blue'
+                                }
+                            }}
+                        >
+                            Save
+                        </Button>
+                    </div>
+                </div>
             </div>
         )
     }
