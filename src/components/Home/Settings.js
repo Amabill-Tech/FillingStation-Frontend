@@ -270,7 +270,36 @@ const Settings = ({history}) => {
     const Password = () => {
         return(
             <div className='appearance'>
+                <div className='app'>
+                    <div className='head'>Change Password</div>
+                </div>
+                <div className='details'>
+                    <div className='text-group'>
+                        <div className='form-text'>New Password</div>
+                        <OutlinedInput 
+                            sx={{
+                                width:'100%',
+                                height: '35px', 
+                                marginTop:'5px', 
+                                background:'#EEF2F1', 
+                                border:'1px solid #777777'
+                            }} placeholder="" 
+                        />
+                    </div>
 
+                    <div style={{marginTop:'20px'}} className='text-group'>
+                        <div className='form-text'>Re-type New Password</div>
+                        <OutlinedInput 
+                            sx={{
+                                width:'100%',
+                                height: '35px', 
+                                marginTop:'5px', 
+                                background:'#EEF2F1', 
+                                border:'1px solid #777777'
+                            }} placeholder="" 
+                        />
+                    </div>
+                </div>
             </div>
         )
     }
