@@ -6,20 +6,26 @@ import hr3 from '../../assets/hr3.png';
 import hr4 from '../../assets/hr4.png';
 import hr5 from '../../assets/hr5.png';
 import me6 from '../../assets/me6.png';
+import { Switch, Route, Link, withRouter } from 'react-router-dom';
+import Employee from '../HRComponents/Employee';
+import Salary from '../HRComponents/Salary';
+import Query from '../HRComponents/Query';
+import Recruitment from '../HRComponents/Recruitment';
+import Attendance from '../HRComponents/Attendance';
 
 const HumanResource = (props) => {
 
     const handleNavigation = (data) => {
         if(data.name === 'Employee'){
-            props.history.push('/home/employee');
+            props.history.push('/home/hr/employee');
         }else if(data.name === 'Salary structure'){
-            props.history.push('/home/salary');
+            props.history.push('/home/hr/salary');
         }else if(data.name === 'Query'){
-            props.history.push('/home/query');
+            props.history.push('/home/hr/query');
         }else if(data.name === 'Recruitment'){
-            props.history.push('/home/recruitment');
+            props.history.push('/home/hr/recruitment');
         }else if(data.name === 'Attendance'){
-            props.history.push('/home/attendance');
+            props.history.push('/home/hr/attendance');
         }
     }
 
@@ -45,17 +51,55 @@ const HumanResource = (props) => {
 
     return(
         <div className='hrContainer'>
-            <div className='imgContainer'>
-                <DashboardImage image={hr1} name={'Employee'} value={'41'} />
-                <DashboardImage image={hr11} name={'Salary structure'} value={'41'} />
-                <DashboardImage image={hr3} name={'Query'} value={'41'} />
-                <DashboardImage image={hr4} name={'Recruitment'} value={'41'} />
-            </div>
-            <div className='imgContainer2'>
-                <DashboardImage image={hr5} name={'Attendance'} value={'41'} />
-            </div>
+            { props.activeRoute.split('/').length === 3 &&
+                <div style={contain2}>
+                    <div className='imgContainer'>
+                        <DashboardImage image={hr1} name={'Employee'} value={'41'} />
+                        <DashboardImage image={hr11} name={'Salary structure'} value={'41'} />
+                        <DashboardImage image={hr3} name={'Query'} value={'41'} />
+                        <DashboardImage image={hr4} name={'Recruitment'} value={'41'} />
+                    </div>
+                    <div className='imgContainer2'>
+                        <DashboardImage image={hr5} name={'Attendance'} value={'41'} />
+                    </div>
+                </div>
+            }
+
+            { props.activeRoute.split('/').length === 4 &&
+                <div style={contain}>
+                    <Switch>
+                        <Route path='/home/hr/employee'>
+                            <Employee/>
+                        </Route>
+                        <Route path='/home/hr/salary'>
+                            <Salary/>
+                        </Route>
+                        <Route path='/home/hr/query'>
+                            <Query/>
+                        </Route>
+                        <Route path='/home/hr/recruitment'>
+                            <Recruitment/>
+                        </Route>
+                        <Route path='/home/hr/attendance'>
+                            <Attendance  />
+                        </Route>
+                    </Switch>
+                </div>
+            }
         </div>
     )
+}
+
+const contain = {
+    width:'100%',
+    display:'flex',
+    flexDirection:'row',
+    justifyContent:'center',
+}
+
+const contain2 = {
+    width:'96%',
+    marginLeft:'2%'
 }
 
 export default HumanResource;

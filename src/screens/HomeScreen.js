@@ -42,11 +42,6 @@ import RecordSales from '../components/Home/RecordSales';
 import Regulatory from '../components/Home/Regulatory';
 import Settings from '../components/Home/Settings';
 import TankUpdate from '../components/Home/TankUpdate';
-import Employee from '../components/HRComponents/Employee';
-import Salary from '../components/HRComponents/Salary';
-import Query from '../components/HRComponents/Query';
-import Recruitment from '../components/HRComponents/Recruitment';
-import Attendance from '../components/HRComponents/Attendance';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
@@ -85,7 +80,7 @@ const HomeScreen = ({history}) => {
             <Link className='link' to={props.link}>
                 <div onClick={()=>{setNames(props.name)}} style={{marginTop: props.marginT}} className='item-container'>
                     {
-                        activeRoute === props.link?
+                        activeRoute.split('/')[2] === props.link.split('/')[2]?
                         <div className='side-item'>
                             <div className='side-focus'>
                                 <div className='side-focus-image'>
@@ -119,11 +114,11 @@ const HomeScreen = ({history}) => {
         '/home/inc-orders': 'Incoming Orders',
         '/home/tank': 'Tank Update',
         '/home/hr': 'Human Resources',
-        '/home/employee': 'Employees',
-        '/home/salary': 'Salary Structures',
-        '/home/query': 'Query',
-        '/home/recruitment': 'Recruitment',
-        '/home/attendance': 'Attendance',
+        '/home/hr/employee': 'Employees',
+        '/home/hr/salary': 'Salary Structures',
+        '/home/hr/query': 'Query',
+        '/home/hr/recruitment': 'Recruitment',
+        '/home/hr/attendance': 'Attendance',
     }
 
     return(
@@ -258,6 +253,7 @@ const HomeScreen = ({history}) => {
                     <Route path='/home/hr'>
                         <HumanResources 
                             history={history}
+                            activeRoute={activeRoute}
                         />
                     </Route>
                     <Route path='/home/inc-orders'>
@@ -283,21 +279,6 @@ const HomeScreen = ({history}) => {
                     </Route>
                     <Route path='/home/settings'>
                         <Settings history={history}/>
-                    </Route>
-                    <Route path='/home/employee'>
-                        <Employee/>
-                    </Route>
-                    <Route path='/home/salary'>
-                        <Salary/>
-                    </Route>
-                    <Route path='/home/query'>
-                        <Query/>
-                    </Route>
-                    <Route path='/home/recruitment'>
-                        <Recruitment/>
-                    </Route>
-                    <Route path='/home/attendance'>
-                        <Attendance  />
                     </Route>
                 </Switch>
             </div>

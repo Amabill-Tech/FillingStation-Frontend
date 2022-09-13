@@ -509,14 +509,13 @@ const Settings = (props) => {
                     }}
                 >
                     <MenuItem value={1}>Action</MenuItem>
-                    <MenuItem value={2}>Licence Code</MenuItem>
-                    <MenuItem value={3}>Outlet Name</MenuItem>
-                    <MenuItem value={4}>No of Tanks</MenuItem>
-                    <MenuItem value={5}>No of Pumps</MenuItem>
-                    <MenuItem value={6}>State</MenuItem>
-                    <MenuItem value={7}>Town</MenuItem>
-                    <MenuItem value={8}>LGA</MenuItem>
-                    <MenuItem value={9}>Street</MenuItem>
+                    <MenuItem onClick={()=>{setNav(0)}} value={2}>Outlet Information</MenuItem>
+                    <MenuItem onClick={()=>{setNav(1)}} value={3}>Appearances</MenuItem>
+                    <MenuItem onClick={()=>{setNav(2)}} value={4}>Logo (Branding)</MenuItem>
+                    <MenuItem onClick={()=>{setNav(3)}} value={5}>Change Password</MenuItem>
+                    <MenuItem onClick={()=>{setNav(4)}} value={6}>Change Email</MenuItem>
+                    <MenuItem onClick={()=>{setNav(5)}} value={7}>Delete Outlet</MenuItem>
+                    <MenuItem onClick={logout} value={8}>Logout</MenuItem>
                 </Select>
             </div>
             <div className='inner-container'>
