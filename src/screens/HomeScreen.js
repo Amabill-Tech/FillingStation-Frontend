@@ -42,6 +42,11 @@ import RecordSales from '../components/Home/RecordSales';
 import Regulatory from '../components/Home/Regulatory';
 import Settings from '../components/Home/Settings';
 import TankUpdate from '../components/Home/TankUpdate';
+import Employee from '../components/HRComponents/Employee';
+import Salary from '../components/HRComponents/Salary';
+import Query from '../components/HRComponents/Query';
+import Recruitment from '../components/HRComponents/Recruitment';
+import Attendance from '../components/HRComponents/Attendance';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
@@ -62,6 +67,7 @@ const HomeScreen = ({history}) => {
     history.listen((location) => {
         setActiveRoute(location.pathname);
         setName(routes[history.location.pathname]);
+        console.log(location.pathname)
     })
 
     const setNames = (name) => {
@@ -113,7 +119,11 @@ const HomeScreen = ({history}) => {
         '/home/inc-orders': 'Incoming Orders',
         '/home/tank': 'Tank Update',
         '/home/hr': 'Human Resources',
-        '/home/settings': 'Settings'
+        '/home/employee': 'Employees',
+        '/home/salary': 'Salary Structures',
+        '/home/query': 'Query',
+        '/home/recruitment': 'Recruitment',
+        '/home/attendance': 'Attendance',
     }
 
     return(
@@ -246,7 +256,9 @@ const HomeScreen = ({history}) => {
                         <Expenses/>
                     </Route>
                     <Route path='/home/hr'>
-                        <HumanResources/>
+                        <HumanResources 
+                            history={history}
+                        />
                     </Route>
                     <Route path='/home/inc-orders'>
                         <IncomingOrders/>
@@ -270,7 +282,22 @@ const HomeScreen = ({history}) => {
                         <TankUpdate/>
                     </Route>
                     <Route path='/home/settings'>
-                        <Settings/>
+                        <Settings history={history}/>
+                    </Route>
+                    <Route path='/home/employee'>
+                        <Employee/>
+                    </Route>
+                    <Route path='/home/salary'>
+                        <Salary/>
+                    </Route>
+                    <Route path='/home/query'>
+                        <Query/>
+                    </Route>
+                    <Route path='/home/recruitment'>
+                        <Recruitment/>
+                    </Route>
+                    <Route path='/home/attendance'>
+                        <Attendance  />
                     </Route>
                 </Switch>
             </div>

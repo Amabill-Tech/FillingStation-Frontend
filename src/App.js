@@ -21,6 +21,11 @@ function App() {
           <Route path='/home/regulatory' component={HomeScreen} />
           <Route path='/home/tank' component={HomeScreen} />
           <Route path='/home/settings' component={HomeScreen} />
+          <Route path='/home/employee' component={HomeScreen} />
+          <Route path='/home/salary' component={HomeScreen} />
+          <Route path='/home/query' component={HomeScreen} />
+          <Route path='/home/recruitment' component={HomeScreen} />
+          <Route path='/home/attendance' component={HomeScreen} />
           <Route path='/login' component={LoginScreen} />
           <Route render = {() => <h1>404 page not found</h1>} />
         </Switch>

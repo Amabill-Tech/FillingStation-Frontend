@@ -11,7 +11,7 @@ import Button from '@mui/material/Button';
 import Switch from '@mui/material/Switch';
 import { styled } from '@mui/material/styles';
 
-const Settings = ({history}) => {
+const Settings = (props) => {
 
     const [nav, setNav] = useState(0);
 
@@ -489,7 +489,7 @@ const Settings = ({history}) => {
     }
 
     const logout = () => {
-        
+        props.history.push('/login')
     }
 
     return(
