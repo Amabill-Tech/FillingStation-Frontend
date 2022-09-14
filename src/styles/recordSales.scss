@@ -10,10 +10,12 @@
 
     .inner{
         width: 96%;
-        height: 93%;
+        height: 96%;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+        margin-top: 20px;
+        margin-bottom: 20px;
 
         .leftContainer{
             width: 65%;
@@ -34,7 +36,7 @@
     
         .rightContainer{
             width: 30%;
-            height:'100%';
+            height: 100%;
             display: flex;
             flex-direction: column;
             align-items: flex-start;

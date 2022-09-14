@@ -1,6 +1,6 @@
 import React from 'react';
 import '../../styles/pump.scss';
-import hr1 from '../../assets/hr1.png';
+import pump1 from '../../assets/pump1.png';
 import plus from '../../assets/plus.png';
 import cross from '../../assets/cross.png';
 
@@ -37,8 +37,26 @@ const Pumps = () => {
 
             <div className='pumping'>
                 <div className='item'>
-
+                    <img style={{width:'55px', height:'65px'}} src={pump1}  icon="icon"/>
+                    <div className='pop'>Pump 1</div>
+                    <div className='label'>Totalizer Reading (Litres)</div>
+                    <input type={'text'} className="textInput" />
                 </div>
+
+                <div className='item'>
+                    <img style={{width:'55px', height:'65px'}} src={pump1}  icon="icon"/>
+                    <div className='pop'>Pump 1</div>
+                    <div className='label'>Totalizer Reading (Litres)</div>
+                    <input type={'text'} className="textInput" />
+                </div>
+
+                <div className='item'>
+                    <img style={{width:'55px', height:'65px'}} src={pump1}  icon="icon"/>
+                    <div className='pop'>Pump 1</div>
+                    <div className='label'>Totalizer Reading (Litres)</div>
+                    <input type={'text'} className="textInput" />
+                </div>
+
             </div>
         </div>
     )
