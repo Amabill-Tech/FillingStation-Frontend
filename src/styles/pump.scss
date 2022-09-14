@@ -10,6 +10,7 @@
     font-size: 16px;
     line-height: 25px;
     color: #515252;
+    background-color: #F0F9F7;
 
     .pump-list{
         width: 100%;
@@ -120,5 +121,15 @@
       /* Handle on hover */
     .pumping::-webkit-scrollbar-thumb:hover {
         background: #555;
+    }
+}
+
+
+@media (max-width: 1000px){
+    .pumpContainer{
+        .pumping{
+            width: 100%;
+            justify-content: center;
+        }
     }
 }
