@@ -1,0 +1,69 @@
+.pumpContainer{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-family: 'Nunito-Regular';
+    font-style: normal;
+    font-weight: 200;
+    font-size: 16px;
+    line-height: 25px;
+    color: #515252;
+
+    .pump-list{
+        width: 100%;
+        margin-top: 20px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+
+        .box{
+            width: 100px;
+            height: 35px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #06805B;
+            border-radius: 30px;
+            color: #fff;
+            font-family: 'Nunito-Regular';
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+
+        .box2{
+            width: 100px;
+            height: 35px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fff;
+            border-radius: 30px;
+            color: #000;
+            font-family: 'Nunito-Regular';
+            margin-right: 10px;
+            margin-top: 10px;
+            border: 1px solid #8D8D8D;
+        }
+    }
+
+    .pumping{
+        width: 100%;
+        margin-top: 20px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+
+        .item{
+            width: 200px;
+            height: 250px;
+            background: #F0F0F0;
+            border: 0.860396px solid #054834;
+            box-shadow: 0px 3.44158px 3.44158px rgba(0, 0, 0, 0.25);
+            border-radius: 2.58119px;
+            margin-top: 10px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+    }
+}
