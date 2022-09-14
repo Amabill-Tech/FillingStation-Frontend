@@ -108,6 +108,9 @@ const HomeScreen = ({history}) => {
         '/home/payments': 'Payments',
         '/home/outlets': 'My Outlets',
         '/home/record-sales': 'Record Sales',
+        '/home/record-sales/lpo': 'LPO',
+        '/home/record-sales/expenses': 'Expenses',
+        '/home/record-sales/payment': 'Payment',
         '/home/expenses': 'Expenses',
         '/home/product-orders': 'Product Orders',
         '/home/regulatory': 'Regulatory Pay',
@@ -269,7 +272,7 @@ const HomeScreen = ({history}) => {
                         <ProductOrders/>
                     </Route>
                     <Route path='/home/record-sales'>
-                        <RecordSales/>
+                        <RecordSales history={history}/>
                     </Route>
                     <Route path='/home/regulatory'>
                         <Regulatory/>
@@ -288,7 +291,4 @@ const HomeScreen = ({history}) => {
 
 export default withRouter(HomeScreen);
 //filling station
-//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
-
-// laravel
-//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
+// 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

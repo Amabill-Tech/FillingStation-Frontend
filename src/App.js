@@ -18,6 +18,9 @@ function App() {
           <Route path='/home/payments' component={HomeScreen} />
           <Route path='/home/product-orders' component={HomeScreen} />
           <Route path='/home/record-sales' component={HomeScreen} />
+          <Route path='/home/record-sales/lpo' component={HomeScreen} />
+          <Route path='/home/record-sales/expenses' component={HomeScreen} />
+          <Route path='/home/record-sales/payment' component={HomeScreen} />
           <Route path='/home/regulatory' component={HomeScreen} />
           <Route path='/home/tank' component={HomeScreen} />
           <Route path='/home/settings' component={HomeScreen} />

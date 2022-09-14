@@ -6,7 +6,7 @@ import hr3 from '../../assets/hr3.png';
 import hr4 from '../../assets/hr4.png';
 import hr5 from '../../assets/hr5.png';
 import me6 from '../../assets/me6.png';
-import { Switch, Route, Link, withRouter } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import Employee from '../HRComponents/Employee';
 import Salary from '../HRComponents/Salary';
 import Query from '../HRComponents/Query';
