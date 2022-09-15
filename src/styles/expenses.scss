@@ -1,6 +1,15 @@
 .expensesContainer{
     width: 90%;
 
+    .tabs{
+        display: flex;
+        flex-direction: row;
+    }
+
+    .cashPayment{
+        width: 100%;
+    }
+
     .inputs{
         width: 100%;
         display: flex;
@@ -26,6 +35,50 @@
             border: 0.938659px solid #606060;
             border-radius: 5.63195px;
         }
+
+        .button-container{
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            margin-top: 10px;
+
+            .buttons{
+                width: 49%;
+                height: 35px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                color:#fff;
+                background-color: green;
+                font-size: 12px;
+                border-radius: 5px;
+            }
+        }
+    }
+
+    .plus{
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        margin-top: 30px;
+        font-family: 'Nunito-Regular';
+        font-style: normal;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 25px;
+        color: #0277FF;
+        align-items: center;
+    }
+
+    .submit{
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        margin-top: 30px;
+        margin-bottom: 50px;
     }
 
     .twoInputs{
@@ -59,6 +112,37 @@
                 background: rgba(229, 240, 237, 0.6);
                 border: 0.938659px solid #606060;
                 border-radius: 5.63195px;
+            }
+        }
+    }
+}
+
+@media (max-width: 1000px){
+    .expensesContainer{
+        width: 100%;
+    }
+}
+
+@media (max-width: 600px){
+    .expensesContainer{
+        .twoInputs{
+            flex-direction: column;
+            width: 100%;
+
+            .inputs2{
+                width: 100%;
+            }
+        }
+        
+        .inputs{
+            .button-container{
+                flex-direction: column;
+                width: 100%;
+
+                .buttons{
+                    width: 100%;
+                    margin-top: 20px;
+                }
             }
         }
     }
