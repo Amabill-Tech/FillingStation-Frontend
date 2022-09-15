@@ -22,8 +22,6 @@ const HumanResource = (props) => {
             props.history.push('/home/hr/salary');
         }else if(data.name === 'Query'){
             props.history.push('/home/hr/query');
-        }else if(data.name === 'Recruitment'){
-            props.history.push('/home/hr/recruitment');
         }else if(data.name === 'Attendance'){
             props.history.push('/home/hr/attendance');
         }
@@ -57,9 +55,6 @@ const HumanResource = (props) => {
                         <DashboardImage image={hr1} name={'Employee'} value={'41'} />
                         <DashboardImage image={hr11} name={'Salary structure'} value={'41'} />
                         <DashboardImage image={hr3} name={'Query'} value={'41'} />
-                        <DashboardImage image={hr4} name={'Recruitment'} value={'41'} />
-                    </div>
-                    <div className='imgContainer2'>
                         <DashboardImage image={hr5} name={'Attendance'} value={'41'} />
                     </div>
                 </div>
@@ -76,9 +71,6 @@ const HumanResource = (props) => {
                         </Route>
                         <Route path='/home/hr/query'>
                             <Query/>
-                        </Route>
-                        <Route path='/home/hr/recruitment'>
-                            <Recruitment/>
                         </Route>
                         <Route path='/home/hr/attendance'>
                             <Attendance  />
