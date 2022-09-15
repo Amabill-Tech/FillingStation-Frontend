@@ -84,7 +84,7 @@
 
         .dash-records{
             width: 100%;
-            height: 400px;
+            height: auto;
             background-color: #F6F6F6B2;
             margin-top: 20px;
             display: flex;
@@ -94,7 +94,26 @@
 
             .padding-container{
                 width: 96%;
-                height: 370px;
+                height: auto;
+                margin-bottom: 20px;
+                margin-top: 20px;
+
+                .week{
+                    width: 100%;
+                    height: 35px;
+                    margin-bottom: 20px;
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+
+                    .butts{
+                        width: 210px;
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+                        justify-content: space-between;
+                    }
+                }
                 
                 .type{
                     display: flex;
@@ -149,13 +168,78 @@
         flex-direction: column;
         align-items: flex-start;
 
-        .dashImages{
+        .asset{
             width: 100%;
-            height: 110px;
+            height: 35px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
             margin-top: 20px;
+            font-family: 'Nunito-Regular';
+            font-style: normal;
+            font-weight: 700;
+            font-size: 18px;
+            color: #000000;
+        }
+
+        .tank-text{
+            font-family: 'Nunito-Regular';
+            font-style: normal;
+            font-weight: 700;
+            font-size: 16px;
+            line-height: 26px;
+            color: #000000;
+            margin-top: 30px;
+        }
+
+        .table-view{
+            width: 100%;
+            height: 30px;
+            background: #EFEFEF;
+            border-radius: 4.47339px;
+            margin-top: 10px;
             display: flex;
             flex-direction: row;
             justify-content: space-between;
+
+            .table-text{
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-family: 'Nunito-Regular';
+                font-size: 12px;
+            }
+        }
+
+        .table-view2{
+            width: 100%;
+            height: 30px;
+            background: #FAFAFA;
+            border-radius: 4.47339px;
+            margin-top: 5px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+
+            .table-text{
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-family: 'Nunito-Regular';
+                font-size: 12px;
+            }
+        }
+
+        .dashImages{
+            width: 100%;
+            height: 110px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            margin-top: 10px;
 
             .first-image{
                 width: 49%;
@@ -414,9 +498,12 @@
         }
 
         .right-dash{
+            margin-top: 20px;
+
             .dashImages{
                 height: auto;
                 flex-direction: column;
+                margin-top: 10px;
 
                 .first-image{
                     width: 100%;
