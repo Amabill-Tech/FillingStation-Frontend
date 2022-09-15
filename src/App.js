@@ -6,11 +6,6 @@ import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import { useEffect } from 'react';
 
 function App() {
-
-  useEffect(()=>{
-    document.body.style.zoom = "75%";
-  },[]);
-
   return (
     <Router>
       <div className="App">
