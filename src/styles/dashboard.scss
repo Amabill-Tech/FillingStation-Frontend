@@ -383,9 +383,52 @@
     }
 }
 
+@media (max-width: 950px){
+    .dashboardContainer{
+        flex-direction: column;
+
+        .left-dash{
+            width: 100%;
+        }
+
+        .right-dash{
+            width:100%
+        }
+    }
+}
+
+@media (max-width: 600px){
+    .dashboardContainer{
+        .left-dash{
+            .dashImages{
+                width: 100%;
+                height: auto;
+                flex-direction: column;
+
+                .first-image{
+                    width: 100%;
+                    margin-top: 20px;
+                }
+            }
+        }
+
+        .right-dash{
+            .dashImages{
+                height: auto;
+                flex-direction: column;
+
+                .first-image{
+                    width: 100%;
+                    margin-top: 20px;
+                }
+            }
+        }
+    }
+}
+
 @media (max-width: 420px){
     .dashboardContainer{
-        margin-top: 60px;
+        margin-top: 80px;
         
         .left-dash{
             .selectItem{
