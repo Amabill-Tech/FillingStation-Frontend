@@ -1,0 +1,65 @@
+.expensesContainer{
+    width: 90%;
+
+    .inputs{
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-top: 50px;
+
+        .text{
+            font-family: 'Nunito-Regular';
+            font-style: normal;
+            font-weight: 600;
+            font-size: 14px;
+            color: #353434;
+        }
+
+        .date{
+            width: 95%;
+            height: 35px;
+            margin-top: 10px;
+            padding-left: 2%;
+            padding-right: 2%;
+            background: rgba(215, 215, 215, 0.6);
+            border: 0.938659px solid #606060;
+            border-radius: 5.63195px;
+        }
+    }
+
+    .twoInputs{
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+
+        .inputs2{
+            width: 49%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-top: 30px;
+    
+            .text{
+                font-family: 'Nunito-Regular';
+                font-style: normal;
+                font-weight: 600;
+                font-size: 14px;
+                color: #353434;
+            }
+    
+            .date{
+                width: 95%;
+                height: 35px;
+                margin-top: 10px;
+                padding-left: 2%;
+                padding-right: 2%;
+                background: rgba(229, 240, 237, 0.6);
+                border: 0.938659px solid #606060;
+                border-radius: 5.63195px;
+            }
+        }
+    }
+}

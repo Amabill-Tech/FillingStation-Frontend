@@ -7,6 +7,8 @@
     justify-content: center;
     align-items: center;
     margin-top: 10px;
+    overflow-y: scroll;
+    overflow-x: hidden;
 
     .inner{
         width: 96%;
@@ -51,6 +53,25 @@
             }
         }
     }
+}
+
+.salesContainer::-webkit-scrollbar {
+    width: 6px;
+}
+  
+  /* Track */
+.salesContainer::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+  
+  /* Handle */
+.salesContainer::-webkit-scrollbar-thumb {
+    background: #054834;
+}
+  
+  /* Handle on hover */
+.salesContainer::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }
 
 @media (max-width: 1000px){
