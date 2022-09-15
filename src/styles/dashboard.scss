@@ -377,75 +377,9 @@
     }
 }
 
-@media (max-width: 1300px){
+@media (max-width: 1100px){
     .dashboardContainer{
-        width: 100%;
-        flex-direction: column;
-        align-items: center;
-
-        .left-dash{
-            width: 98%;
-
-            .selectItem{
-                width: 420px;
-                justify-content: space-between;
-                margin-top: 20px;
-            }
-
-            .dashImages{
-                height: auto;
-                flex-direction: column;
-                align-items: center;
-                margin-top: 15px;
-
-                .first-image{
-                    width: 100%;
-                    height: 120px;
-                    margin-bottom: 15px;
-                }
-            }
-
-            .dash-records{
-            }
-        }
-
-        .right-dash{
-            width: 98%;
-            margin-top: 20px;
-
-            .dashImages{
-                height: auto;
-                flex-direction: column;
-                align-items: center;
-                margin-top: 15px;
-
-                .first-image{
-                    width: 100%;
-                    height: 120px;
-                    margin-bottom: 15px;
-                }
-            }
-
-            .section{
-                .inner-section{
-                    .inner-content{
-                        .conts{
-                            .row-count{
-                                .item-count{
-                                    font-size: 12px;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@media (max-width: 1300px){
-    .dashboardContainer{
-        margin-top: 60px;
+        margin-top: 80px;
     }
 }
 
