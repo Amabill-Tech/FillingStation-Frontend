@@ -252,39 +252,7 @@
     }
 }
 
-@media (max-width: 1300px){
-    .daily-sales-container{
-        flex-direction: column;
-
-        .daily-left{
-            width: 100%;
-        }
-
-        .daily-right{
-            width: 100%;
-
-            .tank-text{
-                margin-top: 30px;
-            }
-
-            .section{
-                .inner-section{
-                    .inner-content{
-                        .conts{
-                            .row-count{
-                                .item-count{
-                                    font-size: 12px;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@media (max-width: 1000px){
+@media (max-width: 1250px){
     .daily-sales-container{
         margin-top: 80px;
     }
