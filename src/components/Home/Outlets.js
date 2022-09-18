@@ -796,7 +796,7 @@ const Outlets = (props) => {
             }
 
             { props.activeRoute.split('/').length === 4 &&
-                <div>
+                <div style={contain}>
                     <Switch>
                         <Route path='/home/outlets/sales'>
                             <Sales/>
@@ -833,6 +833,12 @@ const date = {
     borderRadius: '5px',
     paddingLeft: '2%',
     paddingRight:'2%'
+}
+
+const contain = {
+    width:'96%',
+    height:'89%',
+
 }
 
 export default Outlets;
