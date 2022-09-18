@@ -6,6 +6,8 @@ import Button from '@mui/material/Button';
 import { ThreeDots } from  'react-loader-spinner';
 import { useSelector } from 'react-redux';
 import swal from 'sweetalert';
+import { login, setSpinner } from '../store/actions/auth';
+import { useDispatch } from 'react-redux';
 
 const LoginScreen = ({history}) => {
 
@@ -13,10 +15,18 @@ const LoginScreen = ({history}) => {
     const [password, setPassword] = useState("");
 
     const loadingSpinner = useSelector(state => state.authReducer.loadingSpinner);
+    const dispatch = useDispatch();
 
     const handleLogin = () => {
         if(email === "") return swal("Warning!", "Email field cannot be empty", "info");
         if(password === "") return swal("Warning!", "Password field cannot be empty", "info");
+        dispatch(setSpinner());
+
+        const data = {
+            email: email,
+            password: password
+        }
+        dispatch(login(data, history));
     }
 
     return(

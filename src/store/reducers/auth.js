@@ -1,4 +1,4 @@
-import { LOGIN, LOGOUT } from '../types'
+import { LOGIN, LOGOUT, SPINNER, REMOVE_SPINNER } from '../types'
 
 const initialState = {
     user: JSON.parse(localStorage.getItem('user')) || {},
@@ -29,6 +29,20 @@ const authReducer = (state = initialState, action) => {
                 user: {},
                 token: '',
                 isLoggedIn: false
+            }
+        }
+
+        case SPINNER:{
+            return {
+                ...state,
+                loadingSpinner: true,
+            }
+        }
+
+        case REMOVE_SPINNER:{
+            return {
+                ...state,
+                loadingSpinner: false,
             }
         }
 

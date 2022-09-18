@@ -10,6 +10,9 @@ import Radio from '@mui/material/Radio';
 import Button from '@mui/material/Button';
 import Switch from '@mui/material/Switch';
 import { styled } from '@mui/material/styles';
+import { useDispatch } from 'react-redux';
+import { logout } from '../../store/actions/auth';
+import swal from 'sweetalert';
 
 const Settings = (props) => {
 
@@ -488,11 +491,26 @@ const Settings = (props) => {
         )
     }
 
-    const logout = () => {
-        props.history.push('/login')
+    const dispatch = useDispatch();
+
+    const logouts = () => {
+        swal({
+            title: "Alert!",
+            text: "Are you sure you want to logout?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+                dispatch(logout());
+                props.history.push('/login');
+            }
+        });
     }
 
     return(
+
         <div className='settingsContainer'>
             <div className='action'>
                 <Select
@@ -515,7 +533,7 @@ const Settings = (props) => {
                     <MenuItem onClick={()=>{setNav(3)}} value={5}>Change Password</MenuItem>
                     <MenuItem onClick={()=>{setNav(4)}} value={6}>Change Email</MenuItem>
                     <MenuItem onClick={()=>{setNav(5)}} value={7}>Delete Outlet</MenuItem>
-                    <MenuItem onClick={logout} value={8}>Logout</MenuItem>
+                    <MenuItem onClick={logouts} value={8}>Logout</MenuItem>
                 </Select>
             </div>
             <div className='inner-container'>
@@ -545,7 +563,7 @@ const Settings = (props) => {
                             <div style={nav === 5? active: inActive} className='text'>Delete Outlets</div>
                             <img style={{width:'7px', height:'13px'}} src={rightArrow} alt="icon" />
                         </div>
-                        <div onClick={logout} className='accord'>
+                        <div onClick={logouts} className='accord'>
                             <div style={{color:'#1F1F1F'}} className='text'>Logout</div>
                             <img style={{width:'7px', height:'13px'}} src={rightArrow} alt="icon" />
                         </div>
