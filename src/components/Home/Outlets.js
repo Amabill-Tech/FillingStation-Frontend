@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import '../../styles/payments.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -7,11 +7,419 @@ import tan from '../../assets/tan.png';
 import eye from '../../assets/eye.png';
 import filling from '../../assets/filling.png';
 import OutlinedInput from '@mui/material/OutlinedInput';
+import Modal from '@mui/material/Modal';
+import close from '../../assets/close.png';
+import { ThreeDots } from  'react-loader-spinner';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import Radio from '@mui/material/Radio';
 
 const Outlets = () => {
+
+    const [open, setOpen] = useState(0);
+    const handleOpen = (value) => setOpen(value);
+    const handleClose = (value) => setOpen(value);
+
+    const loadingSpinner = false
+    const dispatch = useDispatch();
+
+    const CreateFillingStation = () => {
+        return(
+            <Modal
+                open={open === 1}
+                onClose={()=>{handleClose(0)}}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+                sx={{display:'flex', justifyContent:'center', alignItems:'center'}}
+            >
+                    <div className='modalContainer'>
+                        <div className='inner'>
+                            <div className='head'>
+                                <div className='head-text'>Create Filling Station</div>
+                                <img onClick={()=>{handleClose(0)}} style={{width:'18px', height:'18px'}} src={close} alt={'icon'} />
+                            </div>
+
+                            <div className='inputs'>
+                                <div className='head-text2'>Outline Name</div>
+                                <OutlinedInput 
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        border:'1px solid #777777',
+                                        fontSize:'12px',
+                                    }} placeholder="" 
+                                />
+                            </div>
+
+                            <div style={{marginTop:'15px'}} className='inputs'>
+                                <div className='head-text2'>Choose state</div>
+                                <Select
+                                    labelId="demo-select-small"
+                                    id="demo-select-small"
+                                    value={10}
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        border:'1px solid #777777',
+                                        fontSize:'12px',
+                                    }}
+                                >
+                                    <MenuItem value={10}>Abuja</MenuItem>
+                                    <MenuItem value={20}>Download PDF</MenuItem>
+                                    <MenuItem value={30}>Print</MenuItem>
+                                </Select>
+                            </div>
+
+                            <div style={{marginTop:'15px'}} className='inputs'>
+                                <div className='head-text2'>City/Town</div>
+                                <OutlinedInput 
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        border:'1px solid #777777',
+                                        fontSize:'12px',
+                                    }} placeholder="" 
+                                />
+                            </div>
+
+                            <div style={{marginTop:'15px'}} className='inputs'>
+                                <div className='head-text2'>LGA</div>
+                                <OutlinedInput 
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        border:'1px solid #777777',
+                                        fontSize:'12px',
+                                    }} placeholder="" 
+                                />
+                            </div>
+
+                            <div style={{marginTop:'15px'}} className='inputs'>
+                                <div className='head-text2'>Area/Street</div>
+                                <OutlinedInput 
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        border:'1px solid #777777',
+                                        fontSize:'12px',
+                                    }} placeholder="" 
+                                />
+                            </div>
+
+                            <div style={{marginTop:'15px'}} className='inputs'>
+                                <div className='head-text2'>GPS Cordinates ( Longitude & Latitude )</div>
+                                <OutlinedInput 
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        border:'1px solid #777777',
+                                        fontSize:'12px',
+                                    }} placeholder="" 
+                                />
+                            </div>
+
+                            <div className='butt'>
+                                <Button sx={{
+                                    width:'100px', 
+                                    height:'30px',  
+                                    background: '#427BBE',
+                                    borderRadius: '3px',
+                                    fontSize:'10px',
+                                    marginTop:'00px',
+                                    '&:hover': {
+                                        backgroundColor: '#427BBE'
+                                    }
+                                    }} 
+                                    onClick={handleOpen} 
+                                    variant="contained"> Save
+                                </Button>
+
+                                {loadingSpinner &&
+                                    <ThreeDots 
+                                        height="60" 
+                                        width="50" 
+                                        radius="9"
+                                        color="#076146" 
+                                        ariaLabel="three-dots-loading"
+                                        wrapperStyle={{}}
+                                        wrapperClassName=""
+                                        visible={true}
+                                    />
+                                }
+                            </div>
+                            
+                        </div>
+                    </div>
+            </Modal>
+        )
+    }
+
+    const AddTank = () => {
+        return(
+            <Modal
+                open={open === 2}
+                onClose={()=>{handleClose(0)}}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+                sx={{display:'flex', justifyContent:'center', alignItems:'center'}}
+            >
+                <div className='modalContainer'>
+                    <div className='inner'>
+                        <div className='head'>
+                            <div className='head-text'>Add Tank</div>
+                            <img onClick={()=>{handleClose(0)}} style={{width:'18px', height:'18px'}} src={close} alt={'icon'} />
+                        </div>
+
+                        <div className='inputs'>
+                            <div className='head-text2'>Tank Name/ Series</div>
+                            <OutlinedInput 
+                                sx={{
+                                    width:'100%',
+                                    height: '35px', 
+                                    marginTop:'5px', 
+                                    background:'#EEF2F1', 
+                                    border:'1px solid #777777',
+                                    fontSize:'12px',
+                                }} placeholder="" 
+                            />
+                        </div>
+
+                        <div style={{marginTop:'15px'}} className='inputs'>
+                            <div className='head-text2'>Tank Height (cm)</div>
+                            <OutlinedInput 
+                                sx={{
+                                    width:'100%',
+                                    height: '35px', 
+                                    marginTop:'5px', 
+                                    background:'#EEF2F1', 
+                                    border:'1px solid #777777',
+                                    fontSize:'12px',
+                                }} placeholder="" 
+                            />
+                        </div>
+
+                        <div style={{marginTop:'15px'}} className='inputs'>
+                            <div className='head-text2'>Choose product type</div>
+                            <div className='radio'>
+                                <div className='rad-item'>
+                                    <Radio />
+                                    <div className='head-text2' style={{marginRight:'5px'}}>PMS</div>
+                                </div>
+                                <div className='rad-item'>
+                                    <Radio />
+                                    <div className='head-text2' style={{marginRight:'5px'}}>AGO</div>
+                                </div>
+                                <div className='rad-item'>
+                                    <Radio />
+                                    <div className='head-text2' style={{marginRight:'5px'}}>DPK</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style={{marginTop:'15px'}} className='inputs'>
+                            <div className='head-text2'>Tank Capacity</div>
+                            <OutlinedInput 
+                                sx={{
+                                    width:'100%',
+                                    height: '35px', 
+                                    marginTop:'5px', 
+                                    background:'#EEF2F1', 
+                                    border:'1px solid #777777',
+                                    fontSize:'12px',
+                                }} placeholder="" 
+                            />
+                        </div>
+
+                        <div style={{marginTop:'15px'}} className='inputs'>
+                            <div className='head-text2'>Dead Stock Level (Litre)</div>
+                            <OutlinedInput 
+                                sx={{
+                                    width:'100%',
+                                    height: '35px', 
+                                    marginTop:'5px', 
+                                    background:'#EEF2F1', 
+                                    border:'1px solid #777777',
+                                    fontSize:'12px',
+                                }} placeholder="" 
+                            />
+                        </div>
+
+                        <div style={{marginTop:'15px'}} className='inputs'>
+                            <div className='head-text2'>Calibration Date</div>
+                            <input style={date} type={'date'} />
+                        </div>
+
+                        <div className='butt'>
+                            <Button sx={{
+                                width:'100px', 
+                                height:'30px',  
+                                background: '#427BBE',
+                                borderRadius: '3px',
+                                fontSize:'10px',
+                                marginTop:'00px',
+                                '&:hover': {
+                                    backgroundColor: '#427BBE'
+                                }
+                                }} 
+                                onClick={handleOpen} 
+                                variant="contained"> Save
+                            </Button>
+
+                            {loadingSpinner &&
+                                <ThreeDots 
+                                    height="60" 
+                                    width="50" 
+                                    radius="9"
+                                    color="#076146" 
+                                    ariaLabel="three-dots-loading"
+                                    wrapperStyle={{}}
+                                    wrapperClassName=""
+                                    visible={true}
+                                />
+                            }
+                        </div>
+                    </div>
+                </div>
+            </Modal>
+        )
+    }
+
+    const AddPump = () => {
+        return(
+            <Modal
+                open={open === 3}
+                onClose={()=>{handleClose(0)}}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+                sx={{display:'flex', justifyContent:'center', alignItems:'center'}}
+            >
+                <div style={{height:'450px'}} className='modalContainer'>
+                    <div className='inner'>
+                        <div className='head'>
+                            <div className='head-text'>Add Pump</div>
+                            <img onClick={()=>{handleClose(0)}} style={{width:'18px', height:'18px'}} src={close} alt={'icon'} />
+                        </div>
+
+                        <div className='inputs'>
+                            <div className='head-text2'>Pump Name</div>
+                            <OutlinedInput 
+                                sx={{
+                                    width:'100%',
+                                    height: '35px', 
+                                    marginTop:'5px', 
+                                    background:'#EEF2F1', 
+                                    border:'1px solid #777777',
+                                    fontSize:'12px',
+                                }} placeholder="" 
+                            />
+                        </div>
+
+                        <div style={{marginTop:'15px'}} className='inputs'>
+                            <div className='head-text2'>Tank Connected to pump</div>
+                            <Select
+                                labelId="demo-select-small"
+                                id="demo-select-small"
+                                value={10}
+                                sx={{
+                                    width:'100%',
+                                    height: '35px', 
+                                    marginTop:'5px', 
+                                    background:'#EEF2F1', 
+                                    border:'1px solid #777777',
+                                    fontSize:'12px',
+                                }}
+                            >
+                                <MenuItem value={10}>Pump 1</MenuItem>
+                                <MenuItem value={20}>Download PDF</MenuItem>
+                                <MenuItem value={30}>Print</MenuItem>
+                            </Select>
+                        </div>
+
+                        <div style={{marginTop:'15px'}} className='inputs'>
+                            <div className='head-text2'>Choose product type</div>
+                            <div className='radio'>
+                                <div className='rad-item'>
+                                    <Radio />
+                                    <div className='head-text2' style={{marginRight:'5px'}}>PMS</div>
+                                </div>
+                                <div className='rad-item'>
+                                    <Radio />
+                                    <div className='head-text2' style={{marginRight:'5px'}}>AGO</div>
+                                </div>
+                                <div className='rad-item'>
+                                    <Radio />
+                                    <div className='head-text2' style={{marginRight:'5px'}}>DPK</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style={{marginTop:'15px'}} className='inputs'>
+                            <div className='head-text2'>Totalizer Reading</div>
+                            <OutlinedInput 
+                                sx={{
+                                    width:'100%',
+                                    height: '35px', 
+                                    marginTop:'5px', 
+                                    background:'#EEF2F1', 
+                                    border:'1px solid #777777',
+                                    fontSize:'12px',
+                                }} placeholder="" 
+                            />
+                        </div>
+
+                        <div className='butt'>
+                            <Button sx={{
+                                width:'100px', 
+                                height:'30px',  
+                                background: '#427BBE',
+                                borderRadius: '3px',
+                                fontSize:'10px',
+                                marginTop:'00px',
+                                '&:hover': {
+                                    backgroundColor: '#427BBE'
+                                }
+                                }} 
+                                onClick={handleOpen} 
+                                variant="contained"> Save
+                            </Button>
+
+                            {loadingSpinner &&
+                                <ThreeDots 
+                                    height="60" 
+                                    width="50" 
+                                    radius="9"
+                                    color="#076146" 
+                                    ariaLabel="three-dots-loading"
+                                    wrapperStyle={{}}
+                                    wrapperClassName=""
+                                    visible={true}
+                                />
+                            }
+                        </div>
+                    </div>
+                </div>
+            </Modal>
+        )
+    }
+
     return(
         <div className='paymentsCaontainer'>
             <div className='inner-pay'>
+                { open ===1 && <CreateFillingStation /> }
+                { open ===2 && <AddTank /> }
+                { open ===3 && <AddPump /> }
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
                         <Select
@@ -64,7 +472,9 @@ const Outlets = () => {
                             '&:hover': {
                                 backgroundColor: '#427BBE'
                             }
-                            }}  variant="contained"> Create new filling station
+                            }} 
+                            onClick={()=>{handleOpen(1)}} 
+                            variant="contained"> Create new filling station
                         </Button>
                     </div>
                 </div>
@@ -138,148 +548,8 @@ const Outlets = () => {
                             <div className='column'>
                                 <div className='actions'>
                                     <img style={{width:'27px', height:'27px'}} src={eye} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={filling} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={tan} alt="icon" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className='row-container'>
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>09 June, 2022</div>
-                            <div className='column'>Wema bank</div>
-                            <div className='column'>1524353625262</div>
-                            <div className='column'>150,000</div>
-                            <div className='column'>352,000</div>
-                            <div className='column'>170,000</div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div className='actions'>
-                                    <img style={{width:'27px', height:'27px'}} src={eye} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={filling} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={tan} alt="icon" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className='row-container'>
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>09 June, 2022</div>
-                            <div className='column'>Wema bank</div>
-                            <div className='column'>1524353625262</div>
-                            <div className='column'>150,000</div>
-                            <div className='column'>352,000</div>
-                            <div className='column'>170,000</div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div className='actions'>
-                                    <img style={{width:'27px', height:'27px'}} src={eye} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={filling} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={tan} alt="icon" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className='row-container'>
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>09 June, 2022</div>
-                            <div className='column'>Wema bank</div>
-                            <div className='column'>1524353625262</div>
-                            <div className='column'>150,000</div>
-                            <div className='column'>352,000</div>
-                            <div className='column'>170,000</div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div className='actions'>
-                                    <img style={{width:'27px', height:'27px'}} src={eye} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={filling} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={tan} alt="icon" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className='row-container'>
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>09 June, 2022</div>
-                            <div className='column'>Wema bank</div>
-                            <div className='column'>1524353625262</div>
-                            <div className='column'>150,000</div>
-                            <div className='column'>352,000</div>
-                            <div className='column'>170,000</div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div className='actions'>
-                                    <img style={{width:'27px', height:'27px'}} src={eye} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={filling} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={tan} alt="icon" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className='row-container'>
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>09 June, 2022</div>
-                            <div className='column'>Wema bank</div>
-                            <div className='column'>1524353625262</div>
-                            <div className='column'>150,000</div>
-                            <div className='column'>352,000</div>
-                            <div className='column'>170,000</div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div className='actions'>
-                                    <img style={{width:'27px', height:'27px'}} src={eye} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={filling} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={tan} alt="icon" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className='row-container'>
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>09 June, 2022</div>
-                            <div className='column'>Wema bank</div>
-                            <div className='column'>1524353625262</div>
-                            <div className='column'>150,000</div>
-                            <div className='column'>352,000</div>
-                            <div className='column'>170,000</div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div className='actions'>
-                                    <img style={{width:'27px', height:'27px'}} src={eye} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={filling} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={tan} alt="icon" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className='row-container'>
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>09 June, 2022</div>
-                            <div className='column'>Wema bank</div>
-                            <div className='column'>1524353625262</div>
-                            <div className='column'>150,000</div>
-                            <div className='column'>352,000</div>
-                            <div className='column'>170,000</div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div className='actions'>
-                                    <img style={{width:'27px', height:'27px'}} src={eye} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={filling} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={tan} alt="icon" />
+                                    <img onClick={()=>{handleOpen(2)}} style={{width:'27px', height:'27px'}} src={filling} alt="icon" />
+                                    <img onClick={()=>{handleOpen(3)}} style={{width:'27px', height:'27px'}} src={tan} alt="icon" />
                                 </div>
                             </div>
                         </div>
@@ -308,6 +578,16 @@ const selectStyle2 = {
     fontFamily: 'Nunito-Regular',
     fontSize:'14px',
     outline:'none'
+}
+
+const date = {
+    width:'96%',
+    height:'35px',
+    background: 'rgba(229, 240, 237, 0.6)',
+    border: '0.938659px solid #606060',
+    borderRadius: '5px',
+    paddingLeft: '2%',
+    paddingRight:'2%'
 }
 
 export default Outlets;

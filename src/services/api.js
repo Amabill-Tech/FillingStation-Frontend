@@ -18,15 +18,13 @@ APIs.interceptors.response.use(
     err => {
 
         if (err.response.status === 404) {
-            store.dispatch(removeSpinner());
             swal("Error!", err.response.data.message, "error");
-            throw err
+            store.dispatch(removeSpinner());
         }
 
         if (err.response.status === 401) {
-            store.dispatch(logout());
             swal("Error!", "Incorrect Password", "error");
-            throw err
+            store.dispatch(logout());
         }
     }
 );
