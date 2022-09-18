@@ -3,7 +3,6 @@ import '../../styles/hr.scss';
 import hr1 from '../../assets/hr1.png';
 import hr11 from '../../assets/hr11.png';
 import hr3 from '../../assets/hr3.png';
-import hr4 from '../../assets/hr4.png';
 import hr5 from '../../assets/hr5.png';
 import me6 from '../../assets/me6.png';
 import { Switch, Route } from 'react-router-dom';

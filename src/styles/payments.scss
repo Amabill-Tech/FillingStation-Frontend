@@ -286,6 +286,24 @@
                 }
             }
         }
+
+        .tank{
+            width: 100%;
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .tex{
+            font-family: 'Nunito-Regular';
+            font-style: normal;
+            font-weight: 600;
+            font-size: 12px;
+            line-height: 15px;
+            text-align: center;
+            color: #06805B;
+        }
     }
 }
 
