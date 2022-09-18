@@ -17,15 +17,15 @@ APIs.interceptors.response.use(
     },
     err => {
 
-        if (err.response.status !== 404) {
+        if (err.response.status === 404) {
             store.dispatch(removeSpinner());
-            swal("Warning!", "Incorrect password", "error");
+            swal("Error!", err.response.data.message, "error");
             throw err
         }
 
-        if (err.response.status !== 401) {
+        if (err.response.status === 401) {
             store.dispatch(logout());
-            swal("Warning!", "Session has expired", "error");
+            swal("Error!", "Incorrect Password", "error");
             throw err
         }
     }
