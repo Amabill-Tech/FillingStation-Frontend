@@ -1,19 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../styles/login.scss';
 import station from '../assets/station.png';
 import logo from '../assets/logo.png';
 import Button from '@mui/material/Button';
+import { ThreeDots } from  'react-loader-spinner';
+import { useSelector } from 'react-redux';
+import swal from 'sweetalert';
 
 const LoginScreen = ({history}) => {
 
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    const loadingSpinner = useSelector(state => state.authReducer.loadingSpinner);
+
     const handleLogin = () => {
-        history.push('/home');
+        if(email === "") return swal("Warning!", "Email field cannot be empty", "info");
+        if(password === "") return swal("Warning!", "Password field cannot be empty", "info");
     }
 
     return(
         <div className='container'>
             <div className='left-block'>
-                <div className='upper-block'>
+                <div style={{flexDirection:'column'}} className='upper-block'>
                     <div className='login-form-container'>
                         <div className='inner-form-container'>
                             <img className='logo' src={logo} alt="icon" />
@@ -22,12 +31,16 @@ const LoginScreen = ({history}) => {
                                 <input 
                                     className='input-field' 
                                     type={'email'} 
-                                    placeholder="Email" required />
+                                    placeholder="Email"  
+                                    onChange = {e => setEmail(e.target.value)}
+                                />
                                 <input 
                                     style={{marginTop:'25px'}} 
                                     className='input-field' 
                                     type={'password'} 
-                                    placeholder="Password" required />
+                                    placeholder="Password" 
+                                    onChange = {e => setPassword(e.target.value)}
+                                />
                                 <div className='forget-password'>Forgot password</div>
                                 <Button sx={{
                                     width:'100%', 
@@ -41,6 +54,19 @@ const LoginScreen = ({history}) => {
                                 }}  variant="contained"
                                     onClick={handleLogin}>Login</Button>
                             </form>
+
+                            {loadingSpinner &&
+                                <ThreeDots 
+                                    height="60" 
+                                    width="50" 
+                                    radius="9"
+                                    color="#076146" 
+                                    ariaLabel="three-dots-loading"
+                                    wrapperStyle={{marginTop:'20px'}}
+                                    wrapperClassName=""
+                                    visible={true}
+                                />
+                            }
                         </div>
                     </div>
                 </div>

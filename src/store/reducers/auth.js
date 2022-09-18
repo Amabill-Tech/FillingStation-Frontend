@@ -3,12 +3,8 @@ import { LOGIN, LOGOUT } from '../types'
 const initialState = {
     user: JSON.parse(localStorage.getItem('user')) || {},
     token: localStorage.getItem('token') || '',
-    //isLoggedIn: !!JSON.parse(localStorage.getItem('user')),
-    isLoggedIn: true,
-
-    //user: {},
-    //token: '',
-    //isLoggedIn: false
+    isLoggedIn: !!JSON.parse(localStorage.getItem('user')),
+    loadingSpinner: false,
 }
 
 const authReducer = (state = initialState, action) => {
@@ -22,7 +18,8 @@ const authReducer = (state = initialState, action) => {
                 ...state,
                 user: payload.user,
                 token: payload.token,
-                isLoggedIn: true
+                isLoggedIn: true,
+                loadingSpinner: false,
             }
         }
 

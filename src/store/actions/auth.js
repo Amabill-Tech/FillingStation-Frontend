@@ -5,7 +5,7 @@ export const login = (params, history) => dispatch => {
     return AuthService.login(params)
     .then(data => {
         dispatch({ type: LOGIN, payload: data })
-        history.push('/')
+        history.push('/home');
     })
     .catch(err => {
             

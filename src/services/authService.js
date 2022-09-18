@@ -16,7 +16,7 @@ const AuthService = {
 
     logout: () => {
         APIs.defaults.headers['Authorization'] = '';
-        APIs.defaults.baseURL = 'http://127.0.0.1:4000/ums/auth/api';
+        APIs.defaults.baseURL = 'http://127.0.0.1:3000/360-station/api';
         localStorage.removeItem('user');
         localStorage.removeItem('token');
     },
@@ -26,7 +26,7 @@ const setHeadersAndStorage = (data) => {
     APIs.defaults.headers['Authorization'] = `Bearer ${data.token}`
     localStorage.setItem('user', JSON.stringify(data.user));
     localStorage.setItem('token', data.token);
-    localStorage.setItem('baseURL', 'http://127.0.0.1:4000/ums/senate/api')
+    localStorage.setItem('baseURL', 'http://127.0.0.1:3000/360-station/api')
 }
 
 export default AuthService;
