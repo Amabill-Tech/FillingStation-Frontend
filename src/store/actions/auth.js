@@ -3,7 +3,7 @@ import { LOGIN, LOGOUT, SPINNER, REMOVE_SPINNER } from '../types';
 
 export const login = (params, history) => dispatch => {
     return AuthService.login(params)
-    .then(data => {console.log(data)
+    .then(data => {
         dispatch({ type: LOGIN, payload: data })
         history.push('/home');
     })

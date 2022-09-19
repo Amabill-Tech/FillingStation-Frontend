@@ -1,4 +1,6 @@
 import APIs from './api';
+import store from '../store';
+import { removeSpinner } from '../store/actions/auth';
 
 const AuthService = {
 
@@ -9,6 +11,7 @@ const AuthService = {
             return data;
         })
          .catch(err => {
+            store.dispatch(removeSpinner());
             console.log("Auth service err", err);
             throw err
         })
