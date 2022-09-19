@@ -4,7 +4,7 @@ import { logout, removeSpinner } from '../store/actions/auth';
 import swal from 'sweetalert';
 
 const APIs = axios.create({
-    baseURL: 'http://127.0.0.1:3000/360-station/api',
+    baseURL: 'http://66.29.128.83/360-station/api',
     headers: {
         'Accept': 'application/json',
         'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
