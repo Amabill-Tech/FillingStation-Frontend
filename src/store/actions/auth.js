@@ -12,6 +12,16 @@ export const login = (params, history) => dispatch => {
     })
 }
 
+export const register = (params) => {
+    return AuthService.register(params)
+    .then(data => {
+        console.log(data)
+    })
+    .catch(err => {
+            
+    })
+}
+
 export const setSpinner = () => dispatch => {
     dispatch({ type: SPINNER })
 }

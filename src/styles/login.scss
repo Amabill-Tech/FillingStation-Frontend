@@ -107,6 +107,51 @@
     }
 }
 
+.reg{
+    width: 96%;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-top: 20px;
+
+    .register{
+        font-family: 'Nunito-Regular';
+        font-style: normal;
+        font-weight: 600;
+        font-size: 14.6347px;
+        color: #3400FF;
+    }
+}
+
+.login-text{
+    font-family: 'Nunito-Regular';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 37px;
+    color: #0AA677;
+}
+
+.inner-sign{
+    width: 95%;
+    height: 96%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.input-field{
+    width: 96%;
+    height: 35px;
+    background: #E6F5F1;
+    border: 0.804764px solid #000000;
+    border-radius: 24.1472px;
+    padding-left: 10px;
+    outline: none;
+    margin-top: 20px;
+}
+
 @media (max-width: 1000px){
     .container{
 
