@@ -48,20 +48,73 @@
             .space{
                 width: 98%;
                 height: 100%;
-                background-color: yellow;
                 display: grid;
                 margin-top: 10px;
                 column-gap: 10px;
                 row-gap: 10px;
-                grid-template-columns: auto auto auto;
+                grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+                flex-wrap: wrap;
     
                 .item{
+                    width: 100%;
+                    height: 300px;
                     background: #FBFBFB;
                     border: 0.622126px solid #666666;
                     border-radius: 3.88829px;
                     display: flex;
                     justify-content: center;
                     align-items: center;
+
+                    .inner{
+                        width: 96%;
+                        height: 96%;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+
+                        .top{
+                            width: 100%;
+                            display: flex;
+                            flex-direction: row;
+                            justify-content: space-between;
+                            margin-top: 10px;
+
+                            .left{
+                                display: flex;
+                                flex-direction: row;
+                                align-items: center;
+                                font-size: 12px;
+                                font-family: 'Nunito-Regular';
+                            }
+
+                            .right{
+                                display: flex;
+                                flex-direction: row;
+                                align-items: center;
+                                font-size: 12px;
+                                font-family: 'Nunito-Regular';
+                            }
+                        }
+
+                        .out{
+                            width: 96%;
+                            font-size: 12px;
+                            font-family: 'Nunito-Regular';
+                            display: flex;
+                            flex-direction: row;
+                            justify-content: space-between;
+                            align-items: center;
+                            margin-top: 20px;
+                        }
+
+                        .delete{
+                            width: 96%;
+                            display: flex;
+                            flex-direction: row;
+                            justify-content: flex-end;
+                            margin-top: 30px;
+                        }
+                    }
                 }
             }
         }
@@ -90,5 +143,11 @@
         width: 25%;
         height: 100%;
         background-color: blue;
+    }
+}
+
+@media (max-width: 1250px){
+    .tanksContainer{
+        margin-top: 80px;
     }
 }

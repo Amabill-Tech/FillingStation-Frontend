@@ -1,18 +1,101 @@
 import React, { useState } from 'react';
 import '../../styles/tanks.scss';
+import me5 from '../../assets/me5.png';
+import Switch from '@mui/material/Switch';
+import { styled } from '@mui/material/styles';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import Button from '@mui/material/Button';
 
 const Tank = () => {
 
     const [tabs, setTabs] = useState(0);
 
+    const CardItem = () => {
+        return(
+            <div className='item'>
+                <div className='inner'>
+                        <div className='top'>
+                            <div className='left'>
+                                <img style={{width:'40px', height:'40px'}} src={me5} alt="icon" />
+                                <div>PMS Pump 1</div>
+                            </div>
+                            <div className='right'>
+                                <div>Active</div>
+                                <IOSSwitch sx={{ m: 1 }} defaultChecked />
+                            </div>
+                        </div>
+
+                        <div className='out'>
+                            <div style={{width:'40%', textAlign:'left'}}>Pump ID</div>
+                            <OutlinedInput 
+                                placeholder="" 
+                                sx={{
+                                    width:'60%',
+                                    height:'35px', 
+                                    fontSize:'12px',
+                                    background:'#F2F1F1',
+                                    color:'#000'
+                                }} 
+                            />
+                        </div>
+
+                        <div className='out'>
+                            <div style={{width:'40%', textAlign:'left'}}>Tank Connecting to pump</div>
+                            <OutlinedInput 
+                                placeholder="" 
+                                sx={{
+                                    width:'60%',
+                                    height:'35px', 
+                                    fontSize:'12px',
+                                    background:'#F2F1F1',
+                                    color:'#000'
+                                }} 
+                            />
+                        </div>
+
+                        <div className='out'>
+                            <div style={{width:'40%', textAlign:'left'}}>Total Reading</div>
+                            <OutlinedInput 
+                                placeholder="" 
+                                sx={{
+                                    width:'60%',
+                                    height:'35px', 
+                                    fontSize:'12px',
+                                    background:'#F2F1F1',
+                                    color:'#000'
+                                }} 
+                            />
+                        </div>
+
+                        <div className='delete'>
+                            <Button sx={{
+                                width:'120px', 
+                                height:'30px',  
+                                background: '#06805B',
+                                borderRadius: '3px',
+                                fontSize:'10px',
+                                color:'#fff',
+                                '&:hover': {
+                                    backgroundColor: '#06805B'
+                                }
+                                }} 
+                                variant="contained"> Delete pump
+                            </Button>
+                        </div>
+                </div>
+            </div>
+        )
+    }
+
     const AllTabs = () => {
         return(
             <div className='space'>
-                <div className='item'>1</div>
-                <div className='item'>2</div>
-                <div className='item'>3</div>
-                <div className='item'>4</div>
-                <div className='item'>5</div>
+                <CardItem />
+                <CardItem />
+                <CardItem />
+                <CardItem />
+                <CardItem />
+                <CardItem />
             </div>
         )
     }
@@ -20,7 +103,9 @@ const Tank = () => {
     const PMSTabs = () => {
         return(
             <div className='space'>
-                PMS
+                <CardItem />
+                <CardItem />
+                <CardItem />
             </div>
         )
     }
@@ -28,7 +113,10 @@ const Tank = () => {
     const AGOTabs = () => {
         return(
             <div className='space'>
-                AGO
+                <CardItem />
+                <CardItem />
+                <CardItem />
+                <CardItem />
             </div>
         )
     }
@@ -36,10 +124,63 @@ const Tank = () => {
     const DPKTabs = () => {
         return(
             <div className='space'>
-                DPK
+                <CardItem />
+                <CardItem />
+                <CardItem />
             </div>
         )
     }
+
+    const IOSSwitch = styled((props) => (
+        <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
+      ))(({ theme }) => ({
+        width: 42,
+        height: 26,
+        padding: 0,
+        '& .MuiSwitch-switchBase': {
+          padding: 0,
+          margin: 2,
+          transitionDuration: '300ms',
+          '&.Mui-checked': {
+            transform: 'translateX(16px)',
+            color: '#fff',
+            '& + .MuiSwitch-track': {
+              backgroundColor: theme.palette.mode === 'dark' ? '#2ECA45' : '#65C466',
+              opacity: 1,
+              border: 0,
+            },
+            '&.Mui-disabled + .MuiSwitch-track': {
+              opacity: 0.5,
+            },
+          },
+          '&.Mui-focusVisible .MuiSwitch-thumb': {
+            color: '#33cf4d',
+            border: '6px solid #fff',
+          },
+          '&.Mui-disabled .MuiSwitch-thumb': {
+            color:
+              theme.palette.mode === 'light'
+                ? theme.palette.grey[100]
+                : theme.palette.grey[600],
+          },
+          '&.Mui-disabled + .MuiSwitch-track': {
+            opacity: theme.palette.mode === 'light' ? 0.7 : 0.3,
+          },
+        },
+        '& .MuiSwitch-thumb': {
+          boxSizing: 'border-box',
+          width: 22,
+          height: 22,
+        },
+        '& .MuiSwitch-track': {
+          borderRadius: 26 / 2,
+          backgroundColor: theme.palette.mode === 'light' ? '#E9E9EA' : '#39393D',
+          opacity: 1,
+          transition: theme.transitions.create(['background-color'], {
+            duration: 500,
+          }),
+        },
+    }));
 
     return(
         <div className='tanksContainer'>
