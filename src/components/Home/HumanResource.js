@@ -9,7 +9,6 @@ import { Switch, Route } from 'react-router-dom';
 import Employee from '../HRComponents/Employee';
 import Salary from '../HRComponents/Salary';
 import Query from '../HRComponents/Query';
-import Recruitment from '../HRComponents/Recruitment';
 import Attendance from '../HRComponents/Attendance';
 
 const HumanResource = (props) => {

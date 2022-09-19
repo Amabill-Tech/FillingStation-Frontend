@@ -72,7 +72,7 @@ const HomeScreen = ({history}) => {
     useEffect(()=>{
         setActiveRoute(history.location.pathname);
         setName(routes[history.location.pathname]);
-    },[])
+    }, []);
 
     const SideItems = (props) => {
 

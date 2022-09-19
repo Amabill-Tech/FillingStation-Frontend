@@ -126,8 +126,6 @@ const Pump = () => {
         return(
             <div className='space'>
                 <CardItem />
-                <CardItem />
-                <CardItem />
             </div>
         )
     }
