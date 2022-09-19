@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../../styles/tanks.scss';
 import me5 from '../../assets/me5.png';
+import me6 from '../../assets/me6.png';
 import Switch from '@mui/material/Switch';
 import { styled } from '@mui/material/styles';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -182,6 +183,27 @@ const Tank = () => {
         },
     }));
 
+    const DashboardImage = (props) => {
+        return(
+            <div className='first-image'>
+                <div style={{marginRight:'10px'}} className='inner-first-image'>
+                    <div className='top-first-image'>
+                        <div className='top-icon'>
+                            <img style={{width:'60px', height:'50px'}} src={props.image} alt="icon" />
+                        </div>
+                        <div style={{justifyContent:'flex-end'}} className='top-text'>
+                            <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>{props.name}</div>
+                            <div style={{fontSize:'18px', fontWeight:'bold', marginLeft:'20px', fontFamily:'Nunito-Regular'}}>{props.value}</div>
+                        </div>
+                    </div>
+                    <div className='bottom-first-image'>
+                        <img style={{width:'30px', height:'10px'}} src={me6} alt="icon" />
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
     return(
         <div className='tanksContainer'>
             <div className='pump-container'>
@@ -201,7 +223,21 @@ const Tank = () => {
                 </div>
             </div>
             <div className='create-pump'>
-                hello
+                <Button sx={{
+                    width:'100%', 
+                    height:'30px',  
+                    background: '#3471B9',
+                    borderRadius: '3px',
+                    fontSize:'10px',
+                    color:'#fff',
+                    '&:hover': {
+                        backgroundColor: '#3471B9'
+                    }
+                }} 
+                    variant="contained"> Add Pump To Tank
+                </Button>
+                <DashboardImage image={me5} name={'Active pump'} value={'10'} />
+                <DashboardImage image={me5} name={'Inactive pump'} value={'7'} />
             </div>
         </div>
     )
