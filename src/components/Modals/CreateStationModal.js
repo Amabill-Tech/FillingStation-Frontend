@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { closeModal, openModal } from '../../store/actions/outlet';
 import { useSelector } from 'react-redux';
@@ -9,6 +9,7 @@ import Button from '@mui/material/Button';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Modal from '@mui/material/Modal';
 import { ThreeDots } from  'react-loader-spinner';
+import states from '../../modules/states';
 
 const CreateFillingStation = () => {
 
@@ -17,10 +18,26 @@ const CreateFillingStation = () => {
     const loadingSpinner = useSelector(state => state.authReducer.loadingSpinner);
 
     const handleClose = () => dispatch(closeModal(0));
+    const [defaultState, setDefaultState] = useState(0);
+    const [local, setLocal] = useState(0);
+    
+    const [outletName, setOutletName] = useState('');
+    const [state, setState] = useState('');
+    const [city, setCity] = useState('');
+    const [lga, setLga] = useState('');
+    const [area, setArea] = useState('');
+    const [license, setLicense] = useState('');
 
     const handleTankModal = () => {
         dispatch(closeModal(0));
-        dispatch(openModal(4));
+    }
+
+    const handleMenuSelection = (item) => {
+        setDefaultState(item.target.dataset.value);
+    }
+
+    const handleLgaSelection = (item) => {
+        setLocal(item.target.dataset.value);
     }
 
     return(
@@ -49,6 +66,7 @@ const CreateFillingStation = () => {
                                     border:'1px solid #777777',
                                     fontSize:'12px',
                                 }} placeholder="" 
+                                onChange={e => setOutletName(e.target.value)}
                             />
                         </div>
 
@@ -57,7 +75,7 @@ const CreateFillingStation = () => {
                             <Select
                                 labelId="demo-select-small"
                                 id="demo-select-small"
-                                value={10}
+                                value={defaultState}
                                 sx={{
                                     width:'100%',
                                     height: '35px', 
@@ -67,9 +85,13 @@ const CreateFillingStation = () => {
                                     fontSize:'12px',
                                 }}
                             >
-                                <MenuItem value={10}>Abuja</MenuItem>
-                                <MenuItem value={20}>Download PDF</MenuItem>
-                                <MenuItem value={30}>Print</MenuItem>
+                                {
+                                    states.listOfStates.map((item, index) => {
+                                        return(
+                                            <MenuItem onClick={handleMenuSelection} value={index}>{item.state}</MenuItem>
+                                        )
+                                    })
+                                }
                             </Select>
                         </div>
 
@@ -84,12 +106,16 @@ const CreateFillingStation = () => {
                                     border:'1px solid #777777',
                                     fontSize:'12px',
                                 }} placeholder="" 
+                                onChange={e => setCity(e.target.value)}
                             />
                         </div>
 
                         <div style={{marginTop:'15px'}} className='inputs'>
                             <div className='head-text2'>LGA</div>
-                            <OutlinedInput 
+                            <Select
+                                labelId="demo-select-small"
+                                id="demo-select-small"
+                                value={local}
                                 sx={{
                                     width:'100%',
                                     height: '35px', 
@@ -97,8 +123,16 @@ const CreateFillingStation = () => {
                                     background:'#EEF2F1', 
                                     border:'1px solid #777777',
                                     fontSize:'12px',
-                                }} placeholder="" 
-                            />
+                                }}
+                            >
+                                {
+                                    states.listOfStates[defaultState].lgas.map((item, index) => {
+                                        return(
+                                            <MenuItem onClick={handleLgaSelection} value={index}>{item}</MenuItem>
+                                        )
+                                    })
+                                }
+                            </Select>
                         </div>
 
                         <div style={{marginTop:'15px'}} className='inputs'>
@@ -112,11 +146,12 @@ const CreateFillingStation = () => {
                                     border:'1px solid #777777',
                                     fontSize:'12px',
                                 }} placeholder="" 
+                                onChange={e => setArea(e.target.value)}
                             />
                         </div>
 
                         <div style={{marginTop:'15px'}} className='inputs'>
-                            <div className='head-text2'>GPS Cordinates ( Longitude & Latitude )</div>
+                            <div className='head-text2'>License code</div>
                             <OutlinedInput 
                                 sx={{
                                     width:'100%',
@@ -126,6 +161,7 @@ const CreateFillingStation = () => {
                                     border:'1px solid #777777',
                                     fontSize:'12px',
                                 }} placeholder="" 
+                                onChange={e => setLicense(e.target.value)}
                             />
                         </div>
 

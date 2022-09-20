@@ -1,10 +1,13 @@
 import APIs from './api';
+import { openModal } from '../store/actions/outlet';
+import store from '../store';
 
 const OutletService = {
 
     registerFillingStation: (data) => {
-        return APIs.post('/register-filling-station', data)
+        return APIs.post('/station/create', data)
         .then(({ data }) => {
+            store.dispatch(openModal(4));
             return data;
         })
          .catch(err => {
@@ -14,7 +17,7 @@ const OutletService = {
     },
 
     registerTanks: (data) => {
-        return APIs.post('/register-tanks', data)
+        return APIs.post('/station/tanks/create', data)
         .then(({ data }) => {
             return data;
         })
@@ -25,7 +28,7 @@ const OutletService = {
     },
 
     registerPumps: (data) => {
-        return APIs.post('/register-pumps', data)
+        return APIs.post('/station/pump/create', data)
         .then(({ data }) => {
             return data;
         })
