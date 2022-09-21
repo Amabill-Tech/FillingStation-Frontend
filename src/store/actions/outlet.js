@@ -1,10 +1,17 @@
 import OutletService from '../../services/outletService';
-import { SPINNER, REMOVE_SPINNER, OPEN_MODAL, CLOSE_MODAL } from '../types';
+import { 
+    SPINNER, 
+    REMOVE_SPINNER, 
+    OPEN_MODAL, 
+    CLOSE_MODAL, 
+    NEW_OUTLET, 
+    NEW_TANK 
+} from '../types';
 
 export const createFillingStation = (params) => dispatch => {
     return OutletService.registerFillingStation(params)
     .then(data => {
-        console.log(data)
+        dispatch({ type: NEW_OUTLET, payload: data});
     })
     .catch(err => {
             
@@ -14,7 +21,7 @@ export const createFillingStation = (params) => dispatch => {
 export const createTanks = (params) => dispatch => {
     return OutletService.registerTanks(params)
     .then(data => {
-        console.log(data)
+        dispatch({type: NEW_TANK, payload: data})
     })
     .catch(err => {
             

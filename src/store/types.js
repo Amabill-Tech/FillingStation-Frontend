@@ -5,3 +5,5 @@ export const SPINNER = 'SPINNER';
 export const REMOVE_SPINNER = 'REMOVE_SPINNER';
 export const OPEN_MODAL = 'OPEN_MODAL';
 export const CLOSE_MODAL = 'CLOSE_MODAL';
+export const NEW_OUTLET = 'NEW_OUTLET';
+export const NEW_TANK = 'NEW_TANK';

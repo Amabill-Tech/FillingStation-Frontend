@@ -1,25 +1,22 @@
 import APIs from './api';
-import { openModal } from '../store/actions/outlet';
-import store from '../store';
 
 const OutletService = {
 
     registerFillingStation: (data) => {
         return APIs.post('/station/create', data)
-        .then(({ data }) => {
-            store.dispatch(openModal(4));
-            return data;
+        .then(({data}) => {
+            return data.outlet;
         })
          .catch(err => {
             console.log("Auth service err", err);
             throw err
-        })
+        });
     },
 
     registerTanks: (data) => {
-        return APIs.post('/station/tanks/create', data)
+        return APIs.post('/station/tank/create', data)
         .then(({ data }) => {
-            return data;
+            return data.tank;
         })
          .catch(err => {
             console.log("Auth service err", err);

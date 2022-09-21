@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { useDispatch } from 'react-redux';
-import { closeModal, openModal } from '../../store/actions/outlet';
+import { closeModal, openModal, createTanks, setSpinner, removeSpinner, } from '../../store/actions/outlet';
 import { useSelector } from 'react-redux';
 import close from '../../assets/close.png';
 import Button from '@mui/material/Button';
@@ -8,18 +8,48 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import Modal from '@mui/material/Modal';
 import { ThreeDots } from  'react-loader-spinner';
 import Radio from '@mui/material/Radio';
+import swal from 'sweetalert';
 
 const AddTank = () => {
 
     const dispatch = useDispatch();
     const open = useSelector(state => state.outletReducer.openModal);
     const loadingSpinner = useSelector(state => state.authReducer.loadingSpinner);
+    const newOutlet = useSelector(state => state.outletReducer.newOutlet);
 
     const handleClose = () => dispatch(closeModal(0));
+    const [tankName, setTankName] = useState('');
+    const [tankHeight, setTankHeight] = useState('');
+    const [productType, setProductType] = useState('PMS');
+    const [tankCapacity, setTankCapacity] = useState('');
+    const [deadStockLevel, setDeadStockLevel] = useState('');
+    const [calibrationDate, setCalibrationDate] = useState('');
 
-    const handleAddPump = () => {
-        dispatch(closeModal(0));
-        dispatch(openModal(5));
+    const handleAddPump = async() => {
+
+        if(tankName === "") return swal("Warning!", "Tank name field cannot be empty", "info");
+        if(tankHeight === "") return swal("Warning!", "Tank height field cannot be empty", "info");
+        if(productType === "") return swal("Warning!", "product type field cannot be empty", "info");
+        if(tankCapacity === "") return swal("Warning!", "Tank capacity field cannot be empty", "info");
+        if(deadStockLevel === "") return swal("Warning!", "Dead stock level field cannot be empty", "info");
+        if(calibrationDate === "") return swal("Warning!", "Calibration date field cannot be empty", "info");
+        dispatch(setSpinner());
+
+        const data = {
+            tankName: tankName,
+            tankHeight: tankHeight,
+            productType: productType,
+            tankCapacity: tankCapacity,
+            deadStockLevel: deadStockLevel,
+            calibrationDate: calibrationDate,
+            organisationID: newOutlet.organisation,
+            outletID: newOutlet._id,
+        }
+
+        await dispatch(createTanks(data));
+        await dispatch(removeSpinner());
+        await dispatch(closeModal(0));
+        dispatch(openModal(6));
     }
 
     return(
@@ -48,6 +78,7 @@ const AddTank = () => {
                                 border:'1px solid #777777',
                                 fontSize:'12px',
                             }} placeholder="" 
+                            onChange={e => setTankName(e.target.value)}
                         />
                     </div>
 
@@ -62,6 +93,7 @@ const AddTank = () => {
                                 border:'1px solid #777777',
                                 fontSize:'12px',
                             }} placeholder="" 
+                            onChange={e => setTankHeight(e.target.value)}
                         />
                     </div>
 
@@ -69,15 +101,15 @@ const AddTank = () => {
                         <div className='head-text2'>Choose product type</div>
                         <div className='radio'>
                             <div className='rad-item'>
-                                <Radio />
+                                <Radio onClick={()=>{setProductType('PMS')}} checked={productType === 'PMS'? true: false} />
                                 <div className='head-text2' style={{marginRight:'5px'}}>PMS</div>
                             </div>
                             <div className='rad-item'>
-                                <Radio />
+                                <Radio onClick={()=>{setProductType('AGO')}} checked={productType === 'AGO'? true: false} />
                                 <div className='head-text2' style={{marginRight:'5px'}}>AGO</div>
                             </div>
                             <div className='rad-item'>
-                                <Radio />
+                                <Radio onClick={()=>{setProductType('DPK')}} checked={productType === 'DPK'? true: false} />
                                 <div className='head-text2' style={{marginRight:'5px'}}>DPK</div>
                             </div>
                         </div>
@@ -94,6 +126,7 @@ const AddTank = () => {
                                 border:'1px solid #777777',
                                 fontSize:'12px',
                             }} placeholder="" 
+                            onChange={e => setTankCapacity(e.target.value)}
                         />
                     </div>
 
@@ -108,12 +141,13 @@ const AddTank = () => {
                                 border:'1px solid #777777',
                                 fontSize:'12px',
                             }} placeholder="" 
+                            onChange={e => setDeadStockLevel(e.target.value)}
                         />
                     </div>
 
                     <div style={{marginTop:'15px'}} className='inputs'>
                         <div className='head-text2'>Calibration Date</div>
-                        <input style={date} type={'date'} />
+                        <input  onChange={e => setCalibrationDate(e.target.value)} style={date} type={'date'} />
                     </div>
 
                     <div className='butt'>

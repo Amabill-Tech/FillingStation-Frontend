@@ -10,34 +10,63 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import Modal from '@mui/material/Modal';
 import { ThreeDots } from  'react-loader-spinner';
 import states from '../../modules/states';
+import swal from 'sweetalert';
+import { setSpinner, removeSpinner, createFillingStation } from '../../store/actions/outlet';
 
 const CreateFillingStation = () => {
 
     const dispatch = useDispatch();
     const open = useSelector(state => state.outletReducer.openModal);
-    const loadingSpinner = useSelector(state => state.authReducer.loadingSpinner);
+    const loadingSpinner = useSelector(state => state.outletReducer.loadingSpinner);
+    const user = useSelector(state => state.authReducer.user);
 
     const handleClose = () => dispatch(closeModal(0));
     const [defaultState, setDefaultState] = useState(0);
     const [local, setLocal] = useState(0);
     
     const [outletName, setOutletName] = useState('');
-    const [state, setState] = useState('');
+    const [state, setState] = useState(states.listOfStates[0].state);
     const [city, setCity] = useState('');
-    const [lga, setLga] = useState('');
+    const [lga, setLga] = useState(states.listOfStates[0].lgas[0]);
     const [area, setArea] = useState('');
     const [license, setLicense] = useState('');
 
-    const handleTankModal = () => {
-        dispatch(closeModal(0));
+    const handleTankModal = async() => {
+
+        if(outletName === "") return swal("Warning!", "Outlet name field cannot be empty", "info");
+        if(state === "") return swal("Warning!", "State field cannot be empty", "info");
+        if(city === "") return swal("Warning!", "City field cannot be empty", "info");
+        if(lga === "") return swal("Warning!", "LGA field cannot be empty", "info");
+        if(area === "") return swal("Warning!", "Area field cannot be empty", "info");
+        if(license === "") return swal("Warning!", "License code field cannot be empty", "info");
+        dispatch(setSpinner());
+
+        const data = {
+            outletName: outletName,
+            state: state,
+            city: city,
+            lga: lga,
+            area: area,
+            licenseCode: license,
+            noOfTanks: "",
+            noOfPumps: "",
+            organisation: user._id
+        }
+
+        await dispatch(createFillingStation(data));
+        await dispatch(closeModal(0));
+        await dispatch(removeSpinner());
+        dispatch(openModal(4));
     }
 
     const handleMenuSelection = (item) => {
         setDefaultState(item.target.dataset.value);
+        setState(states.listOfStates[item.target.dataset.value].state);
     }
 
     const handleLgaSelection = (item) => {
         setLocal(item.target.dataset.value);
+        setLga(states.listOfStates[defaultState].lgas[item.target.dataset.value]);
     }
 
     return(
@@ -56,7 +85,7 @@ const CreateFillingStation = () => {
                         </div>
 
                         <div className='inputs'>
-                            <div className='head-text2'>Outline Name</div>
+                            <div className='head-text2'>Outlet Name</div>
                             <OutlinedInput 
                                 sx={{
                                     width:'100%',
@@ -88,7 +117,7 @@ const CreateFillingStation = () => {
                                 {
                                     states.listOfStates.map((item, index) => {
                                         return(
-                                            <MenuItem onClick={handleMenuSelection} value={index}>{item.state}</MenuItem>
+                                            <MenuItem key={index} onClick={handleMenuSelection} value={index}>{item.state}</MenuItem>
                                         )
                                     })
                                 }
@@ -128,7 +157,7 @@ const CreateFillingStation = () => {
                                 {
                                     states.listOfStates[defaultState].lgas.map((item, index) => {
                                         return(
-                                            <MenuItem onClick={handleLgaSelection} value={index}>{item}</MenuItem>
+                                            <MenuItem key={index} onClick={handleLgaSelection} value={index}>{item}</MenuItem>
                                         )
                                     })
                                 }

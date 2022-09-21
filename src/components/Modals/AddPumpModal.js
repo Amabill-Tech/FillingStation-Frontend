@@ -21,7 +21,7 @@ const AddPump = () => {
 
     const handleOpen = () => {
         dispatch(closeModal(0));
-        dispatch(openModal(3));
+        dispatch(openModal(5));
     }
 
     return(

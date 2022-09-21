@@ -1,8 +1,18 @@
-import { SPINNER, REMOVE_SPINNER, OPEN_MODAL, CLOSE_MODAL } from '../types'
+import { Satellite } from '@mui/icons-material'
+import { 
+    SPINNER, 
+    REMOVE_SPINNER, 
+    OPEN_MODAL, 
+    CLOSE_MODAL, 
+    NEW_OUTLET, 
+    NEW_TANK 
+} from '../types'
 
 const initialState = {
     openModal: 0,
     loadingSpinner: false,
+    newOutlet: {},
+    newTank: {},
 }
 
 const outletReducer = (state = initialState, action) => {
@@ -36,6 +46,20 @@ const outletReducer = (state = initialState, action) => {
             return {
                 ...state,
                 loadingSpinner: false,
+            }
+        }
+
+        case NEW_OUTLET: {
+            return {
+                ...state,
+                newOutlet: payload
+            }
+        }
+
+        case NEW_TANK: {
+            return {
+                ...state,
+                newTank: payload
             }
         }
 

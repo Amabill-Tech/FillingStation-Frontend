@@ -21,6 +21,10 @@ const AddPumpMore = () => {
         dispatch(openModal(3));
     }
 
+    const addMoreTanks = () => {
+        dispatch(openModal(2));
+    }
+
     return(
         <Modal
             open={open === 6}
@@ -73,10 +77,21 @@ const AddPumpMore = () => {
                             />
                         }
                     </div>
+
+                    <div onClick={addMoreTanks} style={tanks}>Add more tanks</div>
                 </div>
             </div>
         </Modal>
     )
+}
+
+const tanks = {
+    width:'100%',
+    marginTop:'20px',
+    fontFamily:'Nunito-Regular',
+    fontSize:'14px',
+    color:'blue',
+    textAlign:'center',
 }
 
 export default AddPumpMore;
