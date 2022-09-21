@@ -20,10 +20,15 @@ import AddPump from '../Modals/AddPumpModal';
 import AddTankSuccess from '../Modals/AddTankSuccess';
 import AddPumpSuccess from '../Modals/AddPumpSuccess';
 import AddPumpMore from '../Modals/AddMorePumps';
+import OutletService from '../../services/outletService';
+import { useEffect } from 'react';
+import { useState } from 'react';
 
 const Outlets = (props) => {
 
     const open = useSelector(state => state.outletReducer.openModal);
+    const user = useSelector(state => state.authReducer.user);
+    const [stations, setStations] = useState([]);
     const dispatch = useDispatch();
 
     const handleOpenModal = (value) => dispatch(openModal(value))
@@ -40,13 +45,26 @@ const Outlets = (props) => {
         props.history.push('/home/outlets/pumps');
     }
 
+    useEffect(()=>{
+        getAllStationData();
+    },[]);
+
+    const getAllStationData = () => {
+        const payload = {
+            organisation: user._id
+        }
+        OutletService.getAllOutletStations(payload).then(data => {
+            setStations(data.station);
+        });
+    }
+
 
     return(
         <>
             {props.activeRoute.split('/').length === 3 &&
                 <div className='paymentsCaontainer'>
                     <div className='inner-pay'>
-                        { open ===1 && <CreateFillingStation /> }
+                        { open ===1 && <CreateFillingStation getStations={getAllStationData} /> }
                         { open ===2 && <AddTank /> }
                         { open ===3 && <AddPump /> }
                         { open ===4 && <AddTankSuccess /> }
@@ -167,25 +185,33 @@ const Outlets = (props) => {
                                 <div className='column'>Actions</div>
                             </div>
         
-                            <div className='row-container'>
-                                <div className='table-head2'>
-                                    <div className='column'>01</div>
-                                    <div className='column'>09 June, 2022</div>
-                                    <div className='column'>Wema bank</div>
-                                    <div className='column'>1524353625262</div>
-                                    <div className='column'>150,000</div>
-                                    <div className='column'>352,000</div>
-                                    <div className='column'>170,000</div>
-                                    <div className='column'>230,000</div>
-                                    <div className='column'>
-                                        <div className='actions'>
-                                            <img onClick={goToSales} style={{width:'27px', height:'27px'}} src={eye} alt="icon" />
-                                            <img onClick={goToPumps} style={{width:'27px', height:'27px'}} src={filling} alt="icon" />
-                                            <img onClick={goToTanks} style={{width:'27px', height:'27px'}} src={tan} alt="icon" />
+                            {
+                                stations.length === 0?
+                                <div>No data</div>:
+                                stations.map((item, index) => {
+                                    return(
+                                        <div className='row-container'>
+                                            <div className='table-head2'>
+                                                <div className='column'>{index + 1}</div>
+                                                <div className='column'>{item.licenseCode}</div>
+                                                <div className='column'>{item.outletName}</div>
+                                                <div className='column'>{item._id}</div>
+                                                <div className='column'>{item.noOfTanks}</div>
+                                                <div className='column'>{item.noOfPumps}</div>
+                                                <div className='column'>{item.city}</div>
+                                                <div className='column'>{item.state}</div>
+                                                <div className='column'>
+                                                    <div className='actions'>
+                                                        <img onClick={goToSales} style={{width:'27px', height:'27px'}} src={eye} alt="icon" />
+                                                        <img onClick={goToPumps} style={{width:'27px', height:'27px'}} src={filling} alt="icon" />
+                                                        <img onClick={goToTanks} style={{width:'27px', height:'27px'}} src={tan} alt="icon" />
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
+                                    )
+                                })
+                            }
                         </div>
         
                         <div className='footer'>

@@ -1,11 +1,11 @@
-import { Satellite } from '@mui/icons-material'
 import { 
     SPINNER, 
     REMOVE_SPINNER, 
     OPEN_MODAL, 
     CLOSE_MODAL, 
     NEW_OUTLET, 
-    NEW_TANK 
+    NEW_TANK,
+    TANK_LIST,
 } from '../types'
 
 const initialState = {
@@ -13,6 +13,7 @@ const initialState = {
     loadingSpinner: false,
     newOutlet: {},
     newTank: {},
+    tankList: {},
 }
 
 const outletReducer = (state = initialState, action) => {
@@ -60,6 +61,13 @@ const outletReducer = (state = initialState, action) => {
             return {
                 ...state,
                 newTank: payload
+            }
+        }
+
+        case TANK_LIST: {
+            return {
+                ...state,
+                tankList: payload
             }
         }
 

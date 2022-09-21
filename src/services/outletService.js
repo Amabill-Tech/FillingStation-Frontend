@@ -13,6 +13,17 @@ const OutletService = {
         });
     },
 
+    getAllOutletStations: (data) => {
+        return APIs.post('/station/allRecords', data)
+        .then(({ data }) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        });
+    },
+
     registerTanks: (data) => {
         return APIs.post('/station/tank/create', data)
         .then(({ data }) => {
@@ -23,6 +34,18 @@ const OutletService = {
             throw err
         })
     },
+
+    getAllOutletTanks: (data) => {
+        return APIs.get('/station/tank/allRecords', data)
+        .then(({ data }) => {
+            return data.admin;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        })
+    },
+
 
     registerPumps: (data) => {
         return APIs.post('/station/pump/create', data)

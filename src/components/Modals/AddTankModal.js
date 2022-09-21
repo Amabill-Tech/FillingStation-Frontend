@@ -1,6 +1,12 @@
 import React, {useState} from 'react';
 import { useDispatch } from 'react-redux';
-import { closeModal, openModal, createTanks, setSpinner, removeSpinner, } from '../../store/actions/outlet';
+import { 
+    closeModal, 
+    openModal, 
+    createTanks, 
+    setSpinner, 
+    removeSpinner, 
+} from '../../store/actions/outlet';
 import { useSelector } from 'react-redux';
 import close from '../../assets/close.png';
 import Button from '@mui/material/Button';

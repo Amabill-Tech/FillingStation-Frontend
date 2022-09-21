@@ -13,7 +13,7 @@ import states from '../../modules/states';
 import swal from 'sweetalert';
 import { setSpinner, removeSpinner, createFillingStation } from '../../store/actions/outlet';
 
-const CreateFillingStation = () => {
+const CreateFillingStation = (props) => {
 
     const dispatch = useDispatch();
     const open = useSelector(state => state.outletReducer.openModal);
@@ -56,6 +56,7 @@ const CreateFillingStation = () => {
         await dispatch(createFillingStation(data));
         await dispatch(closeModal(0));
         await dispatch(removeSpinner());
+        await props.getStations();
         dispatch(openModal(4));
     }
 

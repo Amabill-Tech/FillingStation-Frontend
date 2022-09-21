@@ -70,7 +70,7 @@ const Tank = () => {
 
                         <div className='delete'>
                             <Button sx={{
-                                width:'120px', 
+                                width:'90px', 
                                 height:'30px',  
                                 background: '#06805B',
                                 borderRadius: '3px',
@@ -80,7 +80,21 @@ const Tank = () => {
                                     backgroundColor: '#06805B'
                                 }
                                 }} 
-                                variant="contained"> Delete pump
+                                variant="contained"> Add Pump
+                            </Button>
+                            <Button sx={{
+                                width:'70px', 
+                                height:'30px',  
+                                background: '#ff6347 ',
+                                borderRadius: '3px',
+                                fontSize:'10px',
+                                color:'#fff',
+                                marginLeft:'10px',
+                                '&:hover': {
+                                    backgroundColor: '#ff6347 '
+                                }
+                                }} 
+                                variant="contained"> Delete
                             </Button>
                         </div>
                 </div>
@@ -94,9 +108,6 @@ const Tank = () => {
                 <CardItem />
                 <CardItem />
                 <CardItem />
-                <CardItem />
-                <CardItem />
-                <CardItem />
             </div>
         )
     }
@@ -104,9 +115,6 @@ const Tank = () => {
     const PMSTabs = () => {
         return(
             <div className='space'>
-                <CardItem />
-                <CardItem />
-                <CardItem />
             </div>
         )
     }
@@ -114,10 +122,6 @@ const Tank = () => {
     const AGOTabs = () => {
         return(
             <div className='space'>
-                <CardItem />
-                <CardItem />
-                <CardItem />
-                <CardItem />
             </div>
         )
     }
@@ -125,9 +129,6 @@ const Tank = () => {
     const DPKTabs = () => {
         return(
             <div className='space'>
-                <CardItem />
-                <CardItem />
-                <CardItem />
             </div>
         )
     }

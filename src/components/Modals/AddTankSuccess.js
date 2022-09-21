@@ -1,16 +1,18 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { closeModal, openModal } from '../../store/actions/outlet';
+import { closeModal } from '../../store/actions/outlet';
 import { useSelector } from 'react-redux';
 import close from '../../assets/close.png';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import outletSuccess from '../../assets/outletSuccess.png';
 import { ThreeDots } from  'react-loader-spinner';
+import { useHistory } from 'react-router-dom';
 
 const AddTankSuccess = () => {
 
     const dispatch = useDispatch();
+    const history = useHistory();
     const open = useSelector(state => state.outletReducer.openModal);
     const loadingSpinner = useSelector(state => state.authReducer.loadingSpinner);
 
@@ -18,7 +20,7 @@ const AddTankSuccess = () => {
 
     const handleAddTanks = () => {
         dispatch(closeModal(0));
-        dispatch(openModal(2));
+        history.push('/home/outlets/tanks');
     }
 
     return(
