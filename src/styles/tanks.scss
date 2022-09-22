@@ -4,6 +4,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    margin-top: 10px;
 
     .pump-container{
         width: 74%;
@@ -197,13 +198,16 @@
     .tanksContainer{
         margin-top: 80px;
         width: 100%;
+        height: auto;
+        flex-direction: column-reverse;
 
         .pump-container{
             width: 100%;
+            margin-top: 20px;
         }
 
         .create-pump{
-            display: none;
+            width: 100%;
         }
     }
 }

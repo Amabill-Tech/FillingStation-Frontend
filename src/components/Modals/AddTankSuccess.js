@@ -8,6 +8,7 @@ import Modal from '@mui/material/Modal';
 import outletSuccess from '../../assets/outletSuccess.png';
 import { ThreeDots } from  'react-loader-spinner';
 import { useHistory } from 'react-router-dom';
+import swal from 'sweetalert';
 
 const AddTankSuccess = () => {
 
@@ -15,12 +16,17 @@ const AddTankSuccess = () => {
     const history = useHistory();
     const open = useSelector(state => state.outletReducer.openModal);
     const loadingSpinner = useSelector(state => state.authReducer.loadingSpinner);
+    const newOutlet = useSelector(state => state.outletReducer.newOutlet);
 
     const handleClose = () => dispatch(closeModal(0));
 
     const handleAddTanks = () => {
         dispatch(closeModal(0));
-        history.push('/home/outlets/tanks');
+        if(newOutlet !== {}){
+            history.push('/home/outlets/tanks', {state: newOutlet});
+        }else{
+            swal("Warning!", "Please click on outlet on the list to add pumps and tanks", "info");
+        }
     }
 
     return(

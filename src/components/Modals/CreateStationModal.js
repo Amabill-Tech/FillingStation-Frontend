@@ -11,13 +11,12 @@ import Modal from '@mui/material/Modal';
 import { ThreeDots } from  'react-loader-spinner';
 import states from '../../modules/states';
 import swal from 'sweetalert';
-import { setSpinner, removeSpinner, createFillingStation } from '../../store/actions/outlet';
+import { createFillingStation } from '../../store/actions/outlet';
 
 const CreateFillingStation = (props) => {
 
     const dispatch = useDispatch();
     const open = useSelector(state => state.outletReducer.openModal);
-    const loadingSpinner = useSelector(state => state.outletReducer.loadingSpinner);
     const user = useSelector(state => state.authReducer.user);
 
     const handleClose = () => dispatch(closeModal(0));
@@ -30,6 +29,7 @@ const CreateFillingStation = (props) => {
     const [lga, setLga] = useState(states.listOfStates[0].lgas[0]);
     const [area, setArea] = useState('');
     const [license, setLicense] = useState('');
+    const [loadingSpinner, setLoadingSpinner] = useState(false);
 
     const handleTankModal = async() => {
 
@@ -39,7 +39,7 @@ const CreateFillingStation = (props) => {
         if(lga === "") return swal("Warning!", "LGA field cannot be empty", "info");
         if(area === "") return swal("Warning!", "Area field cannot be empty", "info");
         if(license === "") return swal("Warning!", "License code field cannot be empty", "info");
-        dispatch(setSpinner());
+        setLoadingSpinner(true);
 
         const data = {
             outletName: outletName,
@@ -55,7 +55,7 @@ const CreateFillingStation = (props) => {
 
         await dispatch(createFillingStation(data));
         await dispatch(closeModal(0));
-        await dispatch(removeSpinner());
+        setLoadingSpinner(false);
         await props.getStations();
         dispatch(openModal(4));
     }
@@ -211,7 +211,7 @@ const CreateFillingStation = (props) => {
                                 variant="contained"> Save
                             </Button>
 
-                            {loadingSpinner &&
+                            {loadingSpinner?
                                 <ThreeDots 
                                     height="60" 
                                     width="50" 
@@ -221,7 +221,7 @@ const CreateFillingStation = (props) => {
                                     wrapperStyle={{}}
                                     wrapperClassName=""
                                     visible={true}
-                                />
+                                />: null
                             }
                         </div>
                         

@@ -363,7 +363,7 @@ const Tank = (props) => {
     }
 
     return(
-        <div style={{marginTop:'10px'}} className='tanksContainer'>
+        <div className='tanksContainer'>
             { open ===2 && <AddTank data={location.state} refresh={getAllStationTanks} /> }
             <div className='pump-container'>
                 <div className='head'>
@@ -381,6 +381,7 @@ const Tank = (props) => {
                     {tabs === 3 && <DPKTabs /> }
                 </div>
             </div>
+            
             <div className='create-pump'>
                 <Button sx={{
                     width:'100%', 
