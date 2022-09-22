@@ -93,6 +93,28 @@ const OutletService = {
             throw err
         })
     },
+
+    activatePumps: (data) => {
+        return APIs.post('/station/pump/activatePump', data)
+        .then(({ data }) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        })
+    },
+
+    deletePump: (data) => {
+        return APIs.post('/station/pump/delete', data)
+        .then(({ data }) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        })
+    },
 }
 
 export default OutletService;

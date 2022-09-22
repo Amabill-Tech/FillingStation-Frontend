@@ -8,6 +8,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import Button from '@mui/material/Button';
 import OutletService from '../../services/outletService';
 import { useLocation } from 'react-router-dom';
+import swal from 'sweetalert';
 
 const Pump = () => {
 
@@ -59,8 +60,36 @@ const Pump = () => {
         setInactiveTank(inActiveTank.length);
     }
 
-    const deletePump = () => {
-        alert('yes')
+    const activatePump = (e, data) => {
+        const payload = {
+            id: data._id,
+            activeState: e.target.checked? '1': '0'
+        }
+        OutletService.activatePumps(payload).then((data) => {console.log('hello', data)
+            if(data.code === 200) swal("Success!", "Tank active state updated successfully", "success");
+            getAllStationPumps();
+        });
+    }
+
+    const deletePump = (data) => {
+        swal({
+            title: "Alert!",
+            text: `Are you sure you want to delete ${data.tankName}?`,
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+                const payload = {
+                    id: data._id,
+                }
+                OutletService.deletePump(payload).then(data => {
+                    if(data.code === 200) swal("Success!", "Tank deleted successfully", "success");
+                    getAllStationPumps();
+                })
+            }
+        });
     }
 
     const CardItem = (props) => {
@@ -74,7 +103,7 @@ const Pump = () => {
                             </div>
                             <div className='right'>
                                 <div>{props.data.activeState === '0'? 'Inactive': 'Active'}</div>
-                                <IOSSwitch sx={{ m: 1 }} defaultChecked={props.data.activeState === '0'? false: true} />
+                                <IOSSwitch sx={{ m: 1 }} onClick={(e) => activatePump(e, props.data)} defaultChecked={props.data.activeState === '0'? false: true} />
                             </div>
                         </div>
 
@@ -135,7 +164,7 @@ const Pump = () => {
                                     backgroundColor: '#06805B'
                                 }
                                 }} 
-                                onClick={deletePump}
+                                onClick={()=>deletePump(props.data)}
                                 variant="contained"> Delete
                             </Button>
                         </div>
