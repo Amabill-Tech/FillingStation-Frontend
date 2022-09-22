@@ -1,4 +1,5 @@
 import APIs from './api';
+import swal from 'sweetalert';
 
 const OutletService = {
 
@@ -32,11 +33,13 @@ const OutletService = {
          .catch(err => {
             console.log("Auth service err", err);
             throw err
-        })
+        }).then(()=>{
+            swal("Success!", "Tank created successfully", "success");
+        });
     },
 
     getAllOutletTanks: (data) => {
-        return APIs.get('/station/tank/allRecords', data)
+        return APIs.post('/station/tank/allRecords', data)
         .then(({ data }) => {
             return data.admin;
         })

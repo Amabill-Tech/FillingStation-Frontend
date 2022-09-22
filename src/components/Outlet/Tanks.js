@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../styles/tanks.scss';
 import me5 from '../../assets/me5.png';
 import me6 from '../../assets/me6.png';
@@ -6,28 +6,123 @@ import Switch from '@mui/material/Switch';
 import { styled } from '@mui/material/styles';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Button from '@mui/material/Button';
+import { useLocation } from 'react-router-dom';
+import { openModal } from '../../store/actions/outlet';
+import { useDispatch } from 'react-redux';
+import AddTank from '../Modals/AddTankModal';
+import { useSelector } from 'react-redux';
+import OutletService from '../../services/outletService';
 
-const Tank = () => {
+const Tank = (props) => {
 
     const [tabs, setTabs] = useState(0);
+    const [PMSTank, setPMSTank] = useState([]);
+    const [AGOTank, setAGOTank] = useState([]);
+    const [DPKTank, setDPKTank] = useState([]);
+    const [AllTank, setAllTank] = useState([]);
+    const location = useLocation();
+    const open = useSelector(state => state.outletReducer.openModal);
+    const dispatch = useDispatch();
 
-    const CardItem = () => {
+    const handleAddTanks = () => {
+        dispatch(openModal(2));
+    }
+
+    useEffect(()=>{
+        getAllStationTanks();
+    },[]);
+
+    const getAllStationTanks = () => {
+        setAllTank([]);
+        const payload = {
+            organisationID: location.state.state.organisation,
+            outletID: location.state.state._id
+        }
+        OutletService.getAllOutletTanks(payload).then(data => {
+            setAllTank(data);
+            getSeparateTanks(data);
+        });
+    }
+
+    const getSeparateTanks = (data) => {
+
+        const PMS = [];
+        const AGO = [];
+        const DPK = [];
+
+        for(let item of data){
+            item.productType === 'PMS' && PMS.push(item);
+            item.productType === 'AGO' && AGO.push(item);
+            item.productType === 'DPK' && DPK.push(item);
+        }
+
+        setPMSTank(PMS);
+        setAGOTank(AGO);
+        setDPKTank(DPK);
+    }
+
+    const CardItem = (props) => {
         return(
-            <div className='item'>
+            <div style={{height:"400px"}} className='item'>
                 <div className='inner'>
                         <div className='top'>
                             <div className='left'>
                                 <img style={{width:'40px', height:'40px'}} src={me5} alt="icon" />
-                                <div>PMS Pump 1</div>
+                                <div>{props.data.tankName}</div>
                             </div>
                             <div className='right'>
-                                <div>Active</div>
-                                <IOSSwitch sx={{ m: 1 }} defaultChecked />
+                                <div>{props.data.activeState === '0'? 'Inactive': 'Active'}</div>
+                                <IOSSwitch sx={{ m: 1 }} defaultChecked={props.data.activeState === '0'? false: true} />
                             </div>
                         </div>
 
                         <div className='out'>
-                            <div style={{width:'40%', textAlign:'left'}}>Pump ID</div>
+                            <div style={{width:'40%', textAlign:'left'}}>Dead Stock Level(Litres)</div>
+                            <OutlinedInput 
+                                placeholder="" 
+                                sx={{
+                                    width:'60%',
+                                    height:'35px', 
+                                    fontSize:'12px',
+                                    background:'#F2F1F1',
+                                    color:'#000'
+                                }} 
+                                value={props.data.deadStockLevel}
+                            />
+                        </div>
+
+                        <div className='out'>
+                            <div style={{width:'40%', textAlign:'left'}}>Tank Capacity (Litres)</div>
+                            <OutlinedInput 
+                                placeholder="" 
+                                sx={{
+                                    width:'60%',
+                                    height:'35px', 
+                                    fontSize:'12px',
+                                    background:'#F2F1F1',
+                                    color:'#000'
+                                }} 
+                                value={props.data.tankCapacity}
+                            />
+                        </div>
+
+                        <div className='out'>
+                            <div style={{width:'40%', textAlign:'left'}}>Tank ID</div>
+                            <OutlinedInput 
+                                placeholder="" 
+                                sx={{
+                                    width:'60%',
+                                    height:'35px', 
+                                    fontSize:'12px',
+                                    background:'#F2F1F1',
+                                    color:'#000'
+                                }} 
+                                value={props.data._id}
+                            />
+                        </div>
+
+                        <div className='out'>
+                            <div style={{width:'40%', textAlign:'left'}}>Current Stock Level (Litres)</div>
                             <OutlinedInput 
                                 placeholder="" 
                                 sx={{
@@ -41,7 +136,7 @@ const Tank = () => {
                         </div>
 
                         <div className='out'>
-                            <div style={{width:'40%', textAlign:'left'}}>Tank Connecting to pump</div>
+                            <div style={{width:'40%', textAlign:'left'}}>Calibration Date</div>
                             <OutlinedInput 
                                 placeholder="" 
                                 sx={{
@@ -50,25 +145,12 @@ const Tank = () => {
                                     fontSize:'12px',
                                     background:'#F2F1F1',
                                     color:'#000'
-                                }} 
+                                }}
+                                value={props.data.calibrationDate} 
                             />
                         </div>
 
-                        <div className='out'>
-                            <div style={{width:'40%', textAlign:'left'}}>Total Reading</div>
-                            <OutlinedInput 
-                                placeholder="" 
-                                sx={{
-                                    width:'60%',
-                                    height:'35px', 
-                                    fontSize:'12px',
-                                    background:'#F2F1F1',
-                                    color:'#000'
-                                }} 
-                            />
-                        </div>
-
-                        <div className='delete'>
+                        <div style={{marginTop:'20px'}} className='delete'>
                             <Button sx={{
                                 width:'90px', 
                                 height:'30px',  
@@ -105,9 +187,15 @@ const Tank = () => {
     const AllTabs = () => {
         return(
             <div className='space'>
-                <CardItem />
-                <CardItem />
-                <CardItem />
+                {
+                    AllTank.length === 0?
+                    <div>No records of tanks</div>:
+                    AllTank.map((item, index) => {
+                        return(
+                            <CardItem key={index} data={item} />
+                        )
+                    })
+                }
             </div>
         )
     }
@@ -115,6 +203,15 @@ const Tank = () => {
     const PMSTabs = () => {
         return(
             <div className='space'>
+                {
+                    PMSTank.length === 0?
+                    <div>No records of tanks</div>:
+                    PMSTank.map((item, index) => {
+                        return(
+                            <CardItem key={index} data={item} />
+                        )
+                    })
+                }
             </div>
         )
     }
@@ -122,6 +219,15 @@ const Tank = () => {
     const AGOTabs = () => {
         return(
             <div className='space'>
+                {
+                    AGOTank.length === 0?
+                    <div>No records of tanks</div>:
+                    AGOTank.map((item, index) => {
+                        return(
+                            <CardItem key={index} data={item} />
+                        )
+                    })
+                }
             </div>
         )
     }
@@ -129,6 +235,15 @@ const Tank = () => {
     const DPKTabs = () => {
         return(
             <div className='space'>
+                {
+                    DPKTank.length === 0?
+                    <div>No records of tanks</div>:
+                    DPKTank.map((item, index) => {
+                        return(
+                            <CardItem key={index} data={item} />
+                        )
+                    })
+                }
             </div>
         )
     }
@@ -206,7 +321,8 @@ const Tank = () => {
     }
 
     return(
-        <div className='tanksContainer'>
+        <div style={{marginTop:'10px'}} className='tanksContainer'>
+            { open ===2 && <AddTank data={location.state} refresh={getAllStationTanks} /> }
             <div className='pump-container'>
                 <div className='head'>
                     <div className='tabs'>
@@ -235,7 +351,8 @@ const Tank = () => {
                         backgroundColor: '#3471B9'
                     }
                 }} 
-                    variant="contained"> Add Pump To Tank
+                    onClick={handleAddTanks}
+                    variant="contained"> Add Tanks to Outlet
                 </Button>
                 <DashboardImage image={me5} name={'Active pump'} value={'10'} />
                 <DashboardImage image={me5} name={'Inactive pump'} value={'7'} />

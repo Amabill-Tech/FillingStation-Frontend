@@ -346,7 +346,7 @@ const state = [
         ]
     },
     {
-        "state": "Federal Capital Territory",
+        "state": "Abuja",
         "lgas": [
             "Abuja",
             "Kwali",

@@ -16,7 +16,7 @@ import { ThreeDots } from  'react-loader-spinner';
 import Radio from '@mui/material/Radio';
 import swal from 'sweetalert';
 
-const AddTank = () => {
+const AddTank = (props) => {
 
     const dispatch = useDispatch();
     const open = useSelector(state => state.outletReducer.openModal);
@@ -48,14 +48,14 @@ const AddTank = () => {
             tankCapacity: tankCapacity,
             deadStockLevel: deadStockLevel,
             calibrationDate: calibrationDate,
-            organisationID: newOutlet.organisation,
-            outletID: newOutlet._id,
+            organisationID: props.data.state.organisation,
+            outletID: props.data.state._id,
         }
 
         await dispatch(createTanks(data));
         await dispatch(removeSpinner());
-        await dispatch(closeModal(0));
-        dispatch(openModal(6));
+        await props.refresh();
+        dispatch(closeModal(0));
     }
 
     return(

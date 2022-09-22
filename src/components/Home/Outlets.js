@@ -15,7 +15,6 @@ import Pumps from '../Outlet/Pumps';
 import Sales from '../Outlet/Sales';
 import { Switch, Route } from 'react-router-dom';
 import CreateFillingStation from '../Modals/CreateStationModal';
-import AddTank from '../Modals/AddTankModal';
 import AddPump from '../Modals/AddPumpModal';
 import AddTankSuccess from '../Modals/AddTankSuccess';
 import AddPumpSuccess from '../Modals/AddPumpSuccess';
@@ -37,8 +36,8 @@ const Outlets = (props) => {
         props.history.push('/home/outlets/sales');
     }
 
-    const goToTanks = () => {
-        props.history.push('/home/outlets/tanks');
+    const goToTanks = (item) => {
+        props.history.push('/home/outlets/tanks', {state: item});
     }
 
     const goToPumps = () => {
@@ -65,7 +64,6 @@ const Outlets = (props) => {
                 <div className='paymentsCaontainer'>
                     <div className='inner-pay'>
                         { open ===1 && <CreateFillingStation getStations={getAllStationData} /> }
-                        { open ===2 && <AddTank /> }
                         { open ===3 && <AddPump /> }
                         { open ===4 && <AddTankSuccess /> }
                         { open ===5 && <AddPumpSuccess /> }
@@ -187,7 +185,7 @@ const Outlets = (props) => {
         
                             {
                                 stations.length === 0?
-                                <div>No data</div>:
+                                <div style={place}>No data</div>:
                                 stations.map((item, index) => {
                                     return(
                                         <div className='row-container'>
@@ -204,7 +202,7 @@ const Outlets = (props) => {
                                                     <div className='actions'>
                                                         <img onClick={goToSales} style={{width:'27px', height:'27px'}} src={eye} alt="icon" />
                                                         <img onClick={goToPumps} style={{width:'27px', height:'27px'}} src={filling} alt="icon" />
-                                                        <img onClick={goToTanks} style={{width:'27px', height:'27px'}} src={tan} alt="icon" />
+                                                        <img onClick={()=>{goToTanks(item)}} style={{width:'27px', height:'27px'}} src={tan} alt="icon" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -260,6 +258,15 @@ const contain = {
     width:'96%',
     height:'89%',
 
+}
+
+const place = {
+    width:'100%',
+    textAlign:'center',
+    fontSize:'14px',
+    fontFamily:'Nunito-Regular',
+    marginTop:'20px',
+    color:'green'
 }
 
 export default Outlets;
