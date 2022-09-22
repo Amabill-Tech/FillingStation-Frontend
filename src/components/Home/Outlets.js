@@ -39,8 +39,8 @@ const Outlets = (props) => {
         props.history.push('/home/outlets/tanks', {state: item});
     }
 
-    const goToPumps = () => {
-        props.history.push('/home/outlets/pumps');
+    const goToPumps = (item) => {
+        props.history.push('/home/outlets/pumps', {state: item});
     }
 
     const getAllStationData = useCallback(() => {
@@ -199,7 +199,7 @@ const Outlets = (props) => {
                                                 <div className='column'>
                                                     <div className='actions'>
                                                         <img onClick={goToSales} style={{width:'27px', height:'27px'}} src={eye} alt="icon" />
-                                                        <img onClick={goToPumps} style={{width:'27px', height:'27px'}} src={filling} alt="icon" />
+                                                        <img onClick={()=>{goToPumps(item)}} style={{width:'27px', height:'27px'}} src={filling} alt="icon" />
                                                         <img onClick={()=>{goToTanks(item)}} style={{width:'27px', height:'27px'}} src={tan} alt="icon" />
                                                     </div>
                                                 </div>

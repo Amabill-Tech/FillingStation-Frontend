@@ -35,6 +35,7 @@ const AddPump = (props) => {
         const payload = {
             pumpName: pumpName,
             hostTank: props.currentTank._id,
+            hostTankName: props.currentTank.tankName,
             productType: productType,
             totalizerReading: totalizer,
             organisationID: props.currentTank.organisationID,

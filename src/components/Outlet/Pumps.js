@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import '../../styles/tanks.scss';
 import me5 from '../../assets/me5.png';
 import me6 from '../../assets/me6.png';
@@ -6,23 +6,75 @@ import Switch from '@mui/material/Switch';
 import { styled } from '@mui/material/styles';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Button from '@mui/material/Button';
+import OutletService from '../../services/outletService';
+import { useLocation } from 'react-router-dom';
 
 const Pump = () => {
 
     const [tabs, setTabs] = useState(0);
+    const [PMSPump, setPMSTank] = useState([]);
+    const [AGOPump, setAGOTank] = useState([]);
+    const [DPKPump, setDPKTank] = useState([]);
+    const [AllPump, setAllPumps] = useState([]);
+    const [activePump, setActiveTank] = useState([]);
+    const [inActivePump, setInactiveTank] = useState([]);
+    const location = useLocation();
 
-    const CardItem = () => {
+    const getAllStationPumps = useCallback(() => {
+        setAllPumps([]);
+        const payload = {
+            organisationID: location.state.state.organisation,
+            outletID: location.state.state._id
+        }
+        OutletService.getAllStationPumps(payload).then(data => {
+            setAllPumps(data);
+            getSeparateTanks(data);
+        });
+    }, [location.state.state._id, location.state.state.organisation]);
+
+    useEffect(()=>{
+        getAllStationPumps();
+    },[getAllStationPumps]);
+
+    const getSeparateTanks = (data) => {
+
+        const PMS = [];
+        const AGO = [];
+        const DPK = [];
+        const activeTank = [];
+        const inActiveTank = [];
+
+        for(let item of data){
+            item.productType === 'PMS' && PMS.push(item);
+            item.productType === 'AGO' && AGO.push(item);
+            item.productType === 'DPK' && DPK.push(item);
+            item.activeState === '0' || activeTank.push(item);
+            item.activeState === '0' && inActiveTank.push(item);
+        }
+
+        setPMSTank(PMS);
+        setAGOTank(AGO);
+        setDPKTank(DPK);
+        setActiveTank(activeTank.length);
+        setInactiveTank(inActiveTank.length);
+    }
+
+    const deletePump = () => {
+        alert('yes')
+    }
+
+    const CardItem = (props) => {
         return(
             <div className='item'>
                 <div className='inner'>
                         <div className='top'>
                             <div className='left'>
                                 <img style={{width:'40px', height:'40px'}} src={me5} alt="icon" />
-                                <div>PMS Pump 1</div>
+                                <div>{props.data.pumpName}</div>
                             </div>
                             <div className='right'>
-                                <div>Active</div>
-                                <IOSSwitch sx={{ m: 1 }} defaultChecked />
+                                <div>{props.data.activeState === '0'? 'Inactive': 'Active'}</div>
+                                <IOSSwitch sx={{ m: 1 }} defaultChecked={props.data.activeState === '0'? false: true} />
                             </div>
                         </div>
 
@@ -37,6 +89,7 @@ const Pump = () => {
                                     background:'#F2F1F1',
                                     color:'#000'
                                 }} 
+                                value={props.data._id}
                             />
                         </div>
 
@@ -51,6 +104,7 @@ const Pump = () => {
                                     background:'#F2F1F1',
                                     color:'#000'
                                 }} 
+                                value={props.data.hostTankName}
                             />
                         </div>
 
@@ -65,6 +119,7 @@ const Pump = () => {
                                     background:'#F2F1F1',
                                     color:'#000'
                                 }} 
+                                value={props.data.totalizerReading}
                             />
                         </div>
 
@@ -80,7 +135,8 @@ const Pump = () => {
                                     backgroundColor: '#06805B'
                                 }
                                 }} 
-                                variant="contained"> Delete pump
+                                onClick={deletePump}
+                                variant="contained"> Delete
                             </Button>
                         </div>
                 </div>
@@ -91,12 +147,15 @@ const Pump = () => {
     const AllTabs = () => {
         return(
             <div className='space'>
-                <CardItem />
-                <CardItem />
-                <CardItem />
-                <CardItem />
-                <CardItem />
-                <CardItem />
+                {
+                    AllPump.length === 0?
+                    <div style={place}>No records of pumps</div>:
+                    AllPump.map((item, index) => {
+                        return(
+                            <CardItem key={index} data={item} />
+                        )
+                    })
+                }
             </div>
         )
     }
@@ -104,9 +163,15 @@ const Pump = () => {
     const PMSTabs = () => {
         return(
             <div className='space'>
-                <CardItem />
-                <CardItem />
-                <CardItem />
+                {
+                    PMSPump.length === 0?
+                    <div style={place}>No records of pumps</div>:
+                    PMSPump.map((item, index) => {
+                        return(
+                            <CardItem key={index} data={item} />
+                        )
+                    })
+                }
             </div>
         )
     }
@@ -114,10 +179,15 @@ const Pump = () => {
     const AGOTabs = () => {
         return(
             <div className='space'>
-                <CardItem />
-                <CardItem />
-                <CardItem />
-                <CardItem />
+                {
+                    AGOPump.length === 0?
+                    <div style={place}>No records of pumps</div>:
+                    AGOPump.map((item, index) => {
+                        return(
+                            <CardItem key={index} data={item} />
+                        )
+                    })
+                }
             </div>
         )
     }
@@ -125,7 +195,15 @@ const Pump = () => {
     const DPKTabs = () => {
         return(
             <div className='space'>
-                <CardItem />
+                {
+                    DPKPump.length === 0?
+                    <div style={place}>No records of pumps</div>:
+                    DPKPump.map((item, index) => {
+                        return(
+                            <CardItem key={index} data={item} />
+                        )
+                    })
+                }
             </div>
         )
     }
@@ -234,8 +312,8 @@ const Pump = () => {
                 }} 
                     variant="contained"> Add Pump To Tank
                 </Button>
-                <DashboardImage image={me5} name={'Active pump'} value={'10'} />
-                <DashboardImage image={me5} name={'Inactive pump'} value={'7'} />
+                <DashboardImage image={me5} name={'Active pump'} value={activePump} />
+                <DashboardImage image={me5} name={'Inactive pump'} value={inActivePump} />
             </div>
         </div>
     )
@@ -259,6 +337,15 @@ const tab2 = {
     justifyContent: 'center',
     alignItems: 'center',
     color:'#fff'
+}
+
+const place = {
+    width:'100%',
+    textAlign:'center',
+    fontSize:'16px',
+    fontFamily:'Nunito-Regular',
+    marginTop:'20px',
+    color:'green'
 }
 
 export default Pump;

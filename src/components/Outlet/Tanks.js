@@ -39,6 +39,7 @@ const Tank = (props) => {
             organisationID: location.state.state.organisation,
             outletID: location.state.state._id
         }
+        console.log(payload)
         OutletService.getAllOutletTanks(payload).then(data => {
             setAllTank(data);
             getSeparateTanks(data);

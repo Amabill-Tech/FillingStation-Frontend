@@ -82,6 +82,17 @@ const OutletService = {
             throw err
         })
     },
+
+    getAllStationPumps: (data) => {
+        return APIs.post('/station/pump/allRecords', data)
+        .then(({ data }) => {
+            return data.pump;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        })
+    },
 }
 
 export default OutletService;
