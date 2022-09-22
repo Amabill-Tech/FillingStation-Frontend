@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import '../../styles/payments.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -44,18 +44,18 @@ const Outlets = (props) => {
         props.history.push('/home/outlets/pumps');
     }
 
-    useEffect(()=>{
-        getAllStationData();
-    },[]);
-
-    const getAllStationData = () => {
+    const getAllStationData = useCallback(() => {
         const payload = {
             organisation: user._id
         }
         OutletService.getAllOutletStations(payload).then(data => {
             setStations(data.station);
         });
-    }
+    }, [user._id]);
+
+    useEffect(()=>{
+        getAllStationData();
+    },[getAllStationData]);
 
 
     return(
@@ -188,7 +188,7 @@ const Outlets = (props) => {
                                 <div style={place}>No data</div>:
                                 stations.map((item, index) => {
                                     return(
-                                        <div className='row-container'>
+                                        <div key={index} className='row-container'>
                                             <div className='table-head2'>
                                                 <div className='column'>{index + 1}</div>
                                                 <div className='column'>{item.licenseCode}</div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import '../../styles/tanks.scss';
 import me5 from '../../assets/me5.png';
 import me6 from '../../assets/me6.png';
@@ -12,6 +12,7 @@ import { useDispatch } from 'react-redux';
 import AddTank from '../Modals/AddTankModal';
 import { useSelector } from 'react-redux';
 import OutletService from '../../services/outletService';
+import swal from 'sweetalert';
 
 const Tank = (props) => {
 
@@ -20,6 +21,8 @@ const Tank = (props) => {
     const [AGOTank, setAGOTank] = useState([]);
     const [DPKTank, setDPKTank] = useState([]);
     const [AllTank, setAllTank] = useState([]);
+    const [activeTank, setActiveTank] = useState([]);
+    const [inActiveTank, setInactiveTank] = useState([]);
     const location = useLocation();
     const open = useSelector(state => state.outletReducer.openModal);
     const dispatch = useDispatch();
@@ -28,11 +31,7 @@ const Tank = (props) => {
         dispatch(openModal(2));
     }
 
-    useEffect(()=>{
-        getAllStationTanks();
-    },[]);
-
-    const getAllStationTanks = () => {
+    const getAllStationTanks = useCallback(() => {
         setAllTank([]);
         const payload = {
             organisationID: location.state.state.organisation,
@@ -42,23 +41,44 @@ const Tank = (props) => {
             setAllTank(data);
             getSeparateTanks(data);
         });
-    }
+    }, [location.state.state._id, location.state.state.organisation]);
+
+    useEffect(()=>{
+        getAllStationTanks();
+    },[getAllStationTanks]);
 
     const getSeparateTanks = (data) => {
 
         const PMS = [];
         const AGO = [];
         const DPK = [];
+        const activeTank = [];
+        const inActiveTank = [];
 
         for(let item of data){
             item.productType === 'PMS' && PMS.push(item);
             item.productType === 'AGO' && AGO.push(item);
             item.productType === 'DPK' && DPK.push(item);
+            item.activeState === '0' || activeTank.push(item);
+            item.activeState === '0' && inActiveTank.push(item);
         }
 
         setPMSTank(PMS);
         setAGOTank(AGO);
         setDPKTank(DPK);
+        setActiveTank(activeTank.length);
+        setInactiveTank(inActiveTank.length);
+    }
+
+    const activateTank = (e, data) => {
+        const payload = {
+            id: data._id,
+            activeState: e.target.checked? '1': '0'
+        }
+        OutletService.activateTanks(payload).then((data) => {
+            if(data.code === 200) swal("Success!", "Tank active state updated successfully", "success");
+            getAllStationTanks();
+        });
     }
 
     const CardItem = (props) => {
@@ -72,7 +92,7 @@ const Tank = (props) => {
                             </div>
                             <div className='right'>
                                 <div>{props.data.activeState === '0'? 'Inactive': 'Active'}</div>
-                                <IOSSwitch sx={{ m: 1 }} defaultChecked={props.data.activeState === '0'? false: true} />
+                                <IOSSwitch onClick={(e)=>{activateTank(e, props.data)}} sx={{ m: 1 }} defaultChecked={props.data.activeState === '0'? false: true} />
                             </div>
                         </div>
 
@@ -189,7 +209,7 @@ const Tank = (props) => {
             <div className='space'>
                 {
                     AllTank.length === 0?
-                    <div>No records of tanks</div>:
+                    <div style={place}>No records of tanks</div>:
                     AllTank.map((item, index) => {
                         return(
                             <CardItem key={index} data={item} />
@@ -205,7 +225,7 @@ const Tank = (props) => {
             <div className='space'>
                 {
                     PMSTank.length === 0?
-                    <div>No records of tanks</div>:
+                    <div style={place}>No records of tanks</div>:
                     PMSTank.map((item, index) => {
                         return(
                             <CardItem key={index} data={item} />
@@ -221,7 +241,7 @@ const Tank = (props) => {
             <div className='space'>
                 {
                     AGOTank.length === 0?
-                    <div>No records of tanks</div>:
+                    <div style={place}>No records of tanks</div>:
                     AGOTank.map((item, index) => {
                         return(
                             <CardItem key={index} data={item} />
@@ -237,7 +257,7 @@ const Tank = (props) => {
             <div className='space'>
                 {
                     DPKTank.length === 0?
-                    <div>No records of tanks</div>:
+                    <div style={place}>No records of tanks</div>:
                     DPKTank.map((item, index) => {
                         return(
                             <CardItem key={index} data={item} />
@@ -354,8 +374,8 @@ const Tank = (props) => {
                     onClick={handleAddTanks}
                     variant="contained"> Add Tanks to Outlet
                 </Button>
-                <DashboardImage image={me5} name={'Active pump'} value={'10'} />
-                <DashboardImage image={me5} name={'Inactive pump'} value={'7'} />
+                <DashboardImage image={me5} name={'Active tank'} value={activeTank} />
+                <DashboardImage image={me5} name={'Inactive tank'} value={inActiveTank} />
             </div>
         </div>
     )
@@ -379,6 +399,15 @@ const tab2 = {
     justifyContent: 'center',
     alignItems: 'center',
     color:'#fff'
+}
+
+const place = {
+    width:'100%',
+    textAlign:'center',
+    fontSize:'16px',
+    fontFamily:'Nunito-Regular',
+    marginTop:'20px',
+    color:'green'
 }
 
 export default Tank;

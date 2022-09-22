@@ -49,6 +49,17 @@ const OutletService = {
         })
     },
 
+    activateTanks: (data) => {
+        return APIs.post('/station/tank/activateTank', data)
+        .then(({ data }) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        })
+    },
+
 
     registerPumps: (data) => {
         return APIs.post('/station/pump/create', data)

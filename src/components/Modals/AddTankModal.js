@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import { useDispatch } from 'react-redux';
 import { 
     closeModal, 
-    openModal, 
     createTanks, 
     setSpinner, 
     removeSpinner, 
@@ -21,7 +20,6 @@ const AddTank = (props) => {
     const dispatch = useDispatch();
     const open = useSelector(state => state.outletReducer.openModal);
     const loadingSpinner = useSelector(state => state.authReducer.loadingSpinner);
-    const newOutlet = useSelector(state => state.outletReducer.newOutlet);
 
     const handleClose = () => dispatch(closeModal(0));
     const [tankName, setTankName] = useState('');

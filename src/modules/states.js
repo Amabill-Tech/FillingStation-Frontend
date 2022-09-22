@@ -81,7 +81,7 @@ const state = [
             "Oruk Anam",
             "Udung-Uko",
             "Ukanafun",
-            "Urue-Offong/Oruko",
+            "Urue-Offong Oruko",
             "Uruan",
             "Uyo"
         ]
@@ -123,7 +123,7 @@ const state = [
             "Gamawa",
             "Ganjuwa",
             "Giade",
-            "Itas\/Gadau",
+            "Itas Gadau",
             "Jama'Are",
             "Katagum",
             "Kirfi",
@@ -180,7 +180,7 @@ const state = [
             "Hawul",
             "Jere",
             "Kaga",
-            "Kala\/Balge",
+            "Kala Balge",
             "Konduga",
             "Kukawa",
             "Kwaya-Kusar",
@@ -200,7 +200,7 @@ const state = [
         "lgas": [
             "Brass",
             "Ekeremor",
-            "Kolokuma\/Opokuma",
+            "Kolokum Opokuma",
             "Nembe",
             "Ogbia",
             "Sagbama",
@@ -317,7 +317,7 @@ const state = [
             "Ikere",
             "Ikole",
             "Ilejemeje",
-            "Irepodun\/Ifelodun",
+            "Irepodun Ifelodun",
             "Ise-Orun",
             "Moba",
             "Oye"
@@ -369,7 +369,7 @@ const state = [
             "Kwami",
             "Nafada",
             "Shongom",
-            "Yamaltu\/Deba"
+            "Yamaltu Deba"
         ]
     },
     {
@@ -381,7 +381,7 @@ const state = [
             "Ezinihitte",
             "Ideato-North",
             "Ideato-South",
-            "Ihitte\/Uboma",
+            "Ihitte Uboma",
             "Ikeduru",
             "Isiala-Mbano",
             "Isu",
@@ -456,7 +456,7 @@ const state = [
             "Sakaba",
             "Shanga",
             "Suru",
-            "Wasagu/Danko",
+            "Wasagu Danko",
             "Yauri",
             "Zuru"
         ]
@@ -549,12 +549,12 @@ const state = [
             "Idah",
             "Igalamela-Odolu",
             "Ijumu",
-            "Kabba\/Bunu",
+            "Kabba Bunu",
             "Kogi",
             "Lokoja",
             "Mopa-Muro",
             "Ofu",
-            "Ogori\/Magongo",
+            "Ogori Magongo",
             "Okehi",
             "Okene",
             "Olamaboro",
@@ -609,7 +609,7 @@ const state = [
             "Asa",
             "Baruten",
             "Edu",
-            "Ekiti (Araromi/Opin)",
+            "Ekiti (Araromi Opin)",
             "Ilorin-East",
             "Ilorin-South",
             "Ilorin-West",
@@ -701,7 +701,7 @@ const state = [
         "lgas": [
             "Abeokuta-North",
             "Abeokuta-South",
-            "Ado-Odo\/Ota",
+            "Ado-Odo Ota",
             "Ewekoro",
             "Ifo",
             "Ijebu-East",
@@ -841,7 +841,7 @@ const state = [
     {
         "state": "Rivers",
         "lgas": [
-            "Abua\/Odual",
+            "Abua Odual",
             "Ahoada-East",
             "Ahoada-West",
             "Akuku Toru",
@@ -855,13 +855,13 @@ const state = [
             "Gokana",
             "Ikwerre",
             "Khana",
-            "Obio\/Akpor",
+            "Obio Akpor",
             "Ogba-Egbema-Ndoni",
-            "Ogba\/Egbema\/Ndoni",
-            "Ogu\/Bolo",
+            "Ogba Egbema Ndoni",
+            "Ogu Bolo",
             "Okrika",
             "Omuma",
-            "Opobo\/Nkoro",
+            "Opobo Nkoro",
             "Oyigbo",
             "Port-Harcourt",
             "Tai"
@@ -942,7 +942,7 @@ const state = [
         "lgas": [
             "Anka",
             "Bakura",
-            "Birnin Magaji/Kiyaw",
+            "Birnin Magaji Kiyaw",
             "Bukkuyum",
             "Bungudu",
             "Gummi",

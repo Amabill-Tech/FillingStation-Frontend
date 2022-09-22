@@ -118,7 +118,7 @@ const CreateFillingStation = (props) => {
                                 {
                                     states.listOfStates.map((item, index) => {
                                         return(
-                                            <MenuItem key={index} onClick={handleMenuSelection} value={index}>{item.state}</MenuItem>
+                                            <MenuItem style={menu} key={index} onClick={handleMenuSelection} value={index}>{item.state}</MenuItem>
                                         )
                                     })
                                 }
@@ -158,7 +158,7 @@ const CreateFillingStation = (props) => {
                                 {
                                     states.listOfStates[defaultState].lgas.map((item, index) => {
                                         return(
-                                            <MenuItem key={index} onClick={handleLgaSelection} value={index}>{item}</MenuItem>
+                                            <MenuItem style={menu} key={index} onClick={handleLgaSelection} value={index}>{item}</MenuItem>
                                         )
                                     })
                                 }
@@ -229,6 +229,11 @@ const CreateFillingStation = (props) => {
                 </div>
         </Modal>
     )
+}
+
+const menu = {
+    fontSize:'14px',
+    fontFamily:'Nunito-Regular'
 }
 
 export default CreateFillingStation;
