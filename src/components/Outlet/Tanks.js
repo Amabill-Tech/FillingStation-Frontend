@@ -13,6 +13,7 @@ import AddTank from '../Modals/AddTankModal';
 import { useSelector } from 'react-redux';
 import OutletService from '../../services/outletService';
 import swal from 'sweetalert';
+import AddPump from '../Modals/AddPumpModal';
 
 const Tank = (props) => {
 
@@ -23,6 +24,7 @@ const Tank = (props) => {
     const [AllTank, setAllTank] = useState([]);
     const [activeTank, setActiveTank] = useState([]);
     const [inActiveTank, setInactiveTank] = useState([]);
+    const [currentTank, setCurrentTank] = useState({});
     const location = useLocation();
     const open = useSelector(state => state.outletReducer.openModal);
     const dispatch = useDispatch();
@@ -100,6 +102,11 @@ const Tank = (props) => {
                 })
             }
         });
+    }
+
+    const addNewPump = (data) => {
+        setCurrentTank(data);
+        dispatch(openModal(3));
     }
 
     const CardItem = (props) => {
@@ -203,6 +210,7 @@ const Tank = (props) => {
                                     backgroundColor: '#06805B'
                                 }
                                 }} 
+                                onClick={()=>{addNewPump(props.data)}}
                                 variant="contained"> Add Pump
                             </Button>
                             <Button sx={{
@@ -365,6 +373,7 @@ const Tank = (props) => {
     return(
         <div className='tanksContainer'>
             { open ===2 && <AddTank data={location.state} refresh={getAllStationTanks} /> }
+            { open ===3 && <AddPump currentTank={currentTank} allTank={AllTank} /> }
             <div className='pump-container'>
                 <div className='head'>
                     <div className='tabs'>
@@ -381,7 +390,7 @@ const Tank = (props) => {
                     {tabs === 3 && <DPKTabs /> }
                 </div>
             </div>
-            
+
             <div className='create-pump'>
                 <Button sx={{
                     width:'100%', 

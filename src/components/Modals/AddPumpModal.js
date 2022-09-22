@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { useDispatch } from 'react-redux';
-import { closeModal, openModal } from '../../store/actions/outlet';
+import { closeModal } from '../../store/actions/outlet';
 import { useSelector } from 'react-redux';
 import close from '../../assets/close.png';
 import Button from '@mui/material/Button';
@@ -10,19 +10,48 @@ import { ThreeDots } from  'react-loader-spinner';
 import Radio from '@mui/material/Radio';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import swal from 'sweetalert';
+import OutletService from '../../services/outletService';
 
-const AddPump = () => {
+const AddPump = (props) => {
 
     const dispatch = useDispatch();
     const open = useSelector(state => state.outletReducer.openModal);
     const loadingSpinner = useSelector(state => state.authReducer.loadingSpinner);
 
+    const [defaultState, setDefaultState] = useState(0);
+    const [productType, setProduct] = useState('');
+    const [pumpName, setPumpName] = useState('');
+    const [totalizer, setTotalizer] = useState('');
+
     const handleClose = () => dispatch(closeModal(0));
 
     const handleOpen = () => {
-        dispatch(closeModal(0));
-        dispatch(openModal(5));
+        if(pumpName === "") return swal("Warning!", "Pump name field cannot be empty", "info");
+        if(defaultState === "") return swal("Warning!", "Tank name field cannot be empty", "info");
+        if(productType === "") return swal("Warning!", "Product type field cannot be empty", "info");
+        if(totalizer === "") return swal("Warning!", "Totalizer field cannot be empty", "info");
+
+        const payload = {
+            pumpName: pumpName,
+            hostTank: props.currentTank._id,
+            productType: productType,
+            totalizerReading: totalizer,
+            organisationID: props.currentTank.organisationID,
+            outletID: props.currentTank.outletID
+        }
+
+        OutletService.registerPumps(payload).then(data => {
+            if(data.code === 200) swal("Success!", "Pump created successfully", "success");
+        }).then(()=>{
+            dispatch(closeModal(0))
+        });
     }
+
+    useEffect(()=>{
+        setDefaultState(props.currentTank.tankName);
+        setProduct(props.currentTank.productType);
+    },[props.currentTank.tankName, props.currentTank.productType]);
 
     return(
         <Modal
@@ -50,6 +79,7 @@ const AddPump = () => {
                                 border:'1px solid #777777',
                                 fontSize:'12px',
                             }} placeholder="" 
+                            onChange={e => setPumpName(e.target.value)}
                         />
                     </div>
 
@@ -58,7 +88,7 @@ const AddPump = () => {
                         <Select
                             labelId="demo-select-small"
                             id="demo-select-small"
-                            value={10}
+                            value={defaultState}
                             sx={{
                                 width:'100%',
                                 height: '35px', 
@@ -68,9 +98,7 @@ const AddPump = () => {
                                 fontSize:'12px',
                             }}
                         >
-                            <MenuItem value={10}>Pump 1</MenuItem>
-                            <MenuItem value={20}>Download PDF</MenuItem>
-                            <MenuItem value={30}>Print</MenuItem>
+                            <MenuItem style={menu} value={props.currentTank.tankName}>{props.currentTank.tankName}</MenuItem>
                         </Select>
                     </div>
 
@@ -78,15 +106,15 @@ const AddPump = () => {
                         <div className='head-text2'>Choose product type</div>
                         <div className='radio'>
                             <div className='rad-item'>
-                                <Radio />
+                                <Radio checked={productType === 'PMS'? true: false} />
                                 <div className='head-text2' style={{marginRight:'5px'}}>PMS</div>
                             </div>
                             <div className='rad-item'>
-                                <Radio />
+                                <Radio checked={productType === 'AGO'? true: false} />
                                 <div className='head-text2' style={{marginRight:'5px'}}>AGO</div>
                             </div>
                             <div className='rad-item'>
-                                <Radio />
+                                <Radio checked={productType === 'DPK'? true: false} />
                                 <div className='head-text2' style={{marginRight:'5px'}}>DPK</div>
                             </div>
                         </div>
@@ -103,6 +131,7 @@ const AddPump = () => {
                                 border:'1px solid #777777',
                                 fontSize:'12px',
                             }} placeholder="" 
+                            onChange={e => setTotalizer(e.target.value)}
                         />
                     </div>
 
@@ -139,6 +168,11 @@ const AddPump = () => {
             </div>
         </Modal>
     )
+}
+
+const menu = {
+    fontSize:'14px',
+    fontFamily:'Nunito-Regular'
 }
 
 export default AddPump;

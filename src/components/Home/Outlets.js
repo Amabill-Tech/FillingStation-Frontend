@@ -15,7 +15,6 @@ import Pumps from '../Outlet/Pumps';
 import Sales from '../Outlet/Sales';
 import { Switch, Route } from 'react-router-dom';
 import CreateFillingStation from '../Modals/CreateStationModal';
-import AddPump from '../Modals/AddPumpModal';
 import AddTankSuccess from '../Modals/AddTankSuccess';
 import AddPumpSuccess from '../Modals/AddPumpSuccess';
 import AddPumpMore from '../Modals/AddMorePumps';
@@ -64,7 +63,6 @@ const Outlets = (props) => {
                 <div className='paymentsCaontainer'>
                     <div className='inner-pay'>
                         { open ===1 && <CreateFillingStation getStations={getAllStationData} /> }
-                        { open ===3 && <AddPump /> }
                         { open ===4 && <AddTankSuccess /> }
                         { open ===5 && <AddPumpSuccess /> }
                         { open ===6 && <AddPumpMore /> }
