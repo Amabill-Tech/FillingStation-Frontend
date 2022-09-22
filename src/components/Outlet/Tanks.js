@@ -81,6 +81,27 @@ const Tank = (props) => {
         });
     }
 
+    const deleteTanks = (data) => {
+        swal({
+            title: "Alert!",
+            text: `Are you sure you want to delete ${data.tankName}?`,
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+                const payload = {
+                    id: data._id,
+                }
+                OutletService.deleteTanks(payload).then(data => {
+                    if(data.code === 200) swal("Success!", "Tank deleted successfully", "success");
+                    getAllStationTanks();
+                })
+            }
+        });
+    }
+
     const CardItem = (props) => {
         return(
             <div style={{height:"400px"}} className='item'>
@@ -196,6 +217,7 @@ const Tank = (props) => {
                                     backgroundColor: '#ff6347 '
                                 }
                                 }} 
+                                onClick={()=>{deleteTanks(props.data)}}
                                 variant="contained"> Delete
                             </Button>
                         </div>
