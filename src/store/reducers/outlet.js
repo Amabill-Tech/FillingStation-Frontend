@@ -6,14 +6,16 @@ import {
     NEW_OUTLET, 
     NEW_TANK,
     TANK_LIST,
+    OUTLET_DATA
 } from '../types'
 
 const initialState = {
     openModal: 0,
     loadingSpinner: false,
     newOutlet: {},
+    allOutlets:[],
     newTank: {},
-    tankList: {},
+    tankList: [],
 }
 
 const outletReducer = (state = initialState, action) => {
@@ -54,6 +56,13 @@ const outletReducer = (state = initialState, action) => {
             return {
                 ...state,
                 newOutlet: payload
+            }
+        }
+
+        case OUTLET_DATA: {
+            return {
+                ...state,
+                allOutlets: payload
             }
         }
 

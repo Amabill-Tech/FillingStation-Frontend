@@ -92,6 +92,10 @@ const Pump = () => {
         });
     }
 
+    const createPump = () => {
+        alert('yes')
+    }
+
     const CardItem = (props) => {
         return(
             <div className='item'>
@@ -328,7 +332,9 @@ const Pump = () => {
                 </div>
             </div>
             <div className='create-pump'>
-                <Button sx={{
+                <Button 
+                onClick={createPump}
+                sx={{
                     width:'100%', 
                     height:'30px',  
                     background: '#3471B9',

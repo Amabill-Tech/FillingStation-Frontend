@@ -6,7 +6,8 @@ import {
     CLOSE_MODAL, 
     NEW_OUTLET, 
     NEW_TANK,
-    TANK_LIST
+    TANK_LIST,
+    OUTLET_DATA
 } from '../types';
 
 export const createFillingStation = (params) => dispatch => {
@@ -17,6 +18,10 @@ export const createFillingStation = (params) => dispatch => {
     .catch(err => {
             
     })
+}
+
+export const getAllStations = (params) => dispatch => {
+    dispatch({ type: OUTLET_DATA, payload: params});
 }
 
 export const createTanks = (params) => dispatch => {
@@ -30,13 +35,7 @@ export const createTanks = (params) => dispatch => {
 }
 
 export const getAllOutletTanks = (params) => dispatch => {
-    return OutletService.getAllOutletTanks(params)
-    .then(data => {
-        dispatch({type: TANK_LIST, payload: data})
-    })
-    .catch(err => {
-            
-    })
+    dispatch({ type: TANK_LIST, payload: params});
 }
 
 export const createPumps = (params) => dispatch => {

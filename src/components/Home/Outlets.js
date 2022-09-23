@@ -8,7 +8,7 @@ import eye from '../../assets/eye.png';
 import filling from '../../assets/filling.png';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import { useSelector } from 'react-redux';
-import { openModal } from '../../store/actions/outlet';
+import { openModal, getAllStations } from '../../store/actions/outlet';
 import { useDispatch } from 'react-redux';
 import Tank from '../Outlet/Tanks';
 import Pumps from '../Outlet/Pumps';
@@ -20,13 +20,12 @@ import AddPumpSuccess from '../Modals/AddPumpSuccess';
 import AddPumpMore from '../Modals/AddMorePumps';
 import OutletService from '../../services/outletService';
 import { useEffect } from 'react';
-import { useState } from 'react';
 
 const Outlets = (props) => {
 
     const open = useSelector(state => state.outletReducer.openModal);
     const user = useSelector(state => state.authReducer.user);
-    const [stations, setStations] = useState([]);
+    const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const dispatch = useDispatch();
 
     const handleOpenModal = (value) => dispatch(openModal(value))
@@ -48,9 +47,9 @@ const Outlets = (props) => {
             organisation: user._id
         }
         OutletService.getAllOutletStations(payload).then(data => {
-            setStations(data.station);
+            dispatch(getAllStations(data.station));
         });
-    }, [user._id]);
+    }, [user._id, dispatch]);
 
     useEffect(()=>{
         getAllStationData();
@@ -182,9 +181,9 @@ const Outlets = (props) => {
                             </div>
         
                             {
-                                stations.length === 0?
+                                allOutlets.length === 0?
                                 <div style={place}>No data</div>:
-                                stations.map((item, index) => {
+                                allOutlets.map((item, index) => {
                                     return(
                                         <div key={index} className='row-container'>
                                             <div className='table-head2'>

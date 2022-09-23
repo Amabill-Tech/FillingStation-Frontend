@@ -7,7 +7,7 @@ import { styled } from '@mui/material/styles';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Button from '@mui/material/Button';
 import { useLocation } from 'react-router-dom';
-import { openModal } from '../../store/actions/outlet';
+import { openModal, getAllOutletTanks } from '../../store/actions/outlet';
 import { useDispatch } from 'react-redux';
 import AddTank from '../Modals/AddTankModal';
 import { useSelector } from 'react-redux';
@@ -21,12 +21,12 @@ const Tank = (props) => {
     const [PMSTank, setPMSTank] = useState([]);
     const [AGOTank, setAGOTank] = useState([]);
     const [DPKTank, setDPKTank] = useState([]);
-    const [AllTank, setAllTank] = useState([]);
     const [activeTank, setActiveTank] = useState([]);
     const [inActiveTank, setInactiveTank] = useState([]);
     const [currentTank, setCurrentTank] = useState({});
     const location = useLocation();
     const open = useSelector(state => state.outletReducer.openModal);
+    const tankList = useSelector(state => state.outletReducer.tankList);
     const dispatch = useDispatch();
 
     const handleAddTanks = () => {
@@ -34,17 +34,16 @@ const Tank = (props) => {
     }
 
     const getAllStationTanks = useCallback(() => {
-        setAllTank([]);
         const payload = {
             organisationID: location.state.state.organisation,
             outletID: location.state.state._id
         }
-        console.log(payload)
         OutletService.getAllOutletTanks(payload).then(data => {
-            setAllTank(data);
-            getSeparateTanks(data);
+            dispatch(getAllOutletTanks(data));
+        }).then(()=>{
+            getSeparateTanks(tankList);
         });
-    }, [location.state.state._id, location.state.state.organisation]);
+    }, [location.state.state._id, location.state.state.organisation, dispatch, tankList]);
 
     useEffect(()=>{
         getAllStationTanks();
@@ -239,9 +238,9 @@ const Tank = (props) => {
         return(
             <div className='space'>
                 {
-                    AllTank.length === 0?
+                    tankList.length === 0?
                     <div style={place}>No records of tanks</div>:
-                    AllTank.map((item, index) => {
+                    tankList.map((item, index) => {
                         return(
                             <CardItem key={index} data={item} />
                         )
@@ -374,7 +373,7 @@ const Tank = (props) => {
     return(
         <div className='tanksContainer'>
             { open ===2 && <AddTank data={location.state} refresh={getAllStationTanks} /> }
-            { open ===3 && <AddPump currentTank={currentTank} allTank={AllTank} /> }
+            { open ===3 && <AddPump currentTank={currentTank} allTank={tankList} /> }
             <div className='pump-container'>
                 <div className='head'>
                     <div className='tabs'>
