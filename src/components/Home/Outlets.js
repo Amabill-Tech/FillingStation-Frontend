@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useRef} from 'react';
 import '../../styles/payments.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -20,6 +20,10 @@ import AddPumpSuccess from '../Modals/AddPumpSuccess';
 import AddPumpMore from '../Modals/AddMorePumps';
 import OutletService from '../../services/outletService';
 import { useEffect } from 'react';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
+import PrintOutLetsModal from '../Modals/PrintOutlets';
+import { useState } from 'react';
 
 const Outlets = (props) => {
 
@@ -27,6 +31,8 @@ const Outlets = (props) => {
     const user = useSelector(state => state.authReducer.user);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const dispatch = useDispatch();
+    const [prints, setPrints] = useState(false);
+    const tablePrints = useRef();
 
     const handleOpenModal = (value) => dispatch(openModal(value))
 
@@ -55,6 +61,20 @@ const Outlets = (props) => {
         getAllStationData();
     },[getAllStationData]);
 
+    const printTable = () => {
+        const input = tablePrints.current;
+        html2canvas(input)
+        .then((canvas) => {
+            const imageData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF();
+            pdf.addImage(imageData, 'PNG', 5, 5);
+            pdf.save("download.pdf");
+        });
+    }
+
+    const preview = () => {
+        setPrints(true);
+    }
 
     return(
         <>
@@ -65,6 +85,7 @@ const Outlets = (props) => {
                         { open ===4 && <AddTankSuccess /> }
                         { open ===5 && <AddPumpSuccess /> }
                         { open ===6 && <AddPumpMore /> }
+                        { prints && <PrintOutLetsModal allOutlets={allOutlets} open={prints} close={setPrints}/>}
                         <div className='action'>
                             <div style={{width:'150px'}} className='butt2'>
                                 <Select
@@ -148,7 +169,9 @@ const Outlets = (props) => {
                                         '&:hover': {
                                             backgroundColor: '#58A0DF'
                                         }
-                                        }}  variant="contained"> Download PDF
+                                        }}  
+                                        onClick={printTable}
+                                        variant="contained"> Download PDF
                                     </Button>
                                 </div>
                                 <div className='second-select3'>
@@ -161,13 +184,15 @@ const Outlets = (props) => {
                                         '&:hover': {
                                             backgroundColor: '#F36A4C'
                                         }
-                                        }}  variant="contained"> Print
+                                        }}  
+                                        onClick={preview}
+                                        variant="contained"> Print
                                     </Button>
                                 </div>
                             </div>
                         </div>
         
-                        <div className='table-container'>
+                        <div ref={tablePrints} className="table-container">
                             <div className='table-head'>
                                 <div className='column'>S/N</div>
                                 <div className='column'>Licence Code</div>
