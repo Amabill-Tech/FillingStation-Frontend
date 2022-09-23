@@ -9,6 +9,9 @@ import Button from '@mui/material/Button';
 import OutletService from '../../services/outletService';
 import { useLocation } from 'react-router-dom';
 import swal from 'sweetalert';
+import {getAllPumps} from '../../store/actions/outlet';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const Pump = () => {
 
@@ -16,22 +19,23 @@ const Pump = () => {
     const [PMSPump, setPMSTank] = useState([]);
     const [AGOPump, setAGOTank] = useState([]);
     const [DPKPump, setDPKTank] = useState([]);
-    const [AllPump, setAllPumps] = useState([]);
     const [activePump, setActiveTank] = useState([]);
     const [inActivePump, setInactiveTank] = useState([]);
     const location = useLocation();
+    const dispatch = useDispatch();
+    const pumpList = useSelector(state => state.outletReducer.pumpList);
 
     const getAllStationPumps = useCallback(() => {
-        setAllPumps([]);
         const payload = {
             organisationID: location.state.state.organisation,
             outletID: location.state.state._id
         }
         OutletService.getAllStationPumps(payload).then(data => {
-            setAllPumps(data);
-            getSeparateTanks(data);
+            dispatch(getAllPumps(data));
+        }).then(()=>{
+            getSeparateTanks(pumpList);
         });
-    }, [location.state.state._id, location.state.state.organisation]);
+    }, [location.state.state._id, location.state.state.organisation, dispatch, pumpList]);
 
     useEffect(()=>{
         getAllStationPumps();
@@ -181,9 +185,9 @@ const Pump = () => {
         return(
             <div className='space'>
                 {
-                    AllPump.length === 0?
+                    pumpList.length === 0?
                     <div style={place}>No records of pumps</div>:
-                    AllPump.map((item, index) => {
+                    pumpList.map((item, index) => {
                         return(
                             <CardItem key={index} data={item} />
                         )

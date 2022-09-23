@@ -7,7 +7,8 @@ import {
     NEW_OUTLET, 
     NEW_TANK,
     TANK_LIST,
-    OUTLET_DATA
+    OUTLET_DATA,
+    PUMP_LIST
 } from '../types';
 
 export const createFillingStation = (params) => dispatch => {
@@ -46,6 +47,10 @@ export const createPumps = (params) => dispatch => {
     .catch(err => {
             
     })
+}
+
+export const getAllPumps = (params) => dispatch => {
+    dispatch({ type: PUMP_LIST, payload: params});
 }
 
 export const openModal = (param) => dispatch => {

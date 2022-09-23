@@ -6,7 +6,8 @@ import {
     NEW_OUTLET, 
     NEW_TANK,
     TANK_LIST,
-    OUTLET_DATA
+    OUTLET_DATA,
+    PUMP_LIST
 } from '../types'
 
 const initialState = {
@@ -16,6 +17,7 @@ const initialState = {
     allOutlets:[],
     newTank: {},
     tankList: [],
+    pumpList: [],
 }
 
 const outletReducer = (state = initialState, action) => {
@@ -77,6 +79,13 @@ const outletReducer = (state = initialState, action) => {
             return {
                 ...state,
                 tankList: payload
+            }
+        }
+
+        case PUMP_LIST: {
+            return {
+                ...state,
+                pumpList: payload
             }
         }
 
