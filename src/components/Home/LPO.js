@@ -1,12 +1,44 @@
-import React from 'react';
+import React, { useEffect, useCallback } from 'react';
 import '../../styles/payments.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
+import LPOModal from '../Modals/LPOModal';
+import LPOService from '../../services/lpo';
+import { useSelector } from 'react-redux';
+import { createLPO } from '../../store/actions/lpo';
+import { useDispatch } from 'react-redux';
 
 const LPO = () => {
+
+    const [lpo, setLpo] = React.useState(false);
+    const user = useSelector(state => state.authReducer.user);
+    const lpos = useSelector(state => state.lpoReducer.lpo);
+    const dispatch = useDispatch();
+    console.log(lpos)
+
+    const openModal = () => {
+        setLpo(true);
+    }
+
+    const getAllLPOData = useCallback(() => {
+
+        const payload = {
+            organizationID: user._id
+        }
+
+        LPOService.getAllLPO(payload).then((data) => {
+            dispatch(createLPO(data));
+        })
+    }, [dispatch, user._id]);
+
+    useEffect(()=>{
+        getAllLPOData();
+    },[getAllLPOData])
+
     return(
         <div className='paymentsCaontainer'>
+            {<LPOModal open={lpo} close={setLpo} refresh={getAllLPOData}/>}
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
@@ -16,7 +48,7 @@ const LPO = () => {
                             value={10}
                             sx={{...selectStyle2, backgroundColor:"#F36A4C", color:'#fff'}}
                         >
-                            <MenuItem value={10}>Add Payments</MenuItem>
+                            <MenuItem value={10}>Register LPO</MenuItem>
                             <MenuItem value={20}>Download PDF</MenuItem>
                             <MenuItem value={30}>Print</MenuItem>
                         </Select>
@@ -56,11 +88,13 @@ const LPO = () => {
                             height:'30px',  
                             background: '#427BBE',
                             borderRadius: '3px',
-                            fontSize:'12px',
+                            fontSize:'11px',
                             '&:hover': {
                                 backgroundColor: '#427BBE'
                             }
-                            }}  variant="contained"> Add Payment
+                            }}  
+                            onClick={openModal}
+                            variant="contained"> Register LPO
                         </Button>
                     </div>
                 </div>
@@ -85,7 +119,7 @@ const LPO = () => {
                                 height:'30px',  
                                 background: '#58A0DF',
                                 borderRadius: '3px',
-                                fontSize:'12px',
+                                fontSize:'11px',
                                 '&:hover': {
                                     backgroundColor: '#58A0DF'
                                 }
@@ -98,7 +132,7 @@ const LPO = () => {
                                 height:'30px',  
                                 background: '#F36A4C',
                                 borderRadius: '3px',
-                                fontSize:'12px',
+                                fontSize:'11px',
                                 '&:hover': {
                                     backgroundColor: '#F36A4C'
                                 }
@@ -111,225 +145,34 @@ const LPO = () => {
                 <div className='table-container'>
                     <div className='table-head'>
                         <div className='column'>S/N</div>
-                        <div className='column'>Payment Date</div>
-                        <div className='column'>Bank Name</div>
-                        <div className='column'>Teller no</div>
-                        <div className='column'>Teller (Amount)</div>
-                        <div className='column'>POS (Amount)</div>
-                        <div className='column'>Total</div>
-                        <div className='column'>Difference</div>
-                        <div className='column'>Action</div>
+                        <div className='column'>Company Name</div>
+                        <div className='column'>Address</div>
+                        <div className='column'>Person of Contact</div>
+                        <div className='column'>PMS Limit</div>
+                        <div className='column'>AGO Limit</div>
+                        <div className='column'>DPK Limit</div>
+                        <div className='column'>Payment Structure</div>
                     </div>
 
                     <div className='row-container'>
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>09 June, 2022</div>
-                            <div className='column'>Wema bank</div>
-                            <div className='column'>1524353625262</div>
-                            <div className='column'>150,000</div>
-                            <div className='column'>352,000</div>
-                            <div className='column'>170,000</div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div className='butt'>
-                                    <Button sx={{
-                                        width:'100%', 
-                                        height:'30px',  
-                                        background: '#427BBE',
-                                        borderRadius: '3px',
-                                        fontSize:'12px',
-                                        '&:hover': {
-                                            backgroundColor: '#427BBE'
-                                        }
-                                        }}  variant="contained"> Confirm
-                                    </Button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>09 June, 2022</div>
-                            <div className='column'>Wema bank</div>
-                            <div className='column'>1524353625262</div>
-                            <div className='column'>150,000</div>
-                            <div className='column'>352,000</div>
-                            <div className='column'>170,000</div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div className='butt'>
-                                    <Button sx={{
-                                        width:'100%', 
-                                        height:'30px',  
-                                        background: '#427BBE',
-                                        borderRadius: '3px',
-                                        fontSize:'12px',
-                                        '&:hover': {
-                                            backgroundColor: '#427BBE'
-                                        }
-                                        }}  variant="contained"> Confirm
-                                    </Button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>09 June, 2022</div>
-                            <div className='column'>Wema bank</div>
-                            <div className='column'>1524353625262</div>
-                            <div className='column'>150,000</div>
-                            <div className='column'>352,000</div>
-                            <div className='column'>170,000</div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div className='butt'>
-                                    <Button sx={{
-                                        width:'100%', 
-                                        height:'30px',  
-                                        background: '#427BBE',
-                                        borderRadius: '3px',
-                                        fontSize:'12px',
-                                        '&:hover': {
-                                            backgroundColor: '#427BBE'
-                                        }
-                                        }}  variant="contained"> Confirm
-                                    </Button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>09 June, 2022</div>
-                            <div className='column'>Wema bank</div>
-                            <div className='column'>1524353625262</div>
-                            <div className='column'>150,000</div>
-                            <div className='column'>352,000</div>
-                            <div className='column'>170,000</div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div className='butt'>
-                                    <Button sx={{
-                                        width:'100%', 
-                                        height:'30px',  
-                                        background: '#427BBE',
-                                        borderRadius: '3px',
-                                        fontSize:'12px',
-                                        '&:hover': {
-                                            backgroundColor: '#427BBE'
-                                        }
-                                        }}  variant="contained"> Confirm
-                                    </Button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>09 June, 2022</div>
-                            <div className='column'>Wema bank</div>
-                            <div className='column'>1524353625262</div>
-                            <div className='column'>150,000</div>
-                            <div className='column'>352,000</div>
-                            <div className='column'>170,000</div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div className='butt'>
-                                    <Button sx={{
-                                        width:'100%', 
-                                        height:'30px',  
-                                        background: '#427BBE',
-                                        borderRadius: '3px',
-                                        fontSize:'12px',
-                                        '&:hover': {
-                                            backgroundColor: '#427BBE'
-                                        }
-                                        }}  variant="contained"> Confirm
-                                    </Button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>09 June, 2022</div>
-                            <div className='column'>Wema bank</div>
-                            <div className='column'>1524353625262</div>
-                            <div className='column'>150,000</div>
-                            <div className='column'>352,000</div>
-                            <div className='column'>170,000</div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div className='butt'>
-                                    <Button sx={{
-                                        width:'100%', 
-                                        height:'30px',  
-                                        background: '#427BBE',
-                                        borderRadius: '3px',
-                                        fontSize:'12px',
-                                        '&:hover': {
-                                            backgroundColor: '#427BBE'
-                                        }
-                                        }}  variant="contained"> Confirm
-                                    </Button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>09 June, 2022</div>
-                            <div className='column'>Wema bank</div>
-                            <div className='column'>1524353625262</div>
-                            <div className='column'>150,000</div>
-                            <div className='column'>352,000</div>
-                            <div className='column'>170,000</div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div className='butt'>
-                                    <Button sx={{
-                                        width:'100%', 
-                                        height:'30px',  
-                                        background: '#427BBE',
-                                        borderRadius: '3px',
-                                        fontSize:'12px',
-                                        '&:hover': {
-                                            backgroundColor: '#427BBE'
-                                        }
-                                        }}  variant="contained"> Confirm
-                                    </Button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>09 June, 2022</div>
-                            <div className='column'>Wema bank</div>
-                            <div className='column'>1524353625262</div>
-                            <div className='column'>150,000</div>
-                            <div className='column'>352,000</div>
-                            <div className='column'>170,000</div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div className='butt'>
-                                    <Button sx={{
-                                        width:'100%', 
-                                        height:'30px',  
-                                        background: '#427BBE',
-                                        borderRadius: '3px',
-                                        fontSize:'12px',
-                                        '&:hover': {
-                                            backgroundColor: '#427BBE'
-                                        }
-                                        }}  variant="contained"> Confirm
-                                    </Button>
-                                </div>
-                            </div>
-                        </div>
-                        
+                        {
+                            lpos.length === 0?
+                            <div style={place}>No LPO Data </div>:
+                            lpos.map((data, index) => {
+                                return(
+                                    <div className='table-head2'>
+                                        <div className='column'>{index + 1}</div>
+                                        <div className='column'>{data.companyName}</div>
+                                        <div className='column'>{data.address}</div>
+                                        <div className='column'>{data.personOfContact}</div>
+                                        <div className='column'>{data.PMS}</div>
+                                        <div className='column'>{data.AGO}</div>
+                                        <div className='column'>{data.DPK}</div>
+                                        <div className='column'>{data.paymentStructure}</div>
+                                    </div> 
+                                )
+                            })
+                        } 
                     </div>
                 </div>
 
@@ -355,6 +198,15 @@ const selectStyle2 = {
     fontFamily: 'Nunito-Regular',
     fontSize:'14px',
     outline:'none'
+}
+
+const place = {
+    width:'100%',
+    textAlign:'center',
+    fontSize:'14px',
+    fontFamily:'Nunito-Regular',
+    marginTop:'20px',
+    color:'green'
 }
 
 export default LPO;

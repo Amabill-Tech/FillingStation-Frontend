@@ -41,7 +41,7 @@ import Regulatory from '../components/Home/Regulatory';
 import Settings from '../components/Home/Settings';
 import TankUpdate from '../components/Home/TankUpdate';
 import Analysis from '../components/Home/Analysis';
-import LPO from '../components/RecordSales/LPO';
+import LPO from '../components/Home/LPO';
 import Supply from '../components/Home/Supply';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';

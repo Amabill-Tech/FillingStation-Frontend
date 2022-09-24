@@ -1,0 +1,35 @@
+.radio{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+
+    .rad-item{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-right: 10px;
+    }
+}
+
+
+.middleDiv::-webkit-scrollbar {
+    width: 8px; 
+}
+  
+  /* Track */
+.middleDiv::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+  
+  /* Handle */
+.middleDiv::-webkit-scrollbar-thumb {
+    background: #f7f7f7;
+}
+  
+  /* Handle on hover */
+.middleDiv::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
