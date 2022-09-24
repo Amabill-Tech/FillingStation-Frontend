@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import '../styles/home.scss';
 import homeLogo from '../assets/homeLogo.png';
 import active from '../assets/active.png';
@@ -9,7 +9,8 @@ import expenses from '../assets/expenses.png';
 import hr from '../assets/hr.png';
 import incOrders from '../assets/incOrders.png';
 import outlet from '../assets/outlet.png';
-import payments from '../assets/payments.png';
+import analysis from '../assets/analysis.png';
+import lpo from '../assets/lpo.png';
 import productOrders from '../assets/productOrders.png';
 import recordSales from '../assets/recordSales.png';
 import regulatory from '../assets/regulatory.png';
@@ -20,7 +21,6 @@ import expenses2 from '../assets/expenses2.png';
 import hr2 from '../assets/hr2.png';
 import incOrders2 from '../assets/incOrders2.png';
 import outlet2 from '../assets/outlet2.png';
-import payments2 from '../assets/payments2.png';
 import productOrders2 from '../assets/productOrders2.png';
 import recordSales2 from '../assets/recordSales2.png';
 import regulatory2 from '../assets/regulatory2.png';
@@ -32,16 +32,17 @@ import switchT from '../assets/switchT.png';
 import { Switch, Route, Link, withRouter } from 'react-router-dom';
 import Dashboard from '../components/Home/Dashboard';
 import DailySales from '../components/Home/DailySales';
-import Expenses from '../components/Home/Expenses';
 import HumanResources from '../components/Home/HumanResource';
 import IncomingOrders from '../components/Home/IncomingOrders';
 import Outlets from '../components/Home/Outlets';
-import Payments from '../components/Home/Payments';
 import ProductOrders from '../components/Home/ProductOrders';
 import RecordSales from '../components/Home/RecordSales';
 import Regulatory from '../components/Home/Regulatory';
 import Settings from '../components/Home/Settings';
 import TankUpdate from '../components/Home/TankUpdate';
+import Analysis from '../components/Home/Analysis';
+import LPO from '../components/RecordSales/LPO';
+import Supply from '../components/Home/Supply';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
@@ -50,6 +51,37 @@ import Drawer from 'react-modern-drawer';
 import 'react-modern-drawer/dist/index.css';
 
 const HomeScreen = ({history}) => {
+
+    const routes = useMemo(()=>{
+        return(
+            {
+                '/home': 'Dashboard',
+                '/home/daily-sales': 'Daily Sales',
+                '/home/payments': 'Payments',
+                '/home/outlets': 'My Outlets',
+                '/home/outlets/tanks': 'Outlet Tanks',
+                '/home/outlets/pumps': 'Outlet Pumps',
+                '/home/outlets/sales': 'Outlet Sales',
+                '/home/record-sales': 'Record Sales',
+                '/home/record-sales/lpo': 'LPO',
+                '/home/record-sales/expenses': 'Expenses',
+                '/home/record-sales/payment': 'Payment',
+                '/home/analysis': 'Analysis',
+                '/home/lpo': 'LPO',
+                '/home/product-orders': 'Product Orders',
+                '/home/inc-orders': 'Incoming Orders',
+                '/home/supply': 'Supply',
+                '/home/regulatory': 'Regulatory Pay',
+                '/home/tank': 'Tank Update',
+                '/home/hr': 'Human Resources',
+                '/home/hr/employee': 'Employees',
+                '/home/hr/salary': 'Salary Structures',
+                '/home/hr/query': 'Query',
+                '/home/hr/recruitment': 'Recruitment',
+                '/home/hr/attendance': 'Attendance',
+            }
+        )
+    }, [])
 
     const [activeRoute, setActiveRoute] = useState('');
     const [isOpen, setIsOpen] = useState(false);
@@ -62,7 +94,6 @@ const HomeScreen = ({history}) => {
     history.listen((location) => {
         setActiveRoute(location.pathname);
         setName(routes[history.location.pathname]);
-        console.log(location.pathname)
     })
 
     const setNames = (name) => {
@@ -72,7 +103,7 @@ const HomeScreen = ({history}) => {
     useEffect(()=>{
         setActiveRoute(history.location.pathname);
         setName(routes[history.location.pathname]);
-    }, []);
+    }, [history.location.pathname, routes]);
 
     const SideItems = (props) => {
 
@@ -102,31 +133,6 @@ const HomeScreen = ({history}) => {
         )
     }
 
-    const routes = {
-        '/home': 'Dashboard',
-        '/home/daily-sales': 'Daily Sales',
-        '/home/payments': 'Payments',
-        '/home/outlets': 'My Outlets',
-        '/home/outlets/tanks': 'Outlet Tanks',
-        '/home/outlets/pumps': 'Outlet Pumps',
-        '/home/outlets/sales': 'Outlet Sales',
-        '/home/record-sales': 'Record Sales',
-        '/home/record-sales/lpo': 'LPO',
-        '/home/record-sales/expenses': 'Expenses',
-        '/home/record-sales/payment': 'Payment',
-        '/home/expenses': 'Expenses',
-        '/home/product-orders': 'Product Orders',
-        '/home/regulatory': 'Regulatory Pay',
-        '/home/inc-orders': 'Incoming Orders',
-        '/home/tank': 'Tank Update',
-        '/home/hr': 'Human Resources',
-        '/home/hr/employee': 'Employees',
-        '/home/hr/salary': 'Salary Structures',
-        '/home/hr/query': 'Query',
-        '/home/hr/recruitment': 'Recruitment',
-        '/home/hr/attendance': 'Attendance',
-    }
-
     return(
         <div className='home-container'>
             <div className='side-bar'>
@@ -134,16 +140,17 @@ const HomeScreen = ({history}) => {
                     <img className='home-logo' src={homeLogo} alt="icon" />
                     <SideItems marginT={"0px"} link={'/home'} name={"Dashboard"} icon={dashboard} icon2={dashboard2} />
                     <SideItems marginT={"45px"} link={'/home/daily-sales'} name={"Daily Sales"} icon={dailySales2} icon2={dailySales} />
-                    <SideItems marginT={"90px"} link={'/home/payments'} name={"Payments"} icon={payments2} icon2={payments} />
-                    <SideItems marginT={"135px"} link={'/home/outlets'} name={"My Outlets"} icon={outlet2} icon2={outlet} />
-                    <SideItems marginT={"180px"} link={'/home/record-sales'} name={"Record Sales"} icon={recordSales2} icon2={recordSales} />
-                    <SideItems marginT={"225px"} link={'/home/expenses'} name={"Expenses"} icon={expenses2} icon2={expenses} />
+                    <SideItems marginT={"90px"} link={'/home/outlets'} name={"My Outlets"} icon={outlet2} icon2={outlet} />
+                    <SideItems marginT={"135px"} link={'/home/record-sales'} name={"Record Sales"} icon={recordSales2} icon2={recordSales} />
+                    <SideItems marginT={"180px"} link={'/home/analysis'} name={"Analysis"} icon={analysis} icon2={analysis} />
+                    <SideItems marginT={"225px"} link={'/home/lpo'} name={"LPO"} icon={lpo} icon2={lpo} />
                     <SideItems marginT={"270px"} link={'/home/product-orders'} name={"Product Orders"} icon={productOrders2} icon2={productOrders} />
-                    <SideItems marginT={"315px"} link={'/home/regulatory'} name={"Regulatory Pay"} icon={regulatory2} icon2={regulatory} />
-                    <SideItems marginT={"360px"} link={'/home/inc-orders'} name={"Incoming Orders"} icon={incOrders2} icon2={incOrders} />
-                    <SideItems marginT={"405px"} link={'/home/tank'} name={"Tank Update"} icon={tank2} icon2={tank} />
-                    <SideItems marginT={"450px"} link={'/home/hr'} name={"Human Resources"} icon={hr2} icon2={hr} />
-                    <SideItems marginT={"495px"} link={'/home/settings'} name={"Settings"} icon={settings2} icon2={settings} />
+                    <SideItems marginT={"315px"} link={'/home/inc-orders'} name={"Incoming Orders"} icon={incOrders2} icon2={incOrders} />
+                    <SideItems marginT={"360px"} link={'/home/supply'} name={"Supply"} icon={expenses2} icon2={expenses} />
+                    <SideItems marginT={"405px"} link={'/home/regulatory'} name={"Regulatory Pay"} icon={regulatory2} icon2={regulatory} />
+                    <SideItems marginT={"450px"} link={'/home/tank'} name={"Tank Update"} icon={tank2} icon2={tank} />
+                    <SideItems marginT={"495px"} link={'/home/hr'} name={"Human Resources"} icon={hr2} icon2={hr} />
+                    <SideItems marginT={"540px"} link={'/home/settings'} name={"Settings"} icon={settings2} icon2={settings} />
                 </div>
             </div>
             <Drawer
@@ -156,16 +163,17 @@ const HomeScreen = ({history}) => {
                         <img className='home-logo' src={homeLogo} alt="icon" />
                         <SideItems marginT={"0px"} link={'/home'} name={"Dashboard"} icon={dashboard} icon2={dashboard2} />
                         <SideItems marginT={"45px"} link={'/home/daily-sales'} name={"Daily Sales"} icon={dailySales2} icon2={dailySales} />
-                        <SideItems marginT={"90px"} link={'/home/payments'} name={"Payments"} icon={payments2} icon2={payments} />
-                        <SideItems marginT={"135px"} link={'/home/outlets'} name={"My Outlets"} icon={outlet2} icon2={outlet} />
-                        <SideItems marginT={"180px"} link={'/home/record-sales'} name={"Record Sales"} icon={recordSales2} icon2={recordSales} />
-                        <SideItems marginT={"225px"} link={'/home/expenses'} name={"Expenses"} icon={expenses2} icon2={expenses} />
+                        <SideItems marginT={"90px"} link={'/home/outlets'} name={"My Outlets"} icon={outlet2} icon2={outlet} />
+                        <SideItems marginT={"135px"} link={'/home/record-sales'} name={"Record Sales"} icon={recordSales2} icon2={recordSales} />
+                        <SideItems marginT={"180px"} link={'/home/analysis'} name={"Analysis"} icon={analysis} icon2={analysis} />
+                        <SideItems marginT={"225px"} link={'/home/lpo'} name={"LPO"} icon={lpo} icon2={lpo} />
                         <SideItems marginT={"270px"} link={'/home/product-orders'} name={"Product Orders"} icon={productOrders2} icon2={productOrders} />
-                        <SideItems marginT={"315px"} link={'/home/regulatory'} name={"Regulatory Pay"} icon={regulatory2} icon2={regulatory} />
-                        <SideItems marginT={"360px"} link={'/home/inc-orders'} name={"Incoming Orders"} icon={incOrders2} icon2={incOrders} />
-                        <SideItems marginT={"405px"} link={'/home/tank'} name={"Tank Update"} icon={tank2} icon2={tank} />
-                        <SideItems marginT={"450px"} link={'/home/hr'} name={"Human Resources"} icon={hr2} icon2={hr} />
-                        <SideItems marginT={"495px"} link={'/home/settings'} name={"Settings"} icon={settings2} icon2={settings} />
+                        <SideItems marginT={"315px"} link={'/home/inc-orders'} name={"Incoming Orders"} icon={incOrders2} icon2={incOrders} />
+                        <SideItems marginT={"360px"} link={'/home/supply'} name={"Supply"} icon={expenses2} icon2={expenses} />
+                        <SideItems marginT={"405px"} link={'/home/regulatory'} name={"Regulatory Pay"} icon={regulatory2} icon2={regulatory} />
+                        <SideItems marginT={"450px"} link={'/home/tank'} name={"Tank Update"} icon={tank2} icon2={tank} />
+                        <SideItems marginT={"495px"} link={'/home/hr'} name={"Human Resources"} icon={hr2} icon2={hr} />
+                        <SideItems marginT={"540px"} link={'/home/settings'} name={"Settings"} icon={settings2} icon2={settings} />
                     </div>
                 </div>
             </Drawer>
@@ -253,9 +261,6 @@ const HomeScreen = ({history}) => {
                     <Route path='/home/daily-sales'>
                         <DailySales/>
                     </Route>
-                    <Route path='/home/expenses'>
-                        <Expenses/>
-                    </Route>
                     <Route path='/home/hr'>
                         <HumanResources 
                             history={history}
@@ -271,11 +276,17 @@ const HomeScreen = ({history}) => {
                             activeRoute={activeRoute}
                         />
                     </Route>
-                    <Route path='/home/payments'>
-                        <Payments/>
-                    </Route>
                     <Route path='/home/product-orders'>
                         <ProductOrders/>
+                    </Route>
+                    <Route path='/home/analysis'>
+                        <Analysis/>
+                    </Route>
+                    <Route path='/home/lpo'>
+                        <LPO/>
+                    </Route>
+                    <Route path='/home/supply'>
+                        <Supply/>
                     </Route>
                     <Route path='/home/record-sales'>
                         <RecordSales history={history}/>
