@@ -1,13 +1,22 @@
-import React from 'react';
+import React, {useState} from 'react';
 import '../../styles/payments.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import OutlinedInput from '@mui/material/OutlinedInput';
+import IncomingOrderModal from '../Modals/IncomingOrderModal';
 
 const IncomingOrder = () => {
+
+    const [open, setOpen] = useState(false);
+
+    const openCreateModal = () => {
+        setOpen(true);
+    }
+
     return(
         <div className='paymentsCaontainer'>
+            { <IncomingOrderModal open={open} close={setOpen} />}
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
@@ -49,7 +58,9 @@ const IncomingOrder = () => {
                             '&:hover': {
                                 backgroundColor: '#427BBE'
                             }
-                            }}  variant="contained"> Create Incoming Order
+                            }}  
+                            onClick={openCreateModal}
+                            variant="contained"> Create Incoming Order
                         </Button>
                     </div>
                 </div>

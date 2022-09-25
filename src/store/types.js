@@ -12,3 +12,7 @@ export const OUTLET_DATA = 'OUTLET_DATA';
 export const PUMP_LIST = 'PUMP_LIST';
 export const CREATE_LPO = 'CREATE_LPO';
 export const CREATE_PRODUCT_ORDER = 'CREATE_PRODUCT_ORDER';
+export const CREATE_INCOMING_ORDER = 'CREATE_INCOMING_ORDER';
+export const SUPPLY = 'SUPPLY';
+export const PAYMENT = 'PAYMENT';
+export const TANK_UPDATE = 'TANK_UPDATE';

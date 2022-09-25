@@ -1,12 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../../styles/payments.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
+import SupplyModal from '../Modals/SupplyModal';
 
 const Supply = () => {
+
+    const [open, setOpen] = useState(false);
+
+    const openPaymentModal = () => {
+        setOpen(true);
+    }
+
     return(
         <div className='paymentsCaontainer'>
+            { <SupplyModal open={open} close={setOpen} />}
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
@@ -60,7 +69,9 @@ const Supply = () => {
                             '&:hover': {
                                 backgroundColor: '#427BBE'
                             }
-                            }}  variant="contained"> Add Payment
+                            }}  
+                            onClick={openPaymentModal}
+                            variant="contained"> Add Payment
                         </Button>
                     </div>
                 </div>

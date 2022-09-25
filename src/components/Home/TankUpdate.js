@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../../styles/payments.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -7,10 +7,19 @@ import tan from '../../assets/tan.png';
 import eye from '../../assets/eye.png';
 import filling from '../../assets/filling.png';
 import OutlinedInput from '@mui/material/OutlinedInput';
+import TankUpdateModal from '../Modals/TankUpdateModal';
 
 const TankUpdate = () => {
+
+    const [open, setOpen] = useState(false);
+
+    const updateTankModal = () => {
+        setOpen(true);
+    }
+
     return(
         <div className='paymentsCaontainer'>
+            { <TankUpdateModal open={open} close={setOpen} /> }
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
@@ -64,7 +73,9 @@ const TankUpdate = () => {
                             '&:hover': {
                                 backgroundColor: '#427BBE'
                             }
-                            }}  variant="contained">Update Tank
+                            }}
+                            onClick={updateTankModal}
+                            variant="contained">Update Tank
                         </Button>
                     </div>
                 </div>

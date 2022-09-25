@@ -1,13 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../../styles/payments.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import OutlinedInput from '@mui/material/OutlinedInput';
+import PaymentModal from '../Modals/PaymentModal';
 
 const Regulatory = () => {
+
+    const [open, setOpen] = useState(false);
+
+    const openPaymentModal = () => {
+        setOpen(true);
+    }
+
     return(
         <div className='paymentsCaontainer'>
+            { <PaymentModal open={open} close={setOpen} /> }
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
@@ -49,7 +58,9 @@ const Regulatory = () => {
                             '&:hover': {
                                 backgroundColor: '#427BBE'
                             }
-                            }}  variant="contained"> Register Payment
+                            }}  
+                            onClick={openPaymentModal}
+                            variant="contained"> Register Payment
                         </Button>
                     </div>
                 </div>
