@@ -1,13 +1,44 @@
-import React from 'react';
+import React, {useEffect, useCallback} from 'react';
 import '../../styles/payments.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import OutlinedInput from '@mui/material/OutlinedInput';
+import ProductOrderModal from '../Modals/ProductOrderModal';
+import ProductService from '../../services/productService';
+import {createProductOrder} from '../../store/actions/productOrder';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const ProductOrders = () => {
+
+    const [open, setOpen] = React.useState(false);
+    const dispatch = useDispatch();
+    const user = useSelector(state => state.authReducer.user);
+    const productOrder = useSelector(state => state.productOrderReducer.productOrder);
+
+    const createOrderHandler = () => {
+        setOpen(true);
+    }
+
+    const getAllProductData = useCallback(() => {
+
+        const payload = {
+            organizationID: user._id
+        }
+
+        ProductService.getAllProductOrder(payload).then((data) => {
+            dispatch(createProductOrder(data));
+        })
+    }, [dispatch, user._id]);
+
+    useEffect(()=>{
+        getAllProductData();
+    },[getAllProductData])
+
     return(
         <div className='paymentsCaontainer'>
+            {<ProductOrderModal open={open} close={setOpen} refresh={getAllProductData} />}
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
@@ -49,7 +80,9 @@ const ProductOrders = () => {
                             '&:hover': {
                                 backgroundColor: '#427BBE'
                             }
-                            }}  variant="contained"> Create Order
+                            }}  
+                            onClick={createOrderHandler}
+                            variant="contained"> Create Order
                         </Button>
                     </div>
                 </div>
@@ -109,85 +142,23 @@ const ProductOrders = () => {
                     </div>
 
                     <div className='row-container'>
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>09 June, 2022</div>
-                            <div className='column'>NNPC Zuba</div>
-                            <div className='column'>Lane 1 Zuba Express, Abuja</div>
-                            <div className='column'>250,000</div>
-                            <div className='column'>Zuba Express, Abuja</div>
-                            <div className='column'>Approved</div>
-                        </div> 
-
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>09 June, 2022</div>
-                            <div className='column'>NNPC Zuba</div>
-                            <div className='column'>Lane 1 Zuba Express, Abuja</div>
-                            <div className='column'>250,000</div>
-                            <div className='column'>Zuba Express, Abuja</div>
-                            <div className='column'>Approved</div>
-                        </div> 
-
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>09 June, 2022</div>
-                            <div className='column'>NNPC Zuba</div>
-                            <div className='column'>Lane 1 Zuba Express, Abuja</div>
-                            <div className='column'>250,000</div>
-                            <div className='column'>Zuba Express, Abuja</div>
-                            <div className='column'>Approved</div>
-                        </div> 
-
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>09 June, 2022</div>
-                            <div className='column'>NNPC Zuba</div>
-                            <div className='column'>Lane 1 Zuba Express, Abuja</div>
-                            <div className='column'>250,000</div>
-                            <div className='column'>Zuba Express, Abuja</div>
-                            <div className='column'>Approved</div>
-                        </div> 
-
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>09 June, 2022</div>
-                            <div className='column'>NNPC Zuba</div>
-                            <div className='column'>Lane 1 Zuba Express, Abuja</div>
-                            <div className='column'>250,000</div>
-                            <div className='column'>Zuba Express, Abuja</div>
-                            <div className='column'>Approved</div>
-                        </div> 
-
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>09 June, 2022</div>
-                            <div className='column'>NNPC Zuba</div>
-                            <div className='column'>Lane 1 Zuba Express, Abuja</div>
-                            <div className='column'>250,000</div>
-                            <div className='column'>Zuba Express, Abuja</div>
-                            <div className='column'>Approved</div>
-                        </div> 
-
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>09 June, 2022</div>
-                            <div className='column'>NNPC Zuba</div>
-                            <div className='column'>Lane 1 Zuba Express, Abuja</div>
-                            <div className='column'>250,000</div>
-                            <div className='column'>Zuba Express, Abuja</div>
-                            <div className='column'>Approved</div>
-                        </div> 
-
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>09 June, 2022</div>
-                            <div className='column'>NNPC Zuba</div>
-                            <div className='column'>Lane 1 Zuba Express, Abuja</div>
-                            <div className='column'>250,000</div>
-                            <div className='column'>Zuba Express, Abuja</div>
-                            <div className='column'>Approved</div>
-                        </div> 
+                        {
+                            productOrder.length === 0?
+                            <div style={place}>No product data</div>:
+                            productOrder.map((data, index) => {
+                                return(
+                                    <div className='table-head2'>
+                                        <div className='column'>{index + 1}</div>
+                                        <div className='column'>{data.dateCreated}</div>
+                                        <div className='column'>{data.depot}</div>
+                                        <div className='column'>{data.depotAddress}</div>
+                                        <div className='column'>{data.quantity}</div>
+                                        <div className='column'>{data.loadingLocation}</div>
+                                        <div className='column'>{data.status}</div>
+                                    </div> 
+                                )
+                            })
+                        }
                     </div>
                 </div>
 
@@ -213,6 +184,15 @@ const selectStyle2 = {
     fontFamily: 'Nunito-Regular',
     fontSize:'14px',
     outline:'none'
+}
+
+const place = {
+    width:'100%',
+    textAlign:'center',
+    fontSize:'14px',
+    fontFamily:'Nunito-Regular',
+    marginTop:'20px',
+    color:'green'
 }
 
 export default ProductOrders;

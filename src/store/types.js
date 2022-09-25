@@ -11,3 +11,4 @@ export const TANK_LIST = 'TANK_LIST';
 export const OUTLET_DATA = 'OUTLET_DATA';
 export const PUMP_LIST = 'PUMP_LIST';
 export const CREATE_LPO = 'CREATE_LPO';
+export const CREATE_PRODUCT_ORDER = 'CREATE_PRODUCT_ORDER';
