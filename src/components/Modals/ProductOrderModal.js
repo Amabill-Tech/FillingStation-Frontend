@@ -71,7 +71,7 @@ const ProductOrderModal = (props) => {
                 "Authorization": "Bearer "+ localStorage.getItem('token'),
             }
         };
-        const url = "http://localhost:3000/360-station/api/upload";
+        const url = "http://66.29.128.83:8005/360-station/api/upload";
         axios.post(url, formData, config).then((data) => {
             setUpload(data.data.path);
         }).then(()=>{
