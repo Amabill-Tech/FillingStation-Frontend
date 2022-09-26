@@ -149,7 +149,7 @@ const IncomingOrder = () => {
 
                         {
                             incomingOrder.length === 0?
-                            <div>No Incoming Data</div>:
+                            <div style={place}>No Incoming Data</div>:
                             incomingOrder.map((data, index) => {
                                 return(
                                     <div className='table-head2'>
@@ -162,7 +162,7 @@ const IncomingOrder = () => {
                                         <div className='column'>{data.productOrderID}</div>
                                         <div className='column'>{data.TruckNo}</div>
                                         <div className='column'>{data.wayBillNo}</div>
-                                        <div className='column'>Yes</div>
+                                        <div className='column'>{data.divertStatus}</div>
                                     </div>
                                 )
                             })
@@ -192,6 +192,15 @@ const selectStyle2 = {
     fontFamily: 'Nunito-Regular',
     fontSize:'14px',
     outline:'none'
+}
+
+const place = {
+    width:'100%',
+    textAlign:'center',
+    fontSize:'14px',
+    fontFamily:'Nunito-Regular',
+    marginTop:'20px',
+    color:'green'
 }
 
 export default IncomingOrder;

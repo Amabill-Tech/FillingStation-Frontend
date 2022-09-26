@@ -178,7 +178,7 @@ const IncomingOrderModal = (props) => {
                                         border:'1px solid #777777',
                                         fontSize:'12px',
                                     }} placeholder="" 
-                                    type='number'
+                                    type='text'
                                     onChange={e => setProductOrderID(e.target.value)}
                                 />
                             </div>
