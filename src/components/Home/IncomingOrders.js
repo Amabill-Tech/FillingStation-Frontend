@@ -1,12 +1,20 @@
-import React, {useState} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import '../../styles/payments.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import IncomingOrderModal from '../Modals/IncomingOrderModal';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import {createIncomingOrder} from '../../store/actions/incomingOrder';
+import IncomingService from '../../services/IncomingService';
 
 const IncomingOrder = () => {
+
+    const user = useSelector(state => state.authReducer.user);
+    const incomingOrder = useSelector(state => state.incomingOrderReducer.incomingOrder);
+    const dispatch = useDispatch();
 
     const [open, setOpen] = useState(false);
 
@@ -14,9 +22,24 @@ const IncomingOrder = () => {
         setOpen(true);
     }
 
+    const getAllIncomingOrder = useCallback(() => {
+
+        const payload = {
+            organizationID: user._id
+        }
+
+        IncomingService.getAllIncoming(payload).then((data) => {
+            dispatch(createIncomingOrder(data));
+        })
+    }, [dispatch, user._id]);
+
+    useEffect(()=>{
+        getAllIncomingOrder();
+    },[getAllIncomingOrder])
+
     return(
         <div className='paymentsCaontainer'>
-            { <IncomingOrderModal open={open} close={setOpen} />}
+            { <IncomingOrderModal open={open} close={setOpen} refresh={getAllIncomingOrder} />}
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
@@ -123,109 +146,27 @@ const IncomingOrder = () => {
                     </div>
 
                     <div className='row-container'>
-                        <div className='table-head2'>
-                            <div className='column'>S/N</div>
-                            <div className='column'>Date Created</div>
-                            <div className='column'>NNPC Abuja</div>
-                            <div className='column'>Amasco Kd</div>
-                            <div className='column'>PMS</div>
-                            <div className='column'>123,835</div>
-                            <div className='column'>PMS12PC</div>
-                            <div className='column'>123-KDA</div>
-                            <div className='column'>123SFD</div>
-                            <div className='column'>Yes</div>
-                        </div>
 
-                        <div className='table-head2'>
-                            <div className='column'>S/N</div>
-                            <div className='column'>Date Created</div>
-                            <div className='column'>NNPC Abuja</div>
-                            <div className='column'>Amasco Kd</div>
-                            <div className='column'>PMS</div>
-                            <div className='column'>123,835</div>
-                            <div className='column'>PMS12PC</div>
-                            <div className='column'>123-KDA</div>
-                            <div className='column'>123SFD</div>
-                            <div className='column'>Yes</div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>S/N</div>
-                            <div className='column'>Date Created</div>
-                            <div className='column'>NNPC Abuja</div>
-                            <div className='column'>Amasco Kd</div>
-                            <div className='column'>PMS</div>
-                            <div className='column'>123,835</div>
-                            <div className='column'>PMS12PC</div>
-                            <div className='column'>123-KDA</div>
-                            <div className='column'>123SFD</div>
-                            <div className='column'>Yes</div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>S/N</div>
-                            <div className='column'>Date Created</div>
-                            <div className='column'>NNPC Abuja</div>
-                            <div className='column'>Amasco Kd</div>
-                            <div className='column'>PMS</div>
-                            <div className='column'>123,835</div>
-                            <div className='column'>PMS12PC</div>
-                            <div className='column'>123-KDA</div>
-                            <div className='column'>123SFD</div>
-                            <div className='column'>Yes</div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>S/N</div>
-                            <div className='column'>Date Created</div>
-                            <div className='column'>NNPC Abuja</div>
-                            <div className='column'>Amasco Kd</div>
-                            <div className='column'>PMS</div>
-                            <div className='column'>123,835</div>
-                            <div className='column'>PMS12PC</div>
-                            <div className='column'>123-KDA</div>
-                            <div className='column'>123SFD</div>
-                            <div className='column'>Yes</div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>S/N</div>
-                            <div className='column'>Date Created</div>
-                            <div className='column'>NNPC Abuja</div>
-                            <div className='column'>Amasco Kd</div>
-                            <div className='column'>PMS</div>
-                            <div className='column'>123,835</div>
-                            <div className='column'>PMS12PC</div>
-                            <div className='column'>123-KDA</div>
-                            <div className='column'>123SFD</div>
-                            <div className='column'>Yes</div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>S/N</div>
-                            <div className='column'>Date Created</div>
-                            <div className='column'>NNPC Abuja</div>
-                            <div className='column'>Amasco Kd</div>
-                            <div className='column'>PMS</div>
-                            <div className='column'>123,835</div>
-                            <div className='column'>PMS12PC</div>
-                            <div className='column'>123-KDA</div>
-                            <div className='column'>123SFD</div>
-                            <div className='column'>Yes</div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>S/N</div>
-                            <div className='column'>Date Created</div>
-                            <div className='column'>NNPC Abuja</div>
-                            <div className='column'>Amasco Kd</div>
-                            <div className='column'>PMS</div>
-                            <div className='column'>123,835</div>
-                            <div className='column'>PMS12PC</div>
-                            <div className='column'>123-KDA</div>
-                            <div className='column'>123SFD</div>
-                            <div className='column'>Yes</div>
-                        </div>
+                        {
+                            incomingOrder.length === 0?
+                            <div>No Incoming Data</div>:
+                            incomingOrder.map((data, index) => {
+                                return(
+                                    <div className='table-head2'>
+                                        <div className='column'>{index + 1}</div>
+                                        <div className='column'>{data.dateCreated}</div>
+                                        <div className='column'>{data.depotStation}</div>
+                                        <div className='column'>{data.destination}</div>
+                                        <div className='column'>{data.product}</div>
+                                        <div className='column'>{data.quantity}</div>
+                                        <div className='column'>{data.productOrderID}</div>
+                                        <div className='column'>{data.TruckNo}</div>
+                                        <div className='column'>{data.wayBillNo}</div>
+                                        <div className='column'>Yes</div>
+                                    </div>
+                                )
+                            })
+                        }
                     </div>
                 </div>
 

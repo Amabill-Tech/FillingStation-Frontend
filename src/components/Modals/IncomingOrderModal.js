@@ -1,15 +1,13 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import close from '../../assets/close.png';
-import upload from '../../assets/upload.png';
 import Button from '@mui/material/Button';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Modal from '@mui/material/Modal';
 import { ThreeDots } from  'react-loader-spinner';
 import swal from 'sweetalert';
 import '../../styles/lpo.scss';
-import ProductService from '../../services/productService';
-import axios from 'axios';
+import IncomingService from '../../services/IncomingService';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
@@ -17,68 +15,56 @@ const IncomingOrderModal = (props) => {
     const [loading, setLoading] = useState(false);
     const user = useSelector(state => state.authReducer.user);
 
-    const [dateCreated, setDateCreated] = useState('');
-    const [depot, setDepot] = useState('');
-    const [depotAddress, setDepotAddress] = useState('');
+    const [depotStation, setDepotStation] = useState('');
+    const [destination, setDestination] = useState('');
+    const [product, setProduct] = useState('PMS');
     const [quantity, setQuantity] = useState('');
-    const [loadingLocation, setLoadingLocation] = useState('');
-    const [uploadFile, setUpload] = useState('');
-    const [loading2, setLoading2] = useState(0);
-    const attach = useRef();
+    const [dateCreated, setDateCreated] = useState('');
+    const [productOrderID, setProductOrderID] = useState('');
+    const [truckNo, setTruckNo] = useState('');
+    const [wayBillNo, setWayBillNo] = useState('');
+    const [val, setVal] = useState(1);
 
     const handleClose = () => props.close(false);
 
     const submit = () => {
-        if(dateCreated === "") return swal("Warning!", "Date created field cannot be empty", "info");
-        if(depot === "") return swal("Warning!", "Depot field cannot be empty", "info");
-        if(depotAddress === "") return swal("Warning!", "Depot address field cannot be empty", "info");
+        if(depotStation === "") return swal("Warning!", "Depot station field cannot be empty", "info");
+        if(destination === "") return swal("Warning!", "Destination field cannot be empty", "info");
+        if(product === "") return swal("Warning!", "Product field cannot be empty", "info");
         if(quantity === "") return swal("Warning!", "Quantity field cannot be empty", "info");
-        if(loadingLocation === "") return swal("Warning!", "Location field cannot be empty", "info");
-        if(uploadFile === "") return swal("Warning!", "File upload cannot be empty", "info");
+        if(dateCreated === "") return swal("Warning!", "Date created field cannot be empty", "info");
+        if(productOrderID === "") return swal("Warning!", "Product order ID field cannot be empty", "info");
+        if(truckNo === "") return swal("Warning!", "Truck No cannot be empty", "info");
+        if(wayBillNo === "") return swal("Warning!", "WWybill No cannot be empty", "info");
 
         setLoading(true);
 
         const payload = {
-            dateCreated: dateCreated,
-            depot: depot,
-            depotAddress: depotAddress,
+            depotStation: depotStation,
+            destination: destination,
+            product: product,
             quantity: quantity,
-            loadingLocation: loadingLocation,
-            attachCertificate: uploadFile,
-            organizationID: user._id,
+            dateCreated: dateCreated,
+            productOrderID: productOrderID,
+            truckNo: truckNo,
+            wayBillNo: wayBillNo,
+            organizationID: user._id
         }
 
-        ProductService.createProductOrder(payload).then((data) => {
+        IncomingService.createIncoming(payload).then((data) => {
             swal("Success", "Product order created successfully!", "success");
         }).then(()=>{
             setLoading(false);
-            setLoading2(0);
             props.refresh();
             handleClose();
         })
     }
 
-    const uploadProductOrders = () => {
-        attach.current.click();
-    }
-
-    const selectedFile = (e) => {
-        let file = e.target.files[0];
-        setLoading2(1);
-        const formData = new FormData();
-        formData.append("file", file);
-        const config = {
-            headers: {
-                "content-type": "multipart/form-data",
-                "Authorization": "Bearer "+ localStorage.getItem('token'),
-            }
-        };
-        const url = "http://localhost:3000/360-station/api/upload";
-        axios.post(url, formData, config).then((data) => {
-            setUpload(data.data.path);
-        }).then(()=>{
-            setLoading2(2);
-        });
+    const menuSelection = (e) => {
+        if(Number(e.target.dataset.value) === 1) setProduct('PMS');
+        if(Number(e.target.dataset.value) === 2) setProduct('AGO');
+        if(Number(e.target.dataset.value) === 3) setProduct('DPK');
+        setVal(e.target.dataset.value);
     }
 
     return(
@@ -109,7 +95,7 @@ const IncomingOrderModal = (props) => {
                                         fontSize:'12px',
                                     }} placeholder="" 
                                     type='text'
-                                    onChange={e => setDateCreated(e.target.value)}
+                                    onChange={e => setDepotStation(e.target.value)}
                                 />
                             </div>
 
@@ -124,7 +110,7 @@ const IncomingOrderModal = (props) => {
                                         border:'1px solid #777777',
                                         fontSize:'12px',
                                     }} placeholder="" 
-                                    onChange={e => setDepot(e.target.value)}
+                                    onChange={e => setDestination(e.target.value)}
                                 />
                             </div>
 
@@ -133,7 +119,7 @@ const IncomingOrderModal = (props) => {
                                 <Select
                                     labelId="demo-select-small"
                                     id="demo-select-small"
-                                    value={1}
+                                    value={val}
                                     sx={{
                                         width:'100%',
                                         height: '35px', 
@@ -143,14 +129,14 @@ const IncomingOrderModal = (props) => {
                                         fontSize:'12px',
                                     }}
                                 >
-                                    <MenuItem style={menu} value={1}>PMS</MenuItem>
-                                    <MenuItem style={menu} value={1}>AGO</MenuItem>
-                                    <MenuItem style={menu} value={1}>DPK</MenuItem>
+                                    <MenuItem onClick={(e) => {menuSelection(e)}} style={menu} value={1}>PMS</MenuItem>
+                                    <MenuItem onClick={(e) => {menuSelection(e)}} style={menu} value={2}>AGO</MenuItem>
+                                    <MenuItem onClick={(e) => {menuSelection(e)}} style={menu} value={3}>DPK</MenuItem>
                                 </Select>
                             </div>
 
                             <div className='inputs'>
-                                <div className='head-text2'>Quantity (litre)</div>
+                                <div className='head-text2'>Quantity</div>
                                 <OutlinedInput 
                                     sx={{
                                         width:'100%',
@@ -176,8 +162,8 @@ const IncomingOrderModal = (props) => {
                                         border:'1px solid #777777',
                                         fontSize:'12px',
                                     }} placeholder="" 
-                                    type='number'
-                                    onChange={e => setQuantity(e.target.value)}
+                                    type='date'
+                                    onChange={e => setDateCreated(e.target.value)}
                                 />
                             </div>
 
@@ -193,7 +179,7 @@ const IncomingOrderModal = (props) => {
                                         fontSize:'12px',
                                     }} placeholder="" 
                                     type='number'
-                                    onChange={e => setQuantity(e.target.value)}
+                                    onChange={e => setProductOrderID(e.target.value)}
                                 />
                             </div>
 
@@ -208,8 +194,8 @@ const IncomingOrderModal = (props) => {
                                         border:'1px solid #777777',
                                         fontSize:'12px',
                                     }} placeholder="" 
-                                    type='number'
-                                    onChange={e => setQuantity(e.target.value)}
+                                    type='text'
+                                    onChange={e => setTruckNo(e.target.value)}
                                 />
                             </div>
 
@@ -224,8 +210,8 @@ const IncomingOrderModal = (props) => {
                                         border:'1px solid #777777',
                                         fontSize:'12px',
                                     }} placeholder="" 
-                                    type='number'
-                                    onChange={e => setQuantity(e.target.value)}
+                                    type='text'
+                                    onChange={e => setWayBillNo(e.target.value)}
                                 />
                             </div>
                        </div>
