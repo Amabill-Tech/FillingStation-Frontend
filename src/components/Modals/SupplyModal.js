@@ -1,85 +1,58 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import close from '../../assets/close.png';
-import upload from '../../assets/upload.png';
 import Button from '@mui/material/Button';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Modal from '@mui/material/Modal';
 import { ThreeDots } from  'react-loader-spinner';
 import swal from 'sweetalert';
 import '../../styles/lpo.scss';
-import ProductService from '../../services/productService';
-import axios from 'axios';
 import Radio from '@mui/material/Radio';
 import '../../styles/lpo.scss';
+import SupplyService from '../../services/supplyService';
 
 const SupplyModal = (props) => {
     const [loading, setLoading] = useState(false);
     const user = useSelector(state => state.authReducer.user);
     const [productType, setProductType] = useState('PMS');
 
-    const [dateCreated, setDateCreated] = useState('');
-    const [depot, setDepot] = useState('');
-    const [depotAddress, setDepotAddress] = useState('');
+    const [transportationName, setTransportationName] = useState('');
+    const [truckNo, setTruckNo] = useState('');
+    const [wayBillNo, setWayBillNo] = useState('');
     const [quantity, setQuantity] = useState('');
-    const [loadingLocation, setLoadingLocation] = useState('');
-    const [uploadFile, setUpload] = useState('');
-    const [loading2, setLoading2] = useState(0);
-    const attach = useRef();
+    const [shortage, setShortage] = useState('');
+    const [date, setDate] = useState('');
 
     const handleClose = () => props.close(false);
 
     const submit = () => {
-        if(dateCreated === "") return swal("Warning!", "Date created field cannot be empty", "info");
-        if(depot === "") return swal("Warning!", "Depot field cannot be empty", "info");
-        if(depotAddress === "") return swal("Warning!", "Depot address field cannot be empty", "info");
+        if(transportationName === "") return swal("Warning!", "Transportation name field cannot be empty", "info");
+        if(truckNo === "") return swal("Warning!", "Truck no field cannot be empty", "info");
+        if(wayBillNo === "") return swal("Warning!", "Waybill no field cannot be empty", "info");
         if(quantity === "") return swal("Warning!", "Quantity field cannot be empty", "info");
-        if(loadingLocation === "") return swal("Warning!", "Location field cannot be empty", "info");
-        if(uploadFile === "") return swal("Warning!", "File upload cannot be empty", "info");
+        if(shortage === "") return swal("Warning!", "Shortage field cannot be empty", "info");
+        if(date === "") return swal("Warning!", "Date field cannot be empty", "info");
 
         setLoading(true);
 
         const payload = {
-            dateCreated: dateCreated,
-            depot: depot,
-            depotAddress: depotAddress,
+            transportationName: transportationName,
+            wayBillNo: wayBillNo,
+            truckNo: truckNo,
             quantity: quantity,
-            loadingLocation: loadingLocation,
-            attachCertificate: uploadFile,
+            productType: productType,
+            shortage: shortage,
+            date: date,
             organizationID: user._id,
         }
 
-        ProductService.createProductOrder(payload).then((data) => {
+        SupplyService.createSupply(payload).then((data) => { console.log(data)
             swal("Success", "Product order created successfully!", "success");
         }).then(()=>{
             setLoading(false);
-            setLoading2(0);
             props.refresh();
             handleClose();
         })
-    }
-
-    const uploadProductOrders = () => {
-        attach.current.click();
-    }
-
-    const selectedFile = (e) => {
-        let file = e.target.files[0];
-        setLoading2(1);
-        const formData = new FormData();
-        formData.append("file", file);
-        const config = {
-            headers: {
-                "content-type": "multipart/form-data",
-                "Authorization": "Bearer "+ localStorage.getItem('token'),
-            }
-        };
-        const url = "http://localhost:3000/360-station/api/upload";
-        axios.post(url, formData, config).then((data) => {
-            setUpload(data.data.path);
-        }).then(()=>{
-            setLoading2(2);
-        });
     }
 
     return(
@@ -110,7 +83,7 @@ const SupplyModal = (props) => {
                                         fontSize:'12px',
                                     }} placeholder="" 
                                     type='text'
-                                    onChange={e => setDateCreated(e.target.value)}
+                                    onChange={e => setTransportationName(e.target.value)}
                                 />
                             </div>
 
@@ -125,7 +98,7 @@ const SupplyModal = (props) => {
                                         border:'1px solid #777777',
                                         fontSize:'12px',
                                     }} placeholder="" 
-                                    onChange={e => setDepot(e.target.value)}
+                                    onChange={e => setTruckNo(e.target.value)}
                                 />
                             </div>
 
@@ -140,7 +113,7 @@ const SupplyModal = (props) => {
                                         border:'1px solid #777777',
                                         fontSize:'12px',
                                     }} placeholder="" 
-                                    onChange={e => setDepot(e.target.value)}
+                                    onChange={e => setWayBillNo(e.target.value)}
                                 />
                             </div>
 
@@ -190,7 +163,7 @@ const SupplyModal = (props) => {
                                         fontSize:'12px',
                                     }} placeholder="" 
                                     type='number'
-                                    onChange={e => setQuantity(e.target.value)}
+                                    onChange={e => setShortage(e.target.value)}
                                 />
                             </div>
 
@@ -206,7 +179,7 @@ const SupplyModal = (props) => {
                                         fontSize:'12px',
                                     }} placeholder="" 
                                     type='date'
-                                    onChange={e => setQuantity(e.target.value)}
+                                    onChange={e => setDate(e.target.value)}
                                 />
                             </div>
                        </div>
