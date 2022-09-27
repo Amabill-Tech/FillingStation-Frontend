@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import '../../styles/payments.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -7,11 +7,24 @@ import avatar from '../../assets/avatar.png';
 import hr6 from '../../assets/hr6.png';
 import StaffModal from '../Modals/CreateStaffModal';
 import EmployeeDetails from '../Modals/EmployeeModal';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import { getAllStations } from '../../store/actions/outlet';
+import OutletService from '../../services/outletService';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const Employee = () => {
 
     const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
+    const [search, setSearch] = useState('');
+    const [defaultState, setDefault] = useState(0);
+    const [currrentStation, setCurrentStation] = useState();
+
+    const user = useSelector(state => state.authReducer.user);
+    const allOutlets = useSelector(state => state.outletReducer.allOutlets);
+    const dispatch = useDispatch();
+    console.log('current', currrentStation)
 
     const openModal = () => {
         setOpen(true);
@@ -19,6 +32,25 @@ const Employee = () => {
 
     const openEmployee = () => {
         setOpen2(true);
+    }
+
+    const getAllStationData = useCallback(() => {
+        const payload = {
+            organisation: user._id
+        }
+        OutletService.getAllOutletStations(payload).then(data => {
+            dispatch(getAllStations(data.station));
+        }).then(()=>{
+            setCurrentStation(allOutlets[0]);
+        });
+    }, [user._id, dispatch]);
+
+    useEffect(()=>{
+        getAllStationData();
+    },[getAllStationData]);
+
+    const changeMenu = (index, item ) => {
+        setDefault(index);
     }
 
     return(
@@ -47,25 +79,31 @@ const Employee = () => {
                             <Select
                                 labelId="demo-select-small"
                                 id="demo-select-small"
-                                value={10}
+                                value={defaultState}
                                 sx={selectStyle2}
                             >
-                                <MenuItem value={10}>07 August, 2022</MenuItem>
-                                <MenuItem value={20}>Twenty</MenuItem>
-                                <MenuItem value={30}>Thirty</MenuItem>
+                                {
+                                   allOutlets.map((item, index) => {
+                                        return(
+                                            <MenuItem onClick={()=>{changeMenu(index, item)}} value={index}>{item.outletName}</MenuItem>
+                                        )
+                                   })  
+                                }
                             </Select>
                         </div>
                         <div className='second-select'>
-                            <Select
-                                labelId="demo-select-small"
-                                id="demo-select-small"
-                                value={10}
-                                sx={selectStyle2}
-                            >
-                                <MenuItem value={10}>07 August, 2022</MenuItem>
-                                <MenuItem value={20}>Twenty</MenuItem>
-                                <MenuItem value={30}>Thirty</MenuItem>
-                            </Select>
+                                <OutlinedInput 
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px',  
+                                        background:'#EEF2F1', 
+                                        border:'1px solid #777777',
+                                        fontSize:'12px',
+                                    }} 
+                                    type='text'
+                                    placeholder="Search" 
+                                    onChange={e => setSearch(e.target.value)}
+                                />
                         </div>
                     </div>
                     <div style={{width:'100px'}} className='butt'>
@@ -93,9 +131,9 @@ const Employee = () => {
                             value={10}
                             sx={selectStyle2}
                         >
-                            <MenuItem value={10}>Show entries</MenuItem>
-                            <MenuItem value={20}>Twenty</MenuItem>
-                            <MenuItem value={30}>Thirty</MenuItem>
+                            <MenuItem value={10}>show 15 entries</MenuItem>
+                            <MenuItem value={20}>show 30 entries</MenuItem>
+                            <MenuItem value={30}>show 100 entries</MenuItem>
                         </Select>
                     </div>
                     <div style={{width:'210px'}} className='input-cont2'>

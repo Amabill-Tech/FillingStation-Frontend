@@ -9,59 +9,143 @@ import Modal from '@mui/material/Modal';
 import { ThreeDots } from  'react-loader-spinner';
 import swal from 'sweetalert';
 import '../../styles/lpo.scss';
-import ProductService from '../../services/productService';
 import axios from 'axios';
 import '../../styles/lpo.scss';
 import Radio from '@mui/material/Radio';
+import Camera from 'react-html5-camera-photo';
+import 'react-html5-camera-photo/build/css/index.css';
 
 const StaffModal = (props) => {
     const [loading, setLoading] = useState(false);
+    const [close2, setClose2] = useState(false);
+    const [close3, setClose3] = useState(false);
     const user = useSelector(state => state.authReducer.user);
-    const [productType, setProductType] = useState('Male');
-
-    const [dateCreated, setDateCreated] = useState('');
-    const [depot, setDepot] = useState('');
-    const [depotAddress, setDepotAddress] = useState('');
-    const [quantity, setQuantity] = useState('');
-    const [loadingLocation, setLoadingLocation] = useState('');
-    const [uploadFile, setUpload] = useState('');
     const [loading2, setLoading2] = useState(0);
+    const [loading3, setLoading3] = useState(0);
     const attach = useRef();
+    const attach2 = useRef();
 
-    const handleClose = () => props.close(false);
+    const [staffName, setStaffName] = useState('');
+    const [staffImage, setStaffImage] = useState('');
+    const [productType, setProductType] = useState('Male');
+    const [email, setEmail] = useState('');
+    const [staffID, setStaffID] = useState('');
+    const [phone, setPhone] = useState('');
+    const [address, setAddress] = useState('');
+    const [state, setState] = useState('');
+    const [accountNumber, setAccountNumber] = useState('');
+    const [bankName, setBankName] = useState('');
+    const [dateEmployed, setDateEmployed] = useState('');
+    const [dateOfBirth, setDateOfBirth] = useState('');
+    const [role, setRole] = useState('');
+    const [jobTitle, setJobTitle] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    
+    
+
+    const handleClose = () => {
+        setLoading2(0);
+        props.close(false)
+    };
+
+    const handleClose2 = () => {
+        setClose2(false);
+    }
+
+    const handleClose3 = () => {
+        setClose3(false);
+    }
+
+    const uploadIDByCamera = () => {
+        setClose3(true);
+    }
+
+    function handleTakePhoto (dataUri) {
+        setLoading3(1);
+        const url = "http://localhost:3000/360-station/api/uploadFromCamera";
+        const payload = {
+            image: dataUri,
+            token: "Bearer "+ localStorage.getItem('token')
+        }
+        axios.post(url, payload).then((data) => {
+            setStaffImage(data.data.path);
+        }).then(()=>{
+            setLoading3(2);
+            setClose2(false);
+        });
+    }
+
+    function handlePhotoID (dataUri) {
+        setLoading3(1);
+        const url = "http://localhost:3000/360-station/api/uploadFromCamera";
+        const payload = {
+            image: dataUri,
+            token: "Bearer "+ localStorage.getItem('token')
+        }
+        axios.post(url, payload).then((data) => {
+            setStaffID(data.data.path);
+        }).then(()=>{
+            setLoading3(2);
+            setClose3(false);
+        });
+    }
 
     const submit = () => {
-        if(dateCreated === "") return swal("Warning!", "Date created field cannot be empty", "info");
-        if(depot === "") return swal("Warning!", "Depot field cannot be empty", "info");
-        if(depotAddress === "") return swal("Warning!", "Depot address field cannot be empty", "info");
-        if(quantity === "") return swal("Warning!", "Quantity field cannot be empty", "info");
-        if(loadingLocation === "") return swal("Warning!", "Location field cannot be empty", "info");
-        if(uploadFile === "") return swal("Warning!", "File upload cannot be empty", "info");
+        if(staffName === "") return swal("Warning!", "Staff name field cannot be empty", "info");
+        if(staffImage === "") return swal("Warning!", "Staff image field cannot be empty", "info");
+        if(productType === "") return swal("Warning!", "Sex field cannot be empty", "info");
+        if(email === "") return swal("Warning!", "Email field cannot be empty", "info");
+        if(staffID === "") return swal("Warning!", "Staff ID field cannot be empty", "info");
+        if(phone === "") return swal("Warning!", "Phone field cannot be empty", "info");
+        if(address === "") return swal("Warning!", "Address field cannot be empty", "info");
+        if(state === "") return swal("Warning!", "State field cannot be empty", "info");
+        if(accountNumber === "") return swal("Warning!", "Account No field cannot be empty", "info");
+        if(bankName === "") return swal("Warning!", "Bank name field cannot be empty", "info");
+        if(dateEmployed === "") return swal("Warning!", "Date employed field cannot be empty", "info");
+        if(dateOfBirth === "") return swal("Warning!", "Date of birth field cannot be empty", "info");
+        if(role === "") return swal("Warning!", "Role field cannot be empty", "info");
+        if(jobTitle === "") return swal("Warning!", "Job title field cannot be empty", "info");
+        if(password === "") return swal("Warning!", "Password field cannot be empty", "info");
+        if(confirmPassword !== password) return swal("Warning!", "Confirm password field cannot be empty", "info");
 
-        setLoading(true);
-
+        //setLoading(true);
         const payload = {
-            dateCreated: dateCreated,
-            depot: depot,
-            depotAddress: depotAddress,
-            quantity: quantity,
-            loadingLocation: loadingLocation,
-            attachCertificate: uploadFile,
-            organizationID: user._id,
+            staffImage: staffName,
+            staffImage: staffImage,
+            sex: productType,
+            email: email,
+            staffID: staffID,
+            phone: phone,
+            address: address,
+            state: state,
+            accountNumber: accountNumber,
+            bankName: bankName,
+            dateEmployed: dateEmployed,
+            dateOfBirth: dateOfBirth,
+            role: role,
+            jobTitle: jobTitle,
+            password: password,
+            organisationID: user._id,
+            outletID: ''
         }
 
-        ProductService.createProductOrder(payload).then((data) => {
+        /*ProductService.createProductOrder(payload).then((data) => {
             swal("Success", "Product order created successfully!", "success");
         }).then(()=>{
             setLoading(false);
             setLoading2(0);
             props.refresh();
             handleClose();
-        })
+        })*/
     }
 
     const uploadProductOrders = () => {
         attach.current.click();
+    }
+
+    const uploadID = () => {
+        attach2.current.click();
     }
 
     const selectedFile = (e) => {
@@ -77,10 +161,73 @@ const StaffModal = (props) => {
         };
         const url = "http://localhost:3000/360-station/api/upload";
         axios.post(url, formData, config).then((data) => {
-            setUpload(data.data.path);
+            setStaffImage(data.data.path);
+            console.log('from gallery', data.data.path)
         }).then(()=>{
             setLoading2(2);
         });
+    }
+
+    const selectID = (e) => {
+        let file = e.target.files[0];
+        setLoading2(1);
+        const formData = new FormData();
+        formData.append("file", file);
+        const config = {
+            headers: {
+                "content-type": "multipart/form-data",
+                "Authorization": "Bearer "+ localStorage.getItem('token'),
+            }
+        };
+        const url = "http://localhost:3000/360-station/api/upload";
+        axios.post(url, formData, config).then((data) => {
+            setStaffID(data.data.path);
+            console.log('from gallery', data.data.path)
+        }).then(()=>{
+            setLoading2(2);
+        });
+    }
+
+    const openDeviceCamera = () =>{
+        setClose2(true);
+    }
+
+    const CameraModal = (props) => {
+        return(
+            <Modal
+                open={props.open}
+                onClose={handleClose2}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+                sx={{ display:'flex', justifyContent:'center', alignItems:'center'}}
+            >
+                <Camera
+                    onTakePhoto = { (dataUri) => { handleTakePhoto(dataUri); } }
+                    idealResolution = {{width: 200, height: 200}}
+                    imageCompression = {0.5}
+                    sizeFactor = {0.5}
+                />
+            </Modal>
+        )
+    }
+
+    const CameraIDModal = (props) => {
+        return(
+            <Modal
+                open={props.open}
+                onClose={handleClose3}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+                sx={{ display:'flex', justifyContent:'center', alignItems:'center'}}
+            >
+                <Camera
+                    onTakePhoto = { (dataUri) => { handlePhotoID(dataUri); } }
+                    idealResolution = {{width: 200, height: 200}}
+                    imageCompression = {0.5}
+                    sizeFactor = {0.5}
+                />
+            </Modal>
+        )
     }
 
     return(
@@ -93,6 +240,8 @@ const StaffModal = (props) => {
         >
                 <div className='modalContainer'>
                     <div className='inner'>
+                        {<CameraModal open={close2} close={setClose2} />}
+                        {<CameraIDModal open={close3} close={setClose3}  />}
                         <div className='head'>
                             <div className='head-text'>Add Staff</div>
                             <img onClick={handleClose} style={{width:'18px', height:'18px'}} src={close} alt={'icon'} />
@@ -111,7 +260,7 @@ const StaffModal = (props) => {
                                         fontSize:'12px',
                                     }} placeholder="" 
                                     type='text'
-                                    onChange={e => setDateCreated(e.target.value)}
+                                    onChange={e => setStaffName(e.target.value)}
                                 />
                             </div>
 
@@ -128,10 +277,23 @@ const StaffModal = (props) => {
                                             backgroundColor: '#427BBE'
                                         }
                                         }} 
-                                        onClick={uploadProductOrders}
+                                        onClick={openDeviceCamera}
                                         variant="contained"> 
                                         <img style={{width:'25px', height:'18px', marginRight:'10px'}} src={photo} alt={'icon'} />
-                                        <div>Take Photo</div>
+                                        {loading3 === 0 && <div>Take Photo</div>}
+                                        {loading3 === 1 && 
+                                            <ThreeDots 
+                                                height="50" 
+                                                width="40" 
+                                                radius="9"
+                                                color="#fff" 
+                                                ariaLabel="three-dots-loading"
+                                                wrapperStyle={{}}
+                                                wrapperClassName=""
+                                                visible={true}
+                                            />
+                                        }
+                                        {loading3 === 2 && <div>Success</div>}
                                     </Button>
                                     <Button sx={{
                                         width:'49%', 
@@ -146,7 +308,20 @@ const StaffModal = (props) => {
                                         onClick={uploadProductOrders}
                                         variant="contained"> 
                                         <img style={{width:'25px', height:'18px', marginRight:'10px'}} src={upload} alt={'icon'} />
-                                        <div>Upload Image</div>
+                                        {loading2 === 0 && <div>Upload Image</div>}
+                                        {loading2 === 1 && 
+                                            <ThreeDots 
+                                                height="50" 
+                                                width="40" 
+                                                radius="9"
+                                                color="#fff" 
+                                                ariaLabel="three-dots-loading"
+                                                wrapperStyle={{}}
+                                                wrapperClassName=""
+                                                visible={true}
+                                            />
+                                        }
+                                        {loading2 === 2 && <div>Success</div>}
                                     </Button>
                                 </div>
                             </div>
@@ -177,7 +352,7 @@ const StaffModal = (props) => {
                                         fontSize:'12px',
                                     }} placeholder="" 
                                     type='text'
-                                    onChange={e => setDateCreated(e.target.value)}
+                                    onChange={e => setEmail(e.target.value)}
                                 />
                             </div>
 
@@ -198,10 +373,23 @@ const StaffModal = (props) => {
                                             backgroundColor: '#427BBE'
                                         }
                                         }} 
-                                        onClick={uploadProductOrders}
+                                        onClick={uploadIDByCamera}
                                         variant="contained"> 
                                         <img style={{width:'25px', height:'18px', marginRight:'10px'}} src={photo} alt={'icon'} />
-                                        <div>Take Photo</div>
+                                        {loading3 === 0 && <div>Take Photo</div>}
+                                        {loading3 === 1 && 
+                                            <ThreeDots 
+                                                height="50" 
+                                                width="40" 
+                                                radius="9"
+                                                color="#fff" 
+                                                ariaLabel="three-dots-loading"
+                                                wrapperStyle={{}}
+                                                wrapperClassName=""
+                                                visible={true}
+                                            />
+                                        }
+                                        {loading3 === 2 && <div>Success</div>}
                                     </Button>
                                     <Button sx={{
                                         width:'49%', 
@@ -213,10 +401,23 @@ const StaffModal = (props) => {
                                             backgroundColor: '#087B36'
                                         }
                                         }} 
-                                        onClick={uploadProductOrders}
+                                        onClick={uploadID}
                                         variant="contained"> 
                                         <img style={{width:'25px', height:'18px', marginRight:'10px'}} src={upload} alt={'icon'} />
-                                        <div>Upload Image</div>
+                                        {loading2 === 0 && <div>Upload Image</div>}
+                                        {loading2 === 1 && 
+                                            <ThreeDots 
+                                                height="50" 
+                                                width="40" 
+                                                radius="9"
+                                                color="#fff" 
+                                                ariaLabel="three-dots-loading"
+                                                wrapperStyle={{}}
+                                                wrapperClassName=""
+                                                visible={true}
+                                            />
+                                        }
+                                        {loading2 === 2 && <div>Success</div>}
                                     </Button>
                                 </div>
                             </div>
@@ -234,7 +435,7 @@ const StaffModal = (props) => {
                                     }} 
                                     type='number'
                                     placeholder="" 
-                                    onChange={e => setDepot(e.target.value)}
+                                    onChange={e => setPhone(e.target.value)}
                                 />
                             </div>
 
@@ -250,7 +451,7 @@ const StaffModal = (props) => {
                                         fontSize:'12px',
                                     }} placeholder="" 
                                     type='text'
-                                    onChange={e => setQuantity(e.target.value)}
+                                    onChange={e => setAddress(e.target.value)}
                                 />
                             </div>
 
@@ -266,7 +467,7 @@ const StaffModal = (props) => {
                                         fontSize:'12px',
                                     }} placeholder="" 
                                     type='text'
-                                    onChange={e => setQuantity(e.target.value)}
+                                    onChange={e => setState(e.target.value)}
                                 />
                             </div>
 
@@ -282,7 +483,7 @@ const StaffModal = (props) => {
                                         fontSize:'12px',
                                     }} placeholder="" 
                                     type='text'
-                                    onChange={e => setQuantity(e.target.value)}
+                                    onChange={e => setAccountNumber(e.target.value)}
                                 />
                             </div>
 
@@ -298,7 +499,7 @@ const StaffModal = (props) => {
                                         fontSize:'12px',
                                     }} placeholder="" 
                                     type='text'
-                                    onChange={e => setQuantity(e.target.value)}
+                                    onChange={e => setBankName(e.target.value)}
                                 />
                             </div>
 
@@ -314,7 +515,7 @@ const StaffModal = (props) => {
                                         fontSize:'12px',
                                     }} placeholder="" 
                                     type='date'
-                                    onChange={e => setQuantity(e.target.value)}
+                                    onChange={e => setDateEmployed(e.target.value)}
                                 />
                             </div>
 
@@ -330,7 +531,7 @@ const StaffModal = (props) => {
                                         fontSize:'12px',
                                     }} placeholder="" 
                                     type='date'
-                                    onChange={e => setQuantity(e.target.value)}
+                                    onChange={e => setDateOfBirth(e.target.value)}
                                 />
                             </div>
 
@@ -346,7 +547,7 @@ const StaffModal = (props) => {
                                         fontSize:'12px',
                                     }} placeholder="" 
                                     type='text'
-                                    onChange={e => setQuantity(e.target.value)}
+                                    onChange={e => setRole(e.target.value)}
                                 />
                             </div>
 
@@ -362,7 +563,7 @@ const StaffModal = (props) => {
                                         fontSize:'12px',
                                     }} placeholder="" 
                                     type='text'
-                                    onChange={e => setQuantity(e.target.value)}
+                                    onChange={e => setJobTitle(e.target.value)}
                                 />
                             </div>
 
@@ -378,7 +579,7 @@ const StaffModal = (props) => {
                                         fontSize:'12px',
                                     }} placeholder="" 
                                     type='password'
-                                    onChange={e => setQuantity(e.target.value)}
+                                    onChange={e => setPassword(e.target.value)}
                                 />
                             </div>
 
@@ -394,9 +595,11 @@ const StaffModal = (props) => {
                                         fontSize:'12px',
                                     }} placeholder="" 
                                     type='password'
-                                    onChange={e => setQuantity(e.target.value)}
+                                    onChange={e => setConfirmPassword(e.target.value)}
                                 />
                             </div>
+                            <input ref={attach} type={'file'} onChange={selectedFile} style={{visibility:'hidden'}} />
+                            <input ref={attach2} type={'file'} onChange={selectID} style={{visibility:'hidden'}} />
 
                        </div>
 
