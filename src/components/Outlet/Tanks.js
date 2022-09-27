@@ -47,7 +47,7 @@ const Tank = (props) => {
 
     useEffect(()=>{
         getAllStationTanks();
-    },[getAllStationTanks]);
+    },[]);
 
     const getSeparateTanks = (data) => {
 

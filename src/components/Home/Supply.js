@@ -87,7 +87,7 @@ const Supply = () => {
                             height:'30px',  
                             background: '#427BBE',
                             borderRadius: '3px',
-                            fontSize:'12px',
+                            fontSize:'11px',
                             '&:hover': {
                                 backgroundColor: '#427BBE'
                             }
@@ -118,7 +118,7 @@ const Supply = () => {
                                 height:'30px',  
                                 background: '#58A0DF',
                                 borderRadius: '3px',
-                                fontSize:'12px',
+                                fontSize:'11px',
                                 '&:hover': {
                                     backgroundColor: '#58A0DF'
                                 }
@@ -131,7 +131,7 @@ const Supply = () => {
                                 height:'30px',  
                                 background: '#F36A4C',
                                 borderRadius: '3px',
-                                fontSize:'12px',
+                                fontSize:'11px',
                                 '&:hover': {
                                     backgroundColor: '#F36A4C'
                                 }

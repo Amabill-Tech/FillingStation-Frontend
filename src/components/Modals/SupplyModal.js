@@ -226,10 +226,4 @@ const inner = {
     overflowY: 'scroll'
 }
 
-
-const menu = {
-    fontSize:'14px',
-    fontFamily:'Nunito-Regular'
-}
-
 export default SupplyModal;

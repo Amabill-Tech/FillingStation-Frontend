@@ -1,85 +1,61 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import close from '../../assets/close.png';
-import upload from '../../assets/upload.png';
 import Button from '@mui/material/Button';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Modal from '@mui/material/Modal';
 import { ThreeDots } from  'react-loader-spinner';
 import swal from 'sweetalert';
 import '../../styles/lpo.scss';
-import ProductService from '../../services/productService';
-import axios from 'axios';
-import Radio from '@mui/material/Radio';
+import TankUpdate from '../../services/tankUpdateService';
 import '../../styles/lpo.scss';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 
 const TankUpdateModal = (props) => {
     const [loading, setLoading] = useState(false);
     const user = useSelector(state => state.authReducer.user);
-    const [productType, setProductType] = useState('PMS');
+    const [defaultState, setDefaultState] = useState(0);
+    const [currentStation, setCurrentStation] = useState({});
 
-    const [dateCreated, setDateCreated] = useState('');
-    const [depot, setDepot] = useState('');
-    const [depotAddress, setDepotAddress] = useState('');
+    const [tankName, setTankName] = useState('');
+    const [currentLevel, setCurrentLevel] = useState('');
     const [quantity, setQuantity] = useState('');
-    const [loadingLocation, setLoadingLocation] = useState('');
-    const [uploadFile, setUpload] = useState('');
-    const [loading2, setLoading2] = useState(0);
-    const attach = useRef();
+    const [refCode, setRefCode] = useState('');
+    const [date, setDate] = useState('');
 
     const handleClose = () => props.close(false);
 
+    const handleMenuSelection = (e, data) => {
+        setDefaultState(e.target.dataset.value);
+        setCurrentStation(data);
+    }
+
     const submit = () => {
-        if(dateCreated === "") return swal("Warning!", "Date created field cannot be empty", "info");
-        if(depot === "") return swal("Warning!", "Depot field cannot be empty", "info");
-        if(depotAddress === "") return swal("Warning!", "Depot address field cannot be empty", "info");
+        if(tankName === "") return swal("Warning!", "Tank Name field cannot be empty", "info");
+        if(currentLevel === "") return swal("Warning!", "Current level field cannot be empty", "info");
         if(quantity === "") return swal("Warning!", "Quantity field cannot be empty", "info");
-        if(loadingLocation === "") return swal("Warning!", "Location field cannot be empty", "info");
-        if(uploadFile === "") return swal("Warning!", "File upload cannot be empty", "info");
+        if(refCode === "") return swal("Warning!", "Ref code field cannot be empty", "info");
+        if(date === "") return swal("Warning!", "Date field cannot be empty", "info");
 
         setLoading(true);
 
         const payload = {
-            dateCreated: dateCreated,
-            depot: depot,
-            depotAddress: depotAddress,
-            quantity: quantity,
-            loadingLocation: loadingLocation,
-            attachCertificate: uploadFile,
+            tankName: tankName,
+            currentLevel: currentLevel,
+            quantityAdded: quantity,
+            referenceCode: refCode,
+            date: date,
             organizationID: user._id,
         }
 
-        ProductService.createProductOrder(payload).then((data) => {
+        TankUpdate.createTankUpdate(payload).then((data) => {
             swal("Success", "Product order created successfully!", "success");
         }).then(()=>{
             setLoading(false);
-            setLoading2(0);
             props.refresh();
             handleClose();
         })
-    }
-
-    const uploadProductOrders = () => {
-        attach.current.click();
-    }
-
-    const selectedFile = (e) => {
-        let file = e.target.files[0];
-        setLoading2(1);
-        const formData = new FormData();
-        formData.append("file", file);
-        const config = {
-            headers: {
-                "content-type": "multipart/form-data",
-                "Authorization": "Bearer "+ localStorage.getItem('token'),
-            }
-        };
-        const url = "http://localhost:3000/360-station/api/upload";
-        axios.post(url, formData, config).then((data) => {
-            setUpload(data.data.path);
-        }).then(()=>{
-            setLoading2(2);
-        });
     }
 
     return(
@@ -100,7 +76,10 @@ const TankUpdateModal = (props) => {
                        <div className='middleDiv' style={inner}>
                             <div className='inputs'>
                                 <div className='head-text2'>Tank Name</div>
-                                <OutlinedInput 
+                                <Select
+                                    labelId="demo-select-small"
+                                    id="demo-select-small"
+                                    value={defaultState}
                                     sx={{
                                         width:'100%',
                                         height: '35px', 
@@ -108,10 +87,16 @@ const TankUpdateModal = (props) => {
                                         background:'#EEF2F1', 
                                         border:'1px solid #777777',
                                         fontSize:'12px',
-                                    }} placeholder="" 
-                                    type='text'
-                                    onChange={e => setDateCreated(e.target.value)}
-                                />
+                                    }}
+                                >
+                                    {
+                                        props.data.map((item, index) => {
+                                            return(
+                                                <MenuItem style={menu} key={index} onClick={(e) => {handleMenuSelection(e, item)}} value={index}>{item.outletName}</MenuItem>
+                                            )
+                                        })
+                                    }
+                                </Select>
                             </div>
 
                             <div className='inputs'>
@@ -125,7 +110,7 @@ const TankUpdateModal = (props) => {
                                         border:'1px solid #777777',
                                         fontSize:'12px',
                                     }} placeholder="" 
-                                    onChange={e => setDepot(e.target.value)}
+                                    onChange={e => setCurrentLevel(e.target.value)}
                                 />
                             </div>
 
@@ -140,7 +125,7 @@ const TankUpdateModal = (props) => {
                                         border:'1px solid #777777',
                                         fontSize:'12px',
                                     }} placeholder="" 
-                                    onChange={e => setDepot(e.target.value)}
+                                    onChange={e => setQuantity(e.target.value)}
                                 />
                             </div>
 
@@ -156,7 +141,7 @@ const TankUpdateModal = (props) => {
                                         fontSize:'12px',
                                     }} placeholder="" 
                                     type='number'
-                                    onChange={e => setQuantity(e.target.value)}
+                                    onChange={e => setRefCode(e.target.value)}
                                 />
                             </div>
 
@@ -172,7 +157,7 @@ const TankUpdateModal = (props) => {
                                         fontSize:'12px',
                                     }} placeholder="" 
                                     type='date'
-                                    onChange={e => setQuantity(e.target.value)}
+                                    onChange={e => setDate(e.target.value)}
                                 />
                             </div>
                        </div>
@@ -218,7 +203,6 @@ const inner = {
     height:'480px',
     overflowY: 'scroll',
 }
-
 
 const menu = {
     fontSize:'14px',

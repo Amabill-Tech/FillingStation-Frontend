@@ -3,15 +3,14 @@ import '../../styles/payments.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
-import tan from '../../assets/tan.png';
-import eye from '../../assets/eye.png';
-import filling from '../../assets/filling.png';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import TankUpdateModal from '../Modals/TankUpdateModal';
+import { useSelector } from 'react-redux';
 
 const TankUpdate = () => {
 
     const [open, setOpen] = useState(false);
+    const tankList = useSelector(state => state.outletReducer.tankList);
 
     const updateTankModal = () => {
         setOpen(true);
@@ -19,7 +18,7 @@ const TankUpdate = () => {
 
     return(
         <div className='paymentsCaontainer'>
-            { <TankUpdateModal open={open} close={setOpen} /> }
+            { <TankUpdateModal data={tankList} open={open} close={setOpen} /> }
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
@@ -133,105 +132,27 @@ const TankUpdate = () => {
                         <div className='column'>Previous Level</div>
                         <div className='column'>Quantity Added</div>
                         <div className='column'>Updated Level</div>
-                        <div className='column'>Reference</div>
                     </div>
 
                     <div className='row-container'>
-                        <div className='table-head2'>
-                            <div className='column'>S/N</div>
-                            <div className='column'>Date</div>
-                            <div className='column'>PMS Tank 1</div>
-                            <div className='column'>PMS</div>
-                            <div className='column'>Ammasco Kd</div>
-                            <div className='column'>9000</div>
-                            <div className='column'>11,000</div>
-                            <div className='column'>123,825</div>
-                            <div className='column'>1423KJS265</div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>S/N</div>
-                            <div className='column'>Date</div>
-                            <div className='column'>PMS Tank 1</div>
-                            <div className='column'>PMS</div>
-                            <div className='column'>Ammasco Kd</div>
-                            <div className='column'>9000</div>
-                            <div className='column'>11,000</div>
-                            <div className='column'>123,825</div>
-                            <div className='column'>1423KJS265</div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>S/N</div>
-                            <div className='column'>Date</div>
-                            <div className='column'>PMS Tank 1</div>
-                            <div className='column'>PMS</div>
-                            <div className='column'>Ammasco Kd</div>
-                            <div className='column'>9000</div>
-                            <div className='column'>11,000</div>
-                            <div className='column'>123,825</div>
-                            <div className='column'>1423KJS265</div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>S/N</div>
-                            <div className='column'>Date</div>
-                            <div className='column'>PMS Tank 1</div>
-                            <div className='column'>PMS</div>
-                            <div className='column'>Ammasco Kd</div>
-                            <div className='column'>9000</div>
-                            <div className='column'>11,000</div>
-                            <div className='column'>123,825</div>
-                            <div className='column'>1423KJS265</div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>S/N</div>
-                            <div className='column'>Date</div>
-                            <div className='column'>PMS Tank 1</div>
-                            <div className='column'>PMS</div>
-                            <div className='column'>Ammasco Kd</div>
-                            <div className='column'>9000</div>
-                            <div className='column'>11,000</div>
-                            <div className='column'>123,825</div>
-                            <div className='column'>1423KJS265</div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>S/N</div>
-                            <div className='column'>Date</div>
-                            <div className='column'>PMS Tank 1</div>
-                            <div className='column'>PMS</div>
-                            <div className='column'>Ammasco Kd</div>
-                            <div className='column'>9000</div>
-                            <div className='column'>11,000</div>
-                            <div className='column'>123,825</div>
-                            <div className='column'>1423KJS265</div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>S/N</div>
-                            <div className='column'>Date</div>
-                            <div className='column'>PMS Tank 1</div>
-                            <div className='column'>PMS</div>
-                            <div className='column'>Ammasco Kd</div>
-                            <div className='column'>9000</div>
-                            <div className='column'>11,000</div>
-                            <div className='column'>123,825</div>
-                            <div className='column'>1423KJS265</div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>S/N</div>
-                            <div className='column'>Date</div>
-                            <div className='column'>PMS Tank 1</div>
-                            <div className='column'>PMS</div>
-                            <div className='column'>Ammasco Kd</div>
-                            <div className='column'>9000</div>
-                            <div className='column'>11,000</div>
-                            <div className='column'>123,825</div>
-                            <div className='column'>1423KJS265</div>
-                        </div>
+                        {
+                            tankList.length === 0?
+                            <div style={place}>No tank updates</div>:
+                            tankList.map((data, index) => {
+                                return(
+                                    <div className='table-head2'>
+                                        <div className='column'>{index + 1}</div>
+                                        <div className='column'>{data.dateUpdated}</div>
+                                        <div className='column'>{data.tankName}</div>
+                                        <div className='column'>{data.productType}</div>
+                                        <div className='column'>{data.station}</div>
+                                        <div className='column'>{data.previousLevel}</div>
+                                        <div className='column'>{data.quantityAdded}</div>
+                                        <div className='column'>{data.currentLevel}</div>
+                                    </div>
+                                )
+                            })
+                        }
                     </div>
                 </div>
 
@@ -257,6 +178,15 @@ const selectStyle2 = {
     fontFamily: 'Nunito-Regular',
     fontSize:'14px',
     outline:'none'
+}
+
+const place = {
+    width:'100%',
+    textAlign:'center',
+    fontSize:'14px',
+    fontFamily:'Nunito-Regular',
+    marginTop:'20px',
+    color:'green'
 }
 
 export default TankUpdate;

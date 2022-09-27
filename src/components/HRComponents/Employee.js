@@ -1,14 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../../styles/payments.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import avatar from '../../assets/avatar.png';
 import hr6 from '../../assets/hr6.png';
+import StaffModal from '../Modals/CreateStaffModal';
+import EmployeeDetails from '../Modals/EmployeeModal';
 
 const Employee = () => {
+
+    const [open, setOpen] = useState(false);
+    const [open2, setOpen2] = useState(false);
+
+    const openModal = () => {
+        setOpen(true);
+    }
+
+    const openEmployee = () => {
+        setOpen2(true);
+    }
+
     return(
         <div className='paymentsCaontainer'>
+            {<StaffModal open={open} close={setOpen} />}
+            {<EmployeeDetails open={open2} close={setOpen2} />}
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
@@ -62,7 +78,9 @@ const Employee = () => {
                             '&:hover': {
                                 backgroundColor: '#427BBE'
                             }
-                            }}  variant="contained"> Add Staff
+                            }}  
+                            onClick={openModal}
+                            variant="contained"> Add Staff
                         </Button>
                     </div>
                 </div>
@@ -137,133 +155,7 @@ const Employee = () => {
                             <div className='column'>230,000</div>
                             <div className='column'>
                                 <div style={{justifyContent:'center'}} className='actions'>
-                                    <img style={{width:'27px', height:'27px'}} src={hr6} alt="icon" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>
-                                <img style={{width:'35px', height:'35px', borderRadius:'35px'}} src={avatar} alt="icon" />
-                            </div>
-                            <div className='column'>Wema bank</div>
-                            <div className='column'>1524353625262</div>
-                            <div className='column'>150,000</div>
-                            <div className='column'>352,000</div>
-                            <div className='column'>170,000</div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div style={{justifyContent:'center'}} className='actions'>
-                                    <img style={{width:'27px', height:'27px'}} src={hr6} alt="icon" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>
-                                <img style={{width:'35px', height:'35px', borderRadius:'35px'}} src={avatar} alt="icon" />
-                            </div>
-                            <div className='column'>Wema bank</div>
-                            <div className='column'>1524353625262</div>
-                            <div className='column'>150,000</div>
-                            <div className='column'>352,000</div>
-                            <div className='column'>170,000</div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div style={{justifyContent:'center'}} className='actions'>
-                                    <img style={{width:'27px', height:'27px'}} src={hr6} alt="icon" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>
-                                <img style={{width:'35px', height:'35px', borderRadius:'35px'}} src={avatar} alt="icon" />
-                            </div>
-                            <div className='column'>Wema bank</div>
-                            <div className='column'>1524353625262</div>
-                            <div className='column'>150,000</div>
-                            <div className='column'>352,000</div>
-                            <div className='column'>170,000</div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div style={{justifyContent:'center'}} className='actions'>
-                                    <img style={{width:'27px', height:'27px'}} src={hr6} alt="icon" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>
-                                <img style={{width:'35px', height:'35px', borderRadius:'35px'}} src={avatar} alt="icon" />
-                            </div>
-                            <div className='column'>Wema bank</div>
-                            <div className='column'>1524353625262</div>
-                            <div className='column'>150,000</div>
-                            <div className='column'>352,000</div>
-                            <div className='column'>170,000</div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div style={{justifyContent:'center'}} className='actions'>
-                                    <img style={{width:'27px', height:'27px'}} src={hr6} alt="icon" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>
-                                <img style={{width:'35px', height:'35px', borderRadius:'35px'}} src={avatar} alt="icon" />
-                            </div>
-                            <div className='column'>Wema bank</div>
-                            <div className='column'>1524353625262</div>
-                            <div className='column'>150,000</div>
-                            <div className='column'>352,000</div>
-                            <div className='column'>170,000</div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div style={{justifyContent:'center'}} className='actions'>
-                                    <img style={{width:'27px', height:'27px'}} src={hr6} alt="icon" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>
-                                <img style={{width:'35px', height:'35px', borderRadius:'35px'}} src={avatar} alt="icon" />
-                            </div>
-                            <div className='column'>Wema bank</div>
-                            <div className='column'>1524353625262</div>
-                            <div className='column'>150,000</div>
-                            <div className='column'>352,000</div>
-                            <div className='column'>170,000</div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div style={{justifyContent:'center'}} className='actions'>
-                                    <img style={{width:'27px', height:'27px'}} src={hr6} alt="icon" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>
-                                <img style={{width:'35px', height:'35px', borderRadius:'35px'}} src={avatar} alt="icon" />
-                            </div>
-                            <div className='column'>Wema bank</div>
-                            <div className='column'>1524353625262</div>
-                            <div className='column'>150,000</div>
-                            <div className='column'>352,000</div>
-                            <div className='column'>170,000</div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div style={{justifyContent:'center'}} className='actions'>
-                                    <img style={{width:'27px', height:'27px'}} src={hr6} alt="icon" />
+                                    <img onClick={openEmployee} style={{width:'27px', height:'27px'}} src={hr6} alt="icon" />
                                 </div>
                             </div>
                         </div>

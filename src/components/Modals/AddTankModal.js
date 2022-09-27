@@ -39,6 +39,12 @@ const AddTank = (props) => {
         if(calibrationDate === "") return swal("Warning!", "Calibration date field cannot be empty", "info");
         dispatch(setSpinner());
 
+        const today = new Date();
+        const dd = String(today.getDate()).padStart(2, '0');
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const yy = today.getFullYear();
+        const day = mm+'/'+dd+'/'+yy;
+
         const data = {
             tankName: tankName,
             tankHeight: tankHeight,
@@ -48,7 +54,12 @@ const AddTank = (props) => {
             calibrationDate: calibrationDate,
             organisationID: props.data.state.organisation,
             outletID: props.data.state._id,
-        }
+            dateUpdated: day,
+            station: props.data.state.outletName,
+            previousLevel: "None",
+            quantityAdded: "None",
+            currentLevel: "None",
+        } 
 
         await dispatch(createTanks(data));
         await dispatch(removeSpinner());
