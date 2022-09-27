@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../../styles/payments.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -7,10 +7,19 @@ import avatar from '../../assets/avatar.png';
 import hr6 from '../../assets/hr6.png';
 import hr7 from '../../assets/hr7.png';
 import hr8 from '../../assets/hr8.png';
+import QueryModal from '../Modals/QueryModal';
 
 const Query = () => {
+
+    const [open, setOpen] = useState(false);
+
+    const handleQuery = () => {
+        setOpen(true);
+    }
+
     return(
         <div className='paymentsCaontainer'>
+            {<QueryModal open={open} close={setOpen} />}
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
@@ -64,7 +73,9 @@ const Query = () => {
                             '&:hover': {
                                 backgroundColor: '#427BBE'
                             }
-                            }}  variant="contained"> Add Query
+                            }}  
+                            onClick={handleQuery}
+                            variant="contained"> Add Query
                         </Button>
                     </div>
                 </div>

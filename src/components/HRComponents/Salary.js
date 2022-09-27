@@ -1,14 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../../styles/payments.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import hr7 from '../../assets/hr7.png';
 import hr8 from '../../assets/hr8.png';
+import SalaryModal from '../Modals/SalaryModal';
 
 const Salary = () => {
+
+    const [open, setOpen] = useState(false);
+
+    const openSalaryModal = () => {
+        setOpen(true);
+    }
+
     return(
         <div className='paymentsCaontainer'>
+            {<SalaryModal open={open} close={setOpen} />}
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
@@ -62,7 +71,9 @@ const Salary = () => {
                             '&:hover': {
                                 backgroundColor: '#427BBE'
                             }
-                            }}  variant="contained"> Add Salary
+                            }}  
+                            onClick={openSalaryModal}
+                            variant="contained"> Add Salary
                         </Button>
                     </div>
                 </div>

@@ -1,14 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../../styles/payments.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
-import hr6 from '../../assets/hr6.png';
-import hr9 from '../../assets/hr9.png';
+import AttendanceModal from '../Modals/Attendance';
 
 const Attendance = () => {
+    
+    const [open, setOpen] = useState(false);
+
+    const openModal = () => {
+        setOpen(true);
+    }
+
     return(
         <div className='paymentsCaontainer'>
+            {<AttendanceModal open={open} close={setOpen} />}
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
@@ -62,7 +69,9 @@ const Attendance = () => {
                             '&:hover': {
                                 backgroundColor: '#427BBE'
                             }
-                            }}  variant="contained"> Post Attendance
+                            }}  
+                            onClick={openModal}
+                            variant="contained"> Post Attendance
                         </Button>
                     </div>
                 </div>
