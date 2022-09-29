@@ -74,6 +74,7 @@ const HomeScreen = ({history}) => {
                 '/home/regulatory': 'Regulatory Pay',
                 '/home/tank': 'Tank Update',
                 '/home/hr': 'Human Resources',
+                '/home/hr/manager': 'Managers',
                 '/home/hr/employee': 'Employees',
                 '/home/hr/salary': 'Salary Structures',
                 '/home/hr/query': 'Query',

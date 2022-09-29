@@ -7,15 +7,23 @@ import hr5 from '../../assets/hr5.png';
 import me6 from '../../assets/me6.png';
 import { Switch, Route } from 'react-router-dom';
 import Employee from '../HRComponents/Employee';
+import Manager from '../HRComponents/Manager';
 import Salary from '../HRComponents/Salary';
 import Query from '../HRComponents/Query';
 import Attendance from '../HRComponents/Attendance';
+import { useSelector } from 'react-redux';
 
 const HumanResource = (props) => {
 
+    const user = useSelector(state => state.authReducer.user);
+
     const handleNavigation = (data) => {
         if(data.name === 'Employee'){
-            props.history.push('/home/hr/employee');
+            if(user.userType === 'admin'){
+                props.history.push('/home/hr/manager');
+            }else{
+                props.history.push('/home/hr/employee');
+            }
         }else if(data.name === 'Salary structure'){
             props.history.push('/home/hr/salary');
         }else if(data.name === 'Query'){
@@ -61,6 +69,9 @@ const HumanResource = (props) => {
             { props.activeRoute.split('/').length === 4 &&
                 <div style={contain}>
                     <Switch>
+                        <Route path='/home/hr/manager'>
+                            <Manager/>
+                        </Route>
                         <Route path='/home/hr/employee'>
                             <Employee/>
                         </Route>
