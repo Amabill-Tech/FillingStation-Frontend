@@ -12,12 +12,14 @@ import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import ManagerModal from '../Modals/ManagerModal';
 import AdminUserService from '../../services/adminUsers';
+import PrintUserRecords from '../Reports/UserRecords';
 
 const Manager = () => {
 
     const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
     const [search, setSearch] = useState('');
+    const [prints, setPrints] = useState(false);
 
     const user = useSelector(state => state.authReducer.user);
     const adminUsers = useSelector(state => state.adminUserReducer.adminUsers);
@@ -44,10 +46,15 @@ const Manager = () => {
         getAllUserData();
     },[getAllUserData]);
 
+    const printReport = () => {
+        setPrints(true);
+    }
+
     return(
         <div className='paymentsCaontainer'>
             {<ManagerModal open={open} close={setOpen} refresh={getAllUserData} />}
             {<EmployeeDetails open={open2} close={setOpen2} />}
+            { prints && <PrintUserRecords allOutlets={adminUsers} open={prints} close={setPrints}/>}
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
@@ -93,7 +100,7 @@ const Manager = () => {
                             }
                             }}  
                             onClick={openModal}
-                            variant="contained"> Add Manager
+                            variant="contained"> Create Admin
                         </Button>
                     </div>
                 </div>
@@ -132,7 +139,9 @@ const Manager = () => {
                                 '&:hover': {
                                     backgroundColor: '#F36A4C'
                                 }
-                                }}  variant="contained"> PDF
+                                }}  
+                                onClick={printReport}
+                                variant="contained"> PDF
                             </Button>
                     </div>
                 </div>

@@ -1,11 +1,8 @@
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import '../../styles/dailySales.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import me5 from '../../assets/me5.png';
-import PMS from '../../assets/PMS.png';
-import AGO from '../../assets/AGO.png';
-import DPK from '../../assets/DPK.png';
 import slideMenu from '../../assets/slideMenu.png';
 import Button from '@mui/material/Button';
 import {
@@ -18,6 +15,9 @@ import {
     Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
+import PMSTank from '../Outlet/PMSTank';
+import AGOTank from '../Outlet/AGOTank';
+import DPKTank from '../Outlet/DPKTank';
 
 ChartJS.register(
     CategoryScale,
@@ -136,19 +136,25 @@ const DailySales = () => {
                             <div className='tank-head'>PMS</div>
                             <div className='level'>Level: 92,600 Litres</div>
                             <div className='capacity'>Capacity: 156,600 Litres</div>
-                            <img style={{width:'150px', height: "300px", marginTop:'20px'}} src={PMS} alt="icon" />
+                            <div className='canvas-container'>
+                                <PMSTank/>
+                            </div>
                         </div>
                         <div className="tanks">
                             <div className='tank-head'>AGO</div>
                                 <div className='level'>Level: 92,600 Litres</div>
                                 <div className='capacity'>Capacity: 156,600 Litres</div>
-                                <img style={{width:'150px', height: "300px", marginTop:'20px'}} src={AGO} alt="icon" />
+                                <div className='canvas-container'>
+                                    <AGOTank/>
+                                </div>
                             </div>
                         <div className="tanks">
                             <div className='tank-head'>DPK</div>
                                 <div className='level'>Level: 92,600 Litres</div>
                                 <div className='capacity'>Capacity: 156,600 Litres</div>
-                                <img style={{width:'150px', height: "300px", marginTop:'20px'}} src={DPK} alt="icon" />
+                                <div className='canvas-container'>
+                                    <DPKTank/>
+                                </div>
                             </div>
                     </div>
                 </div>
