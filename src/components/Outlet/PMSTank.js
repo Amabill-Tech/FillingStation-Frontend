@@ -1,11 +1,15 @@
 import React, {useRef, useEffect} from 'react';
+import { useState } from 'react';
 
 const TankComponent = (props) => {
 
     const canvas = useRef();
+    const [currentLevel, setCurrentLevel] = useState(12000);
+    const [capacity, setCapacity] = useState(33000);
+    const [deadstock, setDeadStock] = useState(1000);
 
     useEffect(()=>{
-        createTankCanvas(10000, 33000, 1000);
+        createTankCanvas(currentLevel, capacity, deadstock);
     }, [])
 
     const createTankCanvas = (level, capacity, deadstock) => {

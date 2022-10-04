@@ -1,0 +1,360 @@
+.sales-container{
+    width: 100%;
+    margin-top: 20px;
+
+    .first{
+        width: 100%;
+        margin-top: 20px;
+        margin-bottom: 30px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        .first-left{
+            width: 60%;
+
+            .tank-container{
+                width: 100%;
+                height: 430px;
+                background: #F6F6F6;
+                border-radius: 5px;
+                margin-top: 10px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+    
+                .tank-inner{
+                    width: 90%;
+                    height: 400px;
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+    
+                    .tanks{
+                        width: 32%;
+                        height: 100%;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: flex-start;
+    
+                        .tank-head{
+                            font-family: 'Nunito-Regular';
+                            font-style: normal;
+                            font-weight: 600;
+                            font-size: 12px;
+                            line-height: 25px;
+                            color: #000000;
+                        }
+    
+                        .level{
+                            font-family: 'Nunito-Regular';
+                            font-style: normal;
+                            font-weight: 100;
+                            font-size: 12px;
+                            line-height: 25px;
+                            color: #000000;
+                        }
+    
+                        .capacity{
+                            font-family: 'Nunito-Regular';
+                            font-style: normal;
+                            font-weight: 100;
+                            font-size: 12px;
+                            line-height: 25px;
+                            color: #000000;
+                            margin-bottom: 10px;
+                        }
+    
+                        .canvas-container{
+                            width: 150px;
+                            height: 303px;
+                            background-color: #F6F6F6;
+                            margin-top: 20px;
+                        }
+                    }
+                }
+            }
+        }
+
+        .first-right{
+            width: 39%;
+            height: 300px;
+            background: #F0F9F7;
+            border-radius: 5px;
+        }
+    }
+
+    .top-level{
+        width: 100%;
+        height: auto;
+        display: flex;
+        flex-direction: row;
+
+        .left{
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+
+            .title{
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                justify-content: flex-start;
+                padding-left: 10px;
+                line-height: 35px;
+                font-weight: bold;
+                font-family: 'Nunito-Regular';
+            }
+
+            .dash-records{
+                width: 100%;
+                height: auto;
+                background-color: #F6F6F6B2;
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+    
+                .padding-container{
+                    width: 96%;
+                    height: auto;
+                    margin-bottom: 20px;
+                    margin-top: 20px;
+    
+                    .week{
+                        width: 100%;
+                        height: 35px;
+                        margin-bottom: 20px;
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: space-between;
+    
+                        .butts{
+                            width: 210px;
+                            display: flex;
+                            flex-direction: row;
+                            align-items: center;
+                            justify-content: space-between;
+                        }
+                    }
+                    
+                    .type{
+                        display: flex;
+                        flex-direction: row;
+    
+                        .single-type{
+                            display: flex;
+                            flex-direction: row;
+                            align-items: center;
+    
+                            .color{
+                                width: 15px;
+                                height: 15px;
+                                border-radius: 15px;
+                                background-color: #399A19;
+                            }
+    
+                            .name{
+                                font-family: 'Nunito-Regular';
+                                font-style: normal;
+                                font-weight: 600;
+                                font-size: 12px;
+                                line-height: 22px;
+                                color: #000000;
+                                margin-left: 6px;
+                            }
+                        }
+                    }
+    
+                    .graph{
+                        width: 100%;
+                        height: 340px;
+                        margin-top: 10px;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        background: #BFFAAC66;
+    
+                        .chart-container {
+                            position: relative;
+                            margin: auto;
+                            width: 100%;
+                          }
+                    }
+                }
+            }
+        }
+
+        .right{
+            width: 50%;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-end;
+
+            .details{
+                width: 97%;
+                background-color: #F0F9F7;
+                display: flex;
+                justify-content: center;
+
+                .inner{
+                    width: 96%;
+                    height: auto;
+                    margin-top: 10px;
+                    margin-bottom: 10px;
+
+                    .head{
+                        width: 100%;
+                        height: 35px;
+                        background-color: #525252;
+                        border-radius: 4.85335px;
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: flex-start;
+                        align-items: center;
+                        color: #fff;
+                    }
+
+                    .card{
+                        width: 100%;
+                        height: 100px;
+                        margin-top: 10px;
+                        border: 1px solid #000;
+                        border-left: none;
+                        border-top: none;
+                        border-right: none;
+                        display: flex;
+                        flex-direction: row;
+
+                        .left-card{
+                            width: 40%;
+                            height: 100%;
+                            display: flex;
+                            flex-direction: row;
+                            justify-content: flex-start;
+                            align-items: center;
+
+                            .text{
+                                display: flex;
+                                flex-direction: column;
+                                margin-right: 20px;
+                                margin-left: 10px;
+                                margin-bottom: 10px;
+
+                                .active{
+                                    font-size: 14px;
+                                    font-family: 'Nunito-Regular';
+                                    line-height: 30px;
+                                }
+
+                                .num{
+                                    font-size: 18px;
+                                    font-family: 'Nunito-Regular';
+                                    font-weight: bold;
+                                }
+                            }
+                        }
+
+                        .right-card{
+                            width: 60%;
+                            height: 100%;
+                            display: flex;
+                            flex-direction: row;
+                            justify-content: space-around;
+                            align-items: center;
+
+                            .text{
+                                display: flex;
+                                flex-direction: column;
+                                margin-right: 20px;
+                                margin-left: 10px;
+                                margin-bottom: 10px;
+
+                                .active{
+                                    font-size: 14px;
+                                    font-family: 'Nunito-Regular';
+                                    line-height: 30px;
+                                }
+
+                                .num{
+                                    font-size: 18px;
+                                    font-family: 'Nunito-Regular';
+                                    font-weight: bold;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 1250px){
+    .sales-container{
+        margin-top: 80px;
+    }
+}
+
+@media (max-width: 900px){
+    .sales-container{
+
+        .first{
+            flex-direction: column;
+
+            .first-left{
+                width: 100%;
+                margin-bottom: 20px;
+            }
+
+            .first-right{
+                width: 100%;
+            }
+        }
+
+        .top-level{
+            flex-direction: column;
+
+            .left{
+                width: 100%;
+            }
+
+            .right{
+                width: 100%;
+                margin-top: 20px;
+                margin-bottom: 30px;
+
+                .details{
+                    width: 100%;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 600px){
+    .sales-container{
+        .first{
+            .first-left{
+                .tank-container{
+                    height: auto;
+    
+                    .tank-inner{
+                        flex-direction: column;
+                        margin-bottom: 20px;
+                        margin-top: 20px;
+                        height: auto;
+                        align-items: center;
+    
+                        .tanks{
+                            width: 100%;
+                            height: auto;
+                            margin-bottom: 30px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
