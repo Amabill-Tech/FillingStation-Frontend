@@ -102,7 +102,86 @@ const Tank = () => {
                     </div>
                 </div>
                 <div className='first-right'>
+                    <div className='head2'>
+                        <span style={{marginLeft:'10px'}}>Outlet Information</span>
+                    </div>
 
+                    <div className='bod'>
+                        <div className='row'>
+                            <div className='name1'>
+                                <div className='label'> License Code</div>
+                                <div className='value'>NG5WSE3174AFGJ18</div>
+                            </div>
+                            <div className='name2'>
+                                <div className='label'>Sealed</div>
+                                <div className='value'> No</div>
+                            </div>
+                        </div>
+
+                        <div style={{marginTop:'10px'}} className='row'>
+                            <div className='name1'>
+                                <div className='label'> Name </div>
+                                <div className='value'>NG5WSE3174AFGJ18</div>
+                            </div>
+                            <div className='name2'></div>
+                        </div>
+
+                        <div style={{marginTop:'10px'}} className='row'>
+                            <div className='name1'>
+                                <div className='label'> Outlet Code</div>
+                                <div className='value'>NG5WSE3174AFGJ18</div>
+                            </div>
+                            <div className='name2'></div>
+                        </div>
+
+                        <div style={{marginTop:'10px'}} className='row'>
+                            <div className='name1'>
+                                <div className='label'> No of Tanks</div>
+                                <div className='value'>NG5WSE3174AFGJ18</div>
+                            </div>
+                            <div className='name2'></div>
+                        </div>
+
+                        <div style={{marginTop:'10px'}} className='row'>
+                            <div className='name1'>
+                                <div className='label'> No of Pumps</div>
+                                <div className='value'>NG5WSE3174AFGJ18</div>
+                            </div>
+                            <div className='name2'></div>
+                        </div>
+
+                        <div style={{marginTop:'10px'}} className='row'>
+                            <div className='name1'>
+                                <div className='label'> State </div>
+                                <div className='value'>NG5WSE3174AFGJ18</div>
+                            </div>
+                            <div className='name2'></div>
+                        </div>
+
+                        <div style={{marginTop:'10px'}} className='row'>
+                            <div className='name1'>
+                                <div className='label'> City/Town</div>
+                                <div className='value'>NG5WSE3174AFGJ18</div>
+                            </div>
+                            <div className='name2'></div>
+                        </div>
+
+                        <div style={{marginTop:'10px'}} className='row'>
+                            <div className='name1'>
+                                <div className='label'> LGA </div>
+                                <div className='value'>NG5WSE3174AFGJ18</div>
+                            </div>
+                            <div className='name2'></div>
+                        </div>
+
+                        <div style={{marginTop:'10px'}} className='row'>
+                            <div className='name1'>
+                                <div className='label'> Street</div>
+                                <div className='value'>NG5WSE3174AFGJ18</div>
+                            </div>
+                            <div className='name2'></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
