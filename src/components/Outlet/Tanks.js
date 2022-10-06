@@ -49,7 +49,7 @@ const Tank = (props) => {
         getAllStationTanks();
     },[]);
 
-    const getSeparateTanks = (data) => {
+    const getSeparateTanks = (data) => {console.log(data)
 
         const PMS = [];
         const AGO = [];

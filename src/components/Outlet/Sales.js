@@ -17,6 +17,7 @@ import me5 from '../../assets/me5.png';
 import PMSTank from './PMSTank';
 import AGOTank from './AGOTank';
 import DPKTank from './DPKTank';
+import { useLocation } from 'react-router-dom';
 
 ChartJS.register(
     CategoryScale,
@@ -68,6 +69,9 @@ const options = {
 }
 
 const Tank = () => {
+
+    const {state} = useLocation();
+
     return(
         <div className='sales-container'>
             <div className='first'>
@@ -110,7 +114,7 @@ const Tank = () => {
                         <div className='row'>
                             <div className='name1'>
                                 <div className='label'> License Code</div>
-                                <div className='value'>NG5WSE3174AFGJ18</div>
+                                <div className='value'>{state.state.licenseCode}</div>
                             </div>
                             <div className='name2'>
                                 <div className='label'>Sealed</div>
@@ -121,7 +125,7 @@ const Tank = () => {
                         <div style={{marginTop:'10px'}} className='row'>
                             <div className='name1'>
                                 <div className='label'> Name </div>
-                                <div className='value'>NG5WSE3174AFGJ18</div>
+                                <div className='value'>{state.state.outletName}</div>
                             </div>
                             <div className='name2'></div>
                         </div>
@@ -137,7 +141,7 @@ const Tank = () => {
                         <div style={{marginTop:'10px'}} className='row'>
                             <div className='name1'>
                                 <div className='label'> No of Tanks</div>
-                                <div className='value'>NG5WSE3174AFGJ18</div>
+                                <div className='value'>{state.state.noOfTanks}</div>
                             </div>
                             <div className='name2'></div>
                         </div>
@@ -145,7 +149,7 @@ const Tank = () => {
                         <div style={{marginTop:'10px'}} className='row'>
                             <div className='name1'>
                                 <div className='label'> No of Pumps</div>
-                                <div className='value'>NG5WSE3174AFGJ18</div>
+                                <div className='value'>{state.state.noOfPumps}</div>
                             </div>
                             <div className='name2'></div>
                         </div>
@@ -153,7 +157,7 @@ const Tank = () => {
                         <div style={{marginTop:'10px'}} className='row'>
                             <div className='name1'>
                                 <div className='label'> State </div>
-                                <div className='value'>NG5WSE3174AFGJ18</div>
+                                <div className='value'>{state.state.state}</div>
                             </div>
                             <div className='name2'></div>
                         </div>
@@ -161,7 +165,7 @@ const Tank = () => {
                         <div style={{marginTop:'10px'}} className='row'>
                             <div className='name1'>
                                 <div className='label'> City/Town</div>
-                                <div className='value'>NG5WSE3174AFGJ18</div>
+                                <div className='value'>{state.state.city}</div>
                             </div>
                             <div className='name2'></div>
                         </div>
@@ -169,7 +173,7 @@ const Tank = () => {
                         <div style={{marginTop:'10px'}} className='row'>
                             <div className='name1'>
                                 <div className='label'> LGA </div>
-                                <div className='value'>NG5WSE3174AFGJ18</div>
+                                <div className='value'>{state.state.lga}</div>
                             </div>
                             <div className='name2'></div>
                         </div>
@@ -177,7 +181,7 @@ const Tank = () => {
                         <div style={{marginTop:'10px'}} className='row'>
                             <div className='name1'>
                                 <div className='label'> Street</div>
-                                <div className='value'>NG5WSE3174AFGJ18</div>
+                                <div className='value'>{state.state.area}</div>
                             </div>
                             <div className='name2'></div>
                         </div>

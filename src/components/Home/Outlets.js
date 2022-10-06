@@ -36,8 +36,8 @@ const Outlets = (props) => {
 
     const handleOpenModal = (value) => dispatch(openModal(value))
 
-    const goToSales = () => {
-        props.history.push('/home/outlets/sales');
+    const goToSales = (item) => {
+        props.history.push('/home/outlets/sales', {state: item});
     }
 
     const goToTanks = (item) => {
@@ -222,7 +222,7 @@ const Outlets = (props) => {
                                                 <div className='column'>{item.state}</div>
                                                 <div className='column'>
                                                     <div className='actions'>
-                                                        <img onClick={goToSales} style={{width:'27px', height:'27px'}} src={eye} alt="icon" />
+                                                        <img onClick={()=>{goToSales(item)}} style={{width:'27px', height:'27px'}} src={eye} alt="icon" />
                                                         <img onClick={()=>{goToPumps(item)}} style={{width:'27px', height:'27px'}} src={filling} alt="icon" />
                                                         <img onClick={()=>{goToTanks(item)}} style={{width:'27px', height:'27px'}} src={tan} alt="icon" />
                                                     </div>
