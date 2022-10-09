@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import { useDispatch } from 'react-redux';
-import { closeModal } from '../../store/actions/outlet';
 import { useSelector } from 'react-redux';
 import close from '../../assets/close.png';
 import Button from '@mui/material/Button';
@@ -12,6 +11,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import swal from 'sweetalert';
 import OutletService from '../../services/outletService';
+import { getAllStations } from '../../store/actions/outlet';
 
 const AddPump = (props) => {
 
@@ -47,6 +47,9 @@ const AddPump = (props) => {
         }).then(()=>{
             props.close(false);
             props.refresh();
+            setTimeout(()=>{
+                props.outRefresh();
+            }, 2000);
         });
     }
 

@@ -374,8 +374,8 @@ const Tank = (props) => {
 
     return(
         <div className='tanksContainer'>
-            { open ===2 && <AddTank data={location.state} refresh={getAllStationTanks} /> }
-            { open ===3 && <AddPump currentTank={currentTank} allTank={tankList} /> }
+            { open ===2 && <AddTank data={location.state} refresh={getAllStationTanks} outRefresh={props.refresh} /> }
+            { open ===3 && <AddPump currentTank={currentTank} allTank={tankList} outRefresh={props.refresh} /> }
             <div className='pump-container'>
                 <div className='head'>
                     <div className='tabs'>

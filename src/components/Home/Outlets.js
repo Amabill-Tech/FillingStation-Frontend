@@ -253,10 +253,10 @@ const Outlets = (props) => {
                             <Sales/>
                         </Route>
                         <Route path='/home/outlets/tanks'>
-                            <Tank/>
+                            <Tank refresh={getAllStationData}/>
                         </Route>
                         <Route path='/home/outlets/pumps'>
-                            <Pumps/>
+                            <Pumps refresh={getAllStationData}/>
                         </Route>
                     </Switch>
                 </div>

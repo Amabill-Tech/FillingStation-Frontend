@@ -14,7 +14,7 @@ import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import AddPump from '../Modals/AddPumpModal2';
 
-const Pump = () => {
+const Pump = (props) => {
 
     const [tabs, setTabs] = useState(0);
     const [PMSPump, setPMSTank] = useState([]);
@@ -328,7 +328,7 @@ const Pump = () => {
 
     return(
         <div className='tanksContainer'>
-            {open && <AddPump allTank={tankList} open={open} close={setOpen} refresh={getAllStationPumps} /> }
+            {open && <AddPump allTank={tankList} open={open} close={setOpen} refresh={getAllStationPumps} outRefresh={props.refresh} /> }
             <div className='pump-container'>
                 <div className='head'>
                     <div className='tabs'>

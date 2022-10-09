@@ -45,6 +45,9 @@ const AddPump = (props) => {
         OutletService.registerPumps(payload).then(data => {
             if(data.code === 200) swal("Success!", "Pump created successfully", "success");
         }).then(()=>{
+            setTimeout(()=>{
+                props.outRefresh();
+            }, 2000);
             dispatch(closeModal(0))
         });
     }

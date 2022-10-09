@@ -64,6 +64,9 @@ const AddTank = (props) => {
         await dispatch(createTanks(data));
         await dispatch(removeSpinner());
         await props.refresh();
+        setTimeout(()=>{
+            props.outRefresh();
+        }, 2000);
         dispatch(closeModal(0));
     }
 
