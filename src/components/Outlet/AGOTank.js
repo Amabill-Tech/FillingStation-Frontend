@@ -3,7 +3,7 @@ import React, {useRef, useEffect, useState} from 'react';
 const TankComponent = () => {
 
     const canvas = useRef();
-    const [currentLevel, setCurrentLevel] = useState(20000);
+    const [currentLevel, setCurrentLevel] = useState(5000);
     const [capacity, setCapacity] = useState(33000);
     const [deadstock, setDeadStock] = useState(1000);
 

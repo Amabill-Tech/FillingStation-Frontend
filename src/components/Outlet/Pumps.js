@@ -9,9 +9,10 @@ import Button from '@mui/material/Button';
 import OutletService from '../../services/outletService';
 import { useLocation } from 'react-router-dom';
 import swal from 'sweetalert';
-import {getAllPumps} from '../../store/actions/outlet';
+import {getAllPumps, getAllOutletTanks} from '../../store/actions/outlet';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
+import AddPump from '../Modals/AddPumpModal2';
 
 const Pump = () => {
 
@@ -21,9 +22,11 @@ const Pump = () => {
     const [DPKPump, setDPKTank] = useState([]);
     const [activePump, setActiveTank] = useState([]);
     const [inActivePump, setInactiveTank] = useState([]);
+    const [open, setOpen] = useState(false);
     const location = useLocation();
     const dispatch = useDispatch();
     const pumpList = useSelector(state => state.outletReducer.pumpList);
+    const tankList = useSelector(state => state.outletReducer.tankList);
 
     const getAllStationPumps = useCallback(() => {
         const payload = {
@@ -32,14 +35,20 @@ const Pump = () => {
         }
         OutletService.getAllStationPumps(payload).then(data => {
             dispatch(getAllPumps(data));
-        }).then(()=>{
-            getSeparateTanks(pumpList);
+        });
+
+        OutletService.getAllOutletTanks(payload).then(data => {
+            dispatch(getAllOutletTanks(data));
         });
     }, [location.state.state._id, location.state.state.organisation, dispatch, pumpList]);
 
     useEffect(()=>{
         getAllStationPumps();
     },[]);
+
+    useEffect(() => {
+        getSeparateTanks(pumpList);
+    }, [pumpList]);
 
     const getSeparateTanks = (data) => {
 
@@ -97,7 +106,7 @@ const Pump = () => {
     }
 
     const createPump = () => {
-        alert('yes')
+        setOpen(true);
     }
 
     const CardItem = (props) => {
@@ -319,6 +328,7 @@ const Pump = () => {
 
     return(
         <div className='tanksContainer'>
+            {open && <AddPump allTank={tankList} open={open} close={setOpen} refresh={getAllStationPumps} /> }
             <div className='pump-container'>
                 <div className='head'>
                     <div className='tabs'>

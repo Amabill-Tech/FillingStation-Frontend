@@ -40,8 +40,6 @@ const Tank = (props) => {
         }
         OutletService.getAllOutletTanks(payload).then(data => {
             dispatch(getAllOutletTanks(data));
-        }).then(()=>{
-            getSeparateTanks(tankList);
         });
     }, [location.state.state._id, location.state.state.organisation, dispatch, tankList]);
 
@@ -49,7 +47,11 @@ const Tank = (props) => {
         getAllStationTanks();
     },[]);
 
-    const getSeparateTanks = (data) => {console.log(data)
+    useEffect(()=>{
+        getSeparateTanks(tankList);
+    },[tankList]);
+
+    const getSeparateTanks = (data) => {
 
         const PMS = [];
         const AGO = [];
