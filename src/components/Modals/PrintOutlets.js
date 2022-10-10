@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { ThreeDots } from  'react-loader-spinner';
 
+const mediaMatch = window.matchMedia('(max-width: 1000px)');
+
 const PrintOutLetsModal = (props) => {
     const printTable = useRef();
     const iframe = useRef();
@@ -120,7 +122,7 @@ const closes = {
 }
 
 const frame = {
-    width:'1000px',
+    width: mediaMatch.matches? '96%': '1000px',
     height:'600px',
     background:'#fff',
     position:'absolute',
@@ -138,6 +140,7 @@ const contain = {
 
 const tableContainer = {
     width: '100%',
+    minWidth: '980px',
     height: 'auto',
     margintop: '20px',
 }

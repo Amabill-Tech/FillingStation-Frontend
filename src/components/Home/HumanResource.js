@@ -70,7 +70,7 @@ const HumanResource = (props) => {
                 <div style={contain}>
                     <Switch>
                         <Route path='/home/hr/manager'>
-                            <Manager/>
+                            <Manager history={props.history}/>
                         </Route>
                         <Route path='/home/hr/employee'>
                             <Employee/>

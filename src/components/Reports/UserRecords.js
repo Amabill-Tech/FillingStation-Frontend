@@ -4,8 +4,8 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { ThreeDots } from  'react-loader-spinner';
 import avatar from '../../assets/avatar.png';
-import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
+
+const mediaMatch = window.matchMedia('(max-width: 1000px)');
 
 const PrintUserRecords = (props) => {
     const printTable = useRef();
@@ -123,11 +123,11 @@ const closes = {
 }
 
 const frame = {
-    width:'1000px',
+    width: mediaMatch.matches? '96%': '1000px',
     height:'600px',
     background:'#fff',
     position:'absolute',
-    zIndex:'20'
+    zIndex:'20',
 }
 
 const contain = {
@@ -136,11 +136,12 @@ const contain = {
     display:'flex', 
     justifyContent:'center', 
     alignItems:'center', 
-    position:'relative'
+    position:'relative',
 }
 
 const tableContainer = {
     width: '100%',
+    minWidth: '980px',
     height: 'auto',
     margintop: '20px',
 }

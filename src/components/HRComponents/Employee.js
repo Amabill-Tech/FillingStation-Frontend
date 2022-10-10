@@ -56,7 +56,7 @@ const Employee = () => {
     return(
         <div className='paymentsCaontainer'>
             {<StaffModal open={open} close={setOpen} />}
-            {<EmployeeDetails open={open2} close={setOpen2} />}
+            {/*<EmployeeDetails open={open2} close={setOpen2} />*/}
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>

@@ -4,6 +4,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import avatar from '../../assets/avatar.png';
+import navigateStaff from '../../assets/navigateStaff.png';
 import hr6 from '../../assets/hr6.png';
 import EmployeeDetails from '../Modals/EmployeeModal';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -14,12 +15,16 @@ import ManagerModal from '../Modals/ManagerModal';
 import AdminUserService from '../../services/adminUsers';
 import PrintUserRecords from '../Reports/UserRecords';
 
-const Manager = () => {
+const mediaMatch = window.matchMedia('(max-width: 530px)');
+console.log('media', mediaMatch)
+
+const Manager = (props) => {
 
     const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
     const [search, setSearch] = useState('');
     const [prints, setPrints] = useState(false);
+    const [empData, setEmpData] = useState({});
 
     const user = useSelector(state => state.authReducer.user);
     const adminUsers = useSelector(state => state.adminUserReducer.adminUsers);
@@ -29,7 +34,8 @@ const Manager = () => {
         setOpen(true);
     }
 
-    const openEmployee = () => {
+    const openEmployee = (item) => {
+        setEmpData(item);
         setOpen2(true);
     }
 
@@ -50,10 +56,14 @@ const Manager = () => {
         setPrints(true);
     }
 
+    const goToEmployee = () => {
+        props.history.push('/home/hr/employee');
+    }
+
     return(
         <div className='paymentsCaontainer'>
             {<ManagerModal open={open} close={setOpen} refresh={getAllUserData} />}
-            {<EmployeeDetails open={open2} close={setOpen2} />}
+            {<EmployeeDetails open={open2} close={setOpen2} data={empData} />}
             { prints && <PrintUserRecords allOutlets={adminUsers} open={prints} close={setPrints}/>}
             <div className='inner-pay'>
                 <div className='action'>
@@ -118,24 +128,26 @@ const Manager = () => {
                             <MenuItem value={30}>show 100 entries</MenuItem>
                         </Select>
                     </div>
-                    <div style={{width:'170px'}} className='input-cont2'>
+                    <div style={{width: mediaMatch.matches? '100%': '190px'}} className='input-cont2'>
                             <Button sx={{
-                                width:'80px', 
+                                width: mediaMatch.matches? '100%': '100px', 
                                 height:'30px',  
                                 background: '#58A0DF',
                                 borderRadius: '3px',
                                 fontSize:'10px',
+                                marginTop: mediaMatch.matches? '10px': '0px',
                                 '&:hover': {
                                     backgroundColor: '#58A0DF'
                                 }
-                                }}  variant="contained"> .Xlsx
+                                }}  variant="contained"> History
                             </Button>
                             <Button sx={{
-                                width:'80px', 
+                                width: mediaMatch.matches? '100%': '80px', 
                                 height:'30px',  
                                 background: '#F36A4C',
                                 borderRadius: '3px',
                                 fontSize:'10px',
+                                marginTop: mediaMatch.matches? '10px': '0px',
                                 '&:hover': {
                                     backgroundColor: '#F36A4C'
                                 }
@@ -178,7 +190,8 @@ const Manager = () => {
                                         <div className='column'>{data.jobTitle}</div>
                                         <div className='column'>
                                             <div style={{justifyContent:'center'}} className='actions'>
-                                                <img onClick={openEmployee} style={{width:'27px', height:'27px'}} src={hr6} alt="icon" />
+                                                <img onClick={()=>{openEmployee(data)}} style={{width:'27px', height:'27px'}} src={hr6} alt="icon" />
+                                                <img onClick={goToEmployee} style={{width:'27px', height:'27px', marginLeft:'10px'}} src={navigateStaff} alt="icon" />
                                             </div>
                                         </div>
                                     </div>

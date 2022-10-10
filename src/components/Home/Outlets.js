@@ -92,11 +92,17 @@ const Outlets = (props) => {
                                     labelId="demo-select-small"
                                     id="demo-select-small"
                                     value={10}
-                                    sx={{...selectStyle2, backgroundColor:"#F36A4C", color:'#fff'}}
+                                    sx={{...selectStyle2,
+                                        backgroundColor:"#F36A4C", 
+                                        color:'#fff',
+                                        backgroundColor:"#06805B", 
+                                        fontSize:'14px'
+                                    }}
                                 >
-                                    <MenuItem value={10}>Create new filling station</MenuItem>
-                                    <MenuItem value={20}>Download PDF</MenuItem>
-                                    <MenuItem value={30}>Print</MenuItem>
+                                    <MenuItem style={menu} value={10}>Action</MenuItem>
+                                    <MenuItem style={menu} onClick={()=>{handleOpenModal(1)}} value={20}>Create new filling station</MenuItem>
+                                    <MenuItem style={menu} onClick={printTable} value={30}>Download PDF</MenuItem>
+                                    <MenuItem style={menu} onClick={preview} value={40}>Print</MenuItem>
                                 </Select>
                             </div>
                         </div>
@@ -170,8 +176,7 @@ const Outlets = (props) => {
                                             backgroundColor: '#58A0DF'
                                         }
                                         }}  
-                                        onClick={printTable}
-                                        variant="contained"> Download PDF
+                                        variant="contained"> History
                                     </Button>
                                 </div>
                                 <div className='second-select3'>
@@ -289,6 +294,10 @@ const place = {
     fontFamily:'Nunito-Regular',
     marginTop:'20px',
     color:'green'
+}
+
+const menu = {
+    fontSize: '14px'
 }
 
 export default Outlets;

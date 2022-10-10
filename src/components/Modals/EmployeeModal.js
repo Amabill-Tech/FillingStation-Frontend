@@ -10,50 +10,10 @@ import '../../styles/lpo.scss';
 import LPOService from '../../services/lpo';
 
 const EmployeeDetails = (props) => {
-    const [productType, setProductType] = useState('Weekly');
-    const [loading, setLoading] = useState(false);
     const user = useSelector(state => state.authReducer.user);
-    const [companyName, setCompanyName] = useState('');
-    const [address, setAddress] = useState('');
-    const [personOfContact, setPersonOfContact] = useState('');
-    const [PMS, setPMS] = useState('');
-    const [AGO, setAGO] = useState('');
-    const [DPK, setDPK] = useState('');
-    const [total, setTotal] = useState('');
 
     const handleClose = () => props.close(false);
-
-    const submit = () => {
-        if(companyName === "") return swal("Warning!", "Company name field cannot be empty", "info");
-        if(address === "") return swal("Warning!", "Address field cannot be empty", "info");
-        if(personOfContact === "") return swal("Warning!", "Contact field cannot be empty", "info");
-        if(PMS === "") return swal("Warning!", "PMS field cannot be empty", "info");
-        if(AGO === "") return swal("Warning!", "AGO field cannot be empty", "info");
-        if(DPK === "") return swal("Warning!", "DPK field cannot be empty", "info");
-        if(total === "") return swal("Warning!", "Total amount field cannot be empty", "info");
-
-        setLoading(true);
-
-        const payload = {
-            companyName: companyName,
-            address: address,
-            personOfContact: personOfContact,
-            PMS: PMS,
-            AGO: AGO,
-            DPK: DPK,
-            totalAmount: total,
-            paymentStructure: productType,
-            organizationID: user._id
-        }
-
-        LPOService.createLPO(payload).then((data) => {
-            swal("Success", "LPO created successfully!", "success");
-        }).then(()=>{
-            setLoading(false);
-            props.refresh();
-            handleClose();
-        })
-    }
+    console.log(props.data)
 
     return(
         <Modal
@@ -76,14 +36,14 @@ const EmployeeDetails = (props) => {
                                 <div style={item2}>
                                     <div style={title}>Staff Name</div>
                                 </div>
-                                <div style={item}>Aminu Faruk Umar</div>
+                                <div style={item}>{props.data.staffName}</div>
                             </div>
 
                             <div style={main}>
                                 <div style={item2}>
                                     <div style={title}>Sex</div>
                                 </div>
-                                <div style={item}>Email</div>
+                                <div style={item}>{props.data.sex}</div>
                             </div>
 
                             <div style={main}>
@@ -97,63 +57,63 @@ const EmployeeDetails = (props) => {
                                 <div style={item2}>
                                     <div style={title}>Phone Number</div>
                                 </div>
-                                <div style={item}>Aminu Faruk Umar</div>
+                                <div style={item}>{props.data.phone}</div>
                             </div>
 
                             <div style={main}>
                                 <div style={item2}>
                                     <div style={title}>Date Of Birth</div>
                                 </div>
-                                <div style={item}>Aminu Faruk Umar</div>
+                                <div style={item}>{props.data.dateOfBirth}</div>
                             </div>
 
                             <div style={main}>
                                 <div style={item2}>
                                     <div style={title}>Home Address</div>
                                 </div>
-                                <div style={item}>Aminu Faruk Umar</div>
+                                <div style={item}>{props.data.address}</div>
                             </div>
 
                             <div style={main}>
                                 <div style={item2}>
                                     <div style={title}>Account Number</div>
                                 </div>
-                                <div style={item}>Aminu Faruk Umar</div>
+                                <div style={item}>{props.data.accountNumber}</div>
                             </div>
 
                             <div style={main}>
                                 <div style={item2}>
                                     <div style={title}>Bank Name</div>
                                 </div>
-                                <div style={item}>Aminu Faruk Umar</div>
+                                <div style={item}>{props.data.bankName}</div>
                             </div>
 
                             <div style={main}>
                                 <div style={item2}>
                                     <div style={title}>State Of Origin</div>
                                 </div>
-                                <div style={item}>Aminu Faruk Umar</div>
+                                <div style={item}>{props.data.state}</div>
                             </div>
 
                             <div style={main}>
                                 <div style={item2}>
                                     <div style={title}>Date Employed</div>
                                 </div>
-                                <div style={item}>Aminu Faruk Umar</div>
+                                <div style={item}>{props.data.dateEmployed}</div>
                             </div>
 
                             <div style={main}>
                                 <div style={item2}>
                                     <div style={title}>Job Title</div>
                                 </div>
-                                <div style={item}>Aminu Faruk Umar</div>
+                                <div style={item}>{props.data.jobTitle}</div>
                             </div>
 
                             <div style={main}>
                                 <div style={item2}>
                                     <div style={title}>Role</div>
                                 </div>
-                                <div style={item}>Aminu Faruk Umar</div>
+                                <div style={item}>{props.data.role}</div>
                             </div>
                        </div>
 
