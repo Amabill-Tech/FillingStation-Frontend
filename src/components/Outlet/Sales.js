@@ -118,7 +118,7 @@ const Tank = () => {
                             </div>
                             <div className='name2'>
                                 <div className='label'>Sealed</div>
-                                <div className='value'> No</div>
+                                <div className='value'>{state.state.activeState === 0? 'Yes': 'No'}</div>
                             </div>
                         </div>
 
