@@ -16,7 +16,6 @@ import AdminUserService from '../../services/adminUsers';
 import PrintUserRecords from '../Reports/UserRecords';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
-console.log('media', mediaMatch)
 
 const Manager = (props) => {
 
@@ -72,18 +71,19 @@ const Manager = (props) => {
                             labelId="demo-select-small"
                             id="demo-select-small"
                             value={10}
-                            sx={{...selectStyle2, backgroundColor:"#F36A4C", color:'#fff'}}
+                            sx={{...selectStyle2, backgroundColor:"#06805B", color:'#fff'}}
                         >
-                            <MenuItem value={10}>Add Staff</MenuItem>
-                            <MenuItem value={20}>Download PDF</MenuItem>
-                            <MenuItem value={30}>Print</MenuItem>
+                            <MenuItem style={menu} value={10}>Action</MenuItem>
+                            <MenuItem style={menu} onClick={openModal} value={20}>Add Staff</MenuItem>
+                            <MenuItem style={menu} value={30}>History</MenuItem>
+                            <MenuItem style={menu} onClick={printReport} value={40}>Print</MenuItem>
                         </Select>
                     </div>
                 </div>
 
                 <div className='search'>
                     <div className='input-cont'>
-                        <div style={{width:'200px'}} className='second-select'>
+                        <div style={{width: mediaMatch.matches? '100%': '200px', }} className='second-select'>
                                 <OutlinedInput 
                                     sx={{
                                         width:'100%',
@@ -123,38 +123,40 @@ const Manager = (props) => {
                             value={10}
                             sx={selectStyle2}
                         >
-                            <MenuItem value={10}>show 15 entries</MenuItem>
-                            <MenuItem value={20}>show 30 entries</MenuItem>
-                            <MenuItem value={30}>show 100 entries</MenuItem>
+                            <MenuItem style={menu} value={10}>show 15 entries</MenuItem>
+                            <MenuItem style={menu} value={20}>show 30 entries</MenuItem>
+                            <MenuItem style={menu} value={30}>show 100 entries</MenuItem>
                         </Select>
                     </div>
                     <div style={{width: mediaMatch.matches? '100%': '190px'}} className='input-cont2'>
-                            <Button sx={{
-                                width: mediaMatch.matches? '100%': '100px', 
-                                height:'30px',  
-                                background: '#58A0DF',
-                                borderRadius: '3px',
-                                fontSize:'10px',
-                                marginTop: mediaMatch.matches? '10px': '0px',
-                                '&:hover': {
-                                    backgroundColor: '#58A0DF'
-                                }
-                                }}  variant="contained"> History
-                            </Button>
-                            <Button sx={{
-                                width: mediaMatch.matches? '100%': '80px', 
-                                height:'30px',  
-                                background: '#F36A4C',
-                                borderRadius: '3px',
-                                fontSize:'10px',
-                                marginTop: mediaMatch.matches? '10px': '0px',
-                                '&:hover': {
-                                    backgroundColor: '#F36A4C'
-                                }
-                                }}  
-                                onClick={printReport}
-                                variant="contained"> PDF
-                            </Button>
+                        <Button sx={{
+                            width: mediaMatch.matches? '100%': '100px', 
+                            height:'30px',  
+                            background: '#58A0DF',
+                            borderRadius: '3px',
+                            fontSize:'10px',
+                            display: mediaMatch.matches && 'none',
+                            marginTop: mediaMatch.matches? '10px': '0px',
+                            '&:hover': {
+                                backgroundColor: '#58A0DF'
+                            }
+                            }}  variant="contained"> History
+                        </Button>
+                        <Button sx={{
+                            width: mediaMatch.matches? '100%': '80px', 
+                            height:'30px',  
+                            background: '#F36A4C',
+                            borderRadius: '3px',
+                            fontSize:'10px',
+                            display: mediaMatch.matches && 'none',
+                            marginTop: mediaMatch.matches? '10px': '0px',
+                            '&:hover': {
+                                backgroundColor: '#F36A4C'
+                            }
+                            }}  
+                            onClick={printReport}
+                            variant="contained"> Print
+                        </Button>
                     </div>
                 </div>
 
@@ -182,7 +184,7 @@ const Manager = (props) => {
                                         <div className='column'>
                                             <img style={{width:'35px', height:'35px', borderRadius:'35px'}} src={avatar} alt="icon" />
                                         </div>
-                                        <div className='column'>{data.bankName}</div>
+                                        <div className='column'>{data.staffName}</div>
                                         <div className='column'>{data.sex}</div>
                                         <div className='column'>{data.email}</div>
                                         <div className='column'>{data.phone}</div>
@@ -232,6 +234,11 @@ const place = {
     fontFamily:'Nunito-Regular',
     marginTop:'20px',
     color:'green'
+}
+
+const menu = {
+    fontSize:'14px',
+    fontFamily:'Nunito-Regular'
 }
 
 export default Manager;

@@ -14,6 +14,9 @@ import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import AdminUserService from '../../services/adminUsers';
 import { storeStaffUsers } from '../../store/actions/staffUsers';
+import PrintStaffRecords from '../Reports/StaffRecord';
+
+const mediaMatch = window.matchMedia('(max-width: 530px)');
 
 const Employee = () => {
 
@@ -22,6 +25,8 @@ const Employee = () => {
     const [search, setSearch] = useState('');
     const [defaultState, setDefault] = useState(0);
     const [currrentStation, setCurrentStation] = useState();
+    const [currentStaff, setCurrentStaff] = useState({});
+    const [prints, setPrints] = useState(false);
 
     const user = useSelector(state => state.authReducer.user);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
@@ -32,7 +37,8 @@ const Employee = () => {
         setOpen(true);
     }
 
-    const openEmployee = () => {
+    const openEmployee = (item) => {
+        setCurrentStaff(item);
         setOpen2(true);
     }
 
@@ -59,10 +65,15 @@ const Employee = () => {
         setDefault(index);
     }
 
+    const printReport = () => {
+        setPrints(true);
+    }
+
     return(
         <div className='paymentsCaontainer'>
             {<StaffModal open={open} close={setOpen} allOutlets={allOutlets} refresh={getAllStationData} />}
-            {/*<EmployeeDetails open={open2} close={setOpen2} />*/}
+            {<EmployeeDetails open={open2} close={setOpen2} data={currentStaff} />}
+            { prints && <PrintStaffRecords allOutlets={staffUsers} open={prints} close={setPrints}/>}
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
@@ -70,11 +81,12 @@ const Employee = () => {
                             labelId="demo-select-small"
                             id="demo-select-small"
                             value={10}
-                            sx={{...selectStyle2, backgroundColor:"#F36A4C", color:'#fff'}}
+                            sx={{...selectStyle2, backgroundColor:"#06805B", color:'#fff'}}
                         >
-                            <MenuItem value={10}>Add Staff</MenuItem>
-                            <MenuItem value={20}>Download PDF</MenuItem>
-                            <MenuItem value={30}>Print</MenuItem>
+                            <MenuItem style={menu} value={10}>Action</MenuItem>
+                            <MenuItem onClick={openModal} style={menu} value={20}>Add Staff</MenuItem>
+                            <MenuItem style={menu} value={30}>Download PDF</MenuItem>
+                            <MenuItem onClick={printReport} style={menu} value={40}>Print</MenuItem>
                         </Select>
                     </div>
                 </div>
@@ -137,38 +149,40 @@ const Employee = () => {
                             value={10}
                             sx={selectStyle2}
                         >
-                            <MenuItem value={10}>show 15 entries</MenuItem>
-                            <MenuItem value={20}>show 30 entries</MenuItem>
-                            <MenuItem value={30}>show 100 entries</MenuItem>
+                            <MenuItem style={menu} value={10}>show 15 entries</MenuItem>
+                            <MenuItem style={menu} value={20}>show 30 entries</MenuItem>
+                            <MenuItem style={menu} value={30}>show 100 entries</MenuItem>
                         </Select>
                     </div>
-                    <div style={{width:'210px'}} className='input-cont2'>
-                        <div className='second-select2'>
-                            <Button sx={{
-                                width:'100%', 
-                                height:'30px',  
-                                background: '#58A0DF',
-                                borderRadius: '3px',
-                                fontSize:'10px',
-                                '&:hover': {
-                                    backgroundColor: '#58A0DF'
-                                }
-                                }}  variant="contained"> Download PDF
-                            </Button>
-                        </div>
-                        <div className='second-select3'>
-                            <Button sx={{
-                                width:'100%', 
-                                height:'30px',  
-                                background: '#F36A4C',
-                                borderRadius: '3px',
-                                fontSize:'10px',
-                                '&:hover': {
-                                    backgroundColor: '#F36A4C'
-                                }
-                                }}  variant="contained"> Print
-                            </Button>
-                        </div>
+                    <div style={{width: mediaMatch.matches? '100%': '190px'}} className='input-cont2'>
+                        <Button sx={{
+                            width: mediaMatch.matches? '100%': '100px', 
+                            height:'30px',  
+                            background: '#58A0DF',
+                            borderRadius: '3px',
+                            fontSize:'10px',
+                            display: mediaMatch.matches && 'none',
+                            marginTop: mediaMatch.matches? '10px': '0px',
+                            '&:hover': {
+                                backgroundColor: '#58A0DF'
+                            }
+                            }}  variant="contained"> History
+                        </Button>
+                        <Button sx={{
+                            width: mediaMatch.matches? '100%': '80px', 
+                            height:'30px',  
+                            background: '#F36A4C',
+                            borderRadius: '3px',
+                            fontSize:'10px',
+                            display: mediaMatch.matches && 'none',
+                            marginTop: mediaMatch.matches? '10px': '0px',
+                            '&:hover': {
+                                backgroundColor: '#F36A4C'
+                            }
+                            }}  
+                            onClick={printReport}
+                            variant="contained"> Print
+                        </Button>
                     </div>
                 </div>
 
@@ -204,7 +218,7 @@ const Employee = () => {
                                         <div className='column'>{item.jobTitle}</div>
                                         <div className='column'>
                                             <div style={{justifyContent:'center'}} className='actions'>
-                                                <img onClick={openEmployee} style={{width:'27px', height:'27px'}} src={hr6} alt="icon" />
+                                                <img onClick={()=>{openEmployee(item)}} style={{width:'27px', height:'27px'}} src={hr6} alt="icon" />
                                             </div>
                                         </div>
                                     </div>
