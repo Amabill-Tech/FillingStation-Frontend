@@ -1,34 +1,34 @@
 import { 
-    STAFF_USER,
-    SEARCH_USERS,
+    ATTENDANCE,
+    SEARCH_ATTENDANCE,
 } from '../types'
 
 const initialState = {
-    staffUsers: [],
+    attendance: [],
     searchData: [],
 }
 
-const staffUserReducer = (state = initialState, action) => {
+const attendanceReducer = (state = initialState, action) => {
 
     const { type, payload } = action
 
     switch (type) {
 
-        case STAFF_USER:{
+        case ATTENDANCE:{
             return {
                 ...state,
-                staffUsers: payload,
+                attendance: payload,
                 searchData: payload,
             }
         }
 
-        case SEARCH_USERS:{
+        case SEARCH_ATTENDANCE:{
             const search = state.searchData.filter(data => !data.staffName.toUpperCase().indexOf(payload.toUpperCase()) ||
-                !data.email.toUpperCase().indexOf(payload.toUpperCase())
+                !data.status.toUpperCase().indexOf(payload.toUpperCase())
             );
             return {
                 ...state,
-                staffUsers: search,
+                attendance: search,
             }
         }
 
@@ -38,4 +38,4 @@ const staffUserReducer = (state = initialState, action) => {
     }
 }
 
-export default staffUserReducer;
+export default attendanceReducer;

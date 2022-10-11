@@ -1,34 +1,34 @@
 import { 
-    STAFF_USER,
-    SEARCH_USERS,
+    QUERY,
+    SEARCH_QUERY,
 } from '../types'
 
 const initialState = {
-    staffUsers: [],
+    query: [],
     searchData: [],
 }
 
-const staffUserReducer = (state = initialState, action) => {
+const queryReducer = (state = initialState, action) => {
 
     const { type, payload } = action
 
     switch (type) {
 
-        case STAFF_USER:{
+        case QUERY:{
             return {
                 ...state,
-                staffUsers: payload,
+                query: payload,
                 searchData: payload,
             }
         }
 
-        case SEARCH_USERS:{
+        case SEARCH_QUERY:{
             const search = state.searchData.filter(data => !data.staffName.toUpperCase().indexOf(payload.toUpperCase()) ||
-                !data.email.toUpperCase().indexOf(payload.toUpperCase())
+                !data.position.toUpperCase().indexOf(payload.toUpperCase())
             );
             return {
                 ...state,
-                staffUsers: search,
+                query: search,
             }
         }
 
@@ -38,4 +38,4 @@ const staffUserReducer = (state = initialState, action) => {
     }
 }
 
-export default staffUserReducer;
+export default queryReducer;

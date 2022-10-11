@@ -8,7 +8,7 @@ import navigateStaff from '../../assets/navigateStaff.png';
 import hr6 from '../../assets/hr6.png';
 import EmployeeDetails from '../Modals/EmployeeModal';
 import OutlinedInput from '@mui/material/OutlinedInput';
-import { createAdminUser } from '../../store/actions/adminUser';
+import { createAdminUser, searchadmins } from '../../store/actions/adminUser';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import ManagerModal from '../Modals/ManagerModal';
@@ -59,6 +59,10 @@ const Manager = (props) => {
         props.history.push('/home/hr/employee');
     }
 
+    const searchTable = (value) => {
+        dispatch(searchadmins(value));
+    }
+
     return(
         <div className='paymentsCaontainer'>
             {<ManagerModal open={open} close={setOpen} refresh={getAllUserData} />}
@@ -94,7 +98,7 @@ const Manager = (props) => {
                                     }} 
                                     type='text'
                                     placeholder="Search" 
-                                    onChange={e => setSearch(e.target.value)}
+                                    onChange={(e) => {searchTable(e.target.value)}}
                                 />
                         </div>
                     </div>
@@ -176,7 +180,7 @@ const Manager = (props) => {
                     <div className='row-container'>
                         {
                             adminUsers.length === 0?
-                            <div style={place}>No admin user created</div>:
+                            <div style={place}>No Admin Record</div>:
                             adminUsers.map((data, index) => {
                                 return(
                                     <div className='table-head2'>

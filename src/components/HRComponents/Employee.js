@@ -13,7 +13,7 @@ import OutletService from '../../services/outletService';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import AdminUserService from '../../services/adminUsers';
-import { storeStaffUsers } from '../../store/actions/staffUsers';
+import { searchStaffs, storeStaffUsers } from '../../store/actions/staffUsers';
 import PrintStaffRecords from '../Reports/StaffRecord';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
@@ -69,6 +69,10 @@ const Employee = () => {
         setPrints(true);
     }
 
+    const searchTable = (value) => {
+        dispatch(searchStaffs(value));
+    }
+
     return(
         <div className='paymentsCaontainer'>
             {<StaffModal open={open} close={setOpen} allOutlets={allOutlets} refresh={getAllStationData} />}
@@ -120,7 +124,7 @@ const Employee = () => {
                                     }} 
                                     type='text'
                                     placeholder="Search" 
-                                    onChange={e => setSearch(e.target.value)}
+                                    onChange={(e) => {searchTable(e.target.value)}}
                                 />
                         </div>
                     </div>
