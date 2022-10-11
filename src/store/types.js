@@ -17,3 +17,4 @@ export const SUPPLY = 'SUPPLY';
 export const PAYMENT = 'PAYMENT';
 export const TANK_UPDATE = 'TANK_UPDATE';
 export const ADMIN_USER = 'ADMIN_USER';
+export const STAFF_USER = 'STAFF_USER';

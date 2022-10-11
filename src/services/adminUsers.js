@@ -23,6 +23,28 @@ const AdminUserService = {
             throw err
         })
     },
+
+    createStaffUsers: (data) => {
+        return APIs.post('/hr/employee/create', data)
+        .then(({ data }) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        })
+    },
+
+    allStaffUserRecords: (data) => {
+        return APIs.post('/hr/employee/allRecords', data)
+        .then(({ data }) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        })
+    },
 }
 
 export default AdminUserService;

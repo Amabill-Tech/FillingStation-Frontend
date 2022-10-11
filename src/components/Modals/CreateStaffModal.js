@@ -1,8 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import close from '../../assets/close.png';
-import upload from '../../assets/upload.png';
-import photo from '../../assets/photo.png';
 import Button from '@mui/material/Button';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Modal from '@mui/material/Modal';
@@ -14,22 +12,20 @@ import '../../styles/lpo.scss';
 import Radio from '@mui/material/Radio';
 import Camera from 'react-html5-camera-photo';
 import 'react-html5-camera-photo/build/css/index.css';
+import AdminUserService from '../../services/adminUsers';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 
 const StaffModal = (props) => {
     const [loading, setLoading] = useState(false);
-    const [close2, setClose2] = useState(false);
-    const [close3, setClose3] = useState(false);
+    const [loading2, setLoading2] = useState(false);
     const user = useSelector(state => state.authReducer.user);
-    const [loading2, setLoading2] = useState(0);
-    const [loading3, setLoading3] = useState(0);
-    const attach = useRef();
-    const attach2 = useRef();
 
     const [staffName, setStaffName] = useState('');
-    const [staffImage, setStaffImage] = useState('');
-    const [productType, setProductType] = useState('Male');
+    const [defaultState, setDefaultState] = useState(0);
+    const [selectedOutlet, setSelectedOutlet] = useState(props.allOutlets[0]);
+    const [sex, setSex] = useState('Male');
     const [email, setEmail] = useState('');
-    const [staffID, setStaffID] = useState('');
     const [phone, setPhone] = useState('');
     const [address, setAddress] = useState('');
     const [state, setState] = useState('');
@@ -42,23 +38,22 @@ const StaffModal = (props) => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     
-    
+    const changeMenu = (index, item) => {
+        setDefaultState(index);
+        setSelectedOutlet(item);
+    }
 
     const handleClose = () => {
         setLoading2(0);
         props.close(false)
     };
 
-    const handleClose2 = () => {
+    /*const handleClose2 = () => {
         setClose2(false);
     }
 
     const handleClose3 = () => {
         setClose3(false);
-    }
-
-    const uploadIDByCamera = () => {
-        setClose3(true);
     }
 
     function handleTakePhoto (dataUri) {
@@ -89,14 +84,13 @@ const StaffModal = (props) => {
             setLoading3(2);
             setClose3(false);
         });
-    }
+    }*/
 
     const submit = () => {
         if(staffName === "") return swal("Warning!", "Staff name field cannot be empty", "info");
-        if(staffImage === "") return swal("Warning!", "Staff image field cannot be empty", "info");
-        if(productType === "") return swal("Warning!", "Sex field cannot be empty", "info");
+        if(!selectedOutlet) return swal("Warning!", "Outlet field cannot be empty", "info");
+        if(sex === "") return swal("Warning!", "Sex field cannot be empty", "info");
         if(email === "") return swal("Warning!", "Email field cannot be empty", "info");
-        if(staffID === "") return swal("Warning!", "Staff ID field cannot be empty", "info");
         if(phone === "") return swal("Warning!", "Phone field cannot be empty", "info");
         if(address === "") return swal("Warning!", "Address field cannot be empty", "info");
         if(state === "") return swal("Warning!", "State field cannot be empty", "info");
@@ -107,15 +101,13 @@ const StaffModal = (props) => {
         if(role === "") return swal("Warning!", "Role field cannot be empty", "info");
         if(jobTitle === "") return swal("Warning!", "Job title field cannot be empty", "info");
         if(password === "") return swal("Warning!", "Password field cannot be empty", "info");
-        if(confirmPassword !== password) return swal("Warning!", "Confirm password field cannot be empty", "info");
+        if(confirmPassword !== password) return swal("Warning!", "Password field did not match", "info");
 
-        //setLoading(true);
+        setLoading(true);
         const payload = {
-            staffImage: staffName,
-            staffImage: staffImage,
-            sex: productType,
+            staffName: staffName,
+            sex: sex,
             email: email,
-            staffID: staffID,
             phone: phone,
             address: address,
             state: state,
@@ -127,28 +119,19 @@ const StaffModal = (props) => {
             jobTitle: jobTitle,
             password: password,
             organisationID: user._id,
-            outletID: ''
+            outletID: selectedOutlet._id,
         }
 
-        /*ProductService.createProductOrder(payload).then((data) => {
+        AdminUserService.createStaffUsers(payload).then((data) => {
             swal("Success", "Product order created successfully!", "success");
         }).then(()=>{
             setLoading(false);
-            setLoading2(0);
             props.refresh();
             handleClose();
-        })*/
+        })
     }
 
-    const uploadProductOrders = () => {
-        attach.current.click();
-    }
-
-    const uploadID = () => {
-        attach2.current.click();
-    }
-
-    const selectedFile = (e) => {
+    /*const selectedFile = (e) => {
         let file = e.target.files[0];
         setLoading2(1);
         const formData = new FormData();
@@ -188,10 +171,6 @@ const StaffModal = (props) => {
         });
     }
 
-    const openDeviceCamera = () =>{
-        setClose2(true);
-    }
-
     const CameraModal = (props) => {
         return(
             <Modal
@@ -228,7 +207,7 @@ const StaffModal = (props) => {
                 />
             </Modal>
         )
-    }
+    }*/
 
     return(
         <Modal
@@ -240,10 +219,8 @@ const StaffModal = (props) => {
         >
                 <div className='modalContainer'>
                     <div className='inner'>
-                        {<CameraModal open={close2} close={setClose2} />}
-                        {<CameraIDModal open={close3} close={setClose3}  />}
                         <div className='head'>
-                            <div className='head-text'>Add Staff</div>
+                            <div className='head-text'>Admin Users</div>
                             <img onClick={handleClose} style={{width:'18px', height:'18px'}} src={close} alt={'icon'} />
                         </div>
 
@@ -265,76 +242,39 @@ const StaffModal = (props) => {
                             </div>
 
                             <div className='inputs'>
-                                <div className='head-text2'>Staff Image</div>
-                                <div style={photos}>
-                                    <Button sx={{
-                                        width:'49%', 
-                                        height:'35px',  
-                                        background: '#427BBE',
-                                        borderRadius: '3px',
-                                        fontSize:'10px',
-                                        '&:hover': {
-                                            backgroundColor: '#427BBE'
-                                        }
-                                        }} 
-                                        onClick={openDeviceCamera}
-                                        variant="contained"> 
-                                        <img style={{width:'25px', height:'18px', marginRight:'10px'}} src={photo} alt={'icon'} />
-                                        {loading3 === 0 && <div>Take Photo</div>}
-                                        {loading3 === 1 && 
-                                            <ThreeDots 
-                                                height="50" 
-                                                width="40" 
-                                                radius="9"
-                                                color="#fff" 
-                                                ariaLabel="three-dots-loading"
-                                                wrapperStyle={{}}
-                                                wrapperClassName=""
-                                                visible={true}
-                                            />
-                                        }
-                                        {loading3 === 2 && <div>Success</div>}
-                                    </Button>
-                                    <Button sx={{
-                                        width:'49%', 
-                                        height:'35px',  
-                                        background: '#087B36',
-                                        borderRadius: '3px',
-                                        fontSize:'10px',
-                                        '&:hover': {
-                                            backgroundColor: '#087B36'
-                                        }
-                                        }} 
-                                        onClick={uploadProductOrders}
-                                        variant="contained"> 
-                                        <img style={{width:'25px', height:'18px', marginRight:'10px'}} src={upload} alt={'icon'} />
-                                        {loading2 === 0 && <div>Upload Image</div>}
-                                        {loading2 === 1 && 
-                                            <ThreeDots 
-                                                height="50" 
-                                                width="40" 
-                                                radius="9"
-                                                color="#fff" 
-                                                ariaLabel="three-dots-loading"
-                                                wrapperStyle={{}}
-                                                wrapperClassName=""
-                                                visible={true}
-                                            />
-                                        }
-                                        {loading2 === 2 && <div>Success</div>}
-                                    </Button>
-                                </div>
+                                <div className='head-text2'>Outlet Name</div>
+                                <Select
+                                    labelId="demo-select-small"
+                                    id="demo-select-small"
+                                    value={defaultState}
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        border:'1px solid #777777',
+                                        fontSize:'12px',
+                                    }}
+                                >
+                                    {
+                                        props.allOutlets.map((item, index) => {
+                                            return(
+                                                <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index, item)}} value={index}>{item.outletName}</MenuItem>
+                                            )
+                                        })  
+                                    }
+                                </Select>
                             </div>
 
                             <div className='inputs'>
                                 <div className='head-text2'>Sex</div>
                                 <div className='radio'>
                                     <div className='rad-item'>
-                                        <Radio onClick={()=>{setProductType('Male')}} checked={productType === 'Male'? true: false} />
+                                        <Radio onClick={()=>{setSex('Male')}} checked={sex === 'Male'? true: false} />
                                         <div className='head-text2' style={{marginRight:'5px'}}>Male</div>
                                     </div>
                                     <div className='rad-item'>
-                                        <Radio onClick={()=>{setProductType('Female')}} checked={productType === 'Female'? true: false} />
+                                        <Radio onClick={()=>{setSex('Female')}} checked={sex === 'Female'? true: false} />
                                         <div className='head-text2' style={{marginRight:'5px'}}>Female</div>
                                     </div>
                                 </div>
@@ -354,72 +294,6 @@ const StaffModal = (props) => {
                                     type='text'
                                     onChange={e => setEmail(e.target.value)}
                                 />
-                            </div>
-
-                            <div className='inputs'>
-                                <div className='head-text2'>Upload ID</div>
-                                <div style={{marginTop:'10px', marginBottom:'10px'}} className='head-text2'>
-                                    Upload National ID, Voters Card, International Passport
-                                    or Drivers License.
-                                </div>
-                                <div style={photos}>
-                                    <Button sx={{
-                                        width:'49%', 
-                                        height:'35px',  
-                                        background: '#427BBE',
-                                        borderRadius: '3px',
-                                        fontSize:'10px',
-                                        '&:hover': {
-                                            backgroundColor: '#427BBE'
-                                        }
-                                        }} 
-                                        onClick={uploadIDByCamera}
-                                        variant="contained"> 
-                                        <img style={{width:'25px', height:'18px', marginRight:'10px'}} src={photo} alt={'icon'} />
-                                        {loading3 === 0 && <div>Take Photo</div>}
-                                        {loading3 === 1 && 
-                                            <ThreeDots 
-                                                height="50" 
-                                                width="40" 
-                                                radius="9"
-                                                color="#fff" 
-                                                ariaLabel="three-dots-loading"
-                                                wrapperStyle={{}}
-                                                wrapperClassName=""
-                                                visible={true}
-                                            />
-                                        }
-                                        {loading3 === 2 && <div>Success</div>}
-                                    </Button>
-                                    <Button sx={{
-                                        width:'49%', 
-                                        height:'35px',  
-                                        background: '#087B36',
-                                        borderRadius: '3px',
-                                        fontSize:'10px',
-                                        '&:hover': {
-                                            backgroundColor: '#087B36'
-                                        }
-                                        }} 
-                                        onClick={uploadID}
-                                        variant="contained"> 
-                                        <img style={{width:'25px', height:'18px', marginRight:'10px'}} src={upload} alt={'icon'} />
-                                        {loading2 === 0 && <div>Upload Image</div>}
-                                        {loading2 === 1 && 
-                                            <ThreeDots 
-                                                height="50" 
-                                                width="40" 
-                                                radius="9"
-                                                color="#fff" 
-                                                ariaLabel="three-dots-loading"
-                                                wrapperStyle={{}}
-                                                wrapperClassName=""
-                                                visible={true}
-                                            />
-                                        }
-                                        {loading2 === 2 && <div>Success</div>}
-                                    </Button>
-                                </div>
                             </div>
 
                             <div className='inputs'>
@@ -598,8 +472,6 @@ const StaffModal = (props) => {
                                     onChange={e => setConfirmPassword(e.target.value)}
                                 />
                             </div>
-                            <input ref={attach} type={'file'} onChange={selectedFile} style={{visibility:'hidden'}} />
-                            <input ref={attach2} type={'file'} onChange={selectID} style={{visibility:'hidden'}} />
 
                        </div>
 
@@ -616,7 +488,7 @@ const StaffModal = (props) => {
                                 }
                                 }} 
                                 onClick={submit}
-                                variant="contained"> Add Staff
+                                variant="contained"> Add User
                             </Button>
 
                             {loading?

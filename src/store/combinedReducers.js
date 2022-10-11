@@ -8,6 +8,7 @@ import supplyReducer from './reducers/supply';
 import paymentReducer from './reducers/payment';
 import tankUpdateReducer from './reducers/tankUpdate';
 import adminUserReducer from './reducers/adminUser';
+import staffUserReducer from './reducers/staffUsers';
 
 export default combineReducers({
     authReducer,
@@ -19,4 +20,5 @@ export default combineReducers({
     paymentReducer,
     tankUpdateReducer,
     adminUserReducer,
+    staffUserReducer,
 })

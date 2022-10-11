@@ -5,6 +5,7 @@ import active from '../assets/active.png';
 import dashboard from '../assets/dashboard.png';
 import dashboard2 from '../assets/dashboard2.png';
 import dailySales from '../assets/dailySales.png';
+import goBack from '../assets/goBack.png';
 import expenses from '../assets/expenses.png';
 import hr from '../assets/hr.png';
 import incOrders from '../assets/incOrders.png';
@@ -105,6 +106,10 @@ const HomeScreen = ({history}) => {
         setActiveRoute(history.location.pathname);
         setName(routes[history.location.pathname]);
     }, [history.location.pathname, routes]);
+
+    const goBackToPreviousPage = () => {
+        history.goBack();
+    }
 
     const SideItems = (props) => {
 
@@ -227,6 +232,7 @@ const HomeScreen = ({history}) => {
                 </div>
                 <div className='top-bar-menu'>
                     <div className='left-lobe'>
+                        {activeRoute.split('/').length === 4 && <img onClick={goBackToPreviousPage} style={{width:'30px', height:'25px', marginRight:'10px'}} src={goBack} alt="icon"  />}
                         {name}
                     </div>
                     <div className='right-lobe'>

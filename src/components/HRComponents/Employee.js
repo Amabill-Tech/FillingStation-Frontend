@@ -12,6 +12,8 @@ import { getAllStations } from '../../store/actions/outlet';
 import OutletService from '../../services/outletService';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
+import AdminUserService from '../../services/adminUsers';
+import { storeStaffUsers } from '../../store/actions/staffUsers';
 
 const Employee = () => {
 
@@ -23,8 +25,8 @@ const Employee = () => {
 
     const user = useSelector(state => state.authReducer.user);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
+    const staffUsers = useSelector(state => state.staffUserReducer.staffUsers);
     const dispatch = useDispatch();
-    console.log('current', currrentStation)
 
     const openModal = () => {
         setOpen(true);
@@ -43,6 +45,10 @@ const Employee = () => {
         }).then(()=>{
             setCurrentStation(allOutlets[0]);
         });
+
+        AdminUserService.allStaffUserRecords(payload).then(data => {
+            dispatch(storeStaffUsers(data.staff));
+        });
     }, [user._id, dispatch]);
 
     useEffect(()=>{
@@ -55,7 +61,7 @@ const Employee = () => {
 
     return(
         <div className='paymentsCaontainer'>
-            {<StaffModal open={open} close={setOpen} />}
+            {<StaffModal open={open} close={setOpen} allOutlets={allOutlets} refresh={getAllStationData} />}
             {/*<EmployeeDetails open={open2} close={setOpen2} />*/}
             <div className='inner-pay'>
                 <div className='action'>
@@ -85,7 +91,7 @@ const Employee = () => {
                                 {
                                    allOutlets.map((item, index) => {
                                         return(
-                                            <MenuItem onClick={()=>{changeMenu(index, item)}} value={index}>{item.outletName}</MenuItem>
+                                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index, item)}} value={index}>{item.outletName}</MenuItem>
                                         )
                                    })  
                                 }
@@ -180,23 +186,31 @@ const Employee = () => {
                     </div>
 
                     <div className='row-container'>
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>
-                                <img style={{width:'35px', height:'35px', borderRadius:'35px'}} src={avatar} alt="icon" />
-                            </div>
-                            <div className='column'>Wema bank</div>
-                            <div className='column'>1524353625262</div>
-                            <div className='column'>150,000</div>
-                            <div className='column'>352,000</div>
-                            <div className='column'>170,000</div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div style={{justifyContent:'center'}} className='actions'>
-                                    <img onClick={openEmployee} style={{width:'27px', height:'27px'}} src={hr6} alt="icon" />
-                                </div>
-                            </div>
-                        </div>
+                        {
+                            staffUsers.length === 0?
+                            <div style={place}>No data </div>:
+                            staffUsers.map((item, index) => {
+                                return(
+                                    <div key={index} className='table-head2'>
+                                        <div className='column'>{index + 1}</div>
+                                        <div className='column'>
+                                            <img style={{width:'35px', height:'35px', borderRadius:'35px'}} src={avatar} alt="icon" />
+                                        </div>
+                                        <div className='column'>{item.staffName}</div>
+                                        <div className='column'>{item.sex}</div>
+                                        <div className='column'>{item.email}</div>
+                                        <div className='column'>{item.phone}</div>
+                                        <div className='column'>{item.dateEmployed}</div>
+                                        <div className='column'>{item.jobTitle}</div>
+                                        <div className='column'>
+                                            <div style={{justifyContent:'center'}} className='actions'>
+                                                <img onClick={openEmployee} style={{width:'27px', height:'27px'}} src={hr6} alt="icon" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                )
+                            })
+                        }
                     </div>
                 </div>
 
@@ -213,6 +227,11 @@ const Employee = () => {
     )
 }
 
+const menu = {
+    fontSize:'14px',
+    fontFamily:'Nunito-Regular'
+}
+
 const selectStyle2 = {
     width:'100%', 
     height:'35px', 
@@ -222,6 +241,15 @@ const selectStyle2 = {
     fontFamily: 'Nunito-Regular',
     fontSize:'14px',
     outline:'none'
+}
+
+const place = {
+    width:'100%',
+    textAlign:'center',
+    fontSize:'14px',
+    fontFamily:'Nunito-Regular',
+    marginTop:'20px',
+    color:'green'
 }
 
 export default Employee;
