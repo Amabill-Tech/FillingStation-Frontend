@@ -22,9 +22,7 @@ const Employee = () => {
 
     const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
-    const [search, setSearch] = useState('');
     const [defaultState, setDefault] = useState(0);
-    const [currrentStation, setCurrentStation] = useState();
     const [currentStaff, setCurrentStaff] = useState({});
     const [prints, setPrints] = useState(false);
 
@@ -48,8 +46,6 @@ const Employee = () => {
         }
         OutletService.getAllOutletStations(payload).then(data => {
             dispatch(getAllStations(data.station));
-        }).then(()=>{
-            setCurrentStation(allOutlets[0]);
         });
 
         AdminUserService.allStaffUserRecords(payload).then(data => {

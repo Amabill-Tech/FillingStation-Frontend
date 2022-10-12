@@ -8,46 +8,33 @@ import { ThreeDots } from  'react-loader-spinner';
 import swal from 'sweetalert';
 import '../../styles/lpo.scss';
 import LPOService from '../../services/lpo';
+import AtendanceService from '../../services/attendance';
 
 const AttendanceModal = (props) => {
-    const [productType, setProductType] = useState('Weekly');
     const [loading, setLoading] = useState(false);
     const user = useSelector(state => state.authReducer.user);
-    const [companyName, setCompanyName] = useState('');
-    const [address, setAddress] = useState('');
-    const [personOfContact, setPersonOfContact] = useState('');
-    const [PMS, setPMS] = useState('');
-    const [AGO, setAGO] = useState('');
-    const [DPK, setDPK] = useState('');
-    const [total, setTotal] = useState('');
+    const [employeeName, setEmployeeName] = useState('');
+    const [workingHour, setWorkingHour] = useState('');
+    const [clockIn, setClockIn] = useState('');
 
     const handleClose = () => props.close(false);
 
     const submit = () => {
-        if(companyName === "") return swal("Warning!", "Company name field cannot be empty", "info");
-        if(address === "") return swal("Warning!", "Address field cannot be empty", "info");
-        if(personOfContact === "") return swal("Warning!", "Contact field cannot be empty", "info");
-        if(PMS === "") return swal("Warning!", "PMS field cannot be empty", "info");
-        if(AGO === "") return swal("Warning!", "AGO field cannot be empty", "info");
-        if(DPK === "") return swal("Warning!", "DPK field cannot be empty", "info");
-        if(total === "") return swal("Warning!", "Total amount field cannot be empty", "info");
+        if(employeeName === "") return swal("Warning!", "Employee name field cannot be empty", "info");
+        if(workingHour === "") return swal("Warning!", "Working Hour field cannot be empty", "info");
+        if(clockIn === "") return swal("Warning!", "Clock in field cannot be empty", "info");
 
         setLoading(true);
 
         const payload = {
-            companyName: companyName,
-            address: address,
-            personOfContact: personOfContact,
-            PMS: PMS,
-            AGO: AGO,
-            DPK: DPK,
-            totalAmount: total,
-            paymentStructure: productType,
-            organizationID: user._id
+            employeeName: employeeName,
+            timeIn: clockIn,
+            workingHour: workingHour,
+            organisationID: user._id,
         }
 
-        LPOService.createLPO(payload).then((data) => {
-            swal("Success", "LPO created successfully!", "success");
+        AtendanceService.createAttendance(payload).then((data) => {
+            swal("Success", "Attendance created successfully!", "success");
         }).then(()=>{
             setLoading(false);
             props.refresh();
@@ -82,7 +69,23 @@ const AttendanceModal = (props) => {
                                         border:'1px solid #777777',
                                         fontSize:'12px',
                                     }} placeholder="" 
-                                    onChange={e => setCompanyName(e.target.value)}
+                                    onChange={e => setEmployeeName(e.target.value)}
+                                />
+                            </div>
+
+                            <div className='inputs'>
+                                <div className='head-text2'>Working Hour</div>
+                                <OutlinedInput 
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        border:'1px solid #777777',
+                                        fontSize:'12px',
+                                    }} placeholder="" 
+                                    type="time"
+                                    onChange={e => setWorkingHour(e.target.value)}
                                 />
                             </div>
 
@@ -98,7 +101,7 @@ const AttendanceModal = (props) => {
                                         fontSize:'12px',
                                     }} placeholder="" 
                                     type='time'
-                                    onChange={e => setAddress(e.target.value)}
+                                    onChange={e => setClockIn(e.target.value)}
                                 />
                             </div>
                        </div>
@@ -141,7 +144,7 @@ const AttendanceModal = (props) => {
 
 const inner = {
     width:'100%',
-    height:'190px',
+    height:'270px',
 }
 
 export default AttendanceModal;

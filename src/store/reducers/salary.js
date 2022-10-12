@@ -24,7 +24,7 @@ const salaryReducer = (state = initialState, action) => {
 
         case SEARCH_SALARY:{
             const search = state.searchData.filter(data => !data.position.toUpperCase().indexOf(payload.toUpperCase()) ||
-                !data.range.toUpperCase().indexOf(payload.toUpperCase())
+                !data.level.toUpperCase().indexOf(payload.toUpperCase())
             );
             return {
                 ...state,

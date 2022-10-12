@@ -23,8 +23,8 @@ const queryReducer = (state = initialState, action) => {
         }
 
         case SEARCH_QUERY:{
-            const search = state.searchData.filter(data => !data.staffName.toUpperCase().indexOf(payload.toUpperCase()) ||
-                !data.position.toUpperCase().indexOf(payload.toUpperCase())
+            const search = state.searchData.filter(data => !data.employeeName.toUpperCase().indexOf(payload.toUpperCase()) ||
+                !data.queryTitle.toUpperCase().indexOf(payload.toUpperCase())
             );
             return {
                 ...state,

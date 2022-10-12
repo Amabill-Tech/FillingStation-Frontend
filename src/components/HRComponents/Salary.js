@@ -7,15 +7,20 @@ import hr7 from '../../assets/hr7.png';
 import hr8 from '../../assets/hr8.png';
 import SalaryModal from '../Modals/SalaryModal';
 import SalaryService from '../../services/salary';
-import { createSalary } from '../../store/actions/salary';
+import { createSalary, searchSalary } from '../../store/actions/salary';
 import { useDispatch, useSelector } from 'react-redux';
+import OutletService from '../../services/outletService';
+import { OutlinedInput } from '@mui/material';
+import { getAllStations } from '../../store/actions/outlet';
 
 const Salary = () => {
 
     const [open, setOpen] = useState(false);
+    const [defaultState, setDefault] = useState(0);
     const dispatch = useDispatch();
     const user = useSelector(state => state.authReducer.user);
     const salaryData = useSelector(state => state.salaryReducer.salary);
+    const allOutlets = useSelector(state => state.outletReducer.allOutlets);
 
     const openSalaryModal = () => {
         setOpen(true);
@@ -28,11 +33,23 @@ const Salary = () => {
         SalaryService.allSalaryRecords(payload).then(data => {
             dispatch(createSalary(data.salary));
         });
+
+        OutletService.getAllOutletStations({organisation: user._id}).then(data => {
+            dispatch(getAllStations(data.station));
+        });
     }, [user._id, dispatch]);
 
     useEffect(()=>{
         getAllSalaryData();
     },[getAllSalaryData]);
+
+    const changeMenu = (index, item ) => {
+        setDefault(index);
+    }
+
+    const searchTable = (value) => {
+        dispatch(searchSalary(value));
+    }
 
     return(
         <div className='paymentsCaontainer'>
@@ -44,11 +61,12 @@ const Salary = () => {
                             labelId="demo-select-small"
                             id="demo-select-small"
                             value={10}
-                            sx={{...selectStyle2, backgroundColor:"#F36A4C", color:'#fff'}}
+                            sx={{...selectStyle2, backgroundColor:"#06805B", color:'#fff'}}
                         >
-                            <MenuItem value={10}>Add Salary</MenuItem>
-                            <MenuItem value={20}>Download PDF</MenuItem>
-                            <MenuItem value={30}>Print</MenuItem>
+                            <MenuItem value={10}>Action</MenuItem>
+                            <MenuItem onClick={openSalaryModal} value={20}>Add Salary</MenuItem>
+                            <MenuItem value={30}>Download PDF</MenuItem>
+                            <MenuItem value={40}>Print</MenuItem>
                         </Select>
                     </div>
                 </div>
@@ -59,25 +77,31 @@ const Salary = () => {
                             <Select
                                 labelId="demo-select-small"
                                 id="demo-select-small"
-                                value={10}
+                                value={defaultState}
                                 sx={selectStyle2}
                             >
-                                <MenuItem value={10}>07 August, 2022</MenuItem>
-                                <MenuItem value={20}>Twenty</MenuItem>
-                                <MenuItem value={30}>Thirty</MenuItem>
+                                {
+                                   allOutlets.map((item, index) => {
+                                        return(
+                                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index, item)}} value={index}>{item.outletName}</MenuItem>
+                                        )
+                                   })  
+                                }
                             </Select>
                         </div>
                         <div className='second-select'>
-                            <Select
-                                labelId="demo-select-small"
-                                id="demo-select-small"
-                                value={10}
-                                sx={selectStyle2}
-                            >
-                                <MenuItem value={10}>07 August, 2022</MenuItem>
-                                <MenuItem value={20}>Twenty</MenuItem>
-                                <MenuItem value={30}>Thirty</MenuItem>
-                            </Select>
+                                <OutlinedInput 
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px',  
+                                        background:'#EEF2F1', 
+                                        border:'1px solid #777777',
+                                        fontSize:'12px',
+                                    }} 
+                                    type='text'
+                                    placeholder="Search" 
+                                    onChange={(e) => {searchTable(e.target.value)}}
+                                />
                         </div>
                     </div>
                     <div style={{width:'100px'}} className='butt'>
@@ -152,7 +176,7 @@ const Salary = () => {
                     <div className='row-container'>
                         {
                             salaryData.length === 0?
-                            <div>No data</div>:
+                            <div style={place}>No data</div>:
                             salaryData.map((item, index) => {
                                 return(
                                     <div key={index} className='table-head2'>
@@ -195,6 +219,20 @@ const selectStyle2 = {
     fontFamily: 'Nunito-Regular',
     fontSize:'14px',
     outline:'none'
+}
+
+const menu = {
+    fontSize:'14px',
+    fontFamily:'Nunito-Regular'
+}
+
+const place = {
+    width:'100%',
+    textAlign:'center',
+    fontSize:'14px',
+    fontFamily:'Nunito-Regular',
+    marginTop:'20px',
+    color:'green'
 }
 
 export default Salary;

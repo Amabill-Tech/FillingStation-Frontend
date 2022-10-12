@@ -23,8 +23,8 @@ const attendanceReducer = (state = initialState, action) => {
         }
 
         case SEARCH_ATTENDANCE:{
-            const search = state.searchData.filter(data => !data.staffName.toUpperCase().indexOf(payload.toUpperCase()) ||
-                !data.status.toUpperCase().indexOf(payload.toUpperCase())
+            const search = state.searchData.filter(data => !data.employeeName.toUpperCase().indexOf(payload.toUpperCase()) ||
+                !data.timeIn.toUpperCase().indexOf(payload.toUpperCase())
             );
             return {
                 ...state,

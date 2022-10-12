@@ -10,14 +10,19 @@ import hr8 from '../../assets/hr8.png';
 import QueryModal from '../Modals/QueryModal';
 import { useDispatch, useSelector } from 'react-redux';
 import QueryService from '../../services/query';
-import { createQuery } from '../../store/actions/query';
+import { createQuery, searchQuery } from '../../store/actions/query';
+import OutletService from '../../services/outletService';
+import { OutlinedInput } from '@mui/material';
+import { getAllStations } from '../../store/actions/outlet';
 
 const Query = () => {
 
     const [open, setOpen] = useState(false);
+    const [defaultState, setDefault] = useState(0);
     const dispatch = useDispatch();
     const user = useSelector(state => state.authReducer.user);
     const queryData = useSelector(state => state.queryReducer.query);
+    const allOutlets = useSelector(state => state.outletReducer.allOutlets);
 
     const handleQuery = () => {
         setOpen(true);
@@ -30,11 +35,23 @@ const Query = () => {
         QueryService.allQueryRecords(payload).then(data => {
             dispatch(createQuery(data.query));
         });
+
+        OutletService.getAllOutletStations({organisation: user._id}).then(data => {
+            dispatch(getAllStations(data.station));
+        });
     }, [user._id, dispatch]);
 
     useEffect(()=>{
         getAllQueryData();
     },[getAllQueryData]);
+
+    const changeMenu = (index, item ) => {
+        setDefault(index);
+    }
+
+    const searchTable = (value) => {
+        dispatch(searchQuery(value));
+    }
 
     return(
         <div className='paymentsCaontainer'>
@@ -46,11 +63,12 @@ const Query = () => {
                             labelId="demo-select-small"
                             id="demo-select-small"
                             value={10}
-                            sx={{...selectStyle2, backgroundColor:"#F36A4C", color:'#fff'}}
+                            sx={{...selectStyle2, backgroundColor:"#06805B", color:'#fff'}}
                         >
-                            <MenuItem value={10}>Add Query</MenuItem>
-                            <MenuItem value={20}>Download PDF</MenuItem>
-                            <MenuItem value={30}>Print</MenuItem>
+                            <MenuItem value={10}>Action</MenuItem>
+                            <MenuItem onClick={handleQuery} value={20}>Add Query</MenuItem>
+                            <MenuItem value={30}>Download PDF</MenuItem>
+                            <MenuItem value={40}>Print</MenuItem>
                         </Select>
                     </div>
                 </div>
@@ -61,25 +79,31 @@ const Query = () => {
                             <Select
                                 labelId="demo-select-small"
                                 id="demo-select-small"
-                                value={10}
+                                value={defaultState}
                                 sx={selectStyle2}
                             >
-                                <MenuItem value={10}>07 August, 2022</MenuItem>
-                                <MenuItem value={20}>Twenty</MenuItem>
-                                <MenuItem value={30}>Thirty</MenuItem>
+                                {
+                                   allOutlets.map((item, index) => {
+                                        return(
+                                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index, item)}} value={index}>{item.outletName}</MenuItem>
+                                        )
+                                   })  
+                                }
                             </Select>
                         </div>
                         <div className='second-select'>
-                            <Select
-                                labelId="demo-select-small"
-                                id="demo-select-small"
-                                value={10}
-                                sx={selectStyle2}
-                            >
-                                <MenuItem value={10}>07 August, 2022</MenuItem>
-                                <MenuItem value={20}>Twenty</MenuItem>
-                                <MenuItem value={30}>Thirty</MenuItem>
-                            </Select>
+                                <OutlinedInput 
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px',  
+                                        background:'#EEF2F1', 
+                                        border:'1px solid #777777',
+                                        fontSize:'12px',
+                                    }} 
+                                    type='text'
+                                    placeholder="Search" 
+                                    onChange={(e) => {searchTable(e.target.value)}}
+                                />
                         </div>
                     </div>
                     <div style={{width:'100px'}} className='butt'>
@@ -154,7 +178,7 @@ const Query = () => {
 
                     {
                         queryData.length === 0?
-                        <div>No data</div>:
+                        <div style={place}>No data</div>:
                         queryData.map((item, index) => {
                             return(
                                 <div key={index} className='row-container'>
@@ -211,6 +235,20 @@ const selectStyle2 = {
     fontFamily: 'Nunito-Regular',
     fontSize:'14px',
     outline:'none'
+}
+
+const menu = {
+    fontSize:'14px',
+    fontFamily:'Nunito-Regular'
+}
+
+const place = {
+    width:'100%',
+    textAlign:'center',
+    fontSize:'14px',
+    fontFamily:'Nunito-Regular',
+    marginTop:'20px',
+    color:'green'
 }
 
 export default Query;
