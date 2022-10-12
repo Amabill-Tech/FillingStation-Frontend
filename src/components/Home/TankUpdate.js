@@ -1,19 +1,47 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import '../../styles/payments.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import TankUpdateModal from '../Modals/TankUpdateModal';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import OutletService from '../../services/outletService';
+import { getAllStations } from '../../store/actions/outlet';
 
 const TankUpdate = () => {
 
     const [open, setOpen] = useState(false);
+    const [defaultState, setDefault] = useState(0);
+    const dispatch = useDispatch();
+    const user = useSelector(state => state.authReducer.user);
     const tankList = useSelector(state => state.outletReducer.tankList);
+    const allOutlets = useSelector(state => state.outletReducer.allOutlets);
 
     const updateTankModal = () => {
         setOpen(true);
+    }
+
+    const getTankData = useCallback(() => {
+        const payload = {
+            organisationID: user._id
+        }
+
+        OutletService.getAllOutletStations({organisation: user._id}).then(data => {
+            dispatch(getAllStations(data.station));
+        });
+    }, [user._id, dispatch]);
+
+    useEffect(()=>{
+        getTankData();
+    },[getTankData]);
+
+    const changeMenu = (index, item ) => {
+        setDefault(index);
+    }
+
+    const searchTable = (value) => {
+        //dispatch(searchQuery(value));
     }
 
     return(
@@ -26,11 +54,12 @@ const TankUpdate = () => {
                             labelId="demo-select-small"
                             id="demo-select-small"
                             value={10}
-                            sx={{...selectStyle2, backgroundColor:"#F36A4C", color:'#fff'}}
+                            sx={{...selectStyle2, backgroundColor:"#06805B", color:'#fff'}}
                         >
-                            <MenuItem value={10}>Update Tank</MenuItem>
-                            <MenuItem value={20}>Download PDF</MenuItem>
-                            <MenuItem value={30}>Print</MenuItem>
+                            <MenuItem value={10}>Action</MenuItem>
+                            <MenuItem onClick={updateTankModal} value={20}>Update Tank</MenuItem>
+                            <MenuItem value={30}>Download PDF</MenuItem>
+                            <MenuItem value={40}>Print</MenuItem>
                         </Select>
                     </div>
                 </div>
@@ -38,28 +67,34 @@ const TankUpdate = () => {
                 <div className='search'>
                     <div className='input-cont'>
                         <div className='second-select'>
-                            <OutlinedInput 
-                                placeholder="Search" 
-                                sx={{
-                                    width:'100%',
-                                    height:'35px', 
-                                    fontSize:'12px',
-                                    background:'#F2F1F1',
-                                    color:'#000'
-                                }} 
-                            />
-                        </div>
-                        <div className='second-select'>
                             <Select
                                 labelId="demo-select-small"
                                 id="demo-select-small"
-                                value={10}
+                                value={defaultState}
                                 sx={selectStyle2}
                             >
-                                <MenuItem value={10}>07 August, 2022</MenuItem>
-                                <MenuItem value={20}>Twenty</MenuItem>
-                                <MenuItem value={30}>Thirty</MenuItem>
+                                {
+                                   allOutlets.map((item, index) => {
+                                        return(
+                                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index, item)}} value={index}>{item.outletName}</MenuItem>
+                                        )
+                                   })  
+                                }
                             </Select>
+                        </div>
+                        <div className='second-select'>
+                                <OutlinedInput 
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px',  
+                                        background:'#EEF2F1', 
+                                        border:'1px solid #777777',
+                                        fontSize:'12px',
+                                    }} 
+                                    type='text'
+                                    placeholder="Search" 
+                                    onChange={(e) => {searchTable(e.target.value)}}
+                                />
                         </div>
                     </div>
                     <div style={{width:'120px'}} className='butt'>
@@ -187,6 +222,11 @@ const place = {
     fontFamily:'Nunito-Regular',
     marginTop:'20px',
     color:'green'
+}
+
+const menu = {
+    fontSize:'14px',
+    fontFamily:'Nunito-Regular'
 }
 
 export default TankUpdate;

@@ -8,12 +8,17 @@ import { createSupply } from '../../store/actions/supply';
 import SupplyService from '../../services/supplyService';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
+import OutletService from '../../services/outletService';
+import { getAllStations } from '../../store/actions/outlet';
+import { OutlinedInput } from '@mui/material';
 
 const Supply = () => {
 
     const [open, setOpen] = useState(false);
     const dispatch = useDispatch();
+    const [defaultState, setDefault] = useState(0);
     const user = useSelector(state => state.authReducer.user);
+    const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const supply = useSelector(state => state.supplyReducer.supply);
 
     const openPaymentModal = () => {
@@ -28,12 +33,24 @@ const Supply = () => {
 
         SupplyService.getAllSupply(payload).then((data) => {
             dispatch(createSupply(data));
-        })
+        });
+
+        OutletService.getAllOutletStations({organisation: user._id}).then(data => {
+            dispatch(getAllStations(data.station));
+        });
     }, [dispatch, user._id]);
 
     useEffect(()=>{
         getAllSupplyData();
     },[getAllSupplyData])
+
+    const changeMenu = (index, item ) => {
+        setDefault(index);
+    }
+
+    const searchTable = (value) => {
+        //dispatch(searchQuery(value));
+    }
 
     return(
         <div className='paymentsCaontainer'>
@@ -45,11 +62,12 @@ const Supply = () => {
                             labelId="demo-select-small"
                             id="demo-select-small"
                             value={10}
-                            sx={{...selectStyle2, backgroundColor:"#F36A4C", color:'#fff'}}
+                            sx={{...selectStyle2, backgroundColor:"#06805B", color:'#fff'}}
                         >
-                            <MenuItem value={10}>Add Payments</MenuItem>
-                            <MenuItem value={20}>Download PDF</MenuItem>
-                            <MenuItem value={30}>Print</MenuItem>
+                            <MenuItem value={10}>Action</MenuItem>
+                            <MenuItem onClick={openPaymentModal} value={20}>Add Payments</MenuItem>
+                            <MenuItem value={30}>Download PDF</MenuItem>
+                            <MenuItem value={40}>Print</MenuItem>
                         </Select>
                     </div>
                 </div>
@@ -60,25 +78,31 @@ const Supply = () => {
                             <Select
                                 labelId="demo-select-small"
                                 id="demo-select-small"
-                                value={10}
+                                value={defaultState}
                                 sx={selectStyle2}
                             >
-                                <MenuItem value={10}>07 August, 2022</MenuItem>
-                                <MenuItem value={20}>Twenty</MenuItem>
-                                <MenuItem value={30}>Thirty</MenuItem>
+                                {
+                                   allOutlets.map((item, index) => {
+                                        return(
+                                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index, item)}} value={index}>{item.outletName}</MenuItem>
+                                        )
+                                   })  
+                                }
                             </Select>
                         </div>
                         <div className='second-select'>
-                            <Select
-                                labelId="demo-select-small"
-                                id="demo-select-small"
-                                value={10}
-                                sx={selectStyle2}
-                            >
-                                <MenuItem value={10}>07 August, 2022</MenuItem>
-                                <MenuItem value={20}>Twenty</MenuItem>
-                                <MenuItem value={30}>Thirty</MenuItem>
-                            </Select>
+                                <OutlinedInput 
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px',  
+                                        background:'#EEF2F1', 
+                                        border:'1px solid #777777',
+                                        fontSize:'12px',
+                                    }} 
+                                    type='text'
+                                    placeholder="Search" 
+                                    onChange={(e) => {searchTable(e.target.value)}}
+                                />
                         </div>
                     </div>
                     <div className='butt'>
@@ -207,6 +231,11 @@ const place = {
     fontFamily:'Nunito-Regular',
     marginTop:'20px',
     color:'green'
+}
+
+const menu = {
+    fontSize:'14px',
+    fontFamily:'Nunito-Regular'
 }
 
 export default Supply;

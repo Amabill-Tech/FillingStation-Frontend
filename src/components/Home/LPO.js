@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import '../../styles/payments.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -8,6 +8,9 @@ import LPOService from '../../services/lpo';
 import { useSelector } from 'react-redux';
 import { createLPO } from '../../store/actions/lpo';
 import { useDispatch } from 'react-redux';
+import OutletService from '../../services/outletService';
+import { getAllStations } from '../../store/actions/outlet';
+import { OutlinedInput } from '@mui/material';
 
 const LPO = () => {
 
@@ -15,7 +18,8 @@ const LPO = () => {
     const user = useSelector(state => state.authReducer.user);
     const lpos = useSelector(state => state.lpoReducer.lpo);
     const dispatch = useDispatch();
-    console.log(lpos)
+    const [defaultState, setDefault] = useState(0);
+    const allOutlets = useSelector(state => state.outletReducer.allOutlets);
 
     const openModal = () => {
         setLpo(true);
@@ -30,11 +34,23 @@ const LPO = () => {
         LPOService.getAllLPO(payload).then((data) => {
             dispatch(createLPO(data));
         })
+
+        OutletService.getAllOutletStations({organisation: user._id}).then(data => {
+            dispatch(getAllStations(data.station));
+        });
     }, [dispatch, user._id]);
 
     useEffect(()=>{
         getAllLPOData();
     },[getAllLPOData])
+
+    const changeMenu = (index, item ) => {
+        setDefault(index);
+    }
+
+    const searchTable = (value) => {
+        //dispatch(searchQuery(value));
+    }
 
     return(
         <div className='paymentsCaontainer'>
@@ -46,11 +62,12 @@ const LPO = () => {
                             labelId="demo-select-small"
                             id="demo-select-small"
                             value={10}
-                            sx={{...selectStyle2, backgroundColor:"#F36A4C", color:'#fff'}}
+                            sx={{...selectStyle2, backgroundColor:"#06805B", color:'#fff'}}
                         >
-                            <MenuItem value={10}>Register LPO</MenuItem>
-                            <MenuItem value={20}>Download PDF</MenuItem>
-                            <MenuItem value={30}>Print</MenuItem>
+                            <MenuItem value={10}>Action</MenuItem>
+                            <MenuItem onClick={openModal} value={20}>Register LPO</MenuItem>
+                            <MenuItem value={30}>Download PDF</MenuItem>
+                            <MenuItem value={40}>Print</MenuItem>
                         </Select>
                     </div>
                 </div>
@@ -61,25 +78,31 @@ const LPO = () => {
                             <Select
                                 labelId="demo-select-small"
                                 id="demo-select-small"
-                                value={10}
+                                value={defaultState}
                                 sx={selectStyle2}
                             >
-                                <MenuItem value={10}>07 August, 2022</MenuItem>
-                                <MenuItem value={20}>Twenty</MenuItem>
-                                <MenuItem value={30}>Thirty</MenuItem>
+                                {
+                                   allOutlets.map((item, index) => {
+                                        return(
+                                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index, item)}} value={index}>{item.outletName}</MenuItem>
+                                        )
+                                   })  
+                                }
                             </Select>
                         </div>
                         <div className='second-select'>
-                            <Select
-                                labelId="demo-select-small"
-                                id="demo-select-small"
-                                value={10}
-                                sx={selectStyle2}
-                            >
-                                <MenuItem value={10}>07 August, 2022</MenuItem>
-                                <MenuItem value={20}>Twenty</MenuItem>
-                                <MenuItem value={30}>Thirty</MenuItem>
-                            </Select>
+                                <OutlinedInput
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px',  
+                                        background:'#EEF2F1', 
+                                        border:'1px solid #777777',
+                                        fontSize:'12px',
+                                    }} 
+                                    type='text'
+                                    placeholder="Search" 
+                                    onChange={(e) => {searchTable(e.target.value)}}
+                                />
                         </div>
                     </div>
                     <div className='butt'>
@@ -207,6 +230,11 @@ const place = {
     fontFamily:'Nunito-Regular',
     marginTop:'20px',
     color:'green'
+}
+
+const menu = {
+    fontSize:'14px',
+    fontFamily:'Nunito-Regular'
 }
 
 export default LPO;

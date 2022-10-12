@@ -1,4 +1,4 @@
-import React, {useEffect, useCallback} from 'react';
+import React, {useEffect, useCallback, useState} from 'react';
 import '../../styles/payments.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -9,6 +9,8 @@ import ProductService from '../../services/productService';
 import {createProductOrder} from '../../store/actions/productOrder';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
+import OutletService from '../../services/outletService';
+import { getAllStations } from '../../store/actions/outlet';
 
 const ProductOrders = () => {
 
@@ -16,6 +18,8 @@ const ProductOrders = () => {
     const dispatch = useDispatch();
     const user = useSelector(state => state.authReducer.user);
     const productOrder = useSelector(state => state.productOrderReducer.productOrder);
+    const [defaultState, setDefault] = useState(0);
+    const allOutlets = useSelector(state => state.outletReducer.allOutlets);
 
     const createOrderHandler = () => {
         setOpen(true);
@@ -29,12 +33,24 @@ const ProductOrders = () => {
 
         ProductService.getAllProductOrder(payload).then((data) => {
             dispatch(createProductOrder(data));
-        })
+        });
+
+        OutletService.getAllOutletStations({organisation: user._id}).then(data => {
+            dispatch(getAllStations(data.station));
+        });
     }, [dispatch, user._id]);
 
     useEffect(()=>{
         getAllProductData();
     },[getAllProductData])
+
+    const changeMenu = (index, item ) => {
+        setDefault(index);
+    }
+
+    const searchTable = (value) => {
+        //dispatch(searchQuery(value));
+    }
 
     return(
         <div className='paymentsCaontainer'>
@@ -46,11 +62,12 @@ const ProductOrders = () => {
                             labelId="demo-select-small"
                             id="demo-select-small"
                             value={10}
-                            sx={{...selectStyle2, backgroundColor:"#F36A4C", color:'#fff'}}
+                            sx={{...selectStyle2, backgroundColor:"#06805B", color:'#fff'}}
                         >
-                            <MenuItem value={10}>Create Order</MenuItem>
-                            <MenuItem value={20}>Download PDF</MenuItem>
-                            <MenuItem value={30}>Print</MenuItem>
+                            <MenuItem value={10}>Actions</MenuItem>
+                            <MenuItem onClick={createOrderHandler} value={20}>Create Order</MenuItem>
+                            <MenuItem value={30}>Download PDF</MenuItem>
+                            <MenuItem value={40}>Print</MenuItem>
                         </Select>
                     </div>
                 </div>
@@ -58,16 +75,34 @@ const ProductOrders = () => {
                 <div className='search'>
                     <div className='input-cont'>
                         <div className='second-select'>
-                            <OutlinedInput 
-                                placeholder="Search for expenses" 
-                                sx={{
-                                    width:'100%', 
-                                    height:'35px', 
-                                    fontSize:'12px',
-                                    background:'#F2F1F1',
-                                    color:'#000'
-                                }} 
-                            />
+                            <Select
+                                labelId="demo-select-small"
+                                id="demo-select-small"
+                                value={defaultState}
+                                sx={selectStyle2}
+                            >
+                                {
+                                   allOutlets.map((item, index) => {
+                                        return(
+                                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index, item)}} value={index}>{item.outletName}</MenuItem>
+                                        )
+                                   })  
+                                }
+                            </Select>
+                        </div>
+                        <div className='second-select'>
+                                <OutlinedInput 
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px',  
+                                        background:'#EEF2F1', 
+                                        border:'1px solid #777777',
+                                        fontSize:'12px',
+                                    }} 
+                                    type='text'
+                                    placeholder="Search" 
+                                    onChange={(e) => {searchTable(e.target.value)}}
+                                />
                         </div>
                     </div>
                     <div style={{width:'120px'}} className='butt'>
@@ -193,6 +228,11 @@ const place = {
     fontFamily:'Nunito-Regular',
     marginTop:'20px',
     color:'green'
+}
+
+const menu = {
+    fontSize:'14px',
+    fontFamily:'Nunito-Regular'
 }
 
 export default ProductOrders;
