@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import OutletService from '../../services/outletService';
 import { getAllStations } from '../../store/actions/outlet';
 import { OutlinedInput } from '@mui/material';
+import PrintSupplyRecords from '../Reports/SupplyRecords';
 
 const Supply = () => {
 
@@ -20,6 +21,7 @@ const Supply = () => {
     const user = useSelector(state => state.authReducer.user);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const supply = useSelector(state => state.supplyReducer.supply);
+    const [prints, setPrints] = useState(false);
 
     const openPaymentModal = () => {
         setOpen(true);
@@ -52,9 +54,14 @@ const Supply = () => {
         //dispatch(searchQuery(value));
     }
 
+    const printReport = () => {
+        setPrints(true);
+    }
+
     return(
         <div className='paymentsCaontainer'>
             { <SupplyModal open={open} close={setOpen} refresh={getAllSupplyData} />}
+            { prints && <PrintSupplyRecords allOutlets={supply} open={prints} close={setPrints}/>}
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
@@ -66,8 +73,8 @@ const Supply = () => {
                         >
                             <MenuItem value={10}>Action</MenuItem>
                             <MenuItem onClick={openPaymentModal} value={20}>Add Payments</MenuItem>
-                            <MenuItem value={30}>Download PDF</MenuItem>
-                            <MenuItem value={40}>Print</MenuItem>
+                            <MenuItem value={30}>History</MenuItem>
+                            <MenuItem onClick={printReport} value={40}>Print</MenuItem>
                         </Select>
                     </div>
                 </div>
@@ -111,7 +118,7 @@ const Supply = () => {
                             height:'30px',  
                             background: '#427BBE',
                             borderRadius: '3px',
-                            fontSize:'11px',
+                            fontSize:'10px',
                             '&:hover': {
                                 backgroundColor: '#427BBE'
                             }
@@ -142,11 +149,11 @@ const Supply = () => {
                                 height:'30px',  
                                 background: '#58A0DF',
                                 borderRadius: '3px',
-                                fontSize:'11px',
+                                fontSize:'10px',
                                 '&:hover': {
                                     backgroundColor: '#58A0DF'
                                 }
-                                }}  variant="contained"> Download PDF
+                                }}  variant="contained"> History
                             </Button>
                         </div>
                         <div className='second-select3'>
@@ -155,11 +162,13 @@ const Supply = () => {
                                 height:'30px',  
                                 background: '#F36A4C',
                                 borderRadius: '3px',
-                                fontSize:'11px',
+                                fontSize:'10px',
                                 '&:hover': {
                                     backgroundColor: '#F36A4C'
                                 }
-                                }}  variant="contained"> Print
+                                }}  
+                                onClick={printReport}
+                                variant="contained"> Print
                             </Button>
                         </div>
                     </div>
