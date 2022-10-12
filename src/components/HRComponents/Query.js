@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import '../../styles/payments.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -8,18 +8,37 @@ import hr6 from '../../assets/hr6.png';
 import hr7 from '../../assets/hr7.png';
 import hr8 from '../../assets/hr8.png';
 import QueryModal from '../Modals/QueryModal';
+import { useDispatch, useSelector } from 'react-redux';
+import QueryService from '../../services/query';
+import { createQuery } from '../../store/actions/query';
 
 const Query = () => {
 
     const [open, setOpen] = useState(false);
+    const dispatch = useDispatch();
+    const user = useSelector(state => state.authReducer.user);
+    const queryData = useSelector(state => state.queryReducer.query);
 
     const handleQuery = () => {
         setOpen(true);
     }
 
+    const getAllQueryData = useCallback(() => {
+        const payload = {
+            organisationID: user._id
+        }
+        QueryService.allQueryRecords(payload).then(data => {
+            dispatch(createQuery(data.query));
+        });
+    }, [user._id, dispatch]);
+
+    useEffect(()=>{
+        getAllQueryData();
+    },[getAllQueryData]);
+
     return(
         <div className='paymentsCaontainer'>
-            {<QueryModal open={open} close={setOpen} />}
+            {<QueryModal open={open} close={setOpen} refresh={getAllQueryData}/>}
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
@@ -126,265 +145,48 @@ const Query = () => {
                 <div className='table-container'>
                     <div className='table-head'>
                         <div className='column'>S/N</div>
-                        <div className='column'>Staff Image</div>
                         <div className='column'>Staff Name</div>
-                        <div className='column'>Sex</div>
-                        <div className='column'>Position</div>
                         <div className='column'>Query Title</div>
                         <div className='column'>Description</div>
                         <div className='column'>Date Queried</div>
                         <div className='column'>Action</div>
                     </div>
 
-                    <div className='row-container'>
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>
-                                <img style={{width:'35px', height:'35px', borderRadius:'35px'}} src={avatar} alt="icon" />
-                            </div>
-                            <div className='column'>Faruk</div>
-                            <div className='column'>M</div>
-                            <div className='column'>Engineer</div>
-                            <div className='column'>Complain</div>
-                            <div className='column'>
-                                <Button sx={{
-                                    width:'80px', 
-                                    height:'30px',  
-                                    background: '#427BBE',
-                                    borderRadius: '3px',
-                                    fontSize:'10px',
-                                    '&:hover': {
-                                        backgroundColor: '#427BBE'
-                                    }
-                                    }}  variant="contained"> View
-                                </Button>
-                            </div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div style={{width:'70px'}} className='actions'>
-                                    <img style={{width:'27px', height:'27px'}} src={hr7} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={hr8} alt="icon" />
+                    {
+                        queryData.length === 0?
+                        <div>No data</div>:
+                        queryData.map((item, index) => {
+                            return(
+                                <div key={index} className='row-container'>
+                                    <div className='table-head2'>
+                                        <div className='column'>{index + 1}</div>
+                                        <div className='column'>{item.employeeName}</div>
+                                        <div className='column'>{item.queryTitle}</div>
+                                        <div className='column'>
+                                            <Button sx={{
+                                                width:'80px', 
+                                                height:'30px',  
+                                                background: '#427BBE',
+                                                borderRadius: '3px',
+                                                fontSize:'10px',
+                                                '&:hover': {
+                                                    backgroundColor: '#427BBE'
+                                                }
+                                                }}  variant="contained"> View
+                                            </Button>
+                                        </div>
+                                        <div className='column'>{item.createdAt.split('T')[0]}</div>
+                                        <div className='column'>
+                                            <div style={{width:'70px'}} className='actions'>
+                                                <img style={{width:'27px', height:'27px'}} src={hr7} alt="icon" />
+                                                <img style={{width:'27px', height:'27px'}} src={hr8} alt="icon" />
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>
-                                <img style={{width:'35px', height:'35px', borderRadius:'35px'}} src={avatar} alt="icon" />
-                            </div>
-                            <div className='column'>Faruk</div>
-                            <div className='column'>M</div>
-                            <div className='column'>Engineer</div>
-                            <div className='column'>Complain</div>
-                            <div className='column'>
-                                <Button sx={{
-                                    width:'80px', 
-                                    height:'30px',  
-                                    background: '#427BBE',
-                                    borderRadius: '3px',
-                                    fontSize:'10px',
-                                    '&:hover': {
-                                        backgroundColor: '#427BBE'
-                                    }
-                                    }}  variant="contained"> View
-                                </Button>
-                            </div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div style={{width:'70px'}} className='actions'>
-                                    <img style={{width:'27px', height:'27px'}} src={hr7} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={hr8} alt="icon" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>
-                                <img style={{width:'35px', height:'35px', borderRadius:'35px'}} src={avatar} alt="icon" />
-                            </div>
-                            <div className='column'>Faruk</div>
-                            <div className='column'>M</div>
-                            <div className='column'>Engineer</div>
-                            <div className='column'>Complain</div>
-                            <div className='column'>
-                                <Button sx={{
-                                    width:'80px', 
-                                    height:'30px',  
-                                    background: '#427BBE',
-                                    borderRadius: '3px',
-                                    fontSize:'10px',
-                                    '&:hover': {
-                                        backgroundColor: '#427BBE'
-                                    }
-                                    }}  variant="contained"> View
-                                </Button>
-                            </div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div style={{width:'70px'}} className='actions'>
-                                    <img style={{width:'27px', height:'27px'}} src={hr7} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={hr8} alt="icon" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>
-                                <img style={{width:'35px', height:'35px', borderRadius:'35px'}} src={avatar} alt="icon" />
-                            </div>
-                            <div className='column'>Faruk</div>
-                            <div className='column'>M</div>
-                            <div className='column'>Engineer</div>
-                            <div className='column'>Complain</div>
-                            <div className='column'>
-                                <Button sx={{
-                                    width:'80px', 
-                                    height:'30px',  
-                                    background: '#427BBE',
-                                    borderRadius: '3px',
-                                    fontSize:'10px',
-                                    '&:hover': {
-                                        backgroundColor: '#427BBE'
-                                    }
-                                    }}  variant="contained"> View
-                                </Button>
-                            </div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div style={{width:'70px'}} className='actions'>
-                                    <img style={{width:'27px', height:'27px'}} src={hr7} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={hr8} alt="icon" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>
-                                <img style={{width:'35px', height:'35px', borderRadius:'35px'}} src={avatar} alt="icon" />
-                            </div>
-                            <div className='column'>Faruk</div>
-                            <div className='column'>M</div>
-                            <div className='column'>Engineer</div>
-                            <div className='column'>Complain</div>
-                            <div className='column'>
-                                <Button sx={{
-                                    width:'80px', 
-                                    height:'30px',  
-                                    background: '#427BBE',
-                                    borderRadius: '3px',
-                                    fontSize:'10px',
-                                    '&:hover': {
-                                        backgroundColor: '#427BBE'
-                                    }
-                                    }}  variant="contained"> View
-                                </Button>
-                            </div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div style={{width:'70px'}} className='actions'>
-                                    <img style={{width:'27px', height:'27px'}} src={hr7} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={hr8} alt="icon" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>
-                                <img style={{width:'35px', height:'35px', borderRadius:'35px'}} src={avatar} alt="icon" />
-                            </div>
-                            <div className='column'>Faruk</div>
-                            <div className='column'>M</div>
-                            <div className='column'>Engineer</div>
-                            <div className='column'>Complain</div>
-                            <div className='column'>
-                                <Button sx={{
-                                    width:'80px', 
-                                    height:'30px',  
-                                    background: '#427BBE',
-                                    borderRadius: '3px',
-                                    fontSize:'10px',
-                                    '&:hover': {
-                                        backgroundColor: '#427BBE'
-                                    }
-                                    }}  variant="contained"> View
-                                </Button>
-                            </div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div style={{width:'70px'}} className='actions'>
-                                    <img style={{width:'27px', height:'27px'}} src={hr7} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={hr8} alt="icon" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>
-                                <img style={{width:'35px', height:'35px', borderRadius:'35px'}} src={avatar} alt="icon" />
-                            </div>
-                            <div className='column'>Faruk</div>
-                            <div className='column'>M</div>
-                            <div className='column'>Engineer</div>
-                            <div className='column'>Complain</div>
-                            <div className='column'>
-                                <Button sx={{
-                                    width:'80px', 
-                                    height:'30px',  
-                                    background: '#427BBE',
-                                    borderRadius: '3px',
-                                    fontSize:'10px',
-                                    '&:hover': {
-                                        backgroundColor: '#427BBE'
-                                    }
-                                    }}  variant="contained"> View
-                                </Button>
-                            </div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div style={{width:'70px'}} className='actions'>
-                                    <img style={{width:'27px', height:'27px'}} src={hr7} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={hr8} alt="icon" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>
-                                <img style={{width:'35px', height:'35px', borderRadius:'35px'}} src={avatar} alt="icon" />
-                            </div>
-                            <div className='column'>Faruk</div>
-                            <div className='column'>M</div>
-                            <div className='column'>Engineer</div>
-                            <div className='column'>Complain</div>
-                            <div className='column'>
-                                <Button sx={{
-                                    width:'80px', 
-                                    height:'30px',  
-                                    background: '#427BBE',
-                                    borderRadius: '3px',
-                                    fontSize:'10px',
-                                    '&:hover': {
-                                        backgroundColor: '#427BBE'
-                                    }
-                                    }}  variant="contained"> View
-                                </Button>
-                            </div>
-                            <div className='column'>230,000</div>
-                            <div className='column'>
-                                <div style={{width:'70px'}} className='actions'>
-                                    <img style={{width:'27px', height:'27px'}} src={hr7} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={hr8} alt="icon" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                            )
+                        })
+                    }
                 </div>
 
                 <div className='footer'>

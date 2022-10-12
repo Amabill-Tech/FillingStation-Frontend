@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import '../../styles/payments.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -6,18 +6,37 @@ import Button from '@mui/material/Button';
 import hr7 from '../../assets/hr7.png';
 import hr8 from '../../assets/hr8.png';
 import SalaryModal from '../Modals/SalaryModal';
+import SalaryService from '../../services/salary';
+import { createSalary } from '../../store/actions/salary';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Salary = () => {
 
     const [open, setOpen] = useState(false);
+    const dispatch = useDispatch();
+    const user = useSelector(state => state.authReducer.user);
+    const salaryData = useSelector(state => state.salaryReducer.salary);
 
     const openSalaryModal = () => {
         setOpen(true);
     }
 
+    const getAllSalaryData = useCallback(() => {
+        const payload = {
+            organisationID: user._id
+        }
+        SalaryService.allSalaryRecords(payload).then(data => {
+            dispatch(createSalary(data.salary));
+        });
+    }, [user._id, dispatch]);
+
+    useEffect(()=>{
+        getAllSalaryData();
+    },[getAllSalaryData]);
+
     return(
         <div className='paymentsCaontainer'>
-            {<SalaryModal open={open} close={setOpen} />}
+            {<SalaryModal open={open} close={setOpen} refresh={getAllSalaryData} />}
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
@@ -131,123 +150,26 @@ const Salary = () => {
                     </div>
 
                     <div className='row-container'>
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>Engineer</div>
-                            <div className='column'>14</div>
-                            <div className='column'>200 - 300</div>
-                            <div className='column'>
-                                <div style={{width:'70px'}} className='actions'>
-                                    <img style={{width:'27px', height:'27px'}} src={hr7} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={hr8} alt="icon" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className='row-container'>
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>Engineer</div>
-                            <div className='column'>14</div>
-                            <div className='column'>200 - 300</div>
-                            <div className='column'>
-                                <div style={{width:'70px'}} className='actions'>
-                                    <img style={{width:'27px', height:'27px'}} src={hr7} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={hr8} alt="icon" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className='row-container'>
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>Engineer</div>
-                            <div className='column'>14</div>
-                            <div className='column'>200 - 300</div>
-                            <div className='column'>
-                                <div style={{width:'70px'}} className='actions'>
-                                    <img style={{width:'27px', height:'27px'}} src={hr7} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={hr8} alt="icon" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className='row-container'>
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>Engineer</div>
-                            <div className='column'>14</div>
-                            <div className='column'>200 - 300</div>
-                            <div className='column'>
-                                <div style={{width:'70px'}} className='actions'>
-                                    <img style={{width:'27px', height:'27px'}} src={hr7} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={hr8} alt="icon" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className='row-container'>
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>Engineer</div>
-                            <div className='column'>14</div>
-                            <div className='column'>200 - 300</div>
-                            <div className='column'>
-                                <div style={{width:'70px'}} className='actions'>
-                                    <img style={{width:'27px', height:'27px'}} src={hr7} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={hr8} alt="icon" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className='row-container'>
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>Engineer</div>
-                            <div className='column'>14</div>
-                            <div className='column'>200 - 300</div>
-                            <div className='column'>
-                                <div style={{width:'70px'}} className='actions'>
-                                    <img style={{width:'27px', height:'27px'}} src={hr7} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={hr8} alt="icon" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className='row-container'>
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>Engineer</div>
-                            <div className='column'>14</div>
-                            <div className='column'>200 - 300</div>
-                            <div className='column'>
-                                <div style={{width:'70px'}} className='actions'>
-                                    <img style={{width:'27px', height:'27px'}} src={hr7} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={hr8} alt="icon" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className='row-container'>
-                        <div className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>Engineer</div>
-                            <div className='column'>14</div>
-                            <div className='column'>200 - 300</div>
-                            <div className='column'>
-                                <div style={{width:'70px'}} className='actions'>
-                                    <img style={{width:'27px', height:'27px'}} src={hr7} alt="icon" />
-                                    <img style={{width:'27px', height:'27px'}} src={hr8} alt="icon" />
-                                </div>
-                            </div>
-                        </div>
+                        {
+                            salaryData.length === 0?
+                            <div>No data</div>:
+                            salaryData.map((item, index) => {
+                                return(
+                                    <div key={index} className='table-head2'>
+                                        <div className='column'>{index + 1}</div>
+                                        <div className='column'>{item.position}</div>
+                                        <div className='column'>{item.level}</div>
+                                        <div className='column'>{item.low_range+' - '+item.high_range}</div>
+                                        <div className='column'>
+                                            <div style={{width:'70px'}} className='actions'>
+                                                <img style={{width:'27px', height:'27px'}} src={hr7} alt="icon" />
+                                                <img style={{width:'27px', height:'27px'}} src={hr8} alt="icon" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                )
+                            })
+                        }
                     </div>
                 </div>
 
