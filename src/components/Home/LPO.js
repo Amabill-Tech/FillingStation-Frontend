@@ -11,6 +11,9 @@ import { useDispatch } from 'react-redux';
 import OutletService from '../../services/outletService';
 import { getAllStations } from '../../store/actions/outlet';
 import { OutlinedInput } from '@mui/material';
+import { width } from '@mui/system';
+
+const mediaMatch = window.matchMedia('(max-width: 530px)');
 
 const LPO = () => {
 
@@ -111,7 +114,21 @@ const LPO = () => {
                             height:'30px',  
                             background: '#427BBE',
                             borderRadius: '3px',
-                            fontSize:'11px',
+                            fontSize:'10px',
+                            marginRight:'10px',
+                            '&:hover': {
+                                backgroundColor: '#427BBE'
+                            }
+                            }}  
+                            onClick={openModal}
+                            variant="contained"> LPO Payment
+                        </Button>
+                        <Button sx={{
+                            width:'100%', 
+                            height:'30px',  
+                            background: '#427BBE',
+                            borderRadius: '3px',
+                            fontSize:'10px',
                             '&:hover': {
                                 backgroundColor: '#427BBE'
                             }
@@ -124,44 +141,63 @@ const LPO = () => {
 
                 <div className='search2'>
                     <div className='butt2'>
+                        <Button sx={{
+                            width:'100%', 
+                            height:'30px',  
+                            background: '#427BBE',
+                            borderRadius: '3px',
+                            fontSize:'10px',
+                            '&:hover': {
+                                backgroundColor: '#427BBE'
+                            }
+                            }}  
+                            onClick={openModal}
+                            variant="contained"> Register LPO
+                        </Button>
+                    </div>
+                    <div style={{width: mediaMatch.matches? '100%': '330px', alignItems:'center'}} className='input-cont2'>
                         <Select
                             labelId="demo-select-small"
                             id="demo-select-small"
                             value={10}
-                            sx={selectStyle2}
+                            sx={{...selectStyle2, 
+                                width:'130px',
+                                height:'32px',
+                                display: mediaMatch.matches && 'none',
+                            }}
                         >
                             <MenuItem value={10}>Show entries</MenuItem>
                             <MenuItem value={20}>Twenty</MenuItem>
                             <MenuItem value={30}>Thirty</MenuItem>
                         </Select>
-                    </div>
-                    <div style={{width:'210px'}} className='input-cont2'>
-                        <div className='second-select2'>
-                            <Button sx={{
-                                width:'100%', 
-                                height:'30px',  
-                                background: '#58A0DF',
-                                borderRadius: '3px',
-                                fontSize:'11px',
-                                '&:hover': {
-                                    backgroundColor: '#58A0DF'
-                                }
-                                }}  variant="contained"> Download PDF
-                            </Button>
-                        </div>
-                        <div className='second-select3'>
-                            <Button sx={{
-                                width:'100%', 
-                                height:'30px',  
-                                background: '#F36A4C',
-                                borderRadius: '3px',
-                                fontSize:'11px',
-                                '&:hover': {
-                                    backgroundColor: '#F36A4C'
-                                }
-                                }}  variant="contained"> Print
-                            </Button>
-                        </div>
+                        <Button sx={{
+                            width: mediaMatch.matches? '100%': '100px', 
+                            height:'30px',  
+                            background: '#58A0DF',
+                            borderRadius: '3px',
+                            fontSize:'10px',
+                            display: mediaMatch.matches && 'none',
+                            marginTop: mediaMatch.matches? '10px': '0px',
+                            '&:hover': {
+                                backgroundColor: '#58A0DF'
+                            }
+                            }}  variant="contained"> History
+                        </Button>
+                        <Button sx={{
+                            width: mediaMatch.matches? '100%': '80px', 
+                            height:'30px',  
+                            background: '#F36A4C',
+                            borderRadius: '3px',
+                            fontSize:'10px',
+                            display: mediaMatch.matches && 'none',
+                            marginTop: mediaMatch.matches? '10px': '0px',
+                            '&:hover': {
+                                backgroundColor: '#F36A4C'
+                            }
+                            }}  
+                            //onClick={printReport}
+                            variant="contained"> Print
+                        </Button>
                     </div>
                 </div>
 

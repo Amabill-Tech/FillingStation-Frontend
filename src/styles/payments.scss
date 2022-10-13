@@ -47,6 +47,7 @@
                 display: flex;
                 flex-direction: row;
                 justify-content: space-between;
+                align-items: center;
 
                 .second-select{
                     width: 49%;
@@ -58,8 +59,10 @@
             }
 
             .butt{
-                width: 130px;
+                width: 250px;
                 font-size: 10px;
+                display: flex;
+                flex-direction: row;
             }
         }
 

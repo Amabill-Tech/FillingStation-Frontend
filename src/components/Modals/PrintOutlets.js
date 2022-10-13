@@ -133,7 +133,7 @@ const contain = {
     width:'100%', 
     height:'100vh', 
     display:'flex', 
-    justifyContent:'center', 
+    justifyContent:'center',
     alignItems:'center', 
     position:'relative'
 }

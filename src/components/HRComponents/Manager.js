@@ -21,7 +21,6 @@ const Manager = (props) => {
 
     const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
-    const [search, setSearch] = useState('');
     const [prints, setPrints] = useState(false);
     const [empData, setEmpData] = useState({});
 
