@@ -458,6 +458,12 @@
                 .butt2{
                     width: 100%;
                 }
+
+                .lpo-butt{
+                    width: auto;
+                    display: flex;
+                    flex-direction: row;
+                }
             }
         }
     }

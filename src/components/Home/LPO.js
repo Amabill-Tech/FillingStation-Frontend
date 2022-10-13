@@ -23,6 +23,7 @@ const LPO = () => {
     const dispatch = useDispatch();
     const [defaultState, setDefault] = useState(0);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
+    const [activeButton, setActiveButton] = useState(false);
 
     const openModal = () => {
         setLpo(true);
@@ -53,6 +54,14 @@ const LPO = () => {
 
     const searchTable = (value) => {
         //dispatch(searchQuery(value));
+    }
+
+    const LPOCompanies = () => {
+        setActiveButton(true);
+    }
+
+    const dispensed = () => {
+        setActiveButton(false);
     }
 
     return(
@@ -139,20 +148,36 @@ const LPO = () => {
                     </div>
                 </div>
 
-                <div className='search2'>
-                    <div className='butt2'>
+                <div style={{marginTop:'20px'}} className='search2'>
+                    <div className='lpo-butt'>
                         <Button sx={{
-                            width:'100%', 
+                            width:'120px', 
                             height:'30px',  
-                            background: '#427BBE',
-                            borderRadius: '3px',
+                            background: !activeButton? '#06805B': '#fff',
+                            borderRadius: '27px',
                             fontSize:'10px',
+                            marginRight:'10px',
+                            color: !activeButton? '#fff': '#000',
                             '&:hover': {
-                                backgroundColor: '#427BBE'
+                                background: !activeButton? '#06805B': '#fff',
                             }
                             }}  
-                            onClick={openModal}
-                            variant="contained"> Register LPO
+                            onClick={dispensed}
+                            variant="contained"> LPO Dispensed
+                        </Button>
+                        <Button sx={{
+                            width:'120px', 
+                            height:'30px',  
+                            background: activeButton? '#06805B': '#fff',
+                            borderRadius: '27px',
+                            fontSize:'10px',
+                            color: activeButton? '#fff': '#000',
+                            '&:hover': {
+                                background: activeButton? '#06805B': '#fff',
+                            }
+                            }}  
+                            onClick={LPOCompanies}
+                            variant="contained"> LPO Companies
                         </Button>
                     </div>
                     <div style={{width: mediaMatch.matches? '100%': '330px', alignItems:'center'}} className='input-cont2'>
@@ -201,7 +226,44 @@ const LPO = () => {
                     </div>
                 </div>
 
-                <div className='table-container'>
+                {activeButton ||
+                    <div style={{marginTop:'10px'}} className='table-container'>
+                    <div className='table-head'>
+                        <div className='column'>S/N</div>
+                        <div className='column'>Company Name</div>
+                        <div className='column'>Address</div>
+                        <div className='column'>Person of Contact</div>
+                        <div className='column'>PMS Dispensed</div>
+                        <div className='column'>AGO Dispensed</div>
+                        <div className='column'>DPK Dispensed</div>
+                        <div className='column'>Payment Structure</div>
+                    </div>
+
+                    <div className='row-container'>
+                        {
+                            lpos.length === 0?
+                            <div style={place}>No LPO Data </div>:
+                            lpos.map((data, index) => {
+                                return(
+                                    <div className='table-head2'>
+                                        <div className='column'>{index + 1}</div>
+                                        <div className='column'>{data.companyName}</div>
+                                        <div className='column'>{data.address}</div>
+                                        <div className='column'>{data.personOfContact}</div>
+                                        <div className='column'>{data.PMS}</div>
+                                        <div className='column'>{data.AGO}</div>
+                                        <div className='column'>{data.DPK}</div>
+                                        <div className='column'>{data.paymentStructure}</div>
+                                    </div> 
+                                )
+                            })
+                        } 
+                    </div>
+                    </div>
+                }
+
+                {activeButton &&
+                    <div style={{marginTop:'10px'}} className='table-container'>
                     <div className='table-head'>
                         <div className='column'>S/N</div>
                         <div className='column'>Company Name</div>
@@ -233,7 +295,8 @@ const LPO = () => {
                             })
                         } 
                     </div>
-                </div>
+                    </div>
+                }
 
                 <div className='footer'>
                     <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>Showing 1 to 11 of 38 entries</div>
