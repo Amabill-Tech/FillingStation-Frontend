@@ -1,9 +1,13 @@
 import { 
-    PAYMENT 
+    PAYMENT ,
+    CERTIFICATE,
+    RECEIPT,
 } from '../types'
 
 const initialState = {
     payment: [],
+    certificate: {},
+    receipt: {},
 }
 
 const paymentReducer = (state = initialState, action) => {
@@ -18,6 +22,20 @@ const paymentReducer = (state = initialState, action) => {
                 payment: payload,
             }
         }
+
+        case RECEIPT: {
+           return {
+                ...state,
+                receipt: payload
+           }
+        }
+
+        case CERTIFICATE: {
+            return {
+                 ...state,
+                 certificate: payload
+            }
+         }
 
         default: {
             return state

@@ -3,6 +3,13 @@ import '../../styles/payments.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
+import { useCallback } from 'react';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { createPayment } from '../../store/actions/payment';
+import PaymentService from '../../services/paymentService';
+import OutletService from '../../services/outletService';
+import { getAllStations } from '../../store/actions/outlet';
 
 const Payments = () => {
     return(

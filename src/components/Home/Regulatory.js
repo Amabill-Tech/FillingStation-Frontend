@@ -8,6 +8,9 @@ import PaymentModal from '../Modals/PaymentModal';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllStations } from '../../store/actions/outlet';
 import OutletService from '../../services/outletService';
+import PaymentService from '../../services/paymentService';
+import { createPayment } from '../../store/actions/payment';
+import {Payment} from '@mui/icons-material'
 
 const Regulatory = () => {
 
@@ -16,6 +19,8 @@ const Regulatory = () => {
     const dispatch = useDispatch();
     const user = useSelector(state => state.authReducer.user);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
+    const payment = useSelector(state => state.paymentReducer.payment);
+    console.log('pay me', payment)
 
     const openPaymentModal = () => {
         setOpen(true);
@@ -23,8 +28,12 @@ const Regulatory = () => {
 
     const getTankData = useCallback(() => {
         const payload = {
-            organisationID: user._id
+            organizationID: user._id
         }
+
+        PaymentService.getAllPayment(payload).then((data) => {
+            dispatch(createPayment(data));
+        });
 
         OutletService.getAllOutletStations({organisation: user._id}).then(data => {
             dispatch(getAllStations(data.station));
@@ -45,7 +54,7 @@ const Regulatory = () => {
 
     return(
         <div className='paymentsCaontainer'>
-            { <PaymentModal open={open} close={setOpen} /> }
+            { <PaymentModal open={open} close={setOpen} refresh={getTankData} /> }
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
@@ -168,77 +177,39 @@ const Regulatory = () => {
                     </div>
 
                     <div className='row-container'>
-                        <div style={{height:'auto', display:'flex', justifyContent:'center', alignItems:'center'}} className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>DPR</div>
-                            <div style={{textAlign:'left', lineHeight:'20px'}} className='column'>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Posuere  
-                            </div>
-                            <div className='column'>132,000</div>
-                            <div className='column'>Eng. Balawa Mudu</div>
-                            <div className='column'>DPRCertificate.pdf</div>
-                            <div className='column'>DPRReceip.pdf</div>
-                        </div> 
-
-                        <div style={{height:'auto', display:'flex', justifyContent:'center', alignItems:'center'}} className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>DPR</div>
-                            <div style={{textAlign:'left', lineHeight:'20px'}} className='column'>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Posuere  
-                            </div>
-                            <div className='column'>132,000</div>
-                            <div className='column'>Eng. Balawa Mudu</div>
-                            <div className='column'>DPRCertificate.pdf</div>
-                            <div className='column'>DPRReceip.pdf</div>
-                        </div> 
-
-                        <div style={{height:'auto', display:'flex', justifyContent:'center', alignItems:'center'}} className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>DPR</div>
-                            <div style={{textAlign:'left', lineHeight:'20px'}} className='column'>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Posuere  
-                            </div>
-                            <div className='column'>132,000</div>
-                            <div className='column'>Eng. Balawa Mudu</div>
-                            <div className='column'>DPRCertificate.pdf</div>
-                            <div className='column'>DPRReceip.pdf</div>
-                        </div> 
-
-                        <div style={{height:'auto', display:'flex', justifyContent:'center', alignItems:'center'}} className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>DPR</div>
-                            <div style={{textAlign:'left', lineHeight:'20px'}} className='column'>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Posuere  
-                            </div>
-                            <div className='column'>132,000</div>
-                            <div className='column'>Eng. Balawa Mudu</div>
-                            <div className='column'>DPRCertificate.pdf</div>
-                            <div className='column'>DPRReceip.pdf</div>
-                        </div> 
-
-                        <div style={{height:'auto', display:'flex', justifyContent:'center', alignItems:'center'}} className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>DPR</div>
-                            <div style={{textAlign:'left', lineHeight:'20px'}} className='column'>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Posuere  
-                            </div>
-                            <div className='column'>132,000</div>
-                            <div className='column'>Eng. Balawa Mudu</div>
-                            <div className='column'>DPRCertificate.pdf</div>
-                            <div className='column'>DPRReceip.pdf</div>
-                        </div> 
-
-                        <div style={{height:'auto', display:'flex', justifyContent:'center', alignItems:'center'}} className='table-head2'>
-                            <div className='column'>01</div>
-                            <div className='column'>DPR</div>
-                            <div style={{textAlign:'left', lineHeight:'20px'}} className='column'>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Posuere  
-                            </div>
-                            <div className='column'>132,000</div>
-                            <div className='column'>Eng. Balawa Mudu</div>
-                            <div className='column'>DPRCertificate.pdf</div>
-                            <div className='column'>DPRReceip.pdf</div>
-                        </div> 
+                        {
+                            Payment.length === 0?
+                            <div style={place}>No data</div>:
+                            payment.map((item, index) => {
+                                return(
+                                    <div style={{height:'50px', display:'flex', justifyContent:'center', alignItems:'center'}} className='table-head2'>
+                                        <div className='column'>{Number(index) + 1}</div>
+                                        <div className='column'>{item.organisationalName}</div>
+                                        <div style={{textAlign:'left', lineHeight:'20px'}} className='column'>
+                                            <Button sx={{
+                                                width:'80px', 
+                                                height:'30px',  
+                                                background: '#F36A4C',
+                                                borderRadius: '3px',
+                                                fontSize:'10px',
+                                                '&:hover': {
+                                                    backgroundColor: '#F36A4C'
+                                                }
+                                                }}  variant="contained"> View
+                                            </Button>
+                                        </div>
+                                        <div className='column'>{item.amount}</div>
+                                        <div className='column'>{item.contactPerson}</div>
+                                        <div className='column'>
+                                            <a href={'http://localhost:3000'+ item.attachCertificate}>DPRCertificate</a>
+                                        </div>
+                                        <div className='column'>
+                                            <a href={'http://localhost:3000'+ item.paymentReceipt}>DPRReceip</a>
+                                        </div>
+                                    </div> 
+                                )
+                            })
+                        }
                     </div>
                 </div>
 

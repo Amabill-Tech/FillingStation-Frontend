@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-expressions */
 import React, { useState, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import close from '../../assets/close.png';
 import upload from '../../assets/upload.png';
 import photo from '../../assets/photo.png';
@@ -9,77 +10,189 @@ import Modal from '@mui/material/Modal';
 import { ThreeDots } from  'react-loader-spinner';
 import swal from 'sweetalert';
 import '../../styles/lpo.scss';
-import ProductService from '../../services/productService';
 import axios from 'axios';
 import '../../styles/lpo.scss';
+import { certificate, reciepts } from '../../store/actions/payment';
+import Camera,  { IMAGE_TYPES } from 'react-html5-camera-photo';
 
 const PaymentModal = (props) => {
     const [loading, setLoading] = useState(false);
     const user = useSelector(state => state.authReducer.user);
-    const [productType, setProductType] = useState('PMS');
+    const cert = useSelector(state => state.paymentReducer.certificate);
+    const reciept = useSelector(state => state.paymentReducer.receipt);
+    const dispatch = useDispatch();
 
-    const [dateCreated, setDateCreated] = useState('');
-    const [depot, setDepot] = useState('');
-    const [depotAddress, setDepotAddress] = useState('');
-    const [quantity, setQuantity] = useState('');
-    const [loadingLocation, setLoadingLocation] = useState('');
-    const [uploadFile, setUpload] = useState('');
-    const [loading2, setLoading2] = useState(0);
+    const [organisation, setOrganisation] = useState('');
+    const [description, setDescription] = useState('');
+    const [amount, setAmount] = useState('');
+    const [contact, setContact] = useState('');
+    const [open, setOpen] = useState(false);
+    const [open2, setOpen2] = useState(false);
+
     const attach = useRef();
+    const attach2 = useRef();
 
     const handleClose = () => props.close(false);
 
-    const submit = () => {
-        if(dateCreated === "") return swal("Warning!", "Date created field cannot be empty", "info");
-        if(depot === "") return swal("Warning!", "Depot field cannot be empty", "info");
-        if(depotAddress === "") return swal("Warning!", "Depot address field cannot be empty", "info");
-        if(quantity === "") return swal("Warning!", "Quantity field cannot be empty", "info");
-        if(loadingLocation === "") return swal("Warning!", "Location field cannot be empty", "info");
-        if(uploadFile === "") return swal("Warning!", "File upload cannot be empty", "info");
+    const submit = () => { 
+        if((typeof(cert) === "string")){
+            if(organisation === "") return swal("Warning!", "Organisation field cannot be empty", "info");
+            if(description === "") return swal("Warning!", "Description field cannot be empty", "info");
+            if(amount === "") return swal("Warning!", "Amount field cannot be empty", "info");
+            if(contact === "") return swal("Warning!", "Contact field cannot be empty", "info");
+            if(typeof(cert) !== "string") return swal("Warning!", "Please select a certificate", "info");
+            if(typeof(cert) !== "string") return swal("Warning!", "Please select a reciept", "info");
 
-        setLoading(true);
+            const payload = {
+                organisationalName: organisation,
+                description: description,
+                amount: amount,
+                contactPerson: contact,
+                attachCertificate: cert,
+                paymentReceipt: reciept,
+                organizationID: user._id
+            }
 
-        const payload = {
-            dateCreated: dateCreated,
-            depot: depot,
-            depotAddress: depotAddress,
-            quantity: quantity,
-            loadingLocation: loadingLocation,
-            attachCertificate: uploadFile,
-            organizationID: user._id,
+            const url = "http://localhost:3000/360-station/api/register-payment/createBase64";
+            const config = {
+                headers: {
+                    "content-type": "multipart/form-data",
+                    "Authorization": "Bearer "+ localStorage.getItem('token'),
+                }
+            };
+            axios.post(url, payload, config).then((data) => {
+                console.log('form data', data);
+            }).then(()=>{
+                setLoading(false);
+                props.refresh();
+                swal("Success!", "Payment created successfully", "success");
+                handleClose();
+            });
+
+        }else{
+            if(organisation === "") return swal("Warning!", "Organisation field cannot be empty", "info");
+            if(description === "") return swal("Warning!", "Description field cannot be empty", "info");
+            if(amount === "") return swal("Warning!", "Amount field cannot be empty", "info");
+            if(contact === "") return swal("Warning!", "Contact field cannot be empty", "info");
+            if(typeof(cert.name) === "undefined") return swal("Warning!", "Please select a certificate", "info");
+            if(typeof(reciept.name) === "undefined") return swal("Warning!", "Please select a reciept", "info");
+
+            setLoading(true);
+
+            const formData = new FormData();
+            formData.append("organisationalName", organisation);
+            formData.append("description", description);
+            formData.append("amount", amount);
+            formData.append("contactPerson", contact);
+            formData.append("attachCertificate", cert);
+            formData.append("paymentReceipt", reciept);
+            formData.append("organizationID", user._id);
+            const config = {
+                headers: {
+                    "content-type": "multipart/form-data",
+                    "Authorization": "Bearer "+ localStorage.getItem('token'),
+                }
+            };
+            const url = "http://localhost:3000/360-station/api/register-payment/create";
+            axios.post(url, formData, config).then((data) => {
+                console.log('form data', data);
+            }).then(()=>{
+                setLoading(false);
+                props.refresh();
+                swal("Success!", "Payment created successfully", "success");
+                handleClose();
+            });
         }
-
-        ProductService.createProductOrder(payload).then((data) => {
-            swal("Success", "Product order created successfully!", "success");
-        }).then(()=>{
-            setLoading(false);
-            setLoading2(0);
-            props.refresh();
-            handleClose();
-        })
     }
 
     const uploadProductOrders = () => {
         attach.current.click();
     }
 
+    const uploadProductOrders2 = () => {
+        attach2.current.click();
+    }
+
     const selectedFile = (e) => {
         let file = e.target.files[0];
-        setLoading2(1);
-        const formData = new FormData();
-        formData.append("file", file);
-        const config = {
-            headers: {
-                "content-type": "multipart/form-data",
-                "Authorization": "Bearer "+ localStorage.getItem('token'),
-            }
-        };
-        const url = "http://localhost:3000/360-station/api/upload";
-        axios.post(url, formData, config).then((data) => {
-            setUpload(data.data.path);
-        }).then(()=>{
-            setLoading2(2);
-        });
+        dispatch(certificate(file));
+    }
+
+    const selectedFile2 = (e) => {
+        let file = e.target.files[0];
+        dispatch(reciepts(file));
+    }
+
+    const handleCloseCam = () => {
+        setOpen(false);
+    }
+
+    const handleTakePhoto = (data) => {
+        dispatch(certificate(data));
+    }
+
+    const takePicFromCamera = () => {
+        setOpen(true);
+    }
+
+    const handleCloseCam2 = () => {
+        setOpen2(false);
+    }
+
+    const handleTakePhoto2 = (data) => {
+        dispatch(reciepts(data));
+    }
+
+    const takePicFromCamera2 = () => {
+        setOpen2(true);
+    }
+
+    const CameraModal = (props) => {
+        return(
+            <Modal
+                open={props.open}
+                onClose={handleCloseCam}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+                sx={{ display:'flex', justifyContent:'center', alignItems:'center'}}
+            >
+               { open?
+                    <Camera
+                        onTakePhoto = { (dataUri) => { handleTakePhoto(dataUri); } }
+                        idealResolution = {{width: 200, height: 200}}
+                        imageCompression = {0.5}
+                        sizeFactor = {0.5}
+                        isFullscreen={false}
+                        imageType = {IMAGE_TYPES.PNG}
+                    />:
+                    <div></div>
+                }
+            </Modal>
+        )
+    }
+
+    const CameraModal2 = (props) => {
+        return(
+            <Modal
+                open={props.open}
+                onClose={handleCloseCam2}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+                sx={{ display:'flex', justifyContent:'center', alignItems:'center'}}
+            >
+                {open2?
+                    <Camera
+                        onTakePhoto = { (dataUri) => { handleTakePhoto2(dataUri); } }
+                        idealResolution = {{width: 200, height: 200}}
+                        imageCompression = {0.5}
+                        sizeFactor = {0.5}
+                        isFullscreen={false}
+                        imageType = {IMAGE_TYPES.PNG}
+                    />:
+                    <div></div>
+                }
+            </Modal>
+        )
     }
 
     return(
@@ -91,6 +204,8 @@ const PaymentModal = (props) => {
             sx={{display:'flex', justifyContent:'center', alignItems:'center'}}
         >
                 <div className='modalContainer'>
+                    <CameraModal open={open} />
+                    <CameraModal2 open={open2} />
                     <div className='inner'>
                         <div className='head'>
                             <div className='head-text'>Register Payment</div>
@@ -110,7 +225,7 @@ const PaymentModal = (props) => {
                                         fontSize:'12px',
                                     }} placeholder="" 
                                     type='text'
-                                    onChange={e => setDateCreated(e.target.value)}
+                                    onChange={e => setOrganisation(e.target.value)}
                                 />
                             </div>
 
@@ -128,7 +243,7 @@ const PaymentModal = (props) => {
                                     placeholder="" 
                                     multiline
                                     rows={5}
-                                    onChange={e => setDepot(e.target.value)}
+                                    onChange={e => setDescription(e.target.value)}
                                 />
                             </div>
 
@@ -143,7 +258,8 @@ const PaymentModal = (props) => {
                                         border:'1px solid #777777',
                                         fontSize:'12px',
                                     }} placeholder="" 
-                                    onChange={e => setDepot(e.target.value)}
+                                    type="number"
+                                    onChange={e => setAmount(e.target.value)}
                                 />
                             </div>
 
@@ -158,8 +274,7 @@ const PaymentModal = (props) => {
                                         border:'1px solid #777777',
                                         fontSize:'12px',
                                     }} placeholder="" 
-                                    type='number'
-                                    onChange={e => setQuantity(e.target.value)}
+                                    onChange={e => setContact(e.target.value)}
                                 />
                             </div>
 
@@ -176,7 +291,7 @@ const PaymentModal = (props) => {
                                             backgroundColor: '#427BBE'
                                         }
                                         }} 
-                                        onClick={uploadProductOrders}
+                                        onClick={takePicFromCamera}
                                         variant="contained"> 
                                         <img style={{width:'25px', height:'18px', marginRight:'10px'}} src={photo} alt={'icon'} />
                                         <div>Take Photo</div>
@@ -194,7 +309,8 @@ const PaymentModal = (props) => {
                                         onClick={uploadProductOrders}
                                         variant="contained"> 
                                         <img style={{width:'25px', height:'18px', marginRight:'10px'}} src={upload} alt={'icon'} />
-                                        <div>Upload Image</div>
+                                        {typeof(cert.name) === "undefined" && <div>Upload Image</div>}
+                                        {typeof(cert.name) === "undefined" || <div>{cert.name}</div>}
                                     </Button>
                                 </div>
                             </div>
@@ -212,7 +328,7 @@ const PaymentModal = (props) => {
                                             backgroundColor: '#427BBE'
                                         }
                                         }} 
-                                        onClick={uploadProductOrders}
+                                        onClick={takePicFromCamera2}
                                         variant="contained"> 
                                         <img style={{width:'25px', height:'18px', marginRight:'10px'}} src={photo} alt={'icon'} />
                                         <div>Take Photo</div>
@@ -227,14 +343,16 @@ const PaymentModal = (props) => {
                                             backgroundColor: '#087B36'
                                         }
                                         }} 
-                                        onClick={uploadProductOrders}
+                                        onClick={uploadProductOrders2}
                                         variant="contained"> 
                                         <img style={{width:'25px', height:'18px', marginRight:'10px'}} src={upload} alt={'icon'} />
-                                        <div>Upload Image</div>
+                                        {typeof(reciept.name) === "undefined" && <div>Upload Image</div>}
+                                        {typeof(reciept.name) === "undefined" || <div>{reciept.name}</div>}
                                     </Button>
                                 </div>
                             </div>
-
+                            <input style={{visibility:'hidden'}} onChange={selectedFile} type="file" ref={attach} />
+                            <input style={{visibility:'hidden'}} onChange={selectedFile2} type="file" ref={attach2} />
                        </div>
 
                         <div style={{marginTop:'10px'}} className='butt'>

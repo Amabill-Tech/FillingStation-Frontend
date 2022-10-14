@@ -25,3 +25,5 @@ export const QUERY = 'QUERY';
 export const SEARCH_QUERY = 'SEARCH_QUERY';
 export const ATTENDANCE = 'ATTENDANCE';
 export const SEARCH_ATTENDANCE = 'SEARCH_ATTENDANCE';
+export const CERTIFICATE = 'CERTIFICATE';
+export const RECEIPT = "RECEIPT";

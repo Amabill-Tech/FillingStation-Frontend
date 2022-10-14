@@ -3,10 +3,36 @@ import '../../styles/payments.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
+import hr1 from '../../assets/hr1.png';
+import hr11 from '../../assets/hr11.png';
+import hr3 from '../../assets/hr3.png';
+import hr5 from '../../assets/hr5.png';
+import me6 from '../../assets/me6.png';
 
 const Analysis = () => {
+
+    const DashboardImage = (props) => {
+        return(
+            <div style={{marginRight: props.right, marginLeft: props.left}} className='first-image'>
+                <div style={{marginRight:'10px'}} className='inner-first-image'>
+                    <div className='top-first-image'>
+                        <div className='top-icon'>
+                            <img style={{width:'60px', height:'50px'}} src={props.image} alt="icon" />
+                        </div>
+                        <div style={{justifyContent:'flex-end'}} className='top-text'>
+                            <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>{props.name}</div>
+                        </div>
+                    </div>
+                    <div className='bottom-first-image'>
+                        <img style={{width:'30px', height:'10px'}} src={me6} alt="icon" />
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
     return(
-        <div className='paymentsCaontainer'>
+        <div style={{background:'#fff'}} className='paymentsCaontainer'>
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
@@ -37,18 +63,6 @@ const Analysis = () => {
                                 <MenuItem value={30}>Thirty</MenuItem>
                             </Select>
                         </div>
-                        <div className='second-select'>
-                            <Select
-                                labelId="demo-select-small"
-                                id="demo-select-small"
-                                value={10}
-                                sx={selectStyle2}
-                            >
-                                <MenuItem value={10}>07 August, 2022</MenuItem>
-                                <MenuItem value={20}>Twenty</MenuItem>
-                                <MenuItem value={30}>Thirty</MenuItem>
-                            </Select>
-                        </div>
                     </div>
                     <div className='butt'>
                         <Button sx={{
@@ -62,6 +76,15 @@ const Analysis = () => {
                             }
                             }}  variant="contained"> Add Payment
                         </Button>
+                    </div>
+                </div>
+
+                <div style={contain2}>
+                    <div style={{display: 'flex', flexDirection:'row'}} className='imgContainer'>
+                        <DashboardImage right={'10px'} left={'0px'} image={hr1} name={'Employee'} value={'41'} />
+                        <DashboardImage right={'10px'} left={'0px'} image={hr11} name={'Salary structure'} value={'41'} />
+                        <DashboardImage right={'10px'} left={'0px'} image={hr3} name={'Query'} value={'41'} />
+                        <DashboardImage right={'0px'} left={'0px'} image={hr5} name={'Attendance'} value={'41'} />
                     </div>
                 </div>
 
@@ -355,6 +378,10 @@ const selectStyle2 = {
     fontFamily: 'Nunito-Regular',
     fontSize:'14px',
     outline:'none'
+}
+
+const contain2 = {
+    width:'100%',
 }
 
 export default Analysis;
