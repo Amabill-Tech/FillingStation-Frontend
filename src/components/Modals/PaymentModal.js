@@ -294,7 +294,8 @@ const PaymentModal = (props) => {
                                         onClick={takePicFromCamera}
                                         variant="contained"> 
                                         <img style={{width:'25px', height:'18px', marginRight:'10px'}} src={photo} alt={'icon'} />
-                                        <div>Take Photo</div>
+                                        {typeof(cert) === "string" && <div>Take Photo</div>}
+                                        {typeof(cert) === "string" || <div>{reciept.name}</div>}
                                     </Button>
                                     <Button sx={{
                                         width:'49%', 
@@ -331,7 +332,8 @@ const PaymentModal = (props) => {
                                         onClick={takePicFromCamera2}
                                         variant="contained"> 
                                         <img style={{width:'25px', height:'18px', marginRight:'10px'}} src={photo} alt={'icon'} />
-                                        <div>Take Photo</div>
+                                        {typeof(cert) === "string" && <div>Take Photo</div>}
+                                        {typeof(cert) === "string" || <div>{reciept.name}</div>}
                                     </Button>
                                     <Button sx={{
                                         width:'49%', 
