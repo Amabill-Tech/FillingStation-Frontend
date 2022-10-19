@@ -22,7 +22,7 @@ const RecordSales = (props) => {
         }
     }
     return(
-        <div className='salesContainer'>
+        <div data-aos="zoom-in-down" className='salesContainer'>
             <div className='inner'>
                 <div className='leftContainer'>
                     <div className='tabContainer'>

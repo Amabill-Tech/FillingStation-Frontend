@@ -53,7 +53,7 @@ const ProductOrders = () => {
     }
 
     return(
-        <div className='paymentsCaontainer'>
+        <div data-aos="zoom-in-down" className='paymentsCaontainer'>
             {<ProductOrderModal open={open} close={setOpen} refresh={getAllProductData} />}
             <div className='inner-pay'>
                 <div className='action'>

@@ -15,7 +15,7 @@ const Analysis = () => {
 
     const DashboardImage = (props) => {
         return(
-            <div style={{marginRight: props.right, marginLeft: props.left}} className='first-image'>
+            <div data-aos="flip-left" style={{marginRight: props.right, marginLeft: props.left}} className='first-image'>
                 <div style={{marginRight:'10px'}} className='inner-first-image'>
                     <div className='top-first-image'>
                         <div className='top-icon'>
@@ -35,7 +35,7 @@ const Analysis = () => {
     }
 
     return(
-        <div style={{background:'#fff'}} className='paymentsCaontainer'>
+        <div data-aos="zoom-in-down" style={{background:'#fff'}} className='paymentsCaontainer'>
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>

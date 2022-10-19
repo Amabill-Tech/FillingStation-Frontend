@@ -52,7 +52,7 @@ const TankUpdate = () => {
     }
 
     return(
-        <div className='paymentsCaontainer'>
+        <div data-aos="zoom-in-down" className='paymentsCaontainer'>
             { <TankUpdateModal data={tankList} open={open} close={setOpen} tanks={tanks} refresh={getTankData} /> }
             <div className='inner-pay'>
                 <div className='action'>

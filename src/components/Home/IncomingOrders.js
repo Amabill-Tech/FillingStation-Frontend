@@ -54,7 +54,7 @@ const IncomingOrder = () => {
     }
 
     return(
-        <div className='paymentsCaontainer'>
+        <div data-aos="zoom-in-down" className='paymentsCaontainer'>
             { <IncomingOrderModal open={open} close={setOpen} refresh={getAllIncomingOrder} />}
             <div className='inner-pay'>
                 <div className='action'>

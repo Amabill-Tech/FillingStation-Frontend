@@ -35,7 +35,7 @@ const HumanResource = (props) => {
 
     const DashboardImage = (props) => {
         return(
-            <div onClick={()=>{handleNavigation(props)}} className='first-image'>
+            <div data-aos="flip-left" onClick={()=>{handleNavigation(props)}} className='first-image'>
                 <div style={{marginRight:'10px'}} className='inner-first-image'>
                     <div className='top-first-image'>
                         <div className='top-icon'>
@@ -54,7 +54,7 @@ const HumanResource = (props) => {
     }
 
     return(
-        <div className='hrContainer'>
+        <div data-aos="zoom-in-down" className='hrContainer'>
             { props.activeRoute.split('/').length === 3 &&
                 <div style={contain2}>
                     <div className='imgContainer'>

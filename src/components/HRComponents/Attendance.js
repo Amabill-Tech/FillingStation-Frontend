@@ -111,7 +111,7 @@ const Attendance = () => {
     }
 
     return(
-        <div className='paymentsCaontainer'>
+        <div data-aos="zoom-in-down" className='paymentsCaontainer'>
             {<AttendanceModal open={open} close={setOpen} refresh={getAllAtendanceData} />}
             {<ClockOutModal open={open2} close={setOpen2} refresh={getAllAtendanceData} />}
             <div className='inner-pay'>
@@ -243,7 +243,7 @@ const Attendance = () => {
                         <div style={place}>No data</div>:
                         attendanceData.map((item, index) => {
                             return(
-                                <div key={index} className='row-container'>
+                                <div data-aos="fade-up" key={index} className='row-container'>
                                     <div className='table-head2'>
                                         <div className='column'>{index + 1}</div>
                                         <div className='column'>{item.employeeName}</div>

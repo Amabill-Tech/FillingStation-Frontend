@@ -79,7 +79,7 @@ const Outlets = (props) => {
     return(
         <>
             {props.activeRoute.split('/').length === 3 &&
-                <div className='paymentsCaontainer'>
+                <div data-aos="zoom-in-down" className='paymentsCaontainer'>
                     <div className='inner-pay'>
                         { open ===1 && <CreateFillingStation getStations={getAllStationData} /> }
                         { open ===4 && <AddTankSuccess /> }
@@ -215,7 +215,7 @@ const Outlets = (props) => {
                                 <div style={place}>No data</div>:
                                 allOutlets.map((item, index) => {
                                     return(
-                                        <div key={index} className='row-container'>
+                                        <div data-aos="fade-down" key={index} className='row-container'>
                                             <div className='table-head2'>
                                                 <div className='column'>{index + 1}</div>
                                                 <div className='column'>{item.licenseCode}</div>

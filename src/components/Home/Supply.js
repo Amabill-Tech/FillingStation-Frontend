@@ -59,7 +59,7 @@ const Supply = () => {
     }
 
     return(
-        <div className='paymentsCaontainer'>
+        <div data-aos="zoom-in-down" className='paymentsCaontainer'>
             { <SupplyModal open={open} close={setOpen} refresh={getAllSupplyData} />}
             { prints && <PrintSupplyRecords allOutlets={supply} open={prints} close={setPrints}/>}
             <div className='inner-pay'>

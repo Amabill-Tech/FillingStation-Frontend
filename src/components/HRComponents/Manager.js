@@ -63,7 +63,7 @@ const Manager = (props) => {
     }
 
     return(
-        <div className='paymentsCaontainer'>
+        <div data-aos="zoom-in-down" className='paymentsCaontainer'>
             {<ManagerModal open={open} close={setOpen} refresh={getAllUserData} />}
             {<EmployeeDetails open={open2} close={setOpen2} data={empData} />}
             { prints && <PrintUserRecords allOutlets={adminUsers} open={prints} close={setPrints}/>}

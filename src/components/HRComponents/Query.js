@@ -54,7 +54,7 @@ const Query = () => {
     }
 
     return(
-        <div className='paymentsCaontainer'>
+        <div data-aos="zoom-in-down" className='paymentsCaontainer'>
             {<QueryModal open={open} close={setOpen} refresh={getAllQueryData}/>}
             <div className='inner-pay'>
                 <div className='action'>

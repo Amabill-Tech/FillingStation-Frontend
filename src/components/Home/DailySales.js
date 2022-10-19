@@ -85,7 +85,7 @@ const DailySales = () => {
                 </Select>
 
                 <div className='item-dash-daily'>
-                    <div className="dash-item">
+                    <div data-aos="flip-left" className="dash-item">
                         <div className="inner-dash-item">
                             <div className="dash-image">
                                 <img style={{width:'60px', height:'50px'}} src={me5} alt="icon" />
@@ -99,7 +99,7 @@ const DailySales = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="dash-item">
+                    <div data-aos="flip-left" className="dash-item">
                         <div className="inner-dash-item">
                             <div className="dash-image">
                                 <img style={{width:'60px', height:'50px'}} src={me5} alt="icon" />
@@ -113,7 +113,7 @@ const DailySales = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="dash-item">
+                    <div data-aos="flip-left" className="dash-item">
                         <div className="inner-dash-item">
                             <div className="dash-image">
                                 <img style={{width:'60px', height:'50px'}} src={me5} alt="icon" />
@@ -193,7 +193,7 @@ const DailySales = () => {
                     <div>Incoming Order</div>
                     <Button 
                         variant="contained" 
-                        startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} src={slideMenu} />}
+                        startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} alt="icon" src={slideMenu} />}
                         sx={{
                             width:'165px',
                             height:'30px',

@@ -64,7 +64,7 @@ const LPO = () => {
     }
 
     return(
-        <div className='paymentsCaontainer'>
+        <div data-aos="zoom-in-down" className='paymentsCaontainer'>
             {<LPOModal open={lpo} close={setLpo} refresh={getAllLPOData}/>}
             <div className='inner-pay'>
                 <div className='action'>

@@ -53,7 +53,7 @@ const Regulatory = () => {
     }
 
     return(
-        <div className='paymentsCaontainer'>
+        <div data-aos="zoom-in-down" className='paymentsCaontainer'>
             { <PaymentModal open={open} close={setOpen} refresh={getTankData} /> }
             <div className='inner-pay'>
                 <div className='action'>

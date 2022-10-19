@@ -70,7 +70,7 @@ const Employee = () => {
     }
 
     return(
-        <div className='paymentsCaontainer'>
+        <div data-aos="zoom-in-down" className='paymentsCaontainer'>
             {<StaffModal open={open} close={setOpen} allOutlets={allOutlets} refresh={getAllStationData} />}
             {<EmployeeDetails open={open2} close={setOpen2} data={currentStaff} />}
             { prints && <PrintStaffRecords allOutlets={staffUsers} open={prints} close={setPrints}/>}

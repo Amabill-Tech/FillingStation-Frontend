@@ -52,7 +52,7 @@ const Salary = () => {
     }
 
     return(
-        <div className='paymentsCaontainer'>
+        <div data-aos="zoom-in-down" className='paymentsCaontainer'>
             {<SalaryModal open={open} close={setOpen} refresh={getAllSalaryData} />}
             <div className='inner-pay'>
                 <div className='action'>

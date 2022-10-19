@@ -3,8 +3,17 @@ import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
 import ProtectedRoute from './screens/ProtectedRoute';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import AOS from 'aos';
+import "aos/dist/aos.css";
+import { useEffect } from 'react';
 
 function App() {
+
+  useEffect(()=>{
+    AOS.init();
+    AOS.refresh();
+  }, [])
+
   return (
     <Router>
       <div className="App">

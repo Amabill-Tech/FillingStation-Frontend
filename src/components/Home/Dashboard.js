@@ -78,7 +78,7 @@ const options = {
 
 const DashboardImage = (props) => {
     return(
-        <div className='first-image'>
+        <div data-aos="flip-left" className='first-image'>
             <div className='inner-first-image'>
                 <div className='top-first-image'>
                     <div className='top-icon'>
@@ -156,7 +156,7 @@ const Dashboard = () => {
                 </div>
                 <div className='dashImages'>
                     <DashboardImage image={me1} name={'Current staff'} value={'41'}/>
-                    <div className='first-image'>
+                    <div data-aos="flip-left" className='first-image'>
                         <div className='inner-first-image'>
                             <div className='top-first-image'>
                                 <div className='top-icon'>
