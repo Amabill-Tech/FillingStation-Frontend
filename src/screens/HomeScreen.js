@@ -146,7 +146,7 @@ const HomeScreen = ({history}) => {
                     <img className='home-logo' src={homeLogo} alt="icon" />
                     <SideItems marginT={"0px"} link={'/home'} name={"Dashboard"} icon={dashboard} icon2={dashboard2} />
                     <SideItems marginT={"45px"} link={'/home/daily-sales'} name={"Daily Sales"} icon={dailySales2} icon2={dailySales} />
-                    <SideItems marginT={"90px"} link={'/home/outlets'} name={"My Outlets"} icon={outlet2} icon2={outlet} />
+                    <SideItems marginT={"90px"} link={'/home/outlets'} name={"My Stations"} icon={outlet2} icon2={outlet} />
                     <SideItems marginT={"135px"} link={'/home/record-sales'} name={"Record Sales"} icon={recordSales2} icon2={recordSales} />
                     <SideItems marginT={"180px"} link={'/home/analysis'} name={"Analysis"} icon={analysis} icon2={analysis} />
                     <SideItems marginT={"225px"} link={'/home/lpo'} name={"LPO"} icon={lpo} icon2={lpo} />
@@ -169,7 +169,7 @@ const HomeScreen = ({history}) => {
                         <img className='home-logo' src={homeLogo} alt="icon" />
                         <SideItems marginT={"0px"} link={'/home'} name={"Dashboard"} icon={dashboard} icon2={dashboard2} />
                         <SideItems marginT={"45px"} link={'/home/daily-sales'} name={"Daily Sales"} icon={dailySales2} icon2={dailySales} />
-                        <SideItems marginT={"90px"} link={'/home/outlets'} name={"My Outlets"} icon={outlet2} icon2={outlet} />
+                        <SideItems marginT={"90px"} link={'/home/outlets'} name={"My Stations"} icon={outlet2} icon2={outlet} />
                         <SideItems marginT={"135px"} link={'/home/record-sales'} name={"Record Sales"} icon={recordSales2} icon2={recordSales} />
                         <SideItems marginT={"180px"} link={'/home/analysis'} name={"Analysis"} icon={analysis} icon2={analysis} />
                         <SideItems marginT={"225px"} link={'/home/lpo'} name={"LPO"} icon={lpo} icon2={lpo} />

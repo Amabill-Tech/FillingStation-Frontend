@@ -25,6 +25,17 @@ const OutletService = {
         });
     },
 
+    getOneOutletStation: (data) => {
+        return APIs.post('/station/oneRecord', data)
+        .then(({data}) => {
+            return data
+        })
+        .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        });
+    },
+
     registerTanks: (data) => {
         return APIs.post('/station/tank/create', data)
         .then(({ data }) => {
@@ -69,6 +80,17 @@ const OutletService = {
             console.log("Auth service err", err);
             throw err
         })
+    },
+
+    updateTank: (data) => {
+        return APIs.post('/station/tank/update', data)
+        .then(({ data }) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        });
     },
 
 

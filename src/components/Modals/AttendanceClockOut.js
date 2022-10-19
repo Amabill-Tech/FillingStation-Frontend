@@ -10,39 +10,35 @@ import '../../styles/lpo.scss';
 import AtendanceService from '../../services/attendance';
 import { MenuItem, Select } from '@mui/material';
 
-const AttendanceModal = (props) => {
+const ClockOutModal = (props) => {
     const [loading, setLoading] = useState(false);
     const user = useSelector(state => state.authReducer.user);
     const [defaultState, setDefault] = useState(0);
-    const staffUsers = useSelector(state => state.staffUserReducer.staffUsers);
+    const attendanceData = useSelector(state => state.attendanceReducer.attendance);
     const [employeeName, setEmployeeName] = useState('');
-    const [workingHour, setWorkingHour] = useState('');
-    const [clockIn, setClockIn] = useState('');
+    const [clockOut, setClockout] = useState('');
 
     const handleClose = () => props.close(false);
 
     const submit = () => {
         if(employeeName === "") return swal("Warning!", "Employee name field cannot be empty", "info");
-        if(workingHour === "") return swal("Warning!", "Working Hour field cannot be empty", "info");
-        if(clockIn === "") return swal("Warning!", "Clock in field cannot be empty", "info");
+        if(clockOut === "") return swal("Warning!", "Clock in field cannot be empty", "info");
 
         setLoading(true);
 
         const payload = {
             id: employeeName._id,
-            employeeName: employeeName.staffName,
-            timeIn: clockIn,
-            workingHour: workingHour,
+            employeeName: employeeName.employeeName,
+            timeIn: employeeName.timeIn,
+            workingHour: employeeName.workingHour,
+            timeOut: clockOut,
             outletID: user.outletID,
             organisationID: user.organisationID,
         }
+        console.log(payload)
 
-        AtendanceService.createAttendance(payload).then((data) => { 
-            if(data.message === "Attendance already recorded"){
-                swal("Error", "Attendance already exist!", "error");
-            }else{
-                swal("Success", "Attendance created successfully!", "success");
-            }
+        AtendanceService.updateAttendance(payload).then((data) => { 
+            swal("Success", "Attendance updated successfully!", "success");
         }).then(()=>{
             setLoading(false);
             props.refresh();
@@ -64,9 +60,9 @@ const AttendanceModal = (props) => {
             sx={{display:'flex', justifyContent:'center', alignItems:'center'}}
         >
                 <div style={{height:'auto'}} className='modalContainer'>
-                    <div style={{height:'auto', margin:'20px'}} className='inner'>
+                    <div style={{height:'280px', margin:'20px'}} className='inner'>
                         <div className='head'>
-                            <div className='head-text'>Add Attendance</div>
+                            <div className='head-text'>Clock out</div>
                             <img onClick={handleClose} style={{width:'18px', height:'18px'}} src={close} alt={'icon'} />
                         </div>
 
@@ -79,35 +75,19 @@ const AttendanceModal = (props) => {
                                     value={defaultState}
                                     sx={selectStyle2}
                                 >
-                                    <MenuItem style={menu} value={0}>Select User</MenuItem>
+                                    <MenuItem style={menu} value={0}>Select user</MenuItem>
                                     {
-                                        staffUsers.map((item, index) => {
-                                                return(
-                                                    <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index, item)}} value={index + 1}>{item.staffName}</MenuItem>
-                                                )
-                                        })  
+                                    attendanceData.map((item, index) => {
+                                            return(
+                                                <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index, item)}} value={index + 1}>{item.employeeName}</MenuItem>
+                                            )
+                                    })  
                                     }
                                 </Select>
                             </div>
 
                             <div className='inputs'>
-                                <div className='head-text2'>Working Hour</div>
-                                <OutlinedInput 
-                                    sx={{
-                                        width:'100%',
-                                        height: '35px', 
-                                        marginTop:'5px', 
-                                        background:'#EEF2F1', 
-                                        border:'1px solid #777777',
-                                        fontSize:'12px',
-                                    }} placeholder="" 
-                                    type="number"
-                                    onChange={e => setWorkingHour(e.target.value)}
-                                />
-                            </div>
-
-                            <div className='inputs'>
-                                <div className='head-text2'>Time in</div>
+                                <div className='head-text2'>Time Out</div>
                                 <OutlinedInput 
                                     sx={{
                                         width:'100%',
@@ -118,7 +98,7 @@ const AttendanceModal = (props) => {
                                         fontSize:'12px',
                                     }} placeholder="" 
                                     type='time'
-                                    onChange={e => setClockIn(e.target.value)}
+                                    onChange={e => setClockout(e.target.value)}
                                 />
                             </div>
                        </div>
@@ -161,7 +141,7 @@ const AttendanceModal = (props) => {
 
 const inner = {
     width:'100%',
-    height:'270px',
+    height:'180px',
 }
 
 const selectStyle2 = {
@@ -180,4 +160,4 @@ const menu = {
     fontFamily:'Nunito-Regular'
 }
 
-export default AttendanceModal;
+export default ClockOutModal;

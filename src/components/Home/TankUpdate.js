@@ -17,20 +17,27 @@ const TankUpdate = () => {
     const user = useSelector(state => state.authReducer.user);
     const tankList = useSelector(state => state.outletReducer.tankList);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
+    const [tanks, setTanks] = useState([]);
 
     const updateTankModal = () => {
         setOpen(true);
     }
 
     const getTankData = useCallback(() => {
-        const payload = {
-            organisationID: user._id
-        }
+        if(user.userType === 'staff'){
+            OutletService.getOneOutletStation({organisation: user.organisationID, outletID: user.outletID}).then(data => {
+                dispatch(getAllStations([data.station]));
+            });
 
-        OutletService.getAllOutletStations({organisation: user._id}).then(data => {
-            dispatch(getAllStations(data.station));
-        });
-    }, [user._id, dispatch]);
+            OutletService.getAllOutletTanks({organisationID: user.organisationID, outletID: user.outletID}).then(data => {
+                setTanks(data);
+            })
+        }else{
+            OutletService.getAllOutletStations({organisation: user._id}).then(data => {
+                dispatch(getAllStations(data.station));
+            });
+        }
+    }, [user._id, user.organisationID, user.outletID, user.userType, dispatch]);
 
     useEffect(()=>{
         getTankData();
@@ -46,7 +53,7 @@ const TankUpdate = () => {
 
     return(
         <div className='paymentsCaontainer'>
-            { <TankUpdateModal data={tankList} open={open} close={setOpen} /> }
+            { <TankUpdateModal data={tankList} open={open} close={setOpen} tanks={tanks} refresh={getTankData} /> }
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
@@ -170,10 +177,29 @@ const TankUpdate = () => {
                     </div>
 
                     <div className='row-container'>
-                        {
+                        {!user.userType === 'staff' &&
                             tankList.length === 0?
                             <div style={place}>No tank updates</div>:
                             tankList.map((data, index) => {
+                                return(
+                                    <div className='table-head2'>
+                                        <div className='column'>{index + 1}</div>
+                                        <div className='column'>{data.dateUpdated}</div>
+                                        <div className='column'>{data.tankName}</div>
+                                        <div className='column'>{data.productType}</div>
+                                        <div className='column'>{data.station}</div>
+                                        <div className='column'>{data.previousLevel}</div>
+                                        <div className='column'>{data.quantityAdded}</div>
+                                        <div className='column'>{data.currentLevel}</div>
+                                    </div>
+                                )
+                            })
+                        }
+
+                        {user.userType === 'staff' &&
+                            tanks.length === 0?
+                            <div style={place}>No tank updates</div>:
+                            tanks.map((data, index) => {
                                 return(
                                     <div className='table-head2'>
                                         <div className='column'>{index + 1}</div>

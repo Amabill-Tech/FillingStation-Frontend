@@ -41,11 +41,11 @@ const Tank = (props) => {
         OutletService.getAllOutletTanks(payload).then(data => {
             dispatch(getAllOutletTanks(data));
         });
-    }, [location.state.state._id, location.state.state.organisation, dispatch, tankList]);
+    }, [location.state.state._id, location.state.state.organisation, dispatch]);
 
     useEffect(()=>{
         getAllStationTanks();
-    },[]);
+    },[getAllStationTanks]);
 
     useEffect(()=>{
         getSeparateTanks(tankList);

@@ -11,7 +11,6 @@ import { useDispatch } from 'react-redux';
 import OutletService from '../../services/outletService';
 import { getAllStations } from '../../store/actions/outlet';
 import { OutlinedInput } from '@mui/material';
-import { width } from '@mui/system';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 

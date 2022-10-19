@@ -13,6 +13,17 @@ const AtendanceService = {
         })
     },
 
+    updateAttendance: (data) => {
+        return APIs.post('/hr/attendance/update', data)
+        .then(({ data }) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        })
+    },
+
     allAttendanceRecords: (data) => {
         return APIs.post('/hr/attendance/allRecords', data)
         .then(({ data }) => {

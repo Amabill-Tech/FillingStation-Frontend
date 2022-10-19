@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
 import close from '../../assets/close.png';
 import Button from '@mui/material/Button';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -7,55 +6,63 @@ import Modal from '@mui/material/Modal';
 import { ThreeDots } from  'react-loader-spinner';
 import swal from 'sweetalert';
 import '../../styles/lpo.scss';
-import TankUpdate from '../../services/tankUpdateService';
-import '../../styles/lpo.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import OutletService from '../../services/outletService';
 
 const TankUpdateModal = (props) => {
     const [loading, setLoading] = useState(false);
-    const user = useSelector(state => state.authReducer.user);
     const [defaultState, setDefaultState] = useState(0);
-    const [currentStation, setCurrentStation] = useState({});
-
-    const [tankName, setTankName] = useState('');
-    const [currentLevel, setCurrentLevel] = useState('');
+    const [currentTank, setCurrentTank] = useState({});
     const [quantity, setQuantity] = useState('');
-    const [refCode, setRefCode] = useState('');
     const [date, setDate] = useState('');
 
     const handleClose = () => props.close(false);
 
     const handleMenuSelection = (e, data) => {
         setDefaultState(e.target.dataset.value);
-        setCurrentStation(data);
+        setCurrentTank(data);
     }
 
     const submit = () => {
-        if(tankName === "") return swal("Warning!", "Tank Name field cannot be empty", "info");
-        if(currentLevel === "") return swal("Warning!", "Current level field cannot be empty", "info");
+        const fresh = Number(quantity) > Number(currentTank.tankCapacity);
+        const prev = (Number(quantity) + Number(currentTank.currentLevel)) > Number(currentTank.tankCapacity)
+        const detail = currentTank.currentLevel==="None"? fresh : prev;
+
+        console.log(detail)
         if(quantity === "") return swal("Warning!", "Quantity field cannot be empty", "info");
-        if(refCode === "") return swal("Warning!", "Ref code field cannot be empty", "info");
         if(date === "") return swal("Warning!", "Date field cannot be empty", "info");
+        if(currentTank.activeState === '0') return swal("Warning!", "Tank is currently inactive, contact admin", "info");
+        if((detail)) return swal("Warning!", "Tank capacity exceeded!", "info");
 
         setLoading(true);
 
         const payload = {
-            tankName: tankName,
-            currentLevel: currentLevel,
+            id: currentTank._id,
+            tankName: currentTank.tankName,
+            tankHeight: currentTank.tankHeight,
+            productType: currentTank.productType,
+            tankCapacity: currentTank.tankCapacity,
+            deadStockLevel: currentTank.deadStockLevel,
+            calibrationDate: currentTank.calibrationDate,
+            organisationID: currentTank.organisationID,
+            outletID: currentTank.outletID,
+            dateUpdated: date,
+            station: currentTank.station,
+            previousLevel: currentTank.currentLevel,
             quantityAdded: quantity,
-            referenceCode: refCode,
-            date: date,
-            organizationID: user._id,
+            currentLevel: currentTank.currentLevel === "None"? quantity: String(Number(quantity) + Number(currentTank.currentLevel)),
+            activeState: currentTank.activeState,
         }
 
-        TankUpdate.createTankUpdate(payload).then((data) => {
-            swal("Success", "Product order created successfully!", "success");
+        OutletService.updateTank(payload).then((data) => {console.log('record', data)
+            swal("Success", data.message, "success");
         }).then(()=>{
             setLoading(false);
             props.refresh();
+            setDefaultState(0)
             handleClose();
-        })
+        });
     }
 
     return(
@@ -89,10 +96,11 @@ const TankUpdateModal = (props) => {
                                         fontSize:'12px',
                                     }}
                                 >
+                                    <MenuItem style={menu} value={0}>Select Tank</MenuItem>
                                     {
-                                        props.data.map((item, index) => {
+                                        props.tanks.map((item, index) => {
                                             return(
-                                                <MenuItem style={menu} key={index} onClick={(e) => {handleMenuSelection(e, item)}} value={index}>{item.outletName}</MenuItem>
+                                                <MenuItem style={menu} key={index} onClick={(e) => {handleMenuSelection(e, item)}} value={index + 1}>{item.tankName}</MenuItem>
                                             )
                                         })
                                     }
@@ -110,7 +118,8 @@ const TankUpdateModal = (props) => {
                                         border:'1px solid #777777',
                                         fontSize:'12px',
                                     }} placeholder="" 
-                                    onChange={e => setCurrentLevel(e.target.value)}
+                                    disabled
+                                    value={currentTank.currentLevel}
                                 />
                             </div>
 
@@ -140,8 +149,8 @@ const TankUpdateModal = (props) => {
                                         border:'1px solid #777777',
                                         fontSize:'12px',
                                     }} placeholder="" 
-                                    type='number'
-                                    onChange={e => setRefCode(e.target.value)}
+                                    disabled
+                                    value={currentTank._id}
                                 />
                             </div>
 

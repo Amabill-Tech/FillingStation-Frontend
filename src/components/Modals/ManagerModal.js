@@ -114,7 +114,11 @@ const ManagerModal = (props) => {
         }
 
         AdminUserService.createAdminUsers(payload).then((data) => {
-            swal("Success", "Product order created successfully!", "success");
+            if(data.hasOwnProperty('message')){
+                swal("Error!", data.message, "error");
+            }else{
+                swal("Success!", "A new user created successfully!", "success");
+            }
         }).then(()=>{
             setLoading(false);
             setLoading2(0);

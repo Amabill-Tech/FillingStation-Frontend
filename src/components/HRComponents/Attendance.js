@@ -10,32 +10,61 @@ import { createAttendance, searchAttendance } from '../../store/actions/attendan
 import OutletService from '../../services/outletService';
 import { getAllStations } from '../../store/actions/outlet';
 import { OutlinedInput } from '@mui/material';
+import AdminUserService from '../../services/adminUsers';
+import { storeStaffUsers } from '../../store/actions/staffUsers';
+import ClockOutModal from '../Modals/AttendanceClockOut';
 
 const Attendance = () => {
     
     const [open, setOpen] = useState(false);
+    const [open2, setOpen2] = useState(false);
     const [defaultState, setDefault] = useState(0);
     const dispatch = useDispatch();
     const user = useSelector(state => state.authReducer.user);
     const attendanceData = useSelector(state => state.attendanceReducer.attendance);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
+    const [total, setTotal] = useState(0);
+    const [skip, setSkip] = useState(0);
+    const [limit, setLimit] = useState(15);
+    const [entries, setEntries] = useState(10);
 
     const openModal = () => {
         setOpen(true);
     }
 
-    const getAllAtendanceData = useCallback(() => {
-        const payload = {
-            organisationID: user._id
-        }
-        AtendanceService.allAttendanceRecords(payload).then(data => {
-            dispatch(createAttendance(data.attendance));
-        });
+    const openModal2 = () => {
+        setOpen2(true);
+    }
 
-        OutletService.getAllOutletStations({organisation: user._id}).then(data => {
-            dispatch(getAllStations(data.station));
-        });
-    }, [user._id, dispatch]);
+    const getAllAtendanceData = useCallback(() => {
+
+        if(user.userType === 'staff'){
+            const payload = {
+                skip: skip * limit,
+                limit: limit,
+                outletID: user.outletID,
+                organisationID: user.organisationID,
+            }
+
+            AdminUserService.allStaffUserRecords(payload).then(data => {
+                dispatch(storeStaffUsers(data.staff));
+            });
+
+            AtendanceService.allAttendanceRecords(payload).then(data => {
+                setTotal(data.attendance.count)
+                dispatch(createAttendance(data.attendance.attendance));
+            });
+    
+            OutletService.getOneOutletStation({organisation: user.organisationID, outletID: user.outletID}).then(data => {
+                dispatch(getAllStations([data.station]));
+            });
+        }else{
+            /*OutletService.getAllOutletStations({organisation: user._id}).then(data => {
+                dispatch(getAllStations(data.station));
+            });*/
+        }
+        
+    }, [user.organisationID, user.outletID, user.userType, limit, skip, dispatch]);
 
     useEffect(()=>{
         getAllAtendanceData();
@@ -49,9 +78,42 @@ const Attendance = () => {
         dispatch(searchAttendance(value));
     }
 
+    const convertToMinutes = (time) => {
+        const [hour, minutes] = time.split(':');
+        if(hour[0] === '0') return Number(hour.split('')[1]) * 60 + Number(minutes);
+        if(hour[0] !== '0') return Number(hour) * 60 + Number(minutes);
+    }
+
+    const computeTime = (timeIn, timeOut, workingHour) => {
+        const diff = convertToMinutes(timeOut) - convertToMinutes(timeIn);
+        if(diff > Number(workingHour * 60)) return true;
+        if(diff < Number(workingHour * 60)) return false;
+    }
+
+    const nextPage = () => {
+        if(!(skip < 0)){
+            setSkip(prev => prev + 1)
+        }
+        getAllAtendanceData();
+    }
+
+    const prevPage = () => {
+        if(!(skip <= 0)){
+            setSkip(prev => prev - 1)
+        } 
+        getAllAtendanceData();
+    }
+
+    const entriesMenu = (value, limit) => {
+        setEntries(value);
+        setLimit(limit);
+        getAllAtendanceData();
+    }
+
     return(
         <div className='paymentsCaontainer'>
             {<AttendanceModal open={open} close={setOpen} refresh={getAllAtendanceData} />}
+            {<ClockOutModal open={open2} close={setOpen2} refresh={getAllAtendanceData} />}
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
@@ -61,10 +123,10 @@ const Attendance = () => {
                             value={10}
                             sx={{...selectStyle2, backgroundColor:"#06805B", color:'#fff'}}
                         >
-                            <MenuItem value={10}>Action</MenuItem>
-                            <MenuItem onClick={openModal} value={20}>Post Attendance</MenuItem>
-                            <MenuItem value={30}>Download PDF</MenuItem>
-                            <MenuItem value={40}>Print</MenuItem>
+                            <MenuItem style={menu} value={10}>Action</MenuItem>
+                            <MenuItem style={menu} onClick={openModal} value={20}>Post Attendance</MenuItem>
+                            <MenuItem style={menu} value={30}>Download PDF</MenuItem>
+                            <MenuItem style={menu} value={40}>Print</MenuItem>
                         </Select>
                     </div>
                 </div>
@@ -92,30 +154,32 @@ const Attendance = () => {
                                     sx={{
                                         width:'100%',
                                         height: '35px',  
-                                        background:'#EEF2F1', 
-                                        border:'1px solid #777777',
+                                        background:'#054834', 
                                         fontSize:'12px',
+                                        color:'#fff'
                                     }} 
-                                    type='text'
+                                    type='date'
                                     placeholder="Search" 
                                     onChange={(e) => {searchTable(e.target.value)}}
                                 />
                         </div>
                     </div>
                     <div style={{width:'140px'}} className='butt'>
-                        <Button sx={{
-                            width:'100%', 
-                            height:'30px',  
-                            background: '#427BBE',
-                            borderRadius: '3px',
-                            fontSize:'10px',
-                            '&:hover': {
-                                backgroundColor: '#427BBE'
-                            }
-                            }}  
-                            onClick={openModal}
-                            variant="contained"> Post Attendance
-                        </Button>
+                        {user.userType === "staff" &&
+                            <Button sx={{
+                                width:'100%', 
+                                height:'30px',  
+                                background: '#427BBE',
+                                borderRadius: '3px',
+                                fontSize:'10px',
+                                '&:hover': {
+                                    backgroundColor: '#427BBE'
+                                }
+                                }}  
+                                onClick={openModal}
+                                variant="contained"> Post Attendance
+                            </Button>
+                        }
                     </div>
                 </div>
 
@@ -124,12 +188,13 @@ const Attendance = () => {
                         <Select
                             labelId="demo-select-small"
                             id="demo-select-small"
-                            value={10}
+                            value={entries}
                             sx={selectStyle2}
                         >
-                            <MenuItem value={10}>Show entries</MenuItem>
-                            <MenuItem value={20}>Twenty</MenuItem>
-                            <MenuItem value={30}>Thirty</MenuItem>
+                            <MenuItem style={menu} value={10}>Show entries</MenuItem>
+                            <MenuItem onClick={()=>{entriesMenu(20, 15)}} style={menu} value={20}>15 entries</MenuItem>
+                            <MenuItem onClick={()=>{entriesMenu(30, 30)}} style={menu} value={30}>30 entries</MenuItem>
+                            <MenuItem onClick={()=>{entriesMenu(40, 100)}} style={menu} value={40}>100 entries</MenuItem>
                         </Select>
                     </div>
                     <div style={{width:'210px'}} className='input-cont2'>
@@ -185,9 +250,14 @@ const Attendance = () => {
                                         <div className='column'>{item.timeIn}</div>
                                         <div className='column'>{item.timeOut}</div>
                                         <div className='column'>{item.workingHour}</div>
-                                        <div className='column'>Punctual</div>
+                                        {item.timeOut === '-- : --'?
+                                            <div style={{color:'green'}} className='column'>Pending</div>:
+                                            computeTime(item.timeIn, item.timeOut, item.workingHour)?
+                                            <div className='column'>Punctual</div>:
+                                            <div style={{color:'red'}} className='column'>Unpunctual</div>
+                                        }
                                         <div className='column'>
-                                            <div style={{width:'100px'}} className='actions'>
+                                            <div style={{width:'95px'}} className='actions'>
                                                 <Button sx={{
                                                     width:'100%', 
                                                     height:'30px',  
@@ -197,7 +267,10 @@ const Attendance = () => {
                                                     '&:hover': {
                                                         backgroundColor: '#427BBE'
                                                     }
-                                                    }}  variant="contained"> Clock out
+                                                    }}  
+                                                    disabled={item.timeOut === "-- : --"? false: true}
+                                                    onClick={openModal2}
+                                                    variant="contained"> Clock out
                                                 </Button>
                                             </div>
                                         </div>
@@ -210,11 +283,15 @@ const Attendance = () => {
                 </div>
 
                 <div className='footer'>
-                    <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>Showing 1 to 11 of 38 entries</div>
+                    <div 
+                        style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}
+                    >
+                        Showing {((skip + 1) * limit) - (limit-1)} to {(skip + 1) * limit} of {total} entries
+                    </div>
                     <div className='nav'>
-                        <button className='but'>Previous</button>
-                        <div className='num'>1</div>
-                        <button className='but2'>Next</button>
+                        <button onClick={prevPage} className='but'>Previous</button>
+                        <div className='num'>{skip + 1}</div>
+                        <button onClick={nextPage} className='but2'>Next</button>
                     </div>
                 </div>
             </div>

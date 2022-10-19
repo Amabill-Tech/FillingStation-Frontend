@@ -201,10 +201,10 @@ const Regulatory = () => {
                                         <div className='column'>{item.amount}</div>
                                         <div className='column'>{item.contactPerson}</div>
                                         <div className='column'>
-                                            <a href={'http://localhost:3000'+ item.attachCertificate}>DPRCertificate</a>
+                                            <a href={'http://localhost:3000'+ item.attachCertificate} target="_blank" rel="noreferrer">DPRCertificate</a>
                                         </div>
                                         <div className='column'>
-                                            <a href={'http://localhost:3000'+ item.paymentReceipt}>DPRReceip</a>
+                                            <a href={'http://localhost:3000'+ item.paymentReceipt} target="_blank" rel="noreferrer">DPRReceip</a>
                                         </div>
                                     </div> 
                                 )

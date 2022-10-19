@@ -3,11 +3,13 @@ import '../../styles/payments.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
-import hr1 from '../../assets/hr1.png';
-import hr11 from '../../assets/hr11.png';
-import hr3 from '../../assets/hr3.png';
-import hr5 from '../../assets/hr5.png';
+import analysis2 from '../../assets/analysis2.png';
+import folder from '../../assets/folder.png';
+import folder2 from '../../assets/folder2.png';
+import hand from '../../assets/hand.png';
+import naira from '../../assets/naira.png';
 import me6 from '../../assets/me6.png';
+import { fontWeight } from '@mui/system';
 
 const Analysis = () => {
 
@@ -17,10 +19,11 @@ const Analysis = () => {
                 <div style={{marginRight:'10px'}} className='inner-first-image'>
                     <div className='top-first-image'>
                         <div className='top-icon'>
-                            <img style={{width:'60px', height:'50px'}} src={props.image} alt="icon" />
+                            <img style={{width:'50px', height:'40px'}} src={props.image} alt="icon" />
                         </div>
-                        <div style={{justifyContent:'flex-end'}} className='top-text'>
-                            <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>{props.name}</div>
+                        <div style={{alignItems:'flex-end', justifyContent:'center', flexDirection:'column'}} className='top-text'>
+                            <div style={{fontSize:'14px', color:'#06805B', fontFamily:'Nunito-Regular'}}>{props.name}</div>
+                            <div style={{fontSize:'14px', fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px'}}>{props.value}</div>
                         </div>
                     </div>
                     <div className='bottom-first-image'>
@@ -81,10 +84,11 @@ const Analysis = () => {
 
                 <div style={contain2}>
                     <div style={{display: 'flex', flexDirection:'row'}} className='imgContainer'>
-                        <DashboardImage right={'10px'} left={'0px'} image={hr1} name={'Employee'} value={'41'} />
-                        <DashboardImage right={'10px'} left={'0px'} image={hr11} name={'Salary structure'} value={'41'} />
-                        <DashboardImage right={'10px'} left={'0px'} image={hr3} name={'Query'} value={'41'} />
-                        <DashboardImage right={'0px'} left={'0px'} image={hr5} name={'Attendance'} value={'41'} />
+                        <DashboardImage right={'10px'} left={'0px'} image={naira} name={'Cost Price'} value={'NGN 231,925'} />
+                        <DashboardImage right={'10px'} left={'0px'} image={hand} name={'Selling Price'} value={'NGN 231,925'} />
+                        <DashboardImage right={'10px'} left={'0px'} image={folder} name={'Expenses'} value={'NGN 231,925'} />
+                        <DashboardImage right={'10px'} left={'0px'} image={folder2} name={'Payments'} value={'NGN 231,925'} />
+                        <DashboardImage right={'0px'} left={'0px'} image={analysis2} name={'Profits'} value={'NGN 231,925'} />
                     </div>
                 </div>
 
