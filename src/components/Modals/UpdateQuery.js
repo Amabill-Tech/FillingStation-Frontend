@@ -7,15 +7,14 @@ import Modal from '@mui/material/Modal';
 import { ThreeDots } from  'react-loader-spinner';
 import swal from 'sweetalert';
 import '../../styles/lpo.scss';
-import LPOService from '../../services/lpo';
 import QueryService from '../../services/query';
 
-const QueryModal = (props) => {
+const UpdateQuery = (props) => {
     const [loading, setLoading] = useState(false);
     const user = useSelector(state => state.authReducer.user);
-    const [employeeName, setEmployeeName] = useState('');
-    const [queryTitle, setQueryTitle] = useState('');
-    const [description, setDescription] = useState('');
+    const [employeeName, setEmployeeName] = useState(props.employeeName);
+    const [queryTitle, setQueryTitle] = useState(props.queryTitle);
+    const [description, setDescription] = useState(props.description);
 
     const handleClose = () => props.close(false);
 
@@ -30,11 +29,10 @@ const QueryModal = (props) => {
             employeeName: employeeName,
             queryTitle: queryTitle,
             description: description,
-            outletID: user.outletID,
-            organisationID: user.organisationID,
+            id: props.id._id
         }
-
-        QueryService.createQuery(payload).then((data) => {
+    
+        QueryService.updateQuery(payload).then((data) => {
             swal("Success", "Query created successfully!", "success");
         }).then(()=>{
             setLoading(false);
@@ -54,7 +52,7 @@ const QueryModal = (props) => {
                 <div style={{height:'auto'}} className='modalContainer'>
                     <div style={{height:'auto', margin:'20px'}} className='inner'>
                         <div className='head'>
-                            <div className='head-text'>Create Query</div>
+                            <div className='head-text'>Update Query</div>
                             <img onClick={handleClose} style={{width:'18px', height:'18px'}} src={close} alt={'icon'} />
                         </div>
 
@@ -148,4 +146,4 @@ const inner = {
     height:'340px',
 }
 
-export default QueryModal;
+export default UpdateQuery;

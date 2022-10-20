@@ -13,6 +13,9 @@ import { OutlinedInput } from '@mui/material';
 import AdminUserService from '../../services/adminUsers';
 import { storeStaffUsers } from '../../store/actions/staffUsers';
 import ClockOutModal from '../Modals/AttendanceClockOut';
+import PrintAttendanceRecords from '../Reports/Attendance';
+
+const mediaMatch = window.matchMedia('(max-width: 530px)');
 
 const Attendance = () => {
     
@@ -27,6 +30,7 @@ const Attendance = () => {
     const [skip, setSkip] = useState(0);
     const [limit, setLimit] = useState(15);
     const [entries, setEntries] = useState(10);
+    const [prints, setPrints] = useState(false);
 
     const openModal = () => {
         setOpen(true);
@@ -36,12 +40,14 @@ const Attendance = () => {
         setOpen2(true);
     }
 
-    const getAllAtendanceData = useCallback(() => {
+    const getAllAtendanceData = useCallback((getDataRange) => {
 
         if(user.userType === 'staff'){
             const payload = {
                 skip: skip * limit,
                 limit: limit,
+                today: getDataRange.today,
+                tomorrow: getDataRange.tomorrow,
                 outletID: user.outletID,
                 organisationID: user.organisationID,
             }
@@ -67,15 +73,77 @@ const Attendance = () => {
     }, [user.organisationID, user.outletID, user.userType, limit, skip, dispatch]);
 
     useEffect(()=>{
-        getAllAtendanceData();
+        const now = new Date();
+        const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const toISOType = startOfToday.toISOString().split('T')[0];
+        const getDataRange = getTodayAndTomorrow(toISOType);
+        getAllAtendanceData(getDataRange);
     },[getAllAtendanceData]);
 
     const changeMenu = (index, item ) => {
         setDefault(index);
     }
 
-    const searchTable = (value) => {
-        dispatch(searchAttendance(value));
+    const getTodayAndTomorrow = (value) => {
+        const today = value;
+        let tomorrow;
+        const [year, month, day] = today.split('-');
+
+        switch(month){
+            case "02":{
+                if(day === "28"){
+                    let newMonth = String(Number(month) + 1);
+                    tomorrow = `${year}-${newMonth.length === 1? `0${newMonth}`: newMonth}-01`;
+                }else{
+                    let newDay = String(Number(day) + 1);
+                    tomorrow = `${year}-${month}-${newDay.length === 1? `0${newDay}`: newDay}`;
+                }
+                break
+            }
+
+            case "01":
+            case "03":
+            case "05":
+            case "07":
+            case "08":
+            case "10":
+            case "12":{
+                if(day === "31"){
+                    let newMonth = String(Number(month) + 1);
+                    tomorrow = `${year}-${newMonth.length === 1? `0${newMonth}`: newMonth}-01`;
+                }else{
+                    let newDay = String(Number(day) + 1);
+                    tomorrow = `${year}-${month}-${newDay.length === 1? `0${newDay}`: newDay}`;
+                }
+                break
+            }
+
+            case "04":
+            case "06":
+            case "09":
+            case "11":{
+                if(day === "30"){
+                    let newDay = String(Number(day) + 1);
+                    tomorrow = `${year}-${month}-${newDay.length === 1? `0${newDay}`: newDay}`;
+                }else{
+                    let newDay = String(Number(day) + 1);
+                    tomorrow = `${year}-${month}-${newDay.length === 1? `0${newDay}`: newDay}`;
+                }
+                break
+            }
+
+            default:{
+                tomorrow = today;
+            }
+        }
+
+        return {today, tomorrow}
+    }
+    
+    const searchTable = (value, e) => {
+        e.preventDefault();
+        const dateRange = getTodayAndTomorrow(value);
+        getAllAtendanceData(dateRange);
     }
 
     const convertToMinutes = (time) => {
@@ -110,10 +178,15 @@ const Attendance = () => {
         getAllAtendanceData();
     }
 
+    const printReport = () => {
+        setPrints(true);
+    }
+
     return(
         <div data-aos="zoom-in-down" className='paymentsCaontainer'>
-            {<AttendanceModal open={open} close={setOpen} refresh={getAllAtendanceData} />}
+            {<AttendanceModal open={open} close={setOpen} refresh={getAllAtendanceData} getDate={getTodayAndTomorrow} />}
             {<ClockOutModal open={open2} close={setOpen2} refresh={getAllAtendanceData} />}
+            { prints && <PrintAttendanceRecords allOutlets={attendanceData} open={prints} close={setPrints}/>}
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
@@ -156,11 +229,11 @@ const Attendance = () => {
                                         height: '35px',  
                                         background:'#054834', 
                                         fontSize:'12px',
-                                        color:'#fff'
+                                        color:'#fff',
                                     }} 
                                     type='date'
                                     placeholder="Search" 
-                                    onChange={(e) => {searchTable(e.target.value)}}
+                                    onChange={(e) => {searchTable(e.target.value, e)}}
                                 />
                         </div>
                     </div>
@@ -197,33 +270,35 @@ const Attendance = () => {
                             <MenuItem onClick={()=>{entriesMenu(40, 100)}} style={menu} value={40}>100 entries</MenuItem>
                         </Select>
                     </div>
-                    <div style={{width:'210px'}} className='input-cont2'>
-                        <div className='second-select2'>
-                            <Button sx={{
-                                width:'100%', 
-                                height:'30px',  
-                                background: '#58A0DF',
-                                borderRadius: '3px',
-                                fontSize:'10px',
-                                '&:hover': {
-                                    backgroundColor: '#58A0DF'
-                                }
-                                }}  variant="contained"> Download PDF
-                            </Button>
-                        </div>
-                        <div className='second-select3'>
-                            <Button sx={{
-                                width:'100%', 
-                                height:'30px',  
-                                background: '#F36A4C',
-                                borderRadius: '3px',
-                                fontSize:'10px',
-                                '&:hover': {
-                                    backgroundColor: '#F36A4C'
-                                }
-                                }}  variant="contained"> Print
-                            </Button>
-                        </div>
+                    <div style={{width: mediaMatch.matches? '100%': '190px'}} className='input-cont2'>
+                        <Button sx={{
+                            width: mediaMatch.matches? '100%': '100px', 
+                            height:'30px',  
+                            background: '#58A0DF',
+                            borderRadius: '3px',
+                            fontSize:'10px',
+                            display: mediaMatch.matches && 'none',
+                            marginTop: mediaMatch.matches? '10px': '0px',
+                            '&:hover': {
+                                backgroundColor: '#58A0DF'
+                            }
+                            }}  variant="contained"> History
+                        </Button>
+                        <Button sx={{
+                            width: mediaMatch.matches? '100%': '80px', 
+                            height:'30px',  
+                            background: '#F36A4C',
+                            borderRadius: '3px',
+                            fontSize:'10px',
+                            display: mediaMatch.matches && 'none',
+                            marginTop: mediaMatch.matches? '10px': '0px',
+                            '&:hover': {
+                                backgroundColor: '#F36A4C'
+                            }
+                            }}  
+                            onClick={printReport}
+                            variant="contained"> Print
+                        </Button>
                     </div>
                 </div>
 
@@ -247,8 +322,8 @@ const Attendance = () => {
                                     <div className='table-head2'>
                                         <div className='column'>{index + 1}</div>
                                         <div className='column'>{item.employeeName}</div>
-                                        <div className='column'>{item.timeIn}</div>
-                                        <div className='column'>{item.timeOut}</div>
+                                        <div style={{color:'green'}} className='column'>{item.timeIn}</div>
+                                        <div style={{color:'red'}} className='column'>{item.timeOut}</div>
                                         <div className='column'>{item.workingHour}</div>
                                         {item.timeOut === '-- : --'?
                                             <div style={{color:'green'}} className='column'>Pending</div>:

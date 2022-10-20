@@ -3,8 +3,6 @@ import '../../styles/payments.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
-import avatar from '../../assets/avatar.png';
-import hr6 from '../../assets/hr6.png';
 import hr7 from '../../assets/hr7.png';
 import hr8 from '../../assets/hr8.png';
 import QueryModal from '../Modals/QueryModal';
@@ -14,6 +12,13 @@ import { createQuery, searchQuery } from '../../store/actions/query';
 import OutletService from '../../services/outletService';
 import { OutlinedInput } from '@mui/material';
 import { getAllStations } from '../../store/actions/outlet';
+import QueryReport from '../Reports/QueryReport';
+import ViewQuery from '../Modals/ViewQuery';
+import swal from 'sweetalert';
+import UpdateQuery from '../Modals/UpdateQuery';
+import APIs from '../../services/api';
+
+const mediaMatch = window.matchMedia('(max-width: 530px)');
 
 const Query = () => {
 
@@ -23,23 +28,37 @@ const Query = () => {
     const user = useSelector(state => state.authReducer.user);
     const queryData = useSelector(state => state.queryReducer.query);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
+    const [prints, setPrints] = useState(false);
+    const [openQuery, setOpenQuery] = useState(false);
+    const [description, setDesc] = useState('');
+    const [openUpdate, setUpdate] = useState(false);
+    const [currentQuery, setCurrentQuery] = useState({});
+    const [entries, setEntries] = useState(10);
+    const [skip, setSkip] = useState(0);
+    const [limit, setLimit] = useState(15);
+    const [total, setTotal] = useState(0);
 
     const handleQuery = () => {
         setOpen(true);
     }
 
     const getAllQueryData = useCallback(() => {
-        const payload = {
-            organisationID: user._id
-        }
-        QueryService.allQueryRecords(payload).then(data => {
-            dispatch(createQuery(data.query));
-        });
-
-        OutletService.getAllOutletStations({organisation: user._id}).then(data => {
+        OutletService.getAllOutletStations({organisation: user.organisationID}).then(data => {
             dispatch(getAllStations(data.station));
-        });
-    }, [user._id, dispatch]);
+            return data.station[0]
+        }).then((data)=>{
+            const payload = {
+                skip: skip * limit,
+                limit: limit,
+                outletID: data._id, 
+                organisationID: data.organisation
+            }
+            QueryService.allQueryRecords(payload).then(data => {
+                setTotal(data.query.count);
+                dispatch(createQuery(data.query.query));
+            });
+        })
+    }, [dispatch, user.organisationID, limit, skip]);
 
     useEffect(()=>{
         getAllQueryData();
@@ -47,15 +66,74 @@ const Query = () => {
 
     const changeMenu = (index, item ) => {
         setDefault(index);
+        QueryService.allQueryRecords({outletID: item._id, organisationID: item.organisation}).then(data => {
+            dispatch(createQuery(data.query));
+        });
     }
 
     const searchTable = (value) => {
         dispatch(searchQuery(value));
     }
 
+    const printReport = () => {
+        setPrints(true);
+    }
+
+    const openView = (data) => {
+        setDesc(data.description);
+        setOpenQuery(true);
+    }
+
+    const deleteQuery = (item) => {
+        swal({
+            title: "Alert!",
+            text: "Are you sure you want to delete this query?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+                QueryService.deleteQuery({id: item._id}).then((data) => {
+                    swal("Success", "Query created successfully!", "success");
+                }).then(()=>{
+                    getAllQueryData();
+                })
+            }
+        });
+    }
+
+    const updateQuery = (item) => {
+        setCurrentQuery(item);
+        setUpdate(true);
+    }
+
+    const nextPage = () => {
+        if(!(skip < 0)){
+            setSkip(prev => prev + 1)
+        }
+        getAllQueryData();
+    }
+
+    const prevPage = () => {
+        if(!(skip <= 0)){
+            setSkip(prev => prev - 1)
+        } 
+        getAllQueryData();
+    }
+
+    const entriesMenu = (value, limit) => {
+        setEntries(value);
+        setLimit(limit);
+        getAllQueryData();
+    }
+
     return(
         <div data-aos="zoom-in-down" className='paymentsCaontainer'>
             {<QueryModal open={open} close={setOpen} refresh={getAllQueryData}/>}
+            {<UpdateQuery open={openUpdate} close={setUpdate} id={currentQuery} refresh={getAllQueryData} />}
+            { prints && <QueryReport allOutlets={queryData} open={prints} close={setPrints}/>}
+            {openQuery && <ViewQuery open={openQuery} close={setOpenQuery} desc={description} />}
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
@@ -128,41 +206,44 @@ const Query = () => {
                         <Select
                             labelId="demo-select-small"
                             id="demo-select-small"
-                            value={10}
+                            value={entries}
                             sx={selectStyle2}
                         >
-                            <MenuItem value={10}>Show entries</MenuItem>
-                            <MenuItem value={20}>Twenty</MenuItem>
-                            <MenuItem value={30}>Thirty</MenuItem>
+                            <MenuItem style={menu} value={10}>Show entries</MenuItem>
+                            <MenuItem onClick={()=>{entriesMenu(20, 15)}} style={menu} value={20}>15 entries</MenuItem>
+                            <MenuItem onClick={()=>{entriesMenu(30, 30)}} style={menu} value={30}>30 entries</MenuItem>
+                            <MenuItem onClick={()=>{entriesMenu(40, 100)}} style={menu} value={40}>100 entries</MenuItem>
                         </Select>
                     </div>
-                    <div style={{width:'210px'}} className='input-cont2'>
-                        <div className='second-select2'>
-                            <Button sx={{
-                                width:'100%', 
-                                height:'30px',  
-                                background: '#58A0DF',
-                                borderRadius: '3px',
-                                fontSize:'10px',
-                                '&:hover': {
-                                    backgroundColor: '#58A0DF'
-                                }
-                                }}  variant="contained"> Download PDF
-                            </Button>
-                        </div>
-                        <div className='second-select3'>
-                            <Button sx={{
-                                width:'100%', 
-                                height:'30px',  
-                                background: '#F36A4C',
-                                borderRadius: '3px',
-                                fontSize:'10px',
-                                '&:hover': {
-                                    backgroundColor: '#F36A4C'
-                                }
-                                }}  variant="contained"> Print
-                            </Button>
-                        </div>
+                    <div style={{width: mediaMatch.matches? '100%': '190px'}} className='input-cont2'>
+                        <Button sx={{
+                            width: mediaMatch.matches? '100%': '100px', 
+                            height:'30px',  
+                            background: '#58A0DF',
+                            borderRadius: '3px',
+                            fontSize:'10px',
+                            display: mediaMatch.matches && 'none',
+                            marginTop: mediaMatch.matches? '10px': '0px',
+                            '&:hover': {
+                                backgroundColor: '#58A0DF'
+                            }
+                            }}  variant="contained"> History
+                        </Button>
+                        <Button sx={{
+                            width: mediaMatch.matches? '100%': '80px', 
+                            height:'30px',  
+                            background: '#F36A4C',
+                            borderRadius: '3px',
+                            fontSize:'10px',
+                            display: mediaMatch.matches && 'none',
+                            marginTop: mediaMatch.matches? '10px': '0px',
+                            '&:hover': {
+                                backgroundColor: '#F36A4C'
+                            }
+                            }}  
+                            onClick={printReport}
+                            variant="contained"> Print
+                        </Button>
                     </div>
                 </div>
 
@@ -181,7 +262,7 @@ const Query = () => {
                         <div style={place}>No data</div>:
                         queryData.map((item, index) => {
                             return(
-                                <div key={index} className='row-container'>
+                                <div data-aos="fade-up" key={index} className='row-container'>
                                     <div className='table-head2'>
                                         <div className='column'>{index + 1}</div>
                                         <div className='column'>{item.employeeName}</div>
@@ -196,14 +277,16 @@ const Query = () => {
                                                 '&:hover': {
                                                     backgroundColor: '#427BBE'
                                                 }
-                                                }}  variant="contained"> View
+                                                }}  
+                                                onClick={()=>{openView(item)}}
+                                                variant="contained"> View
                                             </Button>
                                         </div>
                                         <div className='column'>{item.createdAt.split('T')[0]}</div>
                                         <div className='column'>
                                             <div style={{width:'70px'}} className='actions'>
-                                                <img style={{width:'27px', height:'27px'}} src={hr7} alt="icon" />
-                                                <img style={{width:'27px', height:'27px'}} src={hr8} alt="icon" />
+                                                <img onClick={()=>{updateQuery(item)}} style={{width:'27px', height:'27px'}} src={hr7} alt="icon" />
+                                                <img onClick={()=>{deleteQuery(item)}} style={{width:'27px', height:'27px'}} src={hr8} alt="icon" />
                                             </div>
                                         </div>
                                     </div>
@@ -214,11 +297,13 @@ const Query = () => {
                 </div>
 
                 <div className='footer'>
-                    <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>Showing 1 to 11 of 38 entries</div>
+                    <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>
+                        Showing {((skip + 1) * limit) - (limit-1)} to {(skip + 1) * limit} of {total} entries
+                    </div>
                     <div className='nav'>
-                        <button className='but'>Previous</button>
-                        <div className='num'>1</div>
-                        <button className='but2'>Next</button>
+                        <button onClick={prevPage} className='but'>Previous</button>
+                        <div className='num'>{skip + 1}</div>
+                        <button onClick={nextPage} className='but2'>Next</button>
                     </div>
                 </div>
             </div>

@@ -123,7 +123,7 @@ const HomeScreen = ({history}) => {
                                 <div className='side-focus-image'>
                                     <img style={{width:'100%', height:'100%'}} src={active} alt="icon" />
                                 </div>
-                                <div className='side-focus-text'>
+                                <div data-aos="zoom-out-right" className='side-focus-text'>
                                     <img style={{width:'18px', height:'18px', marginRight:'10px'}} src={props.icon} alt="icon" />
                                     <div style={{fontFamily:'Nunito-Regular', color:'#054834'}}>{props.name}</div>
                                 </div>
