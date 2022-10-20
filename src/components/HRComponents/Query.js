@@ -66,8 +66,14 @@ const Query = () => {
 
     const changeMenu = (index, item ) => {
         setDefault(index);
-        QueryService.allQueryRecords({outletID: item._id, organisationID: item.organisation}).then(data => {
-            dispatch(createQuery(data.query));
+        const payload = {
+            skip: skip * limit,
+            limit: limit,
+            outletID: item._id, 
+            organisationID: item.organisation
+        }
+        QueryService.allQueryRecords(payload).then(data => {
+            dispatch(createQuery(data.query.query));
         });
     }
 
