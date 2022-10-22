@@ -21,7 +21,7 @@ const ClockOutModal = (props) => {
     const handleClose = () => props.close(false);
 
     const submit = () => {
-        if(employeeName === "") return swal("Warning!", "Employee name field cannot be empty", "info");
+        if(employeeName === "" || employeeName === "Select User") return swal("Warning!", "Employee name field cannot be empty", "info");
         if(clockOut === "") return swal("Warning!", "Clock in field cannot be empty", "info");
 
         setLoading(true);
@@ -32,8 +32,8 @@ const ClockOutModal = (props) => {
             timeIn: employeeName.timeIn,
             workingHour: employeeName.workingHour,
             timeOut: clockOut,
-            outletID: user.outletID,
-            organisationID: user.organisationID,
+            outletID: props.currentOutlet._id,
+            organisationID: props.currentOutlet.organisation,
         }
         console.log(payload)
 

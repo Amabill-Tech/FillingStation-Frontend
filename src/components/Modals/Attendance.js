@@ -22,7 +22,7 @@ const AttendanceModal = (props) => {
     const handleClose = () => props.close(false);
 
     const submit = () => {
-        if(employeeName === "") return swal("Warning!", "Employee name field cannot be empty", "info");
+        if(employeeName === "" || employeeName === "Select User") return swal("Warning!", "Employee name field cannot be empty", "info");
         if(workingHour === "") return swal("Warning!", "Working Hour field cannot be empty", "info");
         if(clockIn === "") return swal("Warning!", "Clock in field cannot be empty", "info");
 
@@ -33,8 +33,8 @@ const AttendanceModal = (props) => {
             employeeName: employeeName.staffName,
             timeIn: clockIn,
             workingHour: workingHour,
-            outletID: user.outletID,
-            organisationID: user.organisationID,
+            outletID: props.currentOutlet._id,
+            organisationID: props.currentOutlet.organisation,
         }
 
         AtendanceService.createAttendance(payload).then((data) => { 

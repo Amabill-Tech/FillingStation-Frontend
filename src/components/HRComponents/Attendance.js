@@ -66,7 +66,7 @@ const Attendance = () => {
                         setTotal(data.attendance.count)
                         dispatch(createAttendance(data.attendance.attendance));
                     });
-                })
+                });
             })
         }else{
             /*OutletService.getAllOutletStations({organisation: user._id}).then(data => {
@@ -96,6 +96,22 @@ const Attendance = () => {
             outletID: item._id,
             organisationID: item.organisation,
         }
+
+        const menyPayload = {
+            today: rangeDate.today,
+            tomorrow: rangeDate.tomorrow,
+            outletID: item._id,
+            organisationID: item.organisation,
+        }
+
+        AdminUserService.allStaffUserRecords(menyPayload).then(data => {
+            dispatch(storeStaffUsers(data.staff.staff));
+        }).then(()=>{
+            AtendanceService.allAttendanceRecords(payload).then(data => {
+                setTotal(data.attendance.count)
+                dispatch(createAttendance(data.attendance.attendance));
+            });
+        });
         AtendanceService.allAttendanceRecords(payload).then(data => {
             setTotal(data.attendance.count)
             dispatch(createAttendance(data.attendance.attendance));
@@ -214,8 +230,8 @@ const Attendance = () => {
 
     return(
         <div data-aos="zoom-in-down" className='paymentsCaontainer'>
-            {<AttendanceModal open={open} close={setOpen} refresh={getAllAtendanceData} getDate={getTodayAndTomorrow} />}
-            {<ClockOutModal open={open2} close={setOpen2} refresh={getAllAtendanceData} />}
+            {<AttendanceModal currentOutlet={currentMenu} open={open} close={setOpen} refresh={getAllAtendanceData} getDate={getTodayAndTomorrow} />}
+            {<ClockOutModal currentOutlet={currentMenu} open={open2} close={setOpen2} refresh={getAllAtendanceData} />}
             { prints && <PrintAttendanceRecords allOutlets={attendanceData} open={prints} close={setPrints}/>}
             <div className='inner-pay'>
                 <div className='action'>
