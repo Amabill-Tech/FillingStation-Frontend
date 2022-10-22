@@ -150,8 +150,8 @@ const Query = () => {
                         >
                             <MenuItem value={10}>Action</MenuItem>
                             <MenuItem onClick={handleQuery} value={20}>Add Query</MenuItem>
-                            <MenuItem value={30}>Download PDF</MenuItem>
-                            <MenuItem value={40}>Print</MenuItem>
+                            <MenuItem value={30}>History</MenuItem>
+                            <MenuItem  onClick={printReport} value={40}>Print</MenuItem>
                         </Select>
                     </div>
                 </div>

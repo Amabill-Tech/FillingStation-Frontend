@@ -128,7 +128,7 @@ const Salary = () => {
     }
 
     const printReport = () => {
-        
+
     }
 
     return(
@@ -146,8 +146,8 @@ const Salary = () => {
                         >
                             <MenuItem value={10}>Action</MenuItem>
                             <MenuItem onClick={openSalaryModal} value={20}>Add Salary</MenuItem>
-                            <MenuItem value={30}>Download PDF</MenuItem>
-                            <MenuItem value={40}>Print</MenuItem>
+                            <MenuItem value={30}>History</MenuItem>
+                            <MenuItem onClick={printReport} value={40}>Print</MenuItem>
                         </Select>
                     </div>
                 </div>

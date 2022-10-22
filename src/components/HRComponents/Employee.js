@@ -129,7 +129,7 @@ const Employee = () => {
                         >
                             <MenuItem style={menu} value={10}>Action</MenuItem>
                             <MenuItem onClick={openModal} style={menu} value={20}>Add Staff</MenuItem>
-                            <MenuItem style={menu} value={30}>Download PDF</MenuItem>
+                            <MenuItem style={menu} value={30}>History</MenuItem>
                             <MenuItem onClick={printReport} style={menu} value={40}>Print</MenuItem>
                         </Select>
                     </div>

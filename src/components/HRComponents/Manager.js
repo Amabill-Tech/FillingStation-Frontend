@@ -47,7 +47,7 @@ const Manager = (props) => {
             limit: limit,
             organisation: user.organisationID
         }
-        AdminUserService.allAdminUserRecords(payload).then(data => {console.log('admin', data)
+        AdminUserService.allAdminUserRecords(payload).then(data => {
             setTotal(data.admin.count);
             dispatch(createAdminUser(data.admin.admin));
         });

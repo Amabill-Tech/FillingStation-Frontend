@@ -6,7 +6,7 @@ import Button from '@mui/material/Button';
 import AttendanceModal from '../Modals/Attendance';
 import AtendanceService from '../../services/attendance';
 import { useDispatch, useSelector } from 'react-redux';
-import { createAttendance, searchAttendance } from '../../store/actions/attendance';
+import { createAttendance } from '../../store/actions/attendance';
 import OutletService from '../../services/outletService';
 import { getAllStations } from '../../store/actions/outlet';
 import { OutlinedInput } from '@mui/material';
@@ -31,6 +31,8 @@ const Attendance = () => {
     const [limit, setLimit] = useState(15);
     const [entries, setEntries] = useState(10);
     const [prints, setPrints] = useState(false);
+    const [rangeDate, setRangeDate] = useState('');
+    const [currentMenu, setCurrentMenu] = useState({});
 
     const openModal = () => {
         setOpen(true);
@@ -43,45 +45,61 @@ const Attendance = () => {
     const getAllAtendanceData = useCallback((getDataRange) => {
 
         if(user.userType === 'staff'){
-            const payload = {
-                skip: skip * limit,
-                limit: limit,
-                today: getDataRange.today,
-                tomorrow: getDataRange.tomorrow,
-                outletID: user.outletID,
-                organisationID: user.organisationID,
-            }
 
-            AdminUserService.allStaffUserRecords(payload).then(data => {
-                dispatch(storeStaffUsers(data.staff));
-            });
-
-            AtendanceService.allAttendanceRecords(payload).then(data => {
-                setTotal(data.attendance.count)
-                dispatch(createAttendance(data.attendance.attendance));
-            });
-    
-            OutletService.getOneOutletStation({organisation: user.organisationID, outletID: user.outletID}).then(data => {
-                dispatch(getAllStations([data.station]));
-            });
+            OutletService.getAllOutletStations({organisation: user.organisationID}).then(data => {
+                dispatch(getAllStations(data.station));
+                return data.station[0]
+            }).then((data)=>{
+                setCurrentMenu(data);
+                const payload = {
+                    skip: skip * limit,
+                    limit: limit,
+                    today: getDataRange.today,
+                    tomorrow: getDataRange.tomorrow,
+                    outletID: data._id,
+                    organisationID: data.organisation,
+                }
+                AdminUserService.allStaffUserRecords(payload).then(data => {
+                    dispatch(storeStaffUsers(data.staff.staff));
+                }).then(()=>{
+                    AtendanceService.allAttendanceRecords(payload).then(data => {
+                        setTotal(data.attendance.count)
+                        dispatch(createAttendance(data.attendance.attendance));
+                    });
+                })
+            })
         }else{
             /*OutletService.getAllOutletStations({organisation: user._id}).then(data => {
                 dispatch(getAllStations(data.station));
             });*/
         }
         
-    }, [user.organisationID, user.outletID, user.userType, limit, skip, dispatch]);
+    }, [user.organisationID, user.userType, limit, skip, dispatch]);
 
     useEffect(()=>{
         const now = new Date();
         const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         const toISOType = startOfToday.toISOString().split('T')[0];
         const getDataRange = getTodayAndTomorrow(toISOType);
+        setRangeDate(getDataRange);
         getAllAtendanceData(getDataRange);
     },[getAllAtendanceData]);
 
     const changeMenu = (index, item ) => {
         setDefault(index);
+        setCurrentMenu(item);
+        const payload = {
+            skip: skip * limit,
+            limit: limit,
+            today: rangeDate.today,
+            tomorrow: rangeDate.tomorrow,
+            outletID: item._id,
+            organisationID: item.organisation,
+        }
+        AtendanceService.allAttendanceRecords(payload).then(data => {
+            setTotal(data.attendance.count)
+            dispatch(createAttendance(data.attendance.attendance));
+        });
     }
 
     const getTodayAndTomorrow = (value) => {
@@ -143,7 +161,19 @@ const Attendance = () => {
     const searchTable = (value, e) => {
         e.preventDefault();
         const dateRange = getTodayAndTomorrow(value);
-        getAllAtendanceData(dateRange);
+        setRangeDate(dateRange);
+        const payload = {
+            skip: skip * limit,
+            limit: limit,
+            today: dateRange.today,
+            tomorrow: dateRange.tomorrow,
+            outletID: currentMenu._id,
+            organisationID: currentMenu.organisation,
+        }
+        AtendanceService.allAttendanceRecords(payload).then(data => {
+            setTotal(data.attendance.count)
+            dispatch(createAttendance(data.attendance.attendance));
+        });
     }
 
     const convertToMinutes = (time) => {
@@ -198,8 +228,8 @@ const Attendance = () => {
                         >
                             <MenuItem style={menu} value={10}>Action</MenuItem>
                             <MenuItem style={menu} onClick={openModal} value={20}>Post Attendance</MenuItem>
-                            <MenuItem style={menu} value={30}>Download PDF</MenuItem>
-                            <MenuItem style={menu} value={40}>Print</MenuItem>
+                            <MenuItem style={menu} value={30}>History</MenuItem>
+                            <MenuItem onClick={printReport} style={menu} value={40}>Print</MenuItem>
                         </Select>
                     </div>
                 </div>
