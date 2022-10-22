@@ -16,7 +16,6 @@ import QueryReport from '../Reports/QueryReport';
 import ViewQuery from '../Modals/ViewQuery';
 import swal from 'sweetalert';
 import UpdateQuery from '../Modals/UpdateQuery';
-import APIs from '../../services/api';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 

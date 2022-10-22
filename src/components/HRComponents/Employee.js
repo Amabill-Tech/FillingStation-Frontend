@@ -25,6 +25,11 @@ const Employee = () => {
     const [defaultState, setDefault] = useState(0);
     const [currentStaff, setCurrentStaff] = useState({});
     const [prints, setPrints] = useState(false);
+    const [currentStation, setCurrentStation] = useState({});
+    const [entries, setEntries] = useState(10);
+    const [skip, setSkip] = useState(0);
+    const [limit, setLimit] = useState(15);
+    const [total, setTotal] = useState(0);
 
     const user = useSelector(state => state.authReducer.user);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
@@ -40,25 +45,44 @@ const Employee = () => {
         setOpen2(true);
     }
 
-    const getAllStationData = useCallback(() => {
-        const payload = {
-            organisation: user._id
-        }
-        OutletService.getAllOutletStations(payload).then(data => {
-            dispatch(getAllStations(data.station));
-        });
+    const getAllEmployeeData = useCallback(() => {
 
-        AdminUserService.allStaffUserRecords(payload).then(data => {
-            dispatch(storeStaffUsers(data.staff));
-        });
-    }, [user._id, dispatch]);
+        OutletService.getAllOutletStations({organisation: user.organisationID}).then(data => {
+            dispatch(getAllStations(data.station));
+            setCurrentStation(data.station[0]);
+            return data.station[0]
+        }).then((data)=>{
+            const payload = {
+                skip: skip * limit,
+                limit: limit,
+                outletID: data._id, 
+                organisationID: data.organisation
+            }
+            AdminUserService.allStaffUserRecords(payload).then(data => {
+                setTotal(data.staff.count);
+                dispatch(storeStaffUsers(data.staff.staff));
+            });
+        })
+    }, [skip, limit, user.organisationID, dispatch]);
 
     useEffect(()=>{
-        getAllStationData();
-    },[getAllStationData]);
+        getAllEmployeeData();
+    },[getAllEmployeeData]);
 
     const changeMenu = (index, item ) => {
         setDefault(index);
+        setCurrentStation(item);
+
+        const payload = {
+            skip: skip * limit,
+            limit: limit,
+            outletID: item._id, 
+            organisationID: item.organisation
+        }
+        AdminUserService.allStaffUserRecords(payload).then(data => {
+            setTotal(data.staff.count);
+            dispatch(storeStaffUsers(data.staff.staff));
+        });
     }
 
     const printReport = () => {
@@ -69,9 +93,29 @@ const Employee = () => {
         dispatch(searchStaffs(value));
     }
 
+    const nextPage = () => {
+        if(!(skip < 0)){
+            setSkip(prev => prev + 1)
+        }
+        getAllEmployeeData();
+    }
+
+    const prevPage = () => {
+        if(!(skip <= 0)){
+            setSkip(prev => prev - 1)
+        } 
+        getAllEmployeeData();
+    }
+
+    const entriesMenu = (value, limit) => {
+        setEntries(value);
+        setLimit(limit);
+        getAllEmployeeData();
+    }
+
     return(
         <div data-aos="zoom-in-down" className='paymentsCaontainer'>
-            {<StaffModal open={open} close={setOpen} allOutlets={allOutlets} refresh={getAllStationData} />}
+            {<StaffModal open={open} close={setOpen} allOutlets={allOutlets} refresh={getAllEmployeeData} />}
             {<EmployeeDetails open={open2} close={setOpen2} data={currentStaff} />}
             { prints && <PrintStaffRecords allOutlets={staffUsers} open={prints} close={setPrints}/>}
             <div className='inner-pay'>
@@ -146,12 +190,13 @@ const Employee = () => {
                         <Select
                             labelId="demo-select-small"
                             id="demo-select-small"
-                            value={10}
+                            value={entries}
                             sx={selectStyle2}
                         >
-                            <MenuItem style={menu} value={10}>show 15 entries</MenuItem>
-                            <MenuItem style={menu} value={20}>show 30 entries</MenuItem>
-                            <MenuItem style={menu} value={30}>show 100 entries</MenuItem>
+                            <MenuItem style={menu} value={10}>Show entries</MenuItem>
+                            <MenuItem onClick={()=>{entriesMenu(20, 15)}} style={menu} value={20}>15 entries</MenuItem>
+                            <MenuItem onClick={()=>{entriesMenu(30, 30)}} style={menu} value={30}>30 entries</MenuItem>
+                            <MenuItem onClick={()=>{entriesMenu(40, 100)}} style={menu} value={40}>100 entries</MenuItem>
                         </Select>
                     </div>
                     <div style={{width: mediaMatch.matches? '100%': '190px'}} className='input-cont2'>
@@ -229,11 +274,13 @@ const Employee = () => {
                 </div>
 
                 <div className='footer'>
-                    <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>Showing 1 to 11 of 38 entries</div>
+                    <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>
+                        Showing {((skip + 1) * limit) - (limit-1)} to {(skip + 1) * limit} of {total} entries
+                    </div>
                     <div className='nav'>
-                        <button className='but'>Previous</button>
-                        <div className='num'>1</div>
-                        <button className='but2'>Next</button>
+                        <button onClick={prevPage} className='but'>Previous</button>
+                        <div className='num'>{skip + 1}</div>
+                        <button onClick={nextPage} className='but2'>Next</button>
                     </div>
                 </div>
             </div>

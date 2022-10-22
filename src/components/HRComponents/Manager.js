@@ -23,6 +23,10 @@ const Manager = (props) => {
     const [open2, setOpen2] = useState(false);
     const [prints, setPrints] = useState(false);
     const [empData, setEmpData] = useState({});
+    const [entries, setEntries] = useState(10);
+    const [skip, setSkip] = useState(0);
+    const [limit, setLimit] = useState(15);
+    const [total, setTotal] = useState(0);
 
     const user = useSelector(state => state.authReducer.user);
     const adminUsers = useSelector(state => state.adminUserReducer.adminUsers);
@@ -39,12 +43,15 @@ const Manager = (props) => {
 
     const getAllUserData = useCallback(() => {
         const payload = {
-            organisation: user._id
+            skip: skip * limit,
+            limit: limit,
+            organisation: user.organisationID
         }
-        AdminUserService.allAdminUserRecords(payload).then(data => {
-            dispatch(createAdminUser(data.users));
+        AdminUserService.allAdminUserRecords(payload).then(data => {console.log('admin', data)
+            setTotal(data.admin.count);
+            dispatch(createAdminUser(data.admin.admin));
         });
-    }, [user._id, dispatch]);
+    }, [user.organisationID, limit, skip, dispatch]);
 
     useEffect(()=>{
         getAllUserData();
@@ -60,6 +67,26 @@ const Manager = (props) => {
 
     const searchTable = (value) => {
         dispatch(searchadmins(value));
+    }
+
+    const nextPage = () => {
+        if(!(skip < 0)){
+            setSkip(prev => prev + 1)
+        }
+        getAllUserData();
+    }
+
+    const prevPage = () => {
+        if(!(skip <= 0)){
+            setSkip(prev => prev - 1)
+        } 
+        getAllUserData();
+    }
+
+    const entriesMenu = (value, limit) => {
+        setEntries(value);
+        setLimit(limit);
+        getAllUserData();
     }
 
     return(
@@ -123,12 +150,13 @@ const Manager = (props) => {
                         <Select
                             labelId="demo-select-small"
                             id="demo-select-small"
-                            value={10}
+                            value={entries}
                             sx={selectStyle2}
                         >
-                            <MenuItem style={menu} value={10}>show 15 entries</MenuItem>
-                            <MenuItem style={menu} value={20}>show 30 entries</MenuItem>
-                            <MenuItem style={menu} value={30}>show 100 entries</MenuItem>
+                            <MenuItem style={menu} value={10}>Show entries</MenuItem>
+                            <MenuItem onClick={()=>{entriesMenu(20, 15)}} style={menu} value={20}>15 entries</MenuItem>
+                            <MenuItem onClick={()=>{entriesMenu(30, 30)}} style={menu} value={30}>30 entries</MenuItem>
+                            <MenuItem onClick={()=>{entriesMenu(40, 100)}} style={menu} value={40}>100 entries</MenuItem>
                         </Select>
                     </div>
                     <div style={{width: mediaMatch.matches? '100%': '190px'}} className='input-cont2'>
@@ -207,11 +235,13 @@ const Manager = (props) => {
                 </div>
 
                 <div className='footer'>
-                    <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>Showing 1 to 11 of 38 entries</div>
+                    <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>
+                        Showing {((skip + 1) * limit) - (limit-1)} to {(skip + 1) * limit} of {total} entries
+                    </div>
                     <div className='nav'>
-                        <button className='but'>Previous</button>
-                        <div className='num'>1</div>
-                        <button className='but2'>Next</button>
+                        <button onClick={prevPage} className='but'>Previous</button>
+                        <div className='num'>{skip + 1}</div>
+                        <button onClick={nextPage} className='but2'>Next</button>
                     </div>
                 </div>
             </div>

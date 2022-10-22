@@ -15,15 +15,9 @@ import { useSelector } from 'react-redux';
 
 const HumanResource = (props) => {
 
-    const user = useSelector(state => state.authReducer.user);
-
     const handleNavigation = (data) => {
         if(data.name === 'Employee'){
-            if(user.userType === 'admin'){
-                props.history.push('/home/hr/manager');
-            }else{
-                props.history.push('/home/hr/employee');
-            }
+            props.history.push('/home/hr/manager');
         }else if(data.name === 'Salary structure'){
             props.history.push('/home/hr/salary');
         }else if(data.name === 'Query'){
