@@ -9,7 +9,7 @@ import swal from 'sweetalert';
 import '../../styles/lpo.scss';
 import SalaryService from '../../services/salary';
 
-const SalaryModal = (props) => {
+const UpdateSalary = (props) => {
     const [loading, setLoading] = useState(false);
     const user = useSelector(state => state.authReducer.user);
     const [position, setPosition] = useState('');
@@ -28,16 +28,14 @@ const SalaryModal = (props) => {
         setLoading(true);
 
         const payload = {
+            id: props.id._id,
             position: position,
             level: level,
             low_range: low,
             high_range: high,
-            outletID: props.station._id,
-            organisationID: props.station.organisation,
         }
-        console.log(payload)
 
-        SalaryService.createSalary(payload).then((data) => {
+        SalaryService.updateSalary(payload).then((data) => {
             swal("Success", "Salary created successfully!", "success");
         }).then(()=>{
             setLoading(false);
@@ -57,7 +55,7 @@ const SalaryModal = (props) => {
                 <div style={{height:'auto'}} className='modalContainer'>
                     <div style={{height:'auto', margin:'20px'}} className='inner'>
                         <div className='head'>
-                            <div className='head-text'>Add Salary Structure</div>
+                            <div className='head-text'>Update Salary Structure</div>
                             <img onClick={handleClose} style={{width:'18px', height:'18px'}} src={close} alt={'icon'} />
                         </div>
 
@@ -171,4 +169,4 @@ const range = {
     justifyContent:'space-between'
 }
 
-export default SalaryModal;
+export default UpdateSalary;

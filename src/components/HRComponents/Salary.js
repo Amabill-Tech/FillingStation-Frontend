@@ -12,32 +12,48 @@ import { useDispatch, useSelector } from 'react-redux';
 import OutletService from '../../services/outletService';
 import { OutlinedInput } from '@mui/material';
 import { getAllStations } from '../../store/actions/outlet';
+import UpdateSalary from '../Modals/UpdateSalary';
+import swal from 'sweetalert';
 
 const Salary = () => {
 
     const [open, setOpen] = useState(false);
+    const [open2, setOpen2] = useState(false);
     const [defaultState, setDefault] = useState(0);
     const dispatch = useDispatch();
     const user = useSelector(state => state.authReducer.user);
     const salaryData = useSelector(state => state.salaryReducer.salary);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
+    const [currentSalary, setCurrentSalary] = useState(false);
+    const [currentStation, setCurrentStation] = useState({});
+    const [entries, setEntries] = useState(10);
+    const [skip, setSkip] = useState(0);
+    const [limit, setLimit] = useState(15);
+    const [total, setTotal] = useState(0);
 
     const openSalaryModal = () => {
         setOpen(true);
     }
 
     const getAllSalaryData = useCallback(() => {
-        const payload = {
-            organisationID: user._id
-        }
-        SalaryService.allSalaryRecords(payload).then(data => {
-            dispatch(createSalary(data.salary));
-        });
 
-        OutletService.getAllOutletStations({organisation: user._id}).then(data => {
+        OutletService.getAllOutletStations({organisation: user.organisationID}).then(data => {
             dispatch(getAllStations(data.station));
-        });
-    }, [user._id, dispatch]);
+            setCurrentStation(data.station[0]);
+            return data.station[0]
+        }).then((data)=>{console.log(data, 'teaaha')
+            const payload = {
+                skip: skip * limit,
+                limit: limit,
+                outletID: data._id, 
+                organisationID: data.organisation
+            }
+            SalaryService.allSalaryRecords(payload).then(data => {
+                setTotal(data.salary.count);
+                dispatch(createSalary(data.salary.salary));
+            });
+        })
+    }, [user.organisationID, limit, skip, dispatch]);
 
     useEffect(()=>{
         getAllSalaryData();
@@ -45,15 +61,74 @@ const Salary = () => {
 
     const changeMenu = (index, item ) => {
         setDefault(index);
+        setCurrentStation(item);
+
+        const payload = {
+            skip: skip * limit,
+            limit: limit,
+            outletID: item._id, 
+            organisationID: item.organisation
+        }
+        SalaryService.allSalaryRecords(payload).then(data => {
+            setTotal(data.salary.count);
+            dispatch(createSalary(data.salary.salary));
+        });
     }
 
     const searchTable = (value) => {
         dispatch(searchSalary(value));
     }
 
+    const updateSalary = (item) => {
+        setOpen2(true);
+        setCurrentSalary(item)
+    }
+
+    const deleteSalary = (item) => {
+        swal({
+            title: "Alert!",
+            text: "Are you sure you want to delete this salary?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+                if (willDelete) {
+                    SalaryService.deleteSalary({id: item._id}).then((data) => {
+                        swal("Success", "Salary created successfully!", "success");
+                    }).then(()=>{
+                        getAllSalaryData();
+                    })
+                }
+            }
+        });
+    }
+
+    const nextPage = () => {
+        if(!(skip < 0)){
+            setSkip(prev => prev + 1)
+        }
+        getAllSalaryData();
+    }
+
+    const prevPage = () => {
+        if(!(skip <= 0)){
+            setSkip(prev => prev - 1)
+        } 
+        getAllSalaryData();
+    }
+
+    const entriesMenu = (value, limit) => {
+        setEntries(value);
+        setLimit(limit);
+        getAllSalaryData();
+    }
+
     return(
         <div data-aos="zoom-in-down" className='paymentsCaontainer'>
-            {<SalaryModal open={open} close={setOpen} refresh={getAllSalaryData} />}
+            {<SalaryModal station={currentStation} open={open} close={setOpen} refresh={getAllSalaryData} />}
+            {<UpdateSalary open={open2} id={currentSalary} close={setOpen2} refresh={getAllSalaryData} />}
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
@@ -126,12 +201,13 @@ const Salary = () => {
                         <Select
                             labelId="demo-select-small"
                             id="demo-select-small"
-                            value={10}
+                            value={entries}
                             sx={selectStyle2}
                         >
-                            <MenuItem value={10}>Show entries</MenuItem>
-                            <MenuItem value={20}>Twenty</MenuItem>
-                            <MenuItem value={30}>Thirty</MenuItem>
+                            <MenuItem style={menu} value={10}>Show entries</MenuItem>
+                            <MenuItem onClick={()=>{entriesMenu(20, 15)}} style={menu} value={20}>15 entries</MenuItem>
+                            <MenuItem onClick={()=>{entriesMenu(30, 30)}} style={menu} value={30}>30 entries</MenuItem>
+                            <MenuItem onClick={()=>{entriesMenu(40, 100)}} style={menu} value={40}>100 entries</MenuItem>
                         </Select>
                     </div>
                     <div style={{width:'210px'}} className='input-cont2'>
@@ -179,15 +255,15 @@ const Salary = () => {
                             <div style={place}>No data</div>:
                             salaryData.map((item, index) => {
                                 return(
-                                    <div key={index} className='table-head2'>
+                                    <div data-aos="fade-up" key={index} className='table-head2'>
                                         <div className='column'>{index + 1}</div>
                                         <div className='column'>{item.position}</div>
                                         <div className='column'>{item.level}</div>
                                         <div className='column'>{item.low_range+' - '+item.high_range}</div>
                                         <div className='column'>
                                             <div style={{width:'70px'}} className='actions'>
-                                                <img style={{width:'27px', height:'27px'}} src={hr7} alt="icon" />
-                                                <img style={{width:'27px', height:'27px'}} src={hr8} alt="icon" />
+                                                <img onClick={()=>{updateSalary(item)}} style={{width:'27px', height:'27px'}} src={hr7} alt="icon" />
+                                                <img onClick={()=>{deleteSalary(item)}} style={{width:'27px', height:'27px'}} src={hr8} alt="icon" />
                                             </div>
                                         </div>
                                     </div>
@@ -198,11 +274,13 @@ const Salary = () => {
                 </div>
 
                 <div className='footer'>
-                    <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>Showing 1 to 11 of 38 entries</div>
+                    <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>
+                        Showing {((skip + 1) * limit) - (limit-1)} to {(skip + 1) * limit} of {total} entries
+                    </div>
                     <div className='nav'>
-                        <button className='but'>Previous</button>
-                        <div className='num'>1</div>
-                        <button className='but2'>Next</button>
+                        <button onClick={prevPage} className='but'>Previous</button>
+                        <div className='num'>{skip + 1}</div>
+                        <button onClick={nextPage} className='but2'>Next</button>
                     </div>
                 </div>
             </div>

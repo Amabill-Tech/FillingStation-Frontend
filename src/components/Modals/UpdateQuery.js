@@ -11,10 +11,9 @@ import QueryService from '../../services/query';
 
 const UpdateQuery = (props) => {
     const [loading, setLoading] = useState(false);
-    const user = useSelector(state => state.authReducer.user);
-    const [employeeName, setEmployeeName] = useState(props.employeeName);
-    const [queryTitle, setQueryTitle] = useState(props.queryTitle);
-    const [description, setDescription] = useState(props.description);
+    const [employeeName, setEmployeeName] = useState("");
+    const [queryTitle, setQueryTitle] = useState("");
+    const [description, setDescription] = useState("");
 
     const handleClose = () => props.close(false);
 
