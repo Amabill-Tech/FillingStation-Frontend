@@ -14,6 +14,7 @@ import { OutlinedInput } from '@mui/material';
 import { getAllStations } from '../../store/actions/outlet';
 import UpdateSalary from '../Modals/UpdateSalary';
 import swal from 'sweetalert';
+import SalaryReports from '../Reports/SalaryReport';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 
@@ -32,6 +33,7 @@ const Salary = () => {
     const [skip, setSkip] = useState(0);
     const [limit, setLimit] = useState(15);
     const [total, setTotal] = useState(0);
+    const [ prints, setPrints] = useState(false);
 
     const openSalaryModal = () => {
         setOpen(true);
@@ -128,13 +130,14 @@ const Salary = () => {
     }
 
     const printReport = () => {
-
+        setPrints(true);
     }
 
     return(
         <div data-aos="zoom-in-down" className='paymentsCaontainer'>
             {<SalaryModal station={currentStation} open={open} close={setOpen} refresh={getAllSalaryData} />}
             {<UpdateSalary open={open2} id={currentSalary} close={setOpen2} refresh={getAllSalaryData} />}
+            { prints && <SalaryReports allOutlets={salaryData} open={prints} close={setPrints}/>}
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
