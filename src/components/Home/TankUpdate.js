@@ -18,26 +18,33 @@ const TankUpdate = () => {
     const tankList = useSelector(state => state.outletReducer.tankList);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const [tanks, setTanks] = useState([]);
+    const [currentStation, setCurrentStation] = useState({});
+    const [entries, setEntries] = useState(10);
+    const [skip, setSkip] = useState(0);
+    const [limit, setLimit] = useState(15);
+    const [total, setTotal] = useState(0);
 
     const updateTankModal = () => {
         setOpen(true);
     }
 
     const getTankData = useCallback(() => {
-        if(user.userType === 'staff'){
-            OutletService.getOneOutletStation({organisation: user.organisationID, outletID: user.outletID}).then(data => {
-                dispatch(getAllStations([data.station]));
-            });
-
-            OutletService.getAllOutletTanks({organisationID: user.organisationID, outletID: user.outletID}).then(data => {
-                setTanks(data);
+        OutletService.getAllOutletStations({organisation: user.organisationID}).then(data => {
+            dispatch(getAllStations(data.station));
+            setCurrentStation(data.station[0]);
+            return data.station[0]
+        }).then((data)=>{
+            const payload = {
+                skip: skip * limit,
+                limit: limit,
+                outletID: data._id, 
+                organisationID: data.organisation
+            }
+            OutletService.getAllOutletTanks(payload).then(data => {
+                console.log('tanks', data)
             })
-        }else{
-            OutletService.getAllOutletStations({organisation: user._id}).then(data => {
-                dispatch(getAllStations(data.station));
-            });
-        }
-    }, [user._id, user.organisationID, user.outletID, user.userType, dispatch]);
+        });
+    }, [ user.organisationID, skip, limit, dispatch]);
 
     useEffect(()=>{
         getTankData();
@@ -45,10 +52,41 @@ const TankUpdate = () => {
 
     const changeMenu = (index, item ) => {
         setDefault(index);
+        setCurrentStation(item);
+
+        const payload = {
+            skip: skip * limit,
+            limit: limit,
+            outletID: item._id, 
+            organisationID: item.organisation
+        }
+        OutletService.getAllOutletTanks(payload).then(data => {
+            setTanks(data);
+        })
     }
 
     const searchTable = (value) => {
         //dispatch(searchQuery(value));
+    }
+
+    const nextPage = () => {
+        if(!(skip < 0)){
+            setSkip(prev => prev + 1)
+        }
+        getTankData();
+    }
+
+    const prevPage = () => {
+        if(!(skip <= 0)){
+            setSkip(prev => prev - 1)
+        } 
+        getTankData();
+    }
+
+    const entriesMenu = (value, limit) => {
+        setEntries(value);
+        setLimit(limit);
+        getTankData();
     }
 
     return(
@@ -126,12 +164,13 @@ const TankUpdate = () => {
                         <Select
                             labelId="demo-select-small"
                             id="demo-select-small"
-                            value={10}
+                            value={entries}
                             sx={selectStyle2}
                         >
-                            <MenuItem value={10}>Show entries</MenuItem>
-                            <MenuItem value={20}>Twenty</MenuItem>
-                            <MenuItem value={30}>Thirty</MenuItem>
+                            <MenuItem style={menu} value={10}>Show entries</MenuItem>
+                            <MenuItem onClick={()=>{entriesMenu(20, 15)}} style={menu} value={20}>15 entries</MenuItem>
+                            <MenuItem onClick={()=>{entriesMenu(30, 30)}} style={menu} value={30}>30 entries</MenuItem>
+                            <MenuItem onClick={()=>{entriesMenu(40, 100)}} style={menu} value={40}>100 entries</MenuItem>
                         </Select>
                     </div>
                     <div style={{width:'210px'}} className='input-cont2'>
@@ -177,31 +216,12 @@ const TankUpdate = () => {
                     </div>
 
                     <div className='row-container'>
-                        {!user.userType === 'staff' &&
+                        {
                             tankList.length === 0?
                             <div style={place}>No tank updates</div>:
                             tankList.map((data, index) => {
                                 return(
-                                    <div className='table-head2'>
-                                        <div className='column'>{index + 1}</div>
-                                        <div className='column'>{data.dateUpdated}</div>
-                                        <div className='column'>{data.tankName}</div>
-                                        <div className='column'>{data.productType}</div>
-                                        <div className='column'>{data.station}</div>
-                                        <div className='column'>{data.previousLevel}</div>
-                                        <div className='column'>{data.quantityAdded}</div>
-                                        <div className='column'>{data.currentLevel}</div>
-                                    </div>
-                                )
-                            })
-                        }
-
-                        {user.userType === 'staff' &&
-                            tanks.length === 0?
-                            <div style={place}>No tank updates</div>:
-                            tanks.map((data, index) => {
-                                return(
-                                    <div className='table-head2'>
+                                    <div key={index} className='table-head2'>
                                         <div className='column'>{index + 1}</div>
                                         <div className='column'>{data.dateUpdated}</div>
                                         <div className='column'>{data.tankName}</div>
@@ -218,11 +238,13 @@ const TankUpdate = () => {
                 </div>
 
                 <div className='footer'>
-                    <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>Showing 1 to 11 of 38 entries</div>
+                    <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>
+                        Showing {((skip + 1) * limit) - (limit-1)} to {(skip + 1) * limit} of {total} entries
+                    </div>
                     <div className='nav'>
-                        <button className='but'>Previous</button>
-                        <div className='num'>1</div>
-                        <button className='but2'>Next</button>
+                        <button onClick={prevPage} className='but'>Previous</button>
+                        <div className='num'>{skip + 1}</div>
+                        <button onClick={nextPage} className='but2'>Next</button>
                     </div>
                 </div>
             </div>
