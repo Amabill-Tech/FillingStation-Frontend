@@ -50,10 +50,11 @@ const PaymentModal = (props) => {
                 contactPerson: contact,
                 attachCertificate: cert,
                 paymentReceipt: reciept,
-                organizationID: user._id
+                outletID: props.station._id,
+                organizationID: props.station.organisation
             }
-
-            const url = "http://localhost:3000/360-station/api/register-payment/createBase64";
+           
+            const url = "http://localhost:5000/360-station/api/register-payment/createBase64";
             const config = {
                 headers: {
                     "content-type": "multipart/form-data",
@@ -86,14 +87,15 @@ const PaymentModal = (props) => {
             formData.append("contactPerson", contact);
             formData.append("attachCertificate", cert);
             formData.append("paymentReceipt", reciept);
-            formData.append("organizationID", user._id);
+            formData.append("outletID", props.station._id);
+            formData.append("organizationID", props.station.organisation);
             const config = {
                 headers: {
                     "content-type": "multipart/form-data",
                     "Authorization": "Bearer "+ localStorage.getItem('token'),
                 }
             };
-            const url = "http://localhost:3000/360-station/api/register-payment/create";
+            const url = "http://localhost:5000/360-station/api/register-payment/create";
             axios.post(url, formData, config).then((data) => {
                 console.log('form data', data);
             }).then(()=>{

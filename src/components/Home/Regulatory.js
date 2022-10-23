@@ -10,7 +10,8 @@ import { getAllStations } from '../../store/actions/outlet';
 import OutletService from '../../services/outletService';
 import PaymentService from '../../services/paymentService';
 import { createPayment } from '../../store/actions/payment';
-import {Payment} from '@mui/icons-material'
+
+const mediaMatch = window.matchMedia('(max-width: 530px)');
 
 const Regulatory = () => {
 
@@ -20,25 +21,35 @@ const Regulatory = () => {
     const user = useSelector(state => state.authReducer.user);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const payment = useSelector(state => state.paymentReducer.payment);
-    console.log('pay me', payment)
+    const [currentStation, setCurrentStation] = useState({});
+    const [entries, setEntries] = useState(10);
+    const [skip, setSkip] = useState(0);
+    const [limit, setLimit] = useState(15);
+    const [total, setTotal] = useState(0);
+    const [prints, setPrints] = useState(false);
 
     const openPaymentModal = () => {
         setOpen(true);
     }
 
     const getTankData = useCallback(() => {
-        const payload = {
-            organizationID: user._id
-        }
-
-        PaymentService.getAllPayment(payload).then((data) => {
-            dispatch(createPayment(data));
-        });
-
-        OutletService.getAllOutletStations({organisation: user._id}).then(data => {
+        OutletService.getAllOutletStations({organisation: user.organisationID}).then(data => {
             dispatch(getAllStations(data.station));
+            setCurrentStation(data.station[0]);
+            return data.station[0]
+        }).then((data)=>{
+            const payload = {
+                skip: skip * limit,
+                limit: limit,
+                outletID: data._id, 
+                organisationID: data.organisation
+            }
+            PaymentService.getAllPayment(payload).then((data) => {
+                setTotal(data.pay.count);
+                dispatch(createPayment(data.pay));
+            });
         });
-    }, [user._id, dispatch]);
+    }, [user.organisationID, skip, limit, dispatch]);
 
     useEffect(()=>{
         getTankData();
@@ -46,15 +57,40 @@ const Regulatory = () => {
 
     const changeMenu = (index, item ) => {
         setDefault(index);
+        setCurrentStation(item);
     }
 
     const searchTable = (value) => {
         //dispatch(searchQuery(value));
     }
 
+    const nextPage = () => {
+        if(!(skip < 0)){
+            setSkip(prev => prev + 1)
+        }
+        getTankData();
+    }
+
+    const prevPage = () => {
+        if(!(skip <= 0)){
+            setSkip(prev => prev - 1)
+        } 
+        getTankData();
+    }
+
+    const entriesMenu = (value, limit) => {
+        setEntries(value);
+        setLimit(limit);
+        getTankData();
+    }
+
+    const printReport = () => {
+        //setPrints(true);
+    }
+
     return(
         <div data-aos="zoom-in-down" className='paymentsCaontainer'>
-            { <PaymentModal open={open} close={setOpen} refresh={getTankData} /> }
+            { <PaymentModal station={currentStation} open={open} close={setOpen} refresh={getTankData} /> }
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
@@ -127,41 +163,44 @@ const Regulatory = () => {
                         <Select
                             labelId="demo-select-small"
                             id="demo-select-small"
-                            value={10}
+                            value={entries}
                             sx={selectStyle2}
                         >
-                            <MenuItem value={10}>Show entries</MenuItem>
-                            <MenuItem value={20}>Twenty</MenuItem>
-                            <MenuItem value={30}>Thirty</MenuItem>
+                            <MenuItem style={menu} value={10}>Show entries</MenuItem>
+                            <MenuItem onClick={()=>{entriesMenu(20, 15)}} style={menu} value={20}>15 entries</MenuItem>
+                            <MenuItem onClick={()=>{entriesMenu(30, 30)}} style={menu} value={30}>30 entries</MenuItem>
+                            <MenuItem onClick={()=>{entriesMenu(40, 100)}} style={menu} value={40}>100 entries</MenuItem>
                         </Select>
                     </div>
-                    <div style={{width:'210px'}} className='input-cont2'>
-                        <div className='second-select2'>
-                            <Button sx={{
-                                width:'100%', 
-                                height:'30px',  
-                                background: '#58A0DF',
-                                borderRadius: '3px',
-                                fontSize:'10px',
-                                '&:hover': {
-                                    backgroundColor: '#58A0DF'
-                                }
-                                }}  variant="contained"> Download PDF
-                            </Button>
-                        </div>
-                        <div className='second-select3'>
-                            <Button sx={{
-                                width:'100%', 
-                                height:'30px',  
-                                background: '#F36A4C',
-                                borderRadius: '3px',
-                                fontSize:'10px',
-                                '&:hover': {
-                                    backgroundColor: '#F36A4C'
-                                }
-                                }}  variant="contained"> Print
-                            </Button>
-                        </div>
+                    <div style={{width: mediaMatch.matches? '100%': '190px'}} className='input-cont2'>
+                        <Button sx={{
+                            width: mediaMatch.matches? '100%': '100px', 
+                            height:'30px',  
+                            background: '#58A0DF',
+                            borderRadius: '3px',
+                            fontSize:'10px',
+                            display: mediaMatch.matches && 'none',
+                            marginTop: mediaMatch.matches? '10px': '0px',
+                            '&:hover': {
+                                backgroundColor: '#58A0DF'
+                            }
+                            }}  variant="contained"> History
+                        </Button>
+                        <Button sx={{
+                            width: mediaMatch.matches? '100%': '80px', 
+                            height:'30px',  
+                            background: '#F36A4C',
+                            borderRadius: '3px',
+                            fontSize:'10px',
+                            display: mediaMatch.matches && 'none',
+                            marginTop: mediaMatch.matches? '10px': '0px',
+                            '&:hover': {
+                                backgroundColor: '#F36A4C'
+                            }
+                            }}  
+                            onClick={printReport}
+                            variant="contained"> Print
+                        </Button>
                     </div>
                 </div>
 
@@ -178,8 +217,8 @@ const Regulatory = () => {
 
                     <div className='row-container'>
                         {
-                            Payment.length === 0?
-                            <div style={place}>No data</div>:
+                            payment.length === 0?
+                            <div style={place}>No payment data</div>:
                             payment.map((item, index) => {
                                 return(
                                     <div style={{height:'50px', display:'flex', justifyContent:'center', alignItems:'center'}} className='table-head2'>
@@ -214,11 +253,13 @@ const Regulatory = () => {
                 </div>
 
                 <div className='footer'>
-                    <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>Showing 1 to 11 of 38 entries</div>
+                    <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>
+                        Showing {((skip + 1) * limit) - (limit-1)} to {(skip + 1) * limit} of {total} entries
+                    </div>
                     <div className='nav'>
-                        <button className='but'>Previous</button>
-                        <div className='num'>1</div>
-                        <button className='but2'>Next</button>
+                        <button onClick={prevPage} className='but'>Previous</button>
+                        <div className='num'>{skip + 1}</div>
+                        <button onClick={nextPage} className='but2'>Next</button>
                     </div>
                 </div>
             </div>
