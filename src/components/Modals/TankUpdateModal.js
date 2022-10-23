@@ -29,7 +29,6 @@ const TankUpdateModal = (props) => {
         const prev = (Number(quantity) + Number(currentTank.currentLevel)) > Number(currentTank.tankCapacity)
         const detail = currentTank.currentLevel==="None"? fresh : prev;
 
-        console.log(detail)
         if(quantity === "") return swal("Warning!", "Quantity field cannot be empty", "info");
         if(date === "") return swal("Warning!", "Date field cannot be empty", "info");
         if(currentTank.activeState === '0') return swal("Warning!", "Tank is currently inactive, contact admin", "info");
@@ -98,7 +97,7 @@ const TankUpdateModal = (props) => {
                                 >
                                     <MenuItem style={menu} value={0}>Select Tank</MenuItem>
                                     {
-                                        props.tanks.map((item, index) => {
+                                        props.data.map((item, index) => {
                                             return(
                                                 <MenuItem style={menu} key={index} onClick={(e) => {handleMenuSelection(e, item)}} value={index + 1}>{item.tankName}</MenuItem>
                                             )

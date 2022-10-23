@@ -8,7 +8,8 @@ import {
     NEW_TANK,
     TANK_LIST,
     OUTLET_DATA,
-    PUMP_LIST
+    PUMP_LIST,
+    SEARCH_USERS
 } from '../types';
 
 export const createFillingStation = (params) => dispatch => {
@@ -67,4 +68,8 @@ export const setSpinner = () => dispatch => {
 
 export const removeSpinner = () => dispatch => {
     dispatch({ type: REMOVE_SPINNER })
+}
+
+export const searchTanks = (params) => dispatch => {
+    dispatch({ type: SEARCH_USERS, payload: params });
 }

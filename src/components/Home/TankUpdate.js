@@ -7,7 +7,10 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import TankUpdateModal from '../Modals/TankUpdateModal';
 import { useDispatch, useSelector } from 'react-redux';
 import OutletService from '../../services/outletService';
-import { getAllStations } from '../../store/actions/outlet';
+import { getAllOutletTanks, getAllStations, searchTanks } from '../../store/actions/outlet';
+import PrintTankUpdate from '../Reports/PrintTankUpdate';
+
+const mediaMatch = window.matchMedia('(max-width: 530px)');
 
 const TankUpdate = () => {
 
@@ -23,6 +26,7 @@ const TankUpdate = () => {
     const [skip, setSkip] = useState(0);
     const [limit, setLimit] = useState(15);
     const [total, setTotal] = useState(0);
+    const [prints, setPrints] = useState(false);
 
     const updateTankModal = () => {
         setOpen(true);
@@ -41,7 +45,8 @@ const TankUpdate = () => {
                 organisationID: data.organisation
             }
             OutletService.getAllOutletTanks(payload).then(data => {
-                console.log('tanks', data)
+                setTotal(data.count);
+                dispatch(getAllOutletTanks(data.stations));
             })
         });
     }, [ user.organisationID, skip, limit, dispatch]);
@@ -61,12 +66,13 @@ const TankUpdate = () => {
             organisationID: item.organisation
         }
         OutletService.getAllOutletTanks(payload).then(data => {
-            setTanks(data);
+            setTotal(data.count);
+            dispatch(getAllOutletTanks(data.stations));
         })
     }
 
     const searchTable = (value) => {
-        //dispatch(searchQuery(value));
+        dispatch(searchTanks(value));
     }
 
     const nextPage = () => {
@@ -89,9 +95,14 @@ const TankUpdate = () => {
         getTankData();
     }
 
+    const printReport = () => {
+        setPrints(true);
+    }
+
     return(
         <div data-aos="zoom-in-down" className='paymentsCaontainer'>
             { <TankUpdateModal data={tankList} open={open} close={setOpen} tanks={tanks} refresh={getTankData} /> }
+            { prints && <PrintTankUpdate allOutlets={tankList} open={prints} close={setPrints}/>}
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
@@ -173,33 +184,35 @@ const TankUpdate = () => {
                             <MenuItem onClick={()=>{entriesMenu(40, 100)}} style={menu} value={40}>100 entries</MenuItem>
                         </Select>
                     </div>
-                    <div style={{width:'210px'}} className='input-cont2'>
-                        <div className='second-select2'>
-                            <Button sx={{
-                                width:'100%', 
-                                height:'30px',  
-                                background: '#58A0DF',
-                                borderRadius: '3px',
-                                fontSize:'10px',
-                                '&:hover': {
-                                    backgroundColor: '#58A0DF'
-                                }
-                                }}  variant="contained"> Download PDF
-                            </Button>
-                        </div>
-                        <div className='second-select3'>
-                            <Button sx={{
-                                width:'100%', 
-                                height:'30px',  
-                                background: '#F36A4C',
-                                borderRadius: '3px',
-                                fontSize:'10px',
-                                '&:hover': {
-                                    backgroundColor: '#F36A4C'
-                                }
-                                }}  variant="contained"> Print
-                            </Button>
-                        </div>
+                    <div style={{width: mediaMatch.matches? '100%': '190px'}} className='input-cont2'>
+                        <Button sx={{
+                            width: mediaMatch.matches? '100%': '100px', 
+                            height:'30px',  
+                            background: '#58A0DF',
+                            borderRadius: '3px',
+                            fontSize:'10px',
+                            display: mediaMatch.matches && 'none',
+                            marginTop: mediaMatch.matches? '10px': '0px',
+                            '&:hover': {
+                                backgroundColor: '#58A0DF'
+                            }
+                            }}  variant="contained"> History
+                        </Button>
+                        <Button sx={{
+                            width: mediaMatch.matches? '100%': '80px', 
+                            height:'30px',  
+                            background: '#F36A4C',
+                            borderRadius: '3px',
+                            fontSize:'10px',
+                            display: mediaMatch.matches && 'none',
+                            marginTop: mediaMatch.matches? '10px': '0px',
+                            '&:hover': {
+                                backgroundColor: '#F36A4C'
+                            }
+                            }}  
+                            onClick={printReport}
+                            variant="contained"> Print
+                        </Button>
                     </div>
                 </div>
 

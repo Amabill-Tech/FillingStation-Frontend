@@ -52,7 +52,7 @@ const OutletService = {
     getAllOutletTanks: (data) => {
         return APIs.post('/station/tank/allRecords', data)
         .then(({ data }) => {
-            return data.admin;
+            return data.stations;
         })
          .catch(err => {
             console.log("Auth service err", err);

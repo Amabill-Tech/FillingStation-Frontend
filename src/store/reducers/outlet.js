@@ -7,7 +7,8 @@ import {
     NEW_TANK,
     TANK_LIST,
     OUTLET_DATA,
-    PUMP_LIST
+    PUMP_LIST,
+    SEARCH_USERS
 } from '../types'
 
 const initialState = {
@@ -17,6 +18,7 @@ const initialState = {
     allOutlets:[],
     newTank: {},
     tankList: [],
+    searchData: [],
     pumpList: [],
 }
 
@@ -78,7 +80,8 @@ const outletReducer = (state = initialState, action) => {
         case TANK_LIST: {
             return {
                 ...state,
-                tankList: payload
+                tankList: payload,
+                searchData: payload
             }
         }
 
@@ -86,6 +89,16 @@ const outletReducer = (state = initialState, action) => {
             return {
                 ...state,
                 pumpList: payload
+            }
+        }
+
+        case SEARCH_USERS:{
+            const search = state.searchData.filter(data => !data.tankName.toUpperCase().indexOf(payload.toUpperCase()) ||
+                !data.productType.toUpperCase().indexOf(payload.toUpperCase())
+            );
+            return {
+                ...state,
+                tankList: search,
             }
         }
 
