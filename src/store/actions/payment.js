@@ -1,7 +1,8 @@
 import { 
     PAYMENT, 
     CERTIFICATE,
-    RECEIPT
+    RECEIPT,
+    SEARCH_PAYMENT
 } from '../types';
 
 export const createPayment = (params) => dispatch => {
@@ -14,4 +15,8 @@ export const certificate = (params) => dispatch => {
 
 export const reciepts = (params) => dispatch => {
     dispatch({type: RECEIPT, payload: params});
+}
+
+export const searchPayment = (params) => dispatch => {
+    dispatch({ type: SEARCH_PAYMENT, payload: params });
 }

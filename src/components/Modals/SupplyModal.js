@@ -43,10 +43,11 @@ const SupplyModal = (props) => {
             productType: productType,
             shortage: shortage,
             date: date,
-            organizationID: user._id,
+            outletID: props.station._id,
+            organizationID: props.station.organisation
         }
 
-        SupplyService.createSupply(payload).then((data) => { console.log(data)
+        SupplyService.createSupply(payload).then((data) => { 
             swal("Success", "Product order created successfully!", "success");
         }).then(()=>{
             setLoading(false);

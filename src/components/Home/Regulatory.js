@@ -9,7 +9,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getAllStations } from '../../store/actions/outlet';
 import OutletService from '../../services/outletService';
 import PaymentService from '../../services/paymentService';
-import { createPayment } from '../../store/actions/payment';
+import { createPayment, searchPayment } from '../../store/actions/payment';
+import ViewPayment from '../Modals/ViewPayment';
+import RegulatoryReports from '../Reports/RegulatoryReports';
+import { refresh } from 'aos';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 
@@ -27,6 +30,8 @@ const Regulatory = () => {
     const [limit, setLimit] = useState(15);
     const [total, setTotal] = useState(0);
     const [prints, setPrints] = useState(false);
+    const [openPayment, setOpenPayment] = useState(false);
+    const [description, setDescription] = useState(false);
 
     const openPaymentModal = () => {
         setOpen(true);
@@ -45,7 +50,7 @@ const Regulatory = () => {
                 organisationID: data.organisation
             }
             PaymentService.getAllPayment(payload).then((data) => {
-                setTotal(data.pay.count);
+                setTotal(data.count);
                 dispatch(createPayment(data.pay));
             });
         });
@@ -55,27 +60,51 @@ const Regulatory = () => {
         getTankData();
     },[getTankData]);
 
+    const refresh = () => {
+        const payload = {
+            skip: skip * limit,
+            limit: limit,
+            outletID: currentStation._id, 
+            organisationID: currentStation.organisation
+        }
+        PaymentService.getAllPayment(payload).then((data) => {
+            setTotal(data.count);
+            dispatch(createPayment(data.pay));
+        });
+    }
+
     const changeMenu = (index, item ) => {
         setDefault(index);
         setCurrentStation(item);
+        
+        const payload = {
+            skip: skip * limit,
+            limit: limit,
+            outletID: item._id, 
+            organisationID: item.organisation
+        }
+        PaymentService.getAllPayment(payload).then((data) => {
+            setTotal(data.count);
+            dispatch(createPayment(data.pay));
+        });
     }
 
     const searchTable = (value) => {
-        //dispatch(searchQuery(value));
+        dispatch(searchPayment(value));
     }
 
     const nextPage = () => {
         if(!(skip < 0)){
             setSkip(prev => prev + 1)
         }
-        getTankData();
+        refresh();
     }
 
     const prevPage = () => {
         if(!(skip <= 0)){
             setSkip(prev => prev - 1)
         } 
-        getTankData();
+        refresh();
     }
 
     const entriesMenu = (value, limit) => {
@@ -85,12 +114,19 @@ const Regulatory = () => {
     }
 
     const printReport = () => {
-        //setPrints(true);
+        setPrints(true);
+    }
+
+    const viewDescription = (data)=> {
+        setOpenPayment(true);
+        setDescription(data.description)
     }
 
     return(
         <div data-aos="zoom-in-down" className='paymentsCaontainer'>
-            { <PaymentModal station={currentStation} open={open} close={setOpen} refresh={getTankData} /> }
+            { <PaymentModal station={currentStation} open={open} close={setOpen} refresh={refresh} /> }
+            { prints && <RegulatoryReports allOutlets={payment} open={prints} close={setPrints}/>}
+            {openPayment && <ViewPayment open={openPayment} close={setOpenPayment} desc={description} />}
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
@@ -234,16 +270,18 @@ const Regulatory = () => {
                                                 '&:hover': {
                                                     backgroundColor: '#F36A4C'
                                                 }
-                                                }}  variant="contained"> View
+                                                }}  
+                                                onClick={()=>{viewDescription(item)}}
+                                                variant="contained"> View
                                             </Button>
                                         </div>
                                         <div className='column'>{item.amount}</div>
                                         <div className='column'>{item.contactPerson}</div>
                                         <div className='column'>
-                                            <a href={'http://localhost:3000'+ item.attachCertificate} target="_blank" rel="noreferrer">DPRCertificate</a>
+                                            <a href={'http://localhost:5000'+ item.attachCertificate} target="_blank" rel="noreferrer">DPRCertificate</a>
                                         </div>
                                         <div className='column'>
-                                            <a href={'http://localhost:3000'+ item.paymentReceipt} target="_blank" rel="noreferrer">DPRReceip</a>
+                                            <a href={'http://localhost:5000'+ item.paymentReceipt} target="_blank" rel="noreferrer">DPRReceip</a>
                                         </div>
                                     </div> 
                                 )

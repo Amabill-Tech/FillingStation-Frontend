@@ -2,12 +2,14 @@ import {
     PAYMENT ,
     CERTIFICATE,
     RECEIPT,
+    SEARCH_PAYMENT
 } from '../types'
 
 const initialState = {
     payment: [],
     certificate: {},
     receipt: {},
+    searchData: []
 }
 
 const paymentReducer = (state = initialState, action) => {
@@ -20,6 +22,7 @@ const paymentReducer = (state = initialState, action) => {
             return {
                 ...state,
                 payment: payload,
+                searchData: payload
             }
         }
 
@@ -35,7 +38,17 @@ const paymentReducer = (state = initialState, action) => {
                  ...state,
                  certificate: payload
             }
-         }
+        }
+
+        case SEARCH_PAYMENT:{
+            const search = state.searchData.filter(data => !data.organisationalName.toUpperCase().indexOf(payload.toUpperCase()) ||
+                !data.contactPerson.toUpperCase().indexOf(payload.toUpperCase())
+            );
+            return {
+                ...state,
+                payment: search,
+            }
+        }
 
         default: {
             return state
