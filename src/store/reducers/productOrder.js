@@ -1,9 +1,11 @@
 import { 
-    CREATE_PRODUCT_ORDER 
+    CREATE_PRODUCT_ORDER ,
+    SEARCH_PRODUCT_ORDER
 } from '../types'
 
 const initialState = {
     productOrder: [],
+    searchData: []
 }
 
 const productOrderReducer = (state = initialState, action) => {
@@ -16,6 +18,17 @@ const productOrderReducer = (state = initialState, action) => {
             return {
                 ...state,
                 productOrder: payload,
+                searchData: payload
+            }
+        }
+
+        case SEARCH_PRODUCT_ORDER:{
+            const search = state.searchData.filter(data => !data.depot.toUpperCase().indexOf(payload.toUpperCase()) ||
+                !data.status.toUpperCase().indexOf(payload.toUpperCase())
+            );
+            return {
+                ...state,
+                productOrder: search,
             }
         }
 

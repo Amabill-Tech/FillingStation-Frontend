@@ -16,7 +16,7 @@ const ProductService = {
     getAllProductOrder: (data) => {
         return APIs.post('/product-order/allRecords', data)
         .then(({data}) => {
-            return data.product;
+            return data;
         })
          .catch(err => {
             console.log("Auth service err", err);

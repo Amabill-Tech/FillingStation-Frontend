@@ -43,7 +43,8 @@ const ProductOrderModal = (props) => {
             quantity: quantity,
             loadingLocation: loadingLocation,
             attachCertificate: uploadFile,
-            organizationID: user._id,
+            outletID: props.station._id,
+            organizationID: props.station.organisation
         }
 
         ProductService.createProductOrder(payload).then((data) => {
