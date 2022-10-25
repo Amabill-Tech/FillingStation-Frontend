@@ -50,7 +50,7 @@ const Supply = () => {
 
             SupplyService.getAllSupply(payload).then((data) => {
                 setTotal(data.count);
-                dispatch(createSupply(data.supply));
+                dispatch(createSupply(data.incoming));
             });
         });
 

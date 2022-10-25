@@ -7,10 +7,13 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import IncomingOrderModal from '../Modals/IncomingOrderModal';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import {createIncomingOrder} from '../../store/actions/incomingOrder';
+import {createIncomingOrder, searchIncoming} from '../../store/actions/incomingOrder';
 import IncomingService from '../../services/IncomingService';
 import OutletService from '../../services/outletService';
 import { getAllStations } from '../../store/actions/outlet';
+import IncomingReport from '../Reports/IncomingReport';
+
+const mediaMatch = window.matchMedia('(max-width: 530px)');
 
 const IncomingOrder = () => {
 
@@ -19,6 +22,12 @@ const IncomingOrder = () => {
     const dispatch = useDispatch();
     const [defaultState, setDefault] = useState(0);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
+    const [currentStation, setCurrentStation] = useState({});
+    const [entries, setEntries] = useState(10);
+    const [skip, setSkip] = useState(0);
+    const [limit, setLimit] = useState(15);
+    const [total, setTotal] = useState(0);
+    const [prints, setPrints] = useState(false);
 
     const [open, setOpen] = useState(false);
 
@@ -28,34 +37,93 @@ const IncomingOrder = () => {
 
     const getAllIncomingOrder = useCallback(() => {
 
-        const payload = {
-            organizationID: user._id
-        }
-
-        IncomingService.getAllIncoming(payload).then((data) => {
-            dispatch(createIncomingOrder(data));
-        })
-
-        OutletService.getAllOutletStations({organisation: user._id}).then(data => {
+        OutletService.getAllOutletStations({organisation: user.organisationID}).then(data => {
             dispatch(getAllStations(data.station));
+            setCurrentStation(data.station[0]);
+            return data.station[0]
+        }).then((data)=>{
+            const payload = {
+                skip: skip * limit,
+                limit: limit,
+                outletID: data._id, 
+                organisationID: data.organisation
+            }
+
+            IncomingService.getAllIncoming(payload).then((data) => {
+                setTotal(data.incoming.count);
+                dispatch(createIncomingOrder(data.incoming.incoming));
+            });
         });
-    }, [dispatch, user._id]);
+
+    }, [dispatch, user.organisationID, skip, limit]);
 
     useEffect(()=>{
         getAllIncomingOrder();
     },[getAllIncomingOrder])
 
+    const refresh = () => {
+        const payload = {
+            skip: skip * limit,
+            limit: limit,
+            outletID: currentStation._id, 
+            organisationID: currentStation.organisation
+        }
+ 
+        IncomingService.getAllIncoming(payload).then((data) => {
+            setTotal(data.incoming.count);
+            dispatch(createIncomingOrder(data.incoming.incoming));
+        });
+    }
+
     const changeMenu = (index, item ) => {
         setDefault(index);
+        setCurrentStation(item);
+
+        const payload = {
+            skip: skip * limit,
+            limit: limit,
+            outletID: item._id, 
+            organisationID: item.organisation
+        }
+        
+        IncomingService.getAllIncoming(payload).then((data) => {
+            setTotal(data.incoming.count);
+            dispatch(createIncomingOrder(data.incoming.incoming));
+        });
     }
 
     const searchTable = (value) => {
-        //dispatch(searchQuery(value));
+        dispatch(searchIncoming(value));
+    }
+
+    const printReport = () => {
+        setPrints(true);
+    }
+
+    const entriesMenu = (value, limit) => {
+        setEntries(value);
+        setLimit(limit);
+        refresh();
+    }
+
+    const nextPage = () => {
+        if(!(skip < 0)){
+            setSkip(prev => prev + 1)
+        }
+        refresh();
+    }
+
+    const prevPage = () => {
+        if(!(skip <= 0)){
+            setSkip(prev => prev - 1)
+        } 
+        refresh();
     }
 
     return(
         <div data-aos="zoom-in-down" className='paymentsCaontainer'>
-            { <IncomingOrderModal open={open} close={setOpen} refresh={getAllIncomingOrder} />}
+            { <IncomingOrderModal station={currentStation} open={open} close={setOpen} refresh={refresh} />}
+            { prints && <IncomingReport allOutlets={incomingOrder} open={prints} close={setPrints}/>}
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
@@ -128,41 +196,44 @@ const IncomingOrder = () => {
                         <Select
                             labelId="demo-select-small"
                             id="demo-select-small"
-                            value={10}
+                            value={entries}
                             sx={selectStyle2}
                         >
-                            <MenuItem value={10}>Show entries</MenuItem>
-                            <MenuItem value={20}>Twenty</MenuItem>
-                            <MenuItem value={30}>Thirty</MenuItem>
+                            <MenuItem style={menu} value={10}>Show entries</MenuItem>
+                            <MenuItem onClick={()=>{entriesMenu(20, 15)}} style={menu} value={20}>15 entries</MenuItem>
+                            <MenuItem onClick={()=>{entriesMenu(30, 30)}} style={menu} value={30}>30 entries</MenuItem>
+                            <MenuItem onClick={()=>{entriesMenu(40, 100)}} style={menu} value={40}>100 entries</MenuItem>
                         </Select>
                     </div>
-                    <div style={{width:'210px'}} className='input-cont2'>
-                        <div className='second-select2'>
-                            <Button sx={{
-                                width:'100%', 
-                                height:'30px',  
-                                background: '#58A0DF',
-                                borderRadius: '3px',
-                                fontSize:'10px',
-                                '&:hover': {
-                                    backgroundColor: '#58A0DF'
-                                }
-                                }}  variant="contained"> Download PDF
-                            </Button>
-                        </div>
-                        <div className='second-select3'>
-                            <Button sx={{
-                                width:'100%', 
-                                height:'30px',  
-                                background: '#F36A4C',
-                                borderRadius: '3px',
-                                fontSize:'10px',
-                                '&:hover': {
-                                    backgroundColor: '#F36A4C'
-                                }
-                                }}  variant="contained"> Print
-                            </Button>
-                        </div>
+                    <div style={{width: mediaMatch.matches? '100%': '190px'}} className='input-cont2'>
+                        <Button sx={{
+                            width: mediaMatch.matches? '100%': '100px', 
+                            height:'30px',  
+                            background: '#58A0DF',
+                            borderRadius: '3px',
+                            fontSize:'10px',
+                            display: mediaMatch.matches && 'none',
+                            marginTop: mediaMatch.matches? '10px': '0px',
+                            '&:hover': {
+                                backgroundColor: '#58A0DF'
+                            }
+                            }}  variant="contained"> History
+                        </Button>
+                        <Button sx={{
+                            width: mediaMatch.matches? '100%': '80px', 
+                            height:'30px',  
+                            background: '#F36A4C',
+                            borderRadius: '3px',
+                            fontSize:'10px',
+                            display: mediaMatch.matches && 'none',
+                            marginTop: mediaMatch.matches? '10px': '0px',
+                            '&:hover': {
+                                backgroundColor: '#F36A4C'
+                            }
+                            }}  
+                            onClick={printReport}
+                            variant="contained"> Print
+                        </Button>
                     </div>
                 </div>
 
@@ -187,7 +258,7 @@ const IncomingOrder = () => {
                             <div style={place}>No Incoming Data</div>:
                             incomingOrder.map((data, index) => {
                                 return(
-                                    <div className='table-head2'>
+                                    <div key={index} className='table-head2'>
                                         <div className='column'>{index + 1}</div>
                                         <div className='column'>{data.dateCreated}</div>
                                         <div className='column'>{data.depotStation}</div>
@@ -195,7 +266,7 @@ const IncomingOrder = () => {
                                         <div className='column'>{data.product}</div>
                                         <div className='column'>{data.quantity}</div>
                                         <div className='column'>{data.productOrderID}</div>
-                                        <div className='column'>{data.TruckNo}</div>
+                                        <div className='column'>{data.truckNo}</div>
                                         <div className='column'>{data.wayBillNo}</div>
                                         <div className='column'>{data.divertStatus}</div>
                                     </div>
@@ -206,11 +277,13 @@ const IncomingOrder = () => {
                 </div>
 
                 <div className='footer'>
-                    <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>Showing 1 to 11 of 38 entries</div>
+                    <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>
+                        Showing {((skip + 1) * limit) - (limit-1)} to {(skip + 1) * limit} of {total} entries
+                    </div>
                     <div className='nav'>
-                        <button className='but'>Previous</button>
-                        <div className='num'>1</div>
-                        <button className='but2'>Next</button>
+                        <button onClick={prevPage} className='but'>Previous</button>
+                        <div className='num'>{skip + 1}</div>
+                        <button onClick={nextPage} className='but2'>Next</button>
                     </div>
                 </div>
             </div>

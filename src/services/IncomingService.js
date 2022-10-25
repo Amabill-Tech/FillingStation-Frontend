@@ -16,7 +16,7 @@ const IncomingService = {
     getAllIncoming: (data) => {
         return APIs.post('/incoming-order/allRecords', data)
         .then(({data}) => {
-            return data.incoming;
+            return data;
         })
          .catch(err => {
             console.log("Auth service err", err);

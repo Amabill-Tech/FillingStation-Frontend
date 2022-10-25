@@ -48,7 +48,8 @@ const IncomingOrderModal = (props) => {
             productOrderID: productOrderID,
             truckNo: truckNo,
             wayBillNo: wayBillNo,
-            organizationID: user._id
+            outletID: props.station._id,
+            organizationID: props.station.organisation
         }
 
         IncomingService.createIncoming(payload).then((data) => {
