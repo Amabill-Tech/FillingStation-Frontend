@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import '../../styles/recordSales.scss';
 import Button from '@mui/material/Button';
 import { Switch, Route } from 'react-router-dom';
@@ -7,8 +7,15 @@ import LPO from '../RecordSales/LPO';
 import Expenses from '../RecordSales/Expenses';
 import Payments from '../RecordSales/Payment';
 import TextField from '@mui/material/TextField';
+import OutletService from '../../services/outletService';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllStations } from '../../store/actions/outlet';
 
 const RecordSales = (props) => {
+    const dispatch = useDispatch();
+    const user = useSelector(state => state.authReducer.user);
+    const pumpList = useSelector(state => state.outletReducer.pumpList);
+    const [currentStation, setCurrentStation] = useState({});
 
     const handleTabs = (data) => {
         if(data === 'pump'){
@@ -21,6 +28,7 @@ const RecordSales = (props) => {
             props.history.push('/home/record-sales/payment');
         }
     }
+
     return(
         <div data-aos="zoom-in-down" className='salesContainer'>
             <div className='inner'>

@@ -38,9 +38,9 @@ const Pump = (props) => {
         });
 
         OutletService.getAllOutletTanks(payload).then(data => {
-            dispatch(getAllOutletTanks(data));
+            dispatch(getAllOutletTanks(data.stations));
         });
-    }, [location.state.state._id, location.state.state.organisation, dispatch, pumpList]);
+    }, [location.state.state._id, location.state.state.organisation, dispatch]);
 
     useEffect(()=>{
         getAllStationPumps();

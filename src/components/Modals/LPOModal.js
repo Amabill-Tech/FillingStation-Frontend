@@ -44,7 +44,8 @@ const LPOModal = (props) => {
             DPK: DPK,
             totalAmount: total,
             paymentStructure: productType,
-            organizationID: user._id
+            outletID: props.station._id,
+            organizationID: props.station.organisation
         }
 
         LPOService.createLPO(payload).then((data) => {

@@ -310,6 +310,120 @@
     }
 }
 
+.table-container{
+    width: 100%;
+    height: auto;
+    margin-top: 20px;
+
+    .table-head{
+        width: 100%;
+        //min-width: 1245px;
+        height: 35px;
+        background-color: #525252;
+        display: flex;
+        flex-direction: row;
+        border-radius: 4px;
+
+        .column{
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-family: 'Nunito-Regular';
+            font-size: 14px;
+        }
+    }
+
+    .table-head2{
+        width: 100%;
+        height: 50px;
+        background-color: #EDEDED;
+        display: flex;
+        flex-direction: row;
+        border-radius: 4px;
+        margin-top: 5px;
+
+        .column{
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-family: 'Nunito-Regular';
+            font-size: 14px;
+
+            .actions{
+                width: 100px;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
+
+        
+    }
+}
+
+.footer{
+    width: 100%;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    .nav{
+        height: 30px;
+        display: flex;
+        flex-direction: row;
+
+        .but{
+            width: 60px;
+            border: 1px solid #000;
+            border-right-color: transparent;
+            border-radius: 0px;
+            font-size: 12px;
+        }
+
+        .but2{
+            width: 60px;
+            border: 1px solid #000;
+            border-left-color: transparent;
+            border-radius: 0px;
+            font-size: 12px;
+        }
+
+        .num{
+            width: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #000;
+            background-color: #06805B;
+            color: #fff;
+        }
+    }
+}
+
+.lposales{
+    display: flex;
+    flex-direction: column;
+}
+
+.toools{
+    width: 100%;
+    height: 35px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
 @media (max-width: 1250px){
     .paymentsCaontainer{
         margin-top: 80px;
@@ -332,6 +446,18 @@
                     width: 1245px;
                 }
             }
+        }
+    }
+
+    .table-container{
+        overflow-x: scroll;
+
+        .table-head{
+            width: 1245px;
+        }
+
+        .table-head2{
+            width: 1245px;
         }
     }
 }

@@ -28,6 +28,7 @@ const Tank = (props) => {
     const open = useSelector(state => state.outletReducer.openModal);
     const tankList = useSelector(state => state.outletReducer.tankList);
     const dispatch = useDispatch();
+    console.log(typeof tankList, 'tanks in here')
 
     const handleAddTanks = () => {
         dispatch(openModal(2));
@@ -39,7 +40,7 @@ const Tank = (props) => {
             outletID: location.state.state._id
         }
         OutletService.getAllOutletTanks(payload).then(data => {
-            dispatch(getAllOutletTanks(data));
+            dispatch(getAllOutletTanks(data.stations));
         });
     }, [location.state.state._id, location.state.state.organisation, dispatch]);
 

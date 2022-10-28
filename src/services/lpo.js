@@ -16,7 +16,29 @@ const LPOService = {
     getAllLPO: (data) => {
         return APIs.post('/lpo/allRecords', data)
         .then(({data}) => {
-            return data.lpo;
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        });
+    },
+
+    createLPOSales: (data) => {
+        return APIs.post('/lpoSales/create', data)
+        .then(({data}) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        });
+    },
+
+    getAllLPOSales: (data) => {
+        return APIs.post('/lpoSales/allRecords', data)
+        .then(({data}) => {
+            return data;
         })
          .catch(err => {
             console.log("Auth service err", err);
