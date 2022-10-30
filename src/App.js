@@ -36,6 +36,7 @@ function App() {
           <Route path='/home/regulatory' component={HomeScreen} />
           <Route path='/home/analysis' component={HomeScreen} />
           <Route path='/home/lpo' component={HomeScreen} />
+          <Route path='/home/lpo/list' component={HomeScreen} />
           <Route path='/home/supply' component={HomeScreen} />
           <Route path='/home/tank' component={HomeScreen} />
           <Route path='/home/settings' component={HomeScreen} />

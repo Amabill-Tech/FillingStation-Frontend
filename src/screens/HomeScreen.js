@@ -69,6 +69,7 @@ const HomeScreen = ({history}) => {
                 '/home/record-sales/payment': 'Payment',
                 '/home/analysis': 'Analysis',
                 '/home/lpo': 'LPO',
+                '/home/lpo/list': 'LPO',
                 '/home/product-orders': 'Product Orders',
                 '/home/inc-orders': 'Incoming Orders',
                 '/home/supply': 'Supply',
@@ -290,7 +291,10 @@ const HomeScreen = ({history}) => {
                         <Analysis/>
                     </Route>
                     <Route path='/home/lpo'>
-                        <LPO/>
+                        <LPO 
+                            history={history}
+                            activeRoute={activeRoute}
+                        />
                     </Route>
                     <Route path='/home/supply'>
                         <Supply/>

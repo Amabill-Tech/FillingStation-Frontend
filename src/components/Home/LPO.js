@@ -6,17 +6,21 @@ import Button from '@mui/material/Button';
 import LPOModal from '../Modals/LPOModal';
 import LPOService from '../../services/lpo';
 import { useSelector } from 'react-redux';
-import { createLPO } from '../../store/actions/lpo';
+import { createLPO, searchLPO } from '../../store/actions/lpo';
 import { useDispatch } from 'react-redux';
 import OutletService from '../../services/outletService';
 import { getAllStations } from '../../store/actions/outlet';
 import { OutlinedInput } from '@mui/material';
 import edit2 from '../../assets/edit2.png';
 import eyes from '../../assets/eyes.png';
+import LPORateModal from '../Modals/SetLPORate';
+import { Route, Switch } from 'react-router-dom';
+import ListLPO from '../LPO/ListLPO';
+import LPOReport from '../Reports/LpoReport';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 
-const LPO = () => {
+const LPO = (props) => {
 
     const [lpo, setLpo] = React.useState(false);
     const user = useSelector(state => state.authReducer.user);
@@ -32,6 +36,8 @@ const LPO = () => {
     const [total, setTotal] = useState(0);
     const [prints, setPrints] = useState(false);
     const [viewLPO, setViewLpo] = useState(false);
+    const [priceModal, setPriceModal] = useState(false);
+    const [currentLPO, setCurrentLPO] = useState();
 
     const openModal = () => {
         setLpo(true);
@@ -101,7 +107,7 @@ const LPO = () => {
     }
 
     const searchTable = (value) => {
-        //dispatch(searchProduct(value));
+        dispatch(searchLPO(value));
     }
 
     const printReport = () => {
@@ -128,15 +134,22 @@ const LPO = () => {
         refresh();
     }
 
-    const openLPOSales = () => {
-        setViewLpo(true);
+    const openLPOSales = (data) => {
+        props.history.push('/home/lpo/list', {state: data});
+    }
+
+    const createPrice = (data) => {
+        setPriceModal(true);
+        setCurrentLPO(data);
     }
 
     return(
         <React.Fragment>
-            {viewLPO ||
-                <div data-aos="zoom-in-down" className='paymentsCaontainer'>
-                    {<LPOModal station = {currentStation} open={lpo} close={setLpo} refresh={refresh}/>}
+            <div data-aos="zoom-in-down" className='paymentsCaontainer'>
+                {<LPOModal station = {currentStation} open={lpo} close={setLpo} refresh={refresh}/>}
+                {<LPORateModal currentLPO={currentLPO} station ={currentStation} open={priceModal} close={setPriceModal} refresh={refresh} />}
+                { prints && <LPOReport allOutlets={lpos} open={prints} close={setPrints}/>}
+                { props.activeRoute.split('/').length === 3 &&
                     <div className='inner-pay'>
                         <div className='action'>
                             <div style={{width:'150px'}} className='butt2'>
@@ -278,7 +291,7 @@ const LPO = () => {
                                         backgroundColor: '#F36A4C'
                                     }
                                     }}  
-                                    //onClick={printReport}
+                                    onClick={printReport}
                                     variant="contained"> Print
                                 </Button>
                             </div>
@@ -311,20 +324,20 @@ const LPO = () => {
                                                 <div className='column'>{data.personOfContact}</div>
                                                 <div style={{display:'flex', flexDirection:'column', alignItems:'center'}} className='column'>
                                                     {data.PMS}
-                                                    <span style={{color:'green', fontSize:'12px'}}>{data.PMSRate === "pending"? 'N 0. 000': data.PMSRate}</span>
+                                                    <span style={{color:'green', fontSize:'12px'}}>{data.PMSRate === "pending"? 'N 0. 000': 'NGN '+ String(Number(data.PMSRate) * Number(data.PMS))}</span>
                                                 </div>
                                                 <div style={{display:'flex', flexDirection:'column', alignItems:'center'}} className='column'>
                                                     {data.AGO}
-                                                    <span style={{color:'green', fontSize:'12px'}}>{data.AGORate === "pending"? 'N 0. 000': data.AGORate}</span>
+                                                    <span style={{color:'green', fontSize:'12px'}}>{data.AGORate === "pending"? 'N 0. 000': 'NGN '+ String(Number(data.AGORate) * Number(data.AGO))}</span>
                                                 </div>
                                                 <div style={{display:'flex', flexDirection:'column', alignItems:'center'}} className='column'>
                                                     {data.DPK}
-                                                    <span style={{color:'green', fontSize:'12px'}}>{data.DPKRate === "pending"? 'N 0. 000': data.DPKRate}</span>
+                                                    <span style={{color:'green', fontSize:'12px'}}>{data.DPKRate === "pending"? 'N 0. 000': 'NGN '+ String(Number(data.DPKRate) * Number(data.DPK))}</span>
                                                 </div>
                                                 <div className='column'>{data.paymentStructure}</div>
                                                 <div className='column'>
-                                                    <img onClick={openLPOSales} style={{width:'28px', height:'28px'}} src={eyes} alt="icon" />
-                                                    <img style={{width:'28px', height:'28px', marginLeft:'10px'}} src={edit2} alt="icon" />
+                                                    <img onClick={()=>{openLPOSales(data)}} style={{width:'28px', height:'28px'}} src={eyes} alt="icon" />
+                                                    <img onClick={()=>{createPrice(data)}} style={{width:'28px', height:'28px', marginLeft:'10px'}} src={edit2} alt="icon" />
                                                 </div>
                                             </div> 
                                         )
@@ -381,120 +394,15 @@ const LPO = () => {
                             </div>
                         </div>
                     </div>
-                </div>
-            }
-
-            {viewLPO &&
-                <div data-aos="zoom-in-down" style={{display:'flex', flexDirection:'column', padding:'10px'}} className='paymentsCaontainer'>
-                    <div className='toools'>
-                        <div>
-                            <OutlinedInput 
-                                sx={{
-                                    width:'100%',
-                                    height: '35px',  
-                                    background:'#EEF2F1', 
-                                    border:'1px solid #777777',
-                                    fontSize:'12px',
-                                }} 
-                                type='text'
-                                placeholder="Search" 
-                            />
-                        </div>
-                        <div>
-                            <div style={{width: mediaMatch.matches? '100%': '330px', display:'flex', justifyContent:'space-between', alignItems:'center'}} className='input-cont2'>
-                                <Select
-                                    labelId="demo-select-small"
-                                    id="demo-select-small"
-                                    value={entries}
-                                    sx={{...selectStyle2, 
-                                        width:'130px',
-                                        height:'32px',
-                                        display: mediaMatch.matches && 'none',
-                                    }}
-                                >
-                                    <MenuItem style={menu} value={10}>Show entries</MenuItem>
-                                    <MenuItem onClick={()=>{entriesMenu(20, 15)}} style={menu} value={20}>15 entries</MenuItem>
-                                    <MenuItem onClick={()=>{entriesMenu(30, 30)}} style={menu} value={30}>30 entries</MenuItem>
-                                    <MenuItem onClick={()=>{entriesMenu(40, 100)}} style={menu} value={40}>100 entries</MenuItem>
-                                </Select>
-                                <Button sx={{
-                                    width: mediaMatch.matches? '100%': '100px', 
-                                    height:'30px',  
-                                    background: '#58A0DF',
-                                    borderRadius: '3px',
-                                    fontSize:'10px',
-                                    display: mediaMatch.matches && 'none',
-                                    marginTop: mediaMatch.matches? '10px': '0px',
-                                    '&:hover': {
-                                        backgroundColor: '#58A0DF'
-                                    }
-                                    }}  variant="contained"> History
-                                </Button>
-                                <Button sx={{
-                                    width: mediaMatch.matches? '100%': '80px', 
-                                    height:'30px',  
-                                    background: '#F36A4C',
-                                    borderRadius: '3px',
-                                    fontSize:'10px',
-                                    display: mediaMatch.matches && 'none',
-                                    marginTop: mediaMatch.matches? '10px': '0px',
-                                    '&:hover': {
-                                        backgroundColor: '#F36A4C'
-                                    }
-                                    }}  
-                                    //onClick={printReport}
-                                    variant="contained"> Print
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div style={{marginTop:'10px'}} className='table-container'>
-                        <div className='table-head'>
-                            <div className='column'>S/N</div>
-                            <div className='column'>Company Name</div>
-                            <div className='column'>Address</div>
-                            <div className='column'>Person of Contact</div>
-                            <div className='column'>PMS Limit</div>
-                            <div className='column'>AGO Limit</div>
-                            <div className='column'>DPK Limit</div>
-                            <div className='column'>Payment Structure</div>
-                        </div>
-
-                        <div className='row-container'>
-                            {
-                                lpos.length === 0?
-                                <div style={place}>No LPO Data </div>:
-                                lpos.map((data, index) => {
-                                    return(
-                                        <div className='table-head2'>
-                                            <div className='column'>{index + 1}</div>
-                                            <div className='column'>{data.companyName}</div>
-                                            <div className='column'>{data.address}</div>
-                                            <div className='column'>{data.personOfContact}</div>
-                                            <div className='column'>{data.PMS}</div>
-                                            <div className='column'>{data.AGO}</div>
-                                            <div className='column'>{data.DPK}</div>
-                                            <div className='column'>{data.paymentStructure}</div>
-                                        </div> 
-                                    )
-                                })
-                            } 
-                        </div>
-                    </div>  
-
-                    <div className='footer'>
-                        <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>
-                            Showing {((skip + 1) * limit) - (limit-1)} to {(skip + 1) * limit} of {total} entries
-                        </div>
-                        <div className='nav'>
-                            <button onClick={prevPage} className='but'>Previous</button>
-                            <div className='num'>{skip + 1}</div>
-                            <button onClick={nextPage} className='but2'>Next</button>
-                        </div>
-                    </div>     
-                </div>
-            }
+                }
+                { props.activeRoute.split('/').length === 4 &&
+                    <Switch>
+                        <Route path='/home/lpo/list'>
+                            <ListLPO/>
+                        </Route>
+                    </Switch>
+                }
+            </div>
         </React.Fragment>
     )
 }

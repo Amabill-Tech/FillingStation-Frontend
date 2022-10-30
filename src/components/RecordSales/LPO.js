@@ -23,7 +23,6 @@ const LPO = () => {
     const dispatch = useDispatch();
     const [currentStation, setCurrentStation] = useState({});
     const [currentPump, setCurrentPump] = useState({});
-    const [currentTank, setCurrentTank] = useState({});
     const [defaultState, setDefault] = useState(0);
     const [defaultState2, setDefault2] = useState(0);
     const pumpList = useSelector(state => state.outletReducer.pumpList);
@@ -35,7 +34,7 @@ const LPO = () => {
     const camera = useRef();
     const gallery = useRef();
 
-    const [accountName, setAccountName] = useState('');
+    const [accountName, setAccountName] = useState({});
     const [product, setProduct] = useState('');
     const [truckNo, setTruckNo] = useState('');
     const [litre, setLitre] = useState('');
@@ -60,8 +59,7 @@ const LPO = () => {
 
     const changeMenu2 = (index, item ) => {
         setDefault2(index);
-        setAccountName(item.companyName);
-        console.log(item, 'lpo account')
+        setAccountName(item);
     }
 
     const getAllStationData = useCallback(() => {
@@ -89,7 +87,6 @@ const LPO = () => {
         getAllStationData()
     }, [getAllStationData])
 
-    console.log('one tank', oneTank)
 
     const selectedPump = (index, item) => {
         setSelected(index);
@@ -181,12 +178,13 @@ const LPO = () => {
             if((detail)) return swal("Warning!", "Tank deadstock level reached!", "info");
 
             const payload = {
-                accountName: accountName,
+                accountName: accountName.companyName,
                 productType: product,
                 truckNo: truckNo,
                 litre: litre,
                 amountRate: amount,
                 attachApprovalCam: cam,
+                lpoID: accountName._id,
                 outletID: currentStation._id,
                 organizationID: currentStation.organisation,
             }
@@ -232,12 +230,13 @@ const LPO = () => {
             if((detail)) return swal("Warning!", "Tank deadstock level reached!", "info");
 
             const formData = new FormData();
-            formData.append("accountName", accountName);
+            formData.append("accountName", accountName.companyName);
             formData.append("productType", product);
             formData.append("truckNo", truckNo);
             formData.append("litre", litre);
             formData.append("amountRate", amount);
             formData.append("attachApprovalGall", gall);
+            formData.append("lpoID", accountName._id);
             formData.append("outletID", currentStation._id);
             formData.append("organizationID", currentStation.organisation);
             const config = {
