@@ -9,7 +9,8 @@ import {
     OUTLET_DATA,
     PUMP_LIST,
     SEARCH_USERS,
-    ONE_TANK
+    ONE_TANK,
+    ONE_STATION
 } from '../types'
 
 const initialState = {
@@ -22,6 +23,7 @@ const initialState = {
     searchData: [],
     pumpList: [],
     oneTank: {},
+    oneStation: {},
 }
 
 const outletReducer = (state = initialState, action) => {
@@ -108,6 +110,13 @@ const outletReducer = (state = initialState, action) => {
             return {
                 ...state,
                 oneTank: payload
+            }
+        }
+
+        case ONE_STATION: {
+            return {
+                ...state,
+                oneStation: payload
             }
         }
 
