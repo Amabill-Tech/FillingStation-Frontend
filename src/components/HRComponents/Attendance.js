@@ -284,7 +284,7 @@ const Attendance = () => {
                         </div>
                     </div>
                     <div style={{width:'140px'}} className='butt'>
-                        {user.userType === "staff" &&
+                        {
                             <Button sx={{
                                 width:'100%', 
                                 height:'30px',  
