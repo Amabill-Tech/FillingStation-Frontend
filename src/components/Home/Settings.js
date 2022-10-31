@@ -21,35 +21,35 @@ const OutletInfo = (props) => {
     const oneStation = useSelector(state => state.outletReducer.oneStation);
     const [id, setID] = useState('');
     const [licenseCode, setLicenseCode] = useState('');
-    const [outletName, setOutletName] = useState(oneStation.outletName);
-    const [noOfPump, setNoOfPump] = useState(oneStation.noOfPumps);
-    const [noOfTank, setNoOfTank] = useState(oneStation.noOfTanks);
-    const [state, setState] = useState(oneStation.state);
-    const [town, setTown] = useState(oneStation.city);
-    const [lga, setLga] = useState(oneStation.lga);
-    const [street, setStreet] = useState(oneStation.area);
+    const [outletName, setOutletName] = useState('');
+    const [noOfPump, setNoOfPump] = useState('');
+    const [noOfTank, setNoOfTank] = useState('');
+    const [state, setState] = useState('');
+    const [town, setTown] = useState('');
+    const [lga, setLga] = useState('');
+    const [street, setStreet] = useState('');
     const [loadingSpinner, setLoadingSpinner] = useState(false);
 
     useEffect(()=>{
-        setLicenseCode(oneStation.licenseCode);
-        setOutletName(oneStation.outletName);
-        setNoOfPump(oneStation.noOfPumps);
-        setNoOfTank(oneStation.noOfTanks);
-        setState(oneStation.state);
-        setTown(oneStation.city);
-        setLga(oneStation.lga);
-        setStreet(oneStation.area);
-        setID(oneStation._id);
+        setLicenseCode(oneStation?.licenseCode);
+        setOutletName(oneStation?.outletName);
+        setNoOfPump(oneStation?.noOfPumps);
+        setNoOfTank(oneStation?.noOfTanks);
+        setState(oneStation?.state);
+        setTown(oneStation?.city);
+        setLga(oneStation?.lga);
+        setStreet(oneStation?.area);
+        setID(oneStation?._id);
     }, [
-        oneStation.licenseCode,
-        oneStation.outletName,
-        oneStation.noOfPumps,
-        oneStation.noOfTanks,
-        oneStation.state,
-        oneStation.city,
-        oneStation.lga,
-        oneStation.area,
-        oneStation._id
+        oneStation?.licenseCode,
+        oneStation?.outletName,
+        oneStation?.noOfPumps,
+        oneStation?.noOfTanks,
+        oneStation?.state,
+        oneStation?.city,
+        oneStation?.lga,
+        oneStation?.area,
+        oneStation?._id
     ]);
 
     const updateOutlet = () => {
@@ -646,6 +646,7 @@ const Settings = (props) => {
         OutletService.getAllOutletStations({organisation: user.userType === "superAdmin"? user._id : user.organisationID}).then(data => {
             dispatch(getAllStations(data.station));
             dispatch(oneStation(data.station[0]));
+            setDefault(1);
         });
     }, [user.organisationID, user._id, user.userType, dispatch]);
 
@@ -727,10 +728,11 @@ const Settings = (props) => {
                                 value={defaultState}
                                 sx={selectStyle2}
                             >
+                                <MenuItem style={menu} value={0}>Select Station</MenuItem>
                                 {
                                     allOutlets.map((item, index) => {
                                         return(
-                                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index, item)}} value={index}>{item.outletName}</MenuItem>
+                                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index+1}>{item.outletName}</MenuItem>
                                         )
                                     })  
                                 }
