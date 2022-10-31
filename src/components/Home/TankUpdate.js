@@ -33,7 +33,7 @@ const TankUpdate = () => {
     }
 
     const getTankData = useCallback(() => {
-        OutletService.getAllOutletStations({organisation: user.organisationID}).then(data => {
+        OutletService.getAllOutletStations({organisation: user.userType === "superAdmin"? user._id : user.organisationID}).then(data => {
             dispatch(getAllStations(data.station));
             setCurrentStation(data.station[0]);
             return data.station[0]

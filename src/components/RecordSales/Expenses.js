@@ -11,6 +11,7 @@ import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux';
 import OutletService from '../../services/outletService';
 import { getAllStations } from '../../store/actions/outlet';
+import config from '../../constants';
 
 const Expenses = () => {
 
@@ -30,7 +31,7 @@ const Expenses = () => {
     const [expenseAmount, setExpenseAmount] = useState('');
 
     const getAllStationData = useCallback(() => {
-        OutletService.getAllOutletStations({organisation: user.organisationID}).then(data => {
+        OutletService.getAllOutletStations({organisation: user.userType === "superAdmin"? user._id : user.organisationID}).then(data => {
             dispatch(getAllStations(data.station));
             setCurrentStation(data.station[0]);
             return data.station[0]
@@ -110,7 +111,7 @@ const Expenses = () => {
                 organisationID: currentStation.organisation,
             }
 
-            const url = "http://localhost:5000/360-station/api/expenses/create";
+            const url = config.BASE_URL + "/360-station/api/expenses/create";
             const config = {
                 headers: {
                     "content-type": "multipart/form-data",
@@ -145,7 +146,7 @@ const Expenses = () => {
                 }
             };
 
-            const url = "http://localhost:5000/360-station/api/expenses/create";
+            const url = config.BASE_URL + "/360-station/api/expenses/create";
             axios.post(url, formData, config).then((data) => {
                 console.log('form data', data);
             }).then(()=>{

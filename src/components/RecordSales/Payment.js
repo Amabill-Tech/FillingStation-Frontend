@@ -12,7 +12,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import OutletService from '../../services/outletService';
 import { getAllStations } from '../../store/actions/outlet';
 import swal from 'sweetalert';
-import axios from 'axios'
+import axios from 'axios';
+import config from '../../constants';
 
 const Payments = () => {
 
@@ -35,7 +36,7 @@ const Payments = () => {
     const [gall, setGall] = useState({});
 
     const getAllStationData = useCallback(() => {
-        OutletService.getAllOutletStations({organisation: user.organisationID}).then(data => {
+        OutletService.getAllOutletStations({organisation: user.userType === "superAdmin"? user._id : user.organisationID}).then(data => {
             dispatch(getAllStations(data.station));
             setCurrentStation(data.station[0]);
             return data.station[0]
@@ -125,14 +126,14 @@ const Payments = () => {
                 organisationID: currentStation.organisation,
             }
 
-            const url = "http://localhost:5000/360-station/api/payment/create";
-            const config = {
+            const url = config.BASE_URL + "/360-station/api/payment/create";
+            const httpConfig = {
                 headers: {
                     "content-type": "multipart/form-data",
                     "Authorization": "Bearer "+ localStorage.getItem('token'),
                 }
             };
-            axios.post(url, payload, config).then((data) => {
+            axios.post(url, payload, httpConfig).then((data) => {
                 console.log('form data', data);
             }).then(()=>{
                 setCam('');
@@ -156,15 +157,15 @@ const Payments = () => {
             formData.append("attachApproval", gall);
             formData.append("outletID", currentStation._id);
             formData.append("organisationID", currentStation.organisation);
-            const config = {
+            const httpConfig = {
                 headers: {
                     "content-type": "multipart/form-data",
                     "Authorization": "Bearer "+ localStorage.getItem('token'),
                 }
             };
 
-            const url = "http://localhost:5000/360-station/api/payment/create";
-            axios.post(url, formData, config).then((data) => {
+            const url = config.BASE_URL + "/360-station/api/payment/create";
+            axios.post(url, formData, httpConfig).then((data) => {
                 console.log('form data', data);
             }).then(()=>{
                 setCam('');
@@ -193,14 +194,14 @@ const Payments = () => {
                 organisationID: currentStation.organisation,
             }
 
-            const url = "http://localhost:5000/360-station/api/pos-payment/create";
-            const config = {
+            const url = config.BASE_URL + "/360-station/api/pos-payment/create";
+            const httpConfig = {
                 headers: {
                     "content-type": "multipart/form-data",
                     "Authorization": "Bearer "+ localStorage.getItem('token'),
                 }
             };
-            axios.post(url, payload, config).then((data) => {
+            axios.post(url, payload, httpConfig).then((data) => {
                 console.log('form data', data);
             }).then(()=>{
                 setCam('');
@@ -224,15 +225,15 @@ const Payments = () => {
             formData.append("attachApproval", gall);
             formData.append("outletID", currentStation._id);
             formData.append("organisationID", currentStation.organisation);
-            const config = {
+            const httpConfig = {
                 headers: {
                     "content-type": "multipart/form-data",
                     "Authorization": "Bearer "+ localStorage.getItem('token'),
                 }
             };
 
-            const url = "http://localhost:5000/360-station/api/pos-payment/create";
-            axios.post(url, formData, config).then((data) => {
+            const url = config.BASE_URL + "/360-station/api/pos-payment/create";
+            axios.post(url, formData, httpConfig).then((data) => {
                 console.log('form data', data);
             }).then(()=>{
                 setCam('');

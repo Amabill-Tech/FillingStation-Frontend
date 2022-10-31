@@ -6,6 +6,7 @@ import LPOService from '../../services/lpo';
 import { useDispatch, useSelector } from 'react-redux';
 import { createLPOSales, searchLPOList } from '../../store/actions/lpo';
 import LPOSalesReport from '../Reports/LPOSales';
+import config from '../../constants';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 
@@ -176,7 +177,7 @@ const ListLPO = () => {
                                     <div className='column'>{data.litre}</div>
                                     <div className='column'>{data.amountRate}</div>
                                     <div className='column'>
-                                        <a href={'http://localhost:5000'+ data.attachApproval} target="_blank" rel="noreferrer">Attachment</a>
+                                        <a href={config.BASE_URL + data.attachApproval} target="_blank" rel="noreferrer">Attachment</a>
                                     </div>
                                 </div> 
                             )

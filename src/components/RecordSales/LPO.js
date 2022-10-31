@@ -16,6 +16,7 @@ import { createLPO } from '../../store/actions/lpo';
 import Camera, { IMAGE_TYPES } from 'react-html5-camera-photo';
 import swal from 'sweetalert';
 import axios from 'axios';
+import config from '../../constants';
 
 const LPO = () => {
 
@@ -63,7 +64,7 @@ const LPO = () => {
     }
 
     const getAllStationData = useCallback(() => {
-        OutletService.getAllOutletStations({organisation: user.organisationID}).then(data => {
+        OutletService.getAllOutletStations({organisation: user.userType === "superAdmin"? user._id : user.organisationID}).then(data => {
             dispatch(getAllStations(data.station));
             setCurrentStation(data.station[0]);
             return data.station[0]
@@ -189,14 +190,14 @@ const LPO = () => {
                 organizationID: currentStation.organisation,
             }
 
-            const url = "http://localhost:5000/360-station/api/lpoSales/create";
-            const config = {
+            const url = config.BASE_URL + "/360-station/api/lpoSales/create";
+            const httpConfig = {
                 headers: {
                     "content-type": "multipart/form-data",
                     "Authorization": "Bearer "+ localStorage.getItem('token'),
                 }
             };
-            axios.post(url, payload, config).then((data) => {
+            axios.post(url, payload, httpConfig).then((data) => {
                 console.log('form data', data);
             }).then(()=>{
                 swal("Success!", "LPO recorded successfully", "success"); 
@@ -239,15 +240,15 @@ const LPO = () => {
             formData.append("lpoID", accountName._id);
             formData.append("outletID", currentStation._id);
             formData.append("organizationID", currentStation.organisation);
-            const config = {
+            const httpConfig = {
                 headers: {
                     "content-type": "multipart/form-data",
                     "Authorization": "Bearer "+ localStorage.getItem('token'),
                 }
             };
 
-            const url = "http://localhost:5000/360-station/api/lpoSales/create";
-            axios.post(url, formData, config).then((data) => {
+            const url = config.BASE_URL + "/360-station/api/lpoSales/create";
+            axios.post(url, formData, httpConfig).then((data) => {
                 console.log('form data', data);
             }).then(()=>{
                 swal("Success!", "LPO recorded successfully", "success");

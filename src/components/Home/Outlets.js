@@ -24,6 +24,10 @@ import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import PrintOutLetsModal from '../Modals/PrintOutlets';
 import { useState } from 'react';
+import activeList from '../../assets/activeList.png';
+import inactiveList from '../../assets/inactiveList.png';
+import activeGrid from '../../assets/activeGrid.png';
+import inactiveGrid from '../../assets/inactiveGrid.png';
 
 const Outlets = (props) => {
 
@@ -33,6 +37,7 @@ const Outlets = (props) => {
     const dispatch = useDispatch();
     const [prints, setPrints] = useState(false);
     const tablePrints = useRef();
+    const [switchTabs, setSwitchTabs] = useState(false);
 
     const handleOpenModal = (value) => dispatch(openModal(value))
 
@@ -50,12 +55,12 @@ const Outlets = (props) => {
 
     const getAllStationData = useCallback(() => {
         const payload = {
-            organisation: user._id
+            organisation: user.userType === "superAdmin"? user._id : user.organisationID
         }
         OutletService.getAllOutletStations(payload).then(data => {
             dispatch(getAllStations(data.station));
         });
-    }, [user._id, dispatch]);
+    }, [user.organisationID, user.userType, user._id, dispatch]);
 
     useEffect(()=>{
         getAllStationData();
@@ -74,6 +79,10 @@ const Outlets = (props) => {
 
     const preview = () => {
         setPrints(true);
+    }
+
+    const changeSwitch = () => {
+        setSwitchTabs(!switchTabs);
     }
 
     return(
@@ -164,10 +173,16 @@ const Outlets = (props) => {
                                     <MenuItem value={30}>Thirty</MenuItem>
                                 </Select>
                             </div>
-                            <div style={{width:'210px'}} className='input-cont2'>
+                            <div style={{width:'265px'}} className='input-cont2'>
+                                <div style={{display:'flex', flexDirection:'row'}}>
+                                    {switchTabs || <img onClick={changeSwitch} style={{width:'30px', height:'30px', marginRight:'6px'}} src={activeList} alt="icon" />}
+                                    {switchTabs && <img onClick={changeSwitch} style={{width:'30px', height:'30px', marginRight:'6px'}} src={inactiveList} alt="icon" />}
+                                    {switchTabs || <img onClick={changeSwitch} style={{width:'30px', height:'30px', marginRight:'6px'}} src={inactiveGrid} alt="icon" />}
+                                    {switchTabs && <img onClick={changeSwitch} style={{width:'30px', height:'30px', marginRight:'6px'}} src={activeGrid} alt="icon" />}
+                                </div>
                                 <div className='second-select2'>
                                     <Button sx={{
-                                        width:'100%', 
+                                        width:'120px', 
                                         height:'30px',  
                                         background: '#58A0DF',
                                         borderRadius: '3px',
@@ -197,7 +212,8 @@ const Outlets = (props) => {
                             </div>
                         </div>
         
-                        <div ref={tablePrints} className="table-container">
+                        {switchTabs ||
+                            <div ref={tablePrints} className="table-container">
                             <div className='table-head'>
                                 <div className='column'>S/N</div>
                                 <div className='column'>Licence Code</div>
@@ -237,7 +253,63 @@ const Outlets = (props) => {
                                     )
                                 })
                             }
-                        </div>
+                            </div>
+                        }
+
+                        {switchTabs &&
+                            <div className="gridCard">
+                                <div className='cardItem'>
+                                    <div className='inner'>
+                                        <div className='row'>
+                                            <div className='rowdata'>
+                                                License Code
+                                            </div>
+                                            <div className='detail'>Hello data</div>
+                                        </div>
+                                        <div style={{marginTop:'10px'}} className='row'>
+                                            <div className='rowdata'>
+                                                Name
+                                            </div>
+                                            <div className='detail'>Hello data</div>
+                                        </div>
+                                        <div style={{marginTop:'10px'}} className='row'>
+                                            <div className='rowdata'>
+                                                Outlet Code
+                                            </div>
+                                            <div className='detail'>Hello data</div>
+                                        </div>
+                                        <div style={{marginTop:'10px'}} className='row'>
+                                            <div className='rowdata'>
+                                                No Of Tanks
+                                            </div>
+                                            <div className='detail'>Hello data</div>
+                                        </div>
+                                        <div style={{marginTop:'10px'}} className='row'>
+                                            <div className='rowdata'>
+                                                No Of Pumps
+                                            </div>
+                                            <div className='detail'>Hello data</div>
+                                        </div>
+                                        <div style={{marginTop:'10px'}} className='row'>
+                                            <div className='rowdata'>
+                                                Town/City
+                                            </div>
+                                            <div className='detail'>Hello data</div>
+                                        </div>
+                                        <div style={{marginTop:'10px'}} className='row'>
+                                            <div className='rowdata'>
+                                                Actions
+                                            </div>
+                                            <div className='detail'>
+                                                <img style={{width:'27px', height:'27px', marginRight:'10px'}} src={eye} alt="icon" />
+                                                <img style={{width:'27px', height:'27px', marginRight:'10px'}} src={filling} alt="icon" />
+                                                <img style={{width:'27px', height:'27px', marginRight:'10px'}} src={tan} alt="icon" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
         
                         <div className='footer'>
                             <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>Showing 1 to 11 of 38 entries</div>

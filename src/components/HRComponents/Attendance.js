@@ -46,7 +46,7 @@ const Attendance = () => {
 
         if(user.userType === 'staff'){
 
-            OutletService.getAllOutletStations({organisation: user.organisationID}).then(data => {
+            OutletService.getAllOutletStations({organisation: user.userType === "superAdmin"? user._id : user.organisationID}).then(data => {
                 dispatch(getAllStations(data.station));
                 return data.station[0]
             }).then((data)=>{

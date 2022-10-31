@@ -12,7 +12,7 @@ import PaymentService from '../../services/paymentService';
 import { createPayment, searchPayment } from '../../store/actions/payment';
 import ViewPayment from '../Modals/ViewPayment';
 import RegulatoryReports from '../Reports/RegulatoryReports';
-import { refresh } from 'aos';
+import config from '../../constants';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 
@@ -38,7 +38,7 @@ const Regulatory = () => {
     }
 
     const getTankData = useCallback(() => {
-        OutletService.getAllOutletStations({organisation: user.organisationID}).then(data => {
+        OutletService.getAllOutletStations({organisation: user.userType === "superAdmin"? user._id : user.organisationID}).then(data => {
             dispatch(getAllStations(data.station));
             setCurrentStation(data.station[0]);
             return data.station[0]
@@ -278,10 +278,10 @@ const Regulatory = () => {
                                         <div className='column'>{item.amount}</div>
                                         <div className='column'>{item.contactPerson}</div>
                                         <div className='column'>
-                                            <a href={'http://localhost:5000'+ item.attachCertificate} target="_blank" rel="noreferrer">DPRCertificate</a>
+                                            <a href={config.BASE_URL + item.attachCertificate} target="_blank" rel="noreferrer">DPRCertificate</a>
                                         </div>
                                         <div className='column'>
-                                            <a href={'http://localhost:5000'+ item.paymentReceipt} target="_blank" rel="noreferrer">DPRReceip</a>
+                                            <a href={config.BASE_URL + item.paymentReceipt} target="_blank" rel="noreferrer">DPRReceip</a>
                                         </div>
                                     </div> 
                                 )

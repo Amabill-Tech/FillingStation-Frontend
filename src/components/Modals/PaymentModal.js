@@ -14,6 +14,7 @@ import axios from 'axios';
 import '../../styles/lpo.scss';
 import { certificate, reciepts } from '../../store/actions/payment';
 import Camera,  { IMAGE_TYPES } from 'react-html5-camera-photo';
+import config from '../../constants';
 
 const PaymentModal = (props) => {
     const [loading, setLoading] = useState(false);
@@ -54,14 +55,14 @@ const PaymentModal = (props) => {
                 organizationID: props.station.organisation
             }
            
-            const url = "http://localhost:5000/360-station/api/register-payment/createBase64";
-            const config = {
+            const url = config.BASE_URL + "/360-station/api/register-payment/createBase64";
+            const httpConfig = {
                 headers: {
                     "content-type": "multipart/form-data",
                     "Authorization": "Bearer "+ localStorage.getItem('token'),
                 }
             };
-            axios.post(url, payload, config).then((data) => {
+            axios.post(url, payload, httpConfig).then((data) => {
                 console.log('form data', data);
             }).then(()=>{
                 setLoading(false);
@@ -95,7 +96,7 @@ const PaymentModal = (props) => {
                     "Authorization": "Bearer "+ localStorage.getItem('token'),
                 }
             };
-            const url = "http://localhost:5000/360-station/api/register-payment/create";
+            const url = config.BASE_URL + "/360-station/api/register-payment/create";
             axios.post(url, formData, config).then((data) => {
                 console.log('form data', data);
             }).then(()=>{

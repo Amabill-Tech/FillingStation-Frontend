@@ -2,9 +2,10 @@ import axios from 'axios';
 import store from '../store';
 import { logout, removeSpinner } from '../store/actions/auth';
 import swal from 'sweetalert';
+import config from '../constants';
 
 const APIs = axios.create({
-    baseURL: 'http://localhost:5000/360-station/api',
+    baseURL: config.BASE_URL + '/360-station/api',
     headers: {
         'Accept': 'application/json',
         'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
