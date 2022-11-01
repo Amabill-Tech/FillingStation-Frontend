@@ -141,7 +141,7 @@
                     justify-content: center;
                     color: #fff;
                     font-family: 'Nunito-Regular';
-                    font-size: 14px;
+                    font-size: 11px;
                 }
             }
 
@@ -163,7 +163,7 @@
                     justify-content: center;
                     color: #000;
                     font-family: 'Nunito-Regular';
-                    font-size: 14px;
+                    font-size: 11px;
 
                     .actions{
                         width: 100px;
@@ -333,7 +333,7 @@
             justify-content: center;
             color: #fff;
             font-family: 'Nunito-Regular';
-            font-size: 14px;
+            font-size: 11px;
         }
     }
 
@@ -355,7 +355,7 @@
             justify-content: center;
             color: #000;
             font-family: 'Nunito-Regular';
-            font-size: 14px;
+            font-size: 11px;
 
             .actions{
                 width: 100px;
@@ -432,7 +432,7 @@
                     width: 100%;
 
                     .column{
-                        font-size: 8px;
+                        font-size: 11px;
                     }
                 }
 
@@ -440,7 +440,7 @@
                     width: 100%;
 
                     .column{
-                        font-size: 8px;
+                        font-size: 11px;
                     }
                 }
             }
@@ -448,7 +448,7 @@
     }
 }
 
-@media (max-width: 1150px){
+@media (max-width: 1000px){
     .paymentsCaontainer{
         margin-top: 80px;
 
