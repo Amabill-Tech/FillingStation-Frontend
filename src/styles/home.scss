@@ -176,6 +176,18 @@
 @media (max-width: 1250px){
     .home-container{
         .side-bar{
+            width: 250px;
+
+            .inner-side-bar{
+                width: 95%;
+            }
+        }
+    }
+}
+
+@media (max-width: 1150px){
+    .home-container{
+        .side-bar{
             display: none;
         }
 
