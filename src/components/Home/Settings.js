@@ -447,6 +447,35 @@ const Logo = () => {
 }
 
 const Password = () => {
+    const user = useSelector(state => state.authReducer.user);
+    const dispatch = useDispatch();
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [loadingSpinner, setLoadingSpinner] = useState(false);
+
+    const changePassowrd = () => {
+        if(password === "") return swal("Warning!", "Password field cannot be empty", "info");
+        if(confirmPassword === "") return swal("Warning!", "Confirm password field cannot be empty", "info");
+        if(confirmPassword !== password) return swal("Warning!", "Password did not match", "info");
+        setLoadingSpinner(true);
+
+        const payload = {
+            id: user._id,
+            password: password
+        }
+
+        UserService.updateUserDarkMode(payload).then((data) => {
+            return data
+        }).then(data => {
+            UserService.getOneUser({id: data.user._id}).then(data => {
+                localStorage.setItem("user", JSON.stringify(data.user))
+                dispatch(updateUser(data.user));
+                setLoadingSpinner(false);
+                swal("Success!", "Password reset successfully!", "info");
+            })
+        })
+    }
+
     return(
         <div className='appearance'>
             <div style={{width:'200px', marginTop:'10px'}} className='app'>
@@ -462,7 +491,10 @@ const Password = () => {
                             marginTop:'5px', 
                             background:'#EEF2F1', 
                             border:'1px solid #777777'
-                        }} placeholder="" 
+                        }} 
+                        type="password"
+                        onChange={e => setPassword(e.target.value)}
+                        placeholder="" 
                     />
                 </div>
 
@@ -475,15 +507,11 @@ const Password = () => {
                             marginTop:'5px', 
                             background:'#EEF2F1', 
                             border:'1px solid #777777'
-                        }} placeholder="" 
+                        }} 
+                        type="password"
+                        onChange={e => setConfirmPassword(e.target.value)}
+                        placeholder="" 
                     />
-                </div>
-
-                <div style={{
-                    marginTop:'20px', 
-                    fontSize:'14px', 
-                    fontFamily:'Nunito-Regular'
-                    }} className='text-group'>Forgot password?
                 </div>
 
                 <div style={{marginTop:'20px'}} className='text-group'>
@@ -500,10 +528,24 @@ const Password = () => {
                                 backgroundColor: '#054834'
                             }
                         }}
+                        onClick={changePassowrd}
                     >
                         Save Changes
                     </Button>
                 </div>
+
+                {loadingSpinner &&
+                    <ThreeDots 
+                        height="60" 
+                        width="50" 
+                        radius="9"
+                        color="#076146" 
+                        ariaLabel="three-dots-loading"
+                        wrapperStyle={{}}
+                        wrapperClassName=""
+                        visible={true}
+                    />
+                }
             </div>
         </div>
     )
@@ -561,6 +603,34 @@ const IOSSwitch = styled((props) => (
 }));
 
 const Email = () => {
+    const [email, setEmail] = useState("");
+    const user = useSelector(state => state.authReducer.user);
+    const [loadingSpinner, setLoadingSpinner] = useState(false);
+    const dispatch = useDispatch();
+
+    const changeEmail = () => {
+        if(email === "") return swal("Warning!", "Email field cannot be empty", "info");
+        if(!email.includes('@')) return swal("Warning!", "Please put a valid email", "info");
+        if(!email.includes('.')) return swal("Warning!", "Please put a valid email", "info");
+        setLoadingSpinner(true);
+
+        const payload = {
+            id: user._id,
+            email: email
+        }
+
+        UserService.updateUserDarkMode(payload).then((data) => {
+            return data
+        }).then(data => {
+            UserService.getOneUser({id: data.user._id}).then(data => {
+                localStorage.setItem("user", JSON.stringify(data.user))
+                dispatch(updateUser(data.user));
+                setLoadingSpinner(false);
+                swal("Success!", "Email reset successfully!", "info");
+            })
+        })
+    }
+
     return(
         <div className='appearance'>
             <div style={{width:'200px', marginTop:'10px'}} className='app'>
@@ -574,17 +644,14 @@ const Email = () => {
                             width:'100%',
                             height: '35px', 
                             marginTop:'5px', 
+                            fontSize:'12px',
                             background:'#EEF2F1', 
                             border:'1px solid #777777'
-                        }} placeholder="" 
+                        }} 
+                        type="email"
+                        onChange={e => setEmail(e.target.value)}
+                        placeholder="" 
                     />
-                </div>
-
-                <div style={emailSwith} className='text-group'>
-                    <IOSSwitch sx={{ m: 1 }} defaultChecked />
-                    <div style={email}>
-                        Recieve notification and messages through this email
-                    </div>
                 </div>
 
                 <div style={{marginTop:'20px'}} className='text-group'>
@@ -601,10 +668,23 @@ const Email = () => {
                                 backgroundColor: '#054834'
                             }
                         }}
+                        onClick={changeEmail}
                     >
                         Save
                     </Button>
                 </div>
+                {loadingSpinner &&
+                    <ThreeDots 
+                        height="60" 
+                        width="50" 
+                        radius="9"
+                        color="#076146" 
+                        ariaLabel="three-dots-loading"
+                        wrapperStyle={{}}
+                        wrapperClassName=""
+                        visible={true}
+                    />
+                }
             </div>
         </div>
     )
@@ -693,7 +773,7 @@ const Settings = (props) => {
         OutletService.getAllOutletStations({organisation: user.userType === "superAdmin"? user._id : user.organisationID}).then(data => {
             dispatch(getAllStations(data.station));
             dispatch(oneStation(data.station[0]));
-            setDefault(1);
+            if(data.station.length === 0){setDefault(0)}else{setDefault(1);}
         });
     }, [user.organisationID, user._id, user.userType, dispatch]);
 
