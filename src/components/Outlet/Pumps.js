@@ -106,7 +106,11 @@ const Pump = (props) => {
     }
 
     const createPump = () => {
-        setOpen(true);
+        if(tankList.length === 0){
+            swal("Alert!", "No thank has been created yet", "info");
+        }else{
+            setOpen(true);
+        }
     }
 
     const CardItem = (props) => {
