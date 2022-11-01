@@ -690,7 +690,32 @@ const Email = () => {
     )
 }
 
-const DeleteOutlet = () => {
+const DeleteOutlet = (props) => {
+    const [station, setStation] = useState("");
+    const oneStation = useSelector(state => state.outletReducer.oneStation);
+    const [loadingSpinner, setLoadingSpinner] = useState(false);
+
+    useEffect(()=>{
+        setStation(oneStation?.outletName)
+    }, [oneStation.outletName]);
+
+    const deleteStation = () => {
+        if(station === "") return swal("Warning!", "Please select a station", "info");
+
+        setLoadingSpinner(true);
+
+        const payload = {
+            id: oneStation._id,
+        }
+
+        OutletService.deleteOutletStation(payload).then((data) => {
+            swal("Success!", "Outlet deleted successfully!", "info");
+        }).then(data => {
+            setLoadingSpinner(false);
+            props.refresh();
+        });
+    }
+
     return(
         <div className='appearance'>
             <div style={{width:'200px', marginTop:'10px'}} className='app'>
@@ -717,8 +742,12 @@ const DeleteOutlet = () => {
                             height: '35px', 
                             marginTop:'5px', 
                             background:'#EEF2F1', 
-                            border:'1px solid #777777'
-                        }} placeholder="" 
+                            border:'1px solid #777777',
+                            fontSize:'12px',
+                        }}
+                        disabled={true} 
+                        value={station}
+                        placeholder="" 
                     />
                 </div>
 
@@ -736,10 +765,23 @@ const DeleteOutlet = () => {
                                 backgroundColor: '#054834'
                             }
                         }}
+                        onClick={deleteStation}
                     >
                         Save
                     </Button>
                 </div>
+                {loadingSpinner &&
+                    <ThreeDots 
+                        height="60" 
+                        width="50" 
+                        radius="9"
+                        color="#076146" 
+                        ariaLabel="three-dots-loading"
+                        wrapperStyle={{}}
+                        wrapperClassName=""
+                        visible={true}
+                    />
+                }
             </div>
         </div>
     )
@@ -870,7 +912,7 @@ const Settings = (props) => {
                         { nav === 2 && <Logo />}
                         { nav === 3 && <Password />}
                         { nav === 4 && <Email />}
-                        { nav === 5 && <DeleteOutlet />}
+                        { nav === 5 && <DeleteOutlet refresh={getStationData} />}
                     </div>
                 </div>
             </div>
