@@ -90,14 +90,14 @@ const PaymentModal = (props) => {
             formData.append("paymentReceipt", reciept);
             formData.append("outletID", props.station._id);
             formData.append("organizationID", props.station.organisation);
-            const config = {
+            const httpConfig = {
                 headers: {
                     "content-type": "multipart/form-data",
                     "Authorization": "Bearer "+ localStorage.getItem('token'),
                 }
             };
             const url = config.BASE_URL + "/360-station/api/register-payment/create";
-            axios.post(url, formData, config).then((data) => {
+            axios.post(url, formData, httpConfig).then((data) => {
                 console.log('form data', data);
             }).then(()=>{
                 setLoading(false);
@@ -297,7 +297,7 @@ const PaymentModal = (props) => {
                                         onClick={takePicFromCamera}
                                         variant="contained"> 
                                         <img style={{width:'25px', height:'18px', marginRight:'10px'}} src={photo} alt={'icon'} />
-                                        {typeof(cert) !== "string" && <div>Take Photo</div>}
+                                        {typeof(cert) === "string" && <div>Take Photo</div>}
                                         {typeof(cert) === "string" || <div>{cert.name}</div>}
                                     </Button>
                                     <Button sx={{
@@ -335,7 +335,7 @@ const PaymentModal = (props) => {
                                         onClick={takePicFromCamera2}
                                         variant="contained"> 
                                         <img style={{width:'25px', height:'18px', marginRight:'10px'}} src={photo} alt={'icon'} />
-                                        {typeof(cert) !== "string" && <div>Take Photo</div>}
+                                        {typeof(cert) === "string" && <div>Take Photo</div>}
                                         {typeof(cert) === "string" || <div>{reciept.name}</div>}
                                     </Button>
                                     <Button sx={{
