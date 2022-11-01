@@ -5,7 +5,9 @@ import active from '../assets/active.png';
 import dashboard from '../assets/dashboard.png';
 import dashboard2 from '../assets/dashboard2.png';
 import dailySales from '../assets/dailySales.png';
+import darkMode from '../assets/darkMode.png';
 import goBack from '../assets/goBack.png';
+import dark from '../assets/dark.png';
 import expenses from '../assets/expenses.png';
 import hr from '../assets/hr.png';
 import incOrders from '../assets/incOrders.png';
@@ -50,8 +52,14 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import Drawer from 'react-modern-drawer';
 import 'react-modern-drawer/dist/index.css';
+import { useDispatch, useSelector } from 'react-redux';
+import UserService from '../services/user';
+import { updateUser } from '../store/actions/auth';
 
 const HomeScreen = ({history}) => {
+
+    const user = useSelector(state => state.authReducer.user);
+    const dispatch = useDispatch();
 
     const routes = useMemo(()=>{
         return(
@@ -122,11 +130,11 @@ const HomeScreen = ({history}) => {
                         <div className='side-item'>
                             <div className='side-focus'>
                                 <div className='side-focus-image'>
-                                    <img style={{width:'100%', height:'100%'}} src={active} alt="icon" />
+                                    <img style={{width:'100%', height:'100%'}} src={user.isDark === "0"? active : darkMode} alt="icon" />
                                 </div>
                                 <div data-aos="zoom-out-right" className='side-focus-text'>
-                                    <img style={{width:'18px', height:'18px', marginRight:'10px'}} src={props.icon} alt="icon" />
-                                    <div style={{fontFamily:'Nunito-Regular', color:'#054834'}}>{props.name}</div>
+                                    <img style={{width:'18px', height:'18px', marginRight:'10px'}} src={user.isDark === "0"? props.icon : props.icon2} alt="icon" />
+                                    <div style={{fontFamily:'Nunito-Regular', color: user.isDark === "0"? '#054834': '#fff'}}>{props.name}</div>
                                 </div>
                             </div>
                         </div>:
@@ -140,9 +148,25 @@ const HomeScreen = ({history}) => {
         )
     }
 
+    const switchDarkMode = () => {
+        const payload = {
+            id: user._id,
+            isDark: user.isDark === "0"? "1" : "0"
+        }
+
+        UserService.updateUserDarkMode(payload).then((data) => {
+            return data
+        }).then(data => {
+            UserService.getOneUser({id: data.user._id}).then(data => {
+                localStorage.setItem("user", JSON.stringify(data.user))
+                dispatch(updateUser(data.user))
+            })
+        })
+    }
+
     return(
         <div className='home-container'>
-            <div className='side-bar'>
+            <div style={{background: user.sideBarMode}} className='side-bar'>
                 <div className='inner-side-bar'>
                     <img className='home-logo' src={homeLogo} alt="icon" />
                     <SideItems marginT={"0px"} link={'/home'} name={"Dashboard"} icon={dashboard} icon2={dashboard2} />
@@ -165,7 +189,7 @@ const HomeScreen = ({history}) => {
                 onClose={toggleDrawer}
                 direction='left'
             >
-                <div style={{display:'flex', width:'100%', flexDirection:'row', justifyContent:'flex-end'}} className='side-bar'>
+                <div style={{background: user.sideBarMode, display:'flex', width:'100%', flexDirection:'row', justifyContent:'flex-end'}} className='side-bar'>
                     <div style={{width:'90%'}} className='inner-side-bar'>
                         <img className='home-logo' src={homeLogo} alt="icon" />
                         <SideItems marginT={"0px"} link={'/home'} name={"Dashboard"} icon={dashboard} icon2={dashboard2} />
@@ -184,7 +208,7 @@ const HomeScreen = ({history}) => {
                     </div>
                 </div>
             </Drawer>
-            <div className='main-content'>
+            <div style={{background: user.isDark === "0"? '#fff': '#404040'}} className='main-content'>
                 <div className='mobile-bar'>
                     <AppBar sx={{background:'#06805B', zIndex:'1'}} position="absolute">
                         <Toolbar>
@@ -223,16 +247,16 @@ const HomeScreen = ({history}) => {
                                     color="inherit"
                                     aria-label="menu"
                                     sx={{ marginRight: '0px' }}
-                                    onClick={()=>{history.push('/login')}}
+                                    onClick={switchDarkMode}
                                 >
-                                    <img style={{width:'35px', height:'35px'}} src={switchT} alt="icon" />
+                                    <img style={{width:'35px', height:'35px'}} src={user.isDark? dark : switchT} alt="icon" />
                                 </IconButton>
                             </div>
                         </Toolbar>
                     </AppBar>
                 </div>
                 <div className='top-bar-menu'>
-                    <div className='left-lobe'>
+                    <div style={{color: user.isDark === '0'? '#054834': '#fff'}} className='left-lobe'>
                         {activeRoute.split('/').length === 4 && <img onClick={goBackToPreviousPage} style={{width:'30px', height:'25px', marginRight:'10px'}} src={goBack} alt="icon"  />}
                         {name}
                     </div>
@@ -256,9 +280,9 @@ const HomeScreen = ({history}) => {
                             color="inherit"
                             aria-label="menu"
                             sx={{ marginRight: '0px' }}
-                            onClick={()=>{history.push('/login')}}
+                            onClick={switchDarkMode}
                         >
-                            <img style={{width:'35px', height:'35px'}} src={switchT} alt="icon" />
+                            <img style={{width:'35px', height:'35px'}} src={user.isDark? dark : switchT} alt="icon" />
                         </IconButton>
                     </div>
                 </div>
@@ -318,5 +342,3 @@ const HomeScreen = ({history}) => {
 }
 
 export default withRouter(HomeScreen);
-//filling station
-// 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

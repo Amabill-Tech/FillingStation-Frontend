@@ -18,6 +18,7 @@ import { Bar } from 'react-chartjs-2';
 import PMSTank from '../Outlet/PMSTank';
 import AGOTank from '../Outlet/AGOTank';
 import DPKTank from '../Outlet/DPKTank';
+import { useSelector } from 'react-redux';
 
 ChartJS.register(
     CategoryScale,
@@ -69,6 +70,8 @@ const options = {
 }
 
 const DailySales = () => {
+
+    const user = useSelector(state => state.authReducer.user);
 
     return(
         <div className='daily-sales-container'>
@@ -129,7 +132,7 @@ const DailySales = () => {
                     </div>
                 </div>
 
-                <div className="tank-text">Tank Stock Levels</div>
+                <div style={{color: user.isDark === '0'? '#000': '#fff'}} className="tank-text">Tank Stock Levels</div>
                 <div className="tank-container">
                     <div className="tank-inner">
                         <div className="tanks">
@@ -160,7 +163,7 @@ const DailySales = () => {
                 </div>
             </div>
             <div className='daily-right'>
-                <div className="tank-text">Expenses And Payments</div>
+                <div style={{color: user.isDark === '0'? '#000': '#fff'}} className="tank-text">Expenses And Payments</div>
                 <div className='bar-chart'>
                     <div className='bar'>
                         <Bar options={options} data={data} />
@@ -168,7 +171,7 @@ const DailySales = () => {
                 </div>
 
                 <div className='section'>
-                    <div className='bank'>Net to Bank</div>
+                    <div style={{color: user.isDark === '0'? '#000': '#fff'}} className='bank'>Net to Bank</div>
                     <div className='inner-section'>
                         <div className='inner-content'>
                             <div className='conts'>
@@ -190,7 +193,7 @@ const DailySales = () => {
                 </div>
 
                 <div style={{display:'flex', flexDirection:'row', width:'100%', marginTop:'30px', justifyContent:'space-between'}} className="tank-text">
-                    <div>Incoming Order</div>
+                    <div style={{color: user.isDark === '0'? '#000': '#fff'}}>Incoming Order</div>
                     <Button 
                         variant="contained" 
                         startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} alt="icon" src={slideMenu} />}

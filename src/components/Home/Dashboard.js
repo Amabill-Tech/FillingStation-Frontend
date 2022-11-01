@@ -77,6 +77,7 @@ const options = {
 }
 
 const DashboardImage = (props) => {
+
     return(
         <div data-aos="flip-left" className='first-image'>
             <div className='inner-first-image'>
@@ -243,7 +244,7 @@ const Dashboard = () => {
             </div>
             <div className='right-dash'>
                 <div className='asset'>
-                    <div>Asset</div>
+                    <div style={{color: user.isDark === '0'? '#000': '#fff'}} >Asset</div>
                     <Button 
                         variant="contained" 
                         startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} src={slideMenu} alt="icon" />}
@@ -272,7 +273,7 @@ const Dashboard = () => {
 
                 <div className='section'>
                     <div className='asset'>
-                        <div>Supply</div>
+                        <div style={{color: user.isDark === '0'? '#000': '#fff'}}>Supply</div>
                         <Button 
                             variant="contained" 
                             startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} src={slideMenu} alt="icon" />}
@@ -320,7 +321,7 @@ const Dashboard = () => {
                         </div>
                     </div>
 
-                    <div style={{marginTop:'30px'}} className='bank'>Net to Bank</div>
+                    <div style={{marginTop:'30px', color: user.isDark === '0'? '#000': '#fff'}} className='bank'>Net to Bank</div>
                     <div className='inner-section'>
                         <div className='inner-content'>
                             <div className='conts'>
@@ -356,7 +357,7 @@ const Dashboard = () => {
                 </div>
 
                 <div className='station'>
-                    <div className='bank'>Station</div>
+                    <div style={{ color: user.isDark === '0'? '#000': '#fff'}} className='bank'>Station</div>
                     <div className='station-container'>
                         <div className='station-content'>
                             <div className='inner-stat'>
@@ -435,10 +436,10 @@ const Dashboard = () => {
                 </div>
 
                 <div style={{display:'flex', flexDirection:'row', width:'100%', marginTop:'30px', justifyContent:'space-between'}} className="tank-text">
-                    <div>Incoming Order</div>
+                    <div style={{ color: user.isDark === '0'? '#000': '#fff'}}>Incoming Order</div>
                     <Button 
                         variant="contained" 
-                        startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} src={slideMenu} />}
+                        startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} src={slideMenu} alt="icon" />}
                         sx={{
                             width:'165px',
                             height:'30px',

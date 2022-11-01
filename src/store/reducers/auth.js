@@ -1,4 +1,4 @@
-import { LOGIN, LOGOUT, SPINNER, REMOVE_SPINNER } from '../types'
+import { LOGIN, LOGOUT, SPINNER, REMOVE_SPINNER, UPDATE_USER_DATA } from '../types'
 
 const initialState = {
     user: JSON.parse(localStorage.getItem('user')) || {},
@@ -43,6 +43,13 @@ const authReducer = (state = initialState, action) => {
             return {
                 ...state,
                 loadingSpinner: false,
+            }
+        }
+
+        case UPDATE_USER_DATA: {
+            return {
+                ...state,
+                user: payload
             }
         }
 

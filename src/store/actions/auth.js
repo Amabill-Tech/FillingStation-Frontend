@@ -1,5 +1,5 @@
 import AuthService from '../../services/authService';
-import { LOGIN, LOGOUT, SPINNER, REMOVE_SPINNER } from '../types';
+import { LOGIN, LOGOUT, SPINNER, REMOVE_SPINNER, UPDATE_USER_DATA } from '../types';
 
 export const login = (params, history) => dispatch => {
     return AuthService.login(params)
@@ -33,4 +33,8 @@ export const removeSpinner = () => dispatch => {
 export const logout = () => dispatch => {
     AuthService.logout()
     dispatch({ type: LOGOUT })
+}
+
+export const updateUser = (param) => dispatch => {
+    dispatch({ type: UPDATE_USER_DATA, payload: param })
 }
