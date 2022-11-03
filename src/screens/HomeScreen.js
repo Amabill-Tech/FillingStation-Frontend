@@ -55,6 +55,8 @@ import 'react-modern-drawer/dist/index.css';
 import { useDispatch, useSelector } from 'react-redux';
 import UserService from '../services/user';
 import { updateUser } from '../store/actions/auth';
+import Expenses from '../components/Home/Expenses';
+import Payments from '../components/Home/Payments';
 
 const HomeScreen = ({history}) => {
 
@@ -66,7 +68,8 @@ const HomeScreen = ({history}) => {
             {
                 '/home': 'Dashboard',
                 '/home/daily-sales': 'Daily Sales',
-                '/home/payments': 'Payments',
+                '/home/analysis/payments': 'Payments',
+                '/home/analysis/expenses': 'Expenses',
                 '/home/outlets': 'My Outlets',
                 '/home/outlets/tanks': 'Outlet Tanks',
                 '/home/outlets/pumps': 'Outlet Pumps',
@@ -312,7 +315,7 @@ const HomeScreen = ({history}) => {
                         <ProductOrders/>
                     </Route>
                     <Route path='/home/analysis'>
-                        <Analysis/>
+                        <Analysis activeRoute={activeRoute}/>
                     </Route>
                     <Route path='/home/lpo'>
                         <LPO 
