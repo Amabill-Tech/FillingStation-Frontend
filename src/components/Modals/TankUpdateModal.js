@@ -72,7 +72,7 @@ const TankUpdateModal = (props) => {
             aria-describedby="modal-modal-description"
             sx={{display:'flex', justifyContent:'center', alignItems:'center'}}
         >
-                <div style={{height:'580px'}} className='modalContainer'>
+                <div style={{height:'580px'}} className='modalContainer2'>
                     <div className='inner'>
                         <div className='head'>
                             <div className='head-text'>Update Tank</div>

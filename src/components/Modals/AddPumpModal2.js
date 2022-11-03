@@ -67,7 +67,7 @@ const AddPump = (props) => {
             aria-describedby="modal-modal-description"
             sx={{display:'flex', justifyContent:'center', alignItems:'center'}}
         >
-            <div style={{height:'430px'}} className='modalContainer'>
+            <div style={{height:'430px'}} className='modalContainer2'>
                 <div className='inner'>
                     <div className='head'>
                         <div className='head-text'>Add Pump</div>

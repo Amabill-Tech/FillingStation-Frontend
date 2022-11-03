@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import '../../styles/payments.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -9,13 +9,62 @@ import folder2 from '../../assets/folder2.png';
 import hand from '../../assets/hand.png';
 import naira from '../../assets/naira.png';
 import me6 from '../../assets/me6.png';
-import { fontWeight } from '@mui/system';
+import { OutlinedInput } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import OutletService from '../../services/outletService';
+import { getAllStations } from '../../store/actions/outlet';
+import AddCostPrice from '../Modals/AddCostPrice';
+import CostPriceModal from '../Modals/CostPriceModal';
+
+const mediaMatch = window.matchMedia('(max-width: 530px)');
 
 const Analysis = () => {
 
+    const user = useSelector(state => state.authReducer.user);
+    const allOutlets = useSelector(state => state.outletReducer.allOutlets);
+    const dispatch = useDispatch();
+    const [prints, setPrints] = useState(false);
+    const [currentStation, setCurrentStation] = useState({});
+    const [entries, setEntries] = useState(10);
+    const [skip, setSkip] = useState(0);
+    const [limit, setLimit] = useState(15);
+    const [total, setTotal] = useState(0);
+    const [defaultState, setDefault] = useState(0);
+    const [open, setOpen] = useState(false);
+    const [open2, setOpen2] = useState(false);
+    const [type, setType] = useState(false);
+    const [mode, setMode] = useState("");
+
+    const getAllOutletData = useCallback(() => {
+
+        OutletService.getAllOutletStations({organisation: user.userType === "superAdmin"? user._id : user.organisationID}).then(data => {
+            dispatch(getAllStations(data.station));
+            setCurrentStation(data.station[0]);
+            return data.station[0]
+        }).then((data)=>{
+            // const payload = {
+            //     skip: skip * limit,
+            //     limit: limit,
+            //     outletID: data._id, 
+            //     organisationID: data.organisation
+            // }
+
+        });
+
+    }, [dispatch, user._id, user.userType, user.organisationID, skip, limit]);
+
+    useEffect(()=>{
+        getAllOutletData();
+    },[getAllOutletData])
+
+    const changeMenu = (index, item ) => {
+        setDefault(index);
+        setCurrentStation(item);
+    }
+
     const DashboardImage = (props) => {
         return(
-            <div data-aos="flip-left" style={{marginRight: props.right, marginLeft: props.left}} className='first-image'>
+            <div style={{marginRight: props.right, marginLeft: props.left}} onClick={()=>{openCostPrice(props.type)}} className='first-image'>
                 <div style={{marginRight:'10px'}} className='inner-first-image'>
                     <div className='top-first-image'>
                         <div className='top-icon'>
@@ -34,9 +83,22 @@ const Analysis = () => {
         )
     }
 
+    const printReport = () => {
+
+    }
+
+    const openCostPrice = (type) => {
+        if(type === "cost" || type === "selling"){
+            setOpen(true);
+            setType(type);
+        }
+    }
+
     return(
-        <div data-aos="zoom-in-down" style={{background:'#fff'}} className='paymentsCaontainer'>
-            <div className='inner-pay'>
+        <div data-aos="zoom-in-down" style={{background: user.isDark === "0"? '#fff': '#404040'}} className='paymentsCaontainer'>
+            {open && <AddCostPrice type={type} open={open} close={setOpen} open2={setOpen2} setMode={setMode} />}
+            {open2 && <CostPriceModal type={type} open={open2} close={setOpen2} mode={mode} refresh={getAllOutletData} />}
+            <div style={{width:'100%', marginTop:'0px'}} className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
                         <Select
@@ -52,43 +114,53 @@ const Analysis = () => {
                     </div>
                 </div>
 
-                <div className='search'>
+                <div style={{marginBottom:'0px'}} className='search'>
                     <div className='input-cont'>
                         <div className='second-select'>
                             <Select
                                 labelId="demo-select-small"
                                 id="demo-select-small"
-                                value={10}
+                                value={defaultState}
                                 sx={selectStyle2}
                             >
-                                <MenuItem value={10}>07 August, 2022</MenuItem>
-                                <MenuItem value={20}>Twenty</MenuItem>
-                                <MenuItem value={30}>Thirty</MenuItem>
+                                <MenuItem style={menu} value={0}>Select station</MenuItem>
+                                {
+                                   allOutlets.map((item, index) => {
+                                        return(
+                                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName}</MenuItem>
+                                        )
+                                   })  
+                                }
                             </Select>
                         </div>
                     </div>
-                    <div className='butt'>
-                        <Button sx={{
-                            width:'100%', 
-                            height:'30px',  
-                            background: '#427BBE',
-                            borderRadius: '3px',
-                            fontSize:'12px',
-                            '&:hover': {
-                                backgroundColor: '#427BBE'
-                            }
-                            }}  variant="contained"> Add Payment
-                        </Button>
+                    <div style={{width:'130px'}} className='butt'>
+                        <OutlinedInput 
+                            sx={{
+                                width:'100%', 
+                                height:'30px',  
+                                background: '#427BBE',
+                                borderRadius: '3px',
+                                fontSize:'12px',
+                                textTransform:'capitalize',
+                                color:'#fff',
+                                '&:hover': {
+                                    backgroundColor: '#427BBE'
+                                }
+                                }} placeholder="Date" 
+                            type="date"
+                            // onChange={e => setAmount(e.target.value)}
+                        />
                     </div>
                 </div>
 
                 <div style={contain2}>
-                    <div style={{display: 'flex', flexDirection:'row'}} className='imgContainer'>
-                        <DashboardImage right={'10px'} left={'0px'} image={naira} name={'Cost Price'} value={'NGN 231,925'} />
-                        <DashboardImage right={'10px'} left={'0px'} image={hand} name={'Selling Price'} value={'NGN 231,925'} />
-                        <DashboardImage right={'10px'} left={'0px'} image={folder} name={'Expenses'} value={'NGN 231,925'} />
-                        <DashboardImage right={'10px'} left={'0px'} image={folder2} name={'Payments'} value={'NGN 231,925'} />
-                        <DashboardImage right={'0px'} left={'0px'} image={analysis2} name={'Profits'} value={'NGN 231,925'} />
+                    <div className='imgContainer'>
+                        <DashboardImage type={"cost"} right={'10px'} left={'0px'} image={naira} name={'Cost Price'} value={'NGN 231,925'} />
+                        <DashboardImage type={"selling"} right={'10px'} left={'0px'} image={hand} name={'Selling Price'} value={'NGN 231,925'} />
+                        <DashboardImage type={"none"} right={'10px'} left={'0px'} image={folder} name={'Expenses'} value={'NGN 231,925'} />
+                        <DashboardImage type={"none"} right={'10px'} left={'0px'} image={folder2} name={'Payments'} value={'NGN 231,925'} />
+                        <DashboardImage type={"none"} right={'0px'} left={'0px'} image={analysis2} name={'Profits'} value={'NGN 231,925'} />
                     </div>
                 </div>
 
@@ -105,33 +177,35 @@ const Analysis = () => {
                             <MenuItem value={30}>Thirty</MenuItem>
                         </Select>
                     </div>
-                    <div style={{width:'210px'}} className='input-cont2'>
-                        <div className='second-select2'>
-                            <Button sx={{
-                                width:'100%', 
-                                height:'30px',  
-                                background: '#58A0DF',
-                                borderRadius: '3px',
-                                fontSize:'12px',
-                                '&:hover': {
-                                    backgroundColor: '#58A0DF'
-                                }
-                                }}  variant="contained"> Download PDF
-                            </Button>
-                        </div>
-                        <div className='second-select3'>
-                            <Button sx={{
-                                width:'100%', 
-                                height:'30px',  
-                                background: '#F36A4C',
-                                borderRadius: '3px',
-                                fontSize:'12px',
-                                '&:hover': {
-                                    backgroundColor: '#F36A4C'
-                                }
-                                }}  variant="contained"> Print
-                            </Button>
-                        </div>
+                    <div style={{width: mediaMatch.matches? '100%': '190px'}} className='input-cont2'>
+                        <Button sx={{
+                            width: mediaMatch.matches? '100%': '100px', 
+                            height:'30px',  
+                            background: '#58A0DF',
+                            borderRadius: '3px',
+                            fontSize:'10px',
+                            display: mediaMatch.matches && 'none',
+                            marginTop: mediaMatch.matches? '10px': '0px',
+                            '&:hover': {
+                                backgroundColor: '#58A0DF'
+                            }
+                            }}  variant="contained"> History
+                        </Button>
+                        <Button sx={{
+                            width: mediaMatch.matches? '100%': '80px', 
+                            height:'30px',  
+                            background: '#F36A4C',
+                            borderRadius: '3px',
+                            fontSize:'10px',
+                            display: mediaMatch.matches && 'none',
+                            marginTop: mediaMatch.matches? '10px': '0px',
+                            '&:hover': {
+                                backgroundColor: '#F36A4C'
+                            }
+                            }}  
+                            onClick={printReport}
+                            variant="contained"> Print
+                        </Button>
                     </div>
                 </div>
 
@@ -386,6 +460,11 @@ const selectStyle2 = {
 
 const contain2 = {
     width:'100%',
+}
+
+const menu = {
+    fontSize:'14px',
+    fontFamily:'Nunito-Regular'
 }
 
 export default Analysis;

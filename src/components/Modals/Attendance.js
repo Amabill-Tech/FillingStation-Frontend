@@ -67,7 +67,7 @@ const AttendanceModal = (props) => {
             aria-describedby="modal-modal-description"
             sx={{display:'flex', justifyContent:'center', alignItems:'center'}}
         >
-                <div data-aos="zoom-out-up" style={{height:'auto'}} className='modalContainer'>
+                <div data-aos="zoom-out-up" style={{height:'auto'}} className='modalContainer2'>
                     <div style={{height:'auto', margin:'20px'}} className='inner'>
                         <div className='head'>
                             <div className='head-text'>Add Attendance</div>

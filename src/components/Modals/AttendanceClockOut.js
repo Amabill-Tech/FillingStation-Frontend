@@ -59,7 +59,7 @@ const ClockOutModal = (props) => {
             aria-describedby="modal-modal-description"
             sx={{display:'flex', justifyContent:'center', alignItems:'center'}}
         >
-                <div style={{height:'auto'}} className='modalContainer'>
+                <div style={{height:'auto'}} className='modalContainer2'>
                     <div style={{height:'280px', margin:'20px'}} className='inner'>
                         <div className='head'>
                             <div className='head-text'>Clock out</div>

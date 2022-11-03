@@ -54,7 +54,7 @@ const Supply = () => {
             });
         });
 
-    }, [dispatch, user.organisationID, skip, limit]);
+    }, [dispatch, user._id, user.userType, user.organisationID, skip, limit]);
 
     useEffect(()=>{
         getAllSupplyData();

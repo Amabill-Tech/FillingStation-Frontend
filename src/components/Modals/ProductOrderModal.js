@@ -88,7 +88,7 @@ const ProductOrderModal = (props) => {
             aria-describedby="modal-modal-description"
             sx={{display:'flex', justifyContent:'center', alignItems:'center'}}
         >
-                <div className='modalContainer'>
+                <div className='modalContainer2'>
                     <div className='inner'>
                         <div className='head'>
                             <div className='head-text'>Create Order</div>

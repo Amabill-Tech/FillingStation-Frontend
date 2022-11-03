@@ -220,7 +220,7 @@
     }
 }
 
-.modalContainer{
+.modalContainer2{
     width: 400px;
     height: 600px;
     display: flex;
@@ -424,6 +424,11 @@
     justify-content: space-between;
 }
 
+.imgContainer{
+    display: flex;
+    flex-direction: row;
+}
+
 @media (max-width: 1150px){
     .paymentsCaontainer{
         margin-top: 80px;
@@ -484,6 +489,14 @@
         .table-head2{
             width: 1245px;
         }
+    }
+}
+
+@media (max-width: 800px){
+    .imgContainer{
+        flex-direction: column;
+        margin-bottom: 20px;
+        margin-top: 0px;
     }
 }
 
@@ -621,7 +634,7 @@
 }
 
 @media (max-width: 410px){
-    .modalContainer{
+    .modalContainer2{
         width: 94%;
     }
 }

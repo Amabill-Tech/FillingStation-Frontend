@@ -38,52 +38,52 @@
   height: 300px;
   margin-top: 20px;
 
-  .inputs{
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    margin-top: 50px;
-
-    .text{
-        font-family: 'Nunito-Regular';
-        font-style: normal;
-        font-weight: 600;
-        font-size: 14px;
-        color: #353434;
-    }
-
-    .date{
-        width: 95%;
-        height: 35px;
-        margin-top: 10px;
-        padding-left: 2%;
-        padding-right: 2%;
-        background: rgba(215, 215, 215, 0.6);
-        border: 0.938659px solid #606060;
-        border-radius: 5.63195px;
-    }
-
-    .button-container{
+    .inputs{
         width: 100%;
         display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        margin-top: 10px;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-top: 50px;
 
-        .buttons{
-            width: 49%;
+        .text{
+            font-family: 'Nunito-Regular';
+            font-style: normal;
+            font-weight: 600;
+            font-size: 14px;
+            color: #353434;
+        }
+
+        .date{
+            width: 95%;
             height: 35px;
+            margin-top: 10px;
+            padding-left: 2%;
+            padding-right: 2%;
+            background: rgba(215, 215, 215, 0.6);
+            border: 0.938659px solid #606060;
+            border-radius: 5.63195px;
+        }
+
+        .button-container{
+            width: 100%;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            color:#fff;
-            background-color: green;
-            font-size: 12px;
-            border-radius: 5px;
+            flex-direction: row;
+            justify-content: space-between;
+            margin-top: 10px;
+
+            .buttons{
+                width: 49%;
+                height: 35px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                color:#fff;
+                background-color: green;
+                font-size: 12px;
+                border-radius: 5px;
+            }
         }
     }
-}
 }
 
 .twoInputs{

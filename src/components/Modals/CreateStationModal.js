@@ -12,6 +12,7 @@ import { ThreeDots } from  'react-loader-spinner';
 import states from '../../modules/states';
 import swal from 'sweetalert';
 import { createFillingStation } from '../../store/actions/outlet';
+import '../../styles/payments.scss';
 
 const CreateFillingStation = (props) => {
 
@@ -78,7 +79,7 @@ const CreateFillingStation = (props) => {
             aria-describedby="modal-modal-description"
             sx={{display:'flex', justifyContent:'center', alignItems:'center'}}
         >
-                <div className='modalContainer'>
+                <div className='modalContainer2'>
                     <div className='inner'>
                         <div className='head'>
                             <div className='head-text'>Create Filling Station</div>
