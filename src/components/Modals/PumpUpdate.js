@@ -27,8 +27,9 @@ const PumpUpdate = (props) => {
 
     const submit = () => {
         const fresh = Number(totalizer) < Number(oneTank.deadStockLevel);
-        const prev = (Number(oneTank.currentLevel) - Number(totalizer)) < Number(oneTank.deadStockLevel)
+        const prev = (Number(totalizer) - Number(props.current.totalizerReading)) < Number(oneTank.deadStockLevel)
         const detail = oneTank.currentLevel==="None"? fresh : prev;
+        const difference = Number(totalizer) - Number(props.current.totalizerReading)
 
         if(totalizer === "") return swal("Warning!", "Quantity field cannot be empty", "info");
         if(oneTank.activeState === "0") return swal("Warning!", "Tank is currently inactive, contact admin", "info");
@@ -42,35 +43,41 @@ const PumpUpdate = (props) => {
             id: oneTank._id,
             previousLevel: oneTank.currentLevel,
             totalizer: totalizer,
-            currentLevel: oneTank.currentLevel === "None"? null: String(Number(oneTank.currentLevel) - Number(totalizer)),
+            currentLevel: oneTank.currentLevel === "None"? null: String(Number(oneTank.currentLevel) - difference),
             outletID: props.currentStation._id,
             organisationID: props.currentStation.organisation,
         }
 
         if(payload.currentLevel !== null){
             OutletService.updateTank(payload).then((data) => {
-                swal("Success", data.message, "success");
+                return data;
             }).then(()=>{
                 setLoading(false);
                 handleClose();
+
+                OutletService.pumpUpdate({id: props.current._id, totalizerReading: totalizer}).then((data)=>{
+                    swal("Success", data.message, "success");
+                }).then(()=>{
+                    props.refresh();
+                })
             });
 
-            const data = {
-                totalizer: totalizer,
-                hostTank:  oneTank.tankName,
-                productType:  oneTank.productType,
-                updatedBy:  user._id,
-                remark:  remark,
-                currentLevel: oneTank.currentLevel === "None"? null: String(Number(oneTank.currentLevel) - Number(totalizer)),
-                previousLevel:  oneTank.currentLevel,
-                station:  oneTank.station,
-                outletID:  oneTank.outletID,
-                organisationID:  oneTank.organisationID,
-            }
+            // const data = {
+            //     totalizer: totalizer,
+            //     hostTank:  oneTank.tankName,
+            //     productType:  oneTank.productType,
+            //     updatedBy:  user._id,
+            //     remark:  remark,
+            //     currentLevel: oneTank.currentLevel === "None"? null: String(Number(oneTank.currentLevel) - Number(totalizer)),
+            //     previousLevel:  oneTank.currentLevel,
+            //     station:  oneTank.station,
+            //     outletID:  oneTank.outletID,
+            //     organisationID:  oneTank.organisationID,
+            // }
 
-            LPOService.createLPOSales(data).then((data) => {
-                //dispatch(createLPO(data.lpo.lpo));
-            })
+            // LPOService.createLPOSales(data).then((data) => {
+            //     //dispatch(createLPO(data.lpo.lpo));
+            // })
         }else{
             swal("Warning!", "This is an empty tank!", "info");
         }
@@ -125,7 +132,7 @@ const PumpUpdate = (props) => {
                             </div>
 
                             <div className='inputs'>
-                                <div className='head-text2'>Host Tank Capacity</div>
+                                <div className='head-text2'>Host Tank Level</div>
                                 <OutlinedInput 
                                     sx={{
                                         width:'100%',
@@ -135,7 +142,7 @@ const PumpUpdate = (props) => {
                                         border:'1px solid #777777',
                                         fontSize:'12px',
                                     }} placeholder="" 
-                                    value={oneTank.tankCapacity}
+                                    value={oneTank.currentLevel}
                                     disabled={true}
                                 />
                             </div>

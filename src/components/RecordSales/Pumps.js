@@ -96,7 +96,7 @@ const Pumps = () => {
 
     return(
         <div className='pumpContainer'>
-            {open && <PumpUpdate open={open} close={setOpen} currentStation={currentStation} current={currentPump} currentTank={currentTank} />}
+            {open && <PumpUpdate refresh={getAllStationData} open={open} close={setOpen} currentStation={currentStation} current={currentPump} currentTank={currentTank} />}
             <div>Select Pump used for the day</div>
             <Select
                 labelId="demo-select-small"

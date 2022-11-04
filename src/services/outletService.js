@@ -169,6 +169,17 @@ const OutletService = {
             throw err
         })
     },
+
+    pumpUpdate: (data) => {
+        return APIs.post('/station/pump/update', data)
+        .then(({ data }) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        });
+    },
 }
 
 export default OutletService;
