@@ -70,7 +70,7 @@ const HomeScreen = ({history}) => {
                 '/home/daily-sales': 'Daily Sales',
                 '/home/analysis/payments': 'Payments',
                 '/home/analysis/expenses': 'Expenses',
-                '/home/outlets': 'My Outlets',
+                '/home/outlets': 'My Station',
                 '/home/outlets/tanks': 'Outlet Tanks',
                 '/home/outlets/pumps': 'Outlet Pumps',
                 '/home/outlets/sales': 'Outlet Sales',

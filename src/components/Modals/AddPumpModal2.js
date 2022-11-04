@@ -49,7 +49,7 @@ const AddPump = (props) => {
             props.refresh();
             setTimeout(()=>{
                 props.outRefresh();
-            }, 2000);
+            }, 500);
         });
     }
 

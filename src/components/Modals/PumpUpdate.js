@@ -32,8 +32,9 @@ const PumpUpdate = (props) => {
         const difference = Number(totalizer) - Number(props.current.totalizerReading)
 
         if(totalizer === "") return swal("Warning!", "Quantity field cannot be empty", "info");
+        if(props.current.activeState === "0") return swal("Warning!", "Pump is currently inactive, contact admin", "info");
         if(oneTank.activeState === "0") return swal("Warning!", "Tank is currently inactive, contact admin", "info");
-        if(Number(totalizer) < Number(props.current.totalizerReading)) return swal("Warning!", "Closing totalizer must be less than Opening totalizer", "info");
+        if(Number(totalizer) < Number(props.current.totalizerReading)) return swal("Warning!", "Closing totalizer must be greater than Opening totalizer", "info");
         if((detail)) return swal("Warning!", "Tank deadstock level reached!", "info");
         if(remark === "") return swal("Warning!", "Remark field cannot be empty", "info");
 
@@ -132,7 +133,7 @@ const PumpUpdate = (props) => {
                             </div>
 
                             <div className='inputs'>
-                                <div className='head-text2'>Host Tank Level</div>
+                                <div className='head-text2'>Host Tank Current Level (Litres)</div>
                                 <OutlinedInput 
                                     sx={{
                                         width:'100%',

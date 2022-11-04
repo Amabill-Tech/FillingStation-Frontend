@@ -67,7 +67,7 @@ const AddTank = (props) => {
         await props.refresh();
         setTimeout(()=>{
             props.outRefresh();
-        }, 2000);
+        }, 500);
         dispatch(closeModal(0));
     }
 

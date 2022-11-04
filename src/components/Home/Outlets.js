@@ -222,7 +222,7 @@ const Outlets = (props) => {
                                 <div className='column'>No of Tanks</div>
                                 <div className='column'>No of Pumps</div>
                                 <div className='column'>State</div>
-                                <div className='column'>City/Town</div>
+                                <div className='column'>Area</div>
                                 <div className='column'>Actions</div>
                             </div>
         
