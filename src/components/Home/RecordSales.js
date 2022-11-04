@@ -85,6 +85,19 @@ const RecordSales = (props) => {
                             onClick={()=>{handleTabs('payment')}} 
                             variant="contained"> Payments
                         </Button>
+                        <Button sx={{ 
+                            height:'35px',  
+                            background: '#06805B',
+                            borderRadius: '39px',
+                            fontSize:'10px',
+                            marginLeft:'10px',
+                            '&:hover': {
+                                backgroundColor: '#06805B'
+                            }
+                            }} 
+                            onClick={()=>{handleTabs('payment')}} 
+                            variant="contained"> Dipping
+                        </Button>
                     </div>
 
                     <div className='tabs-content'>
@@ -105,7 +118,7 @@ const RecordSales = (props) => {
                     </div>
                 </div>
                 <div className='rightContainer'>
-                    <div className='head'>Update Remark</div>
+                    {/* <div className='head'>Update Remark</div>
                     <TextField
                         id="filled-multiline-static"
                         multiline
@@ -146,7 +159,7 @@ const RecordSales = (props) => {
                         }
                         }}  
                         variant="contained"> Record Sales
-                    </Button>
+                    </Button> */}
                 </div>
             </div>
         </div>

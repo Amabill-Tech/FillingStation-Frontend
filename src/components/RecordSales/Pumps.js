@@ -68,14 +68,7 @@ const Pumps = () => {
         setTotalPumps([]);
     }
 
-    const selectedPump = (index, item) => {
-        setSelected(index);
-        setCurrentPump(item);
-        setProduct(item.productType);
-        setTotalPumps(prev => [...prev, item]);
-    }
-
-    const diselectPump = (index) => {
+    const diselectPump = (index) => {alert(index)
         setSelected(null);
     }
 
@@ -91,6 +84,23 @@ const Pumps = () => {
         OutletService.getOneTank(payload).then((data) => {
             dispatch(getOneTank(data.stations));
         })
+    }
+
+    const pumpItem = (e, index, item) => {
+        e.preventDefault();
+
+        if(e.target.parentElement.style.color === "#fff"){
+            e.target.parentElement.style.background = "#fff";
+            e.target.parentElement.style.color = "#000";
+        }else{
+            e.target.parentElement.style.background = "#06805B";
+            e.target.parentElement.style.color = "#fff";
+        }
+
+        setSelected(index);
+        setCurrentPump(item);
+        setProduct(item.productType);
+        setTotalPumps(prev => [...prev, item]);
     }
 
     return(
@@ -120,9 +130,11 @@ const Pumps = () => {
                     </div>:
                     pumpList.map((data, index) => {
                         return(
-                            <div className='box2' style={selected === index? box: null}>
-                                <div onClick={()=>{selectedPump(index, data)}} style={{marginRight:'10px'}}>{data.pumpName}</div>
-                                <img onClick={()=>{diselectPump(index)}} style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
+                            <div key={index} onClick={e => pumpItem(e, index, data)}>
+                                <div className='box2'>
+                                    <p style={{marginRight:'10px'}}>{data.pumpName}</p>
+                                    <img onClick={()=>{diselectPump(index)}} style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
+                                </div>
                             </div>
                         )
                     })
@@ -131,9 +143,9 @@ const Pumps = () => {
 
             <div className='pumping'>
                 {
-                    totalPumps.length === 0?
+                    pumpList.length === 0?
                     <div>Please click to select a pump</div>:
-                    totalPumps.map((item, index) => {
+                    pumpList.map((item, index) => {
                         return(
                             <div key={index} data-aos="fade-down" className='item'>
                                 <img style={{width:'55px', height:'65px'}} src={pump1}  alt="icon"/>
@@ -147,6 +159,7 @@ const Pumps = () => {
                                     fontSize:'12px',
                                     marginTop:'10px',
                                     textTransform: 'capitalize',
+                                    display:'none',
                                     '&:hover': {
                                         backgroundColor: '#06805B'
                                     }
@@ -154,6 +167,7 @@ const Pumps = () => {
                                     onClick={()=>{openSalesModal(item)}}
                                     variant="contained"> Record Sales
                                 </Button>
+                                <input defaultValue={item.totalizerReading} style={imps} type="text" />
                             </div>
                         )
                     })
@@ -161,6 +175,16 @@ const Pumps = () => {
             </div>
         </div>
     )
+}
+
+const imps = {
+    height:'30px', 
+    width:'160px', 
+    marginTop:'10px',
+    background:'#D7D7D799',
+    outline:'none',
+    border:'1px solid #000',
+    paddingLeft:'10px'
 }
 
 const selectStyle2 = {
