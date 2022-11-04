@@ -10,6 +10,7 @@ import TextField from '@mui/material/TextField';
 import OutletService from '../../services/outletService';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllStations } from '../../store/actions/outlet';
+import Dipping from '../RecordSales/Dipping';
 
 const RecordSales = (props) => {
     const dispatch = useDispatch();
@@ -26,6 +27,8 @@ const RecordSales = (props) => {
             props.history.push('/home/record-sales/expenses');
         }else if(data === 'payment'){
             props.history.push('/home/record-sales/payment');
+        }else if(data === 'dipping'){
+            props.history.push('/home/record-sales/dipping');
         }
     }
 
@@ -95,7 +98,7 @@ const RecordSales = (props) => {
                                 backgroundColor: '#06805B'
                             }
                             }} 
-                            onClick={()=>{handleTabs('payment')}} 
+                            onClick={()=>{handleTabs('dipping')}} 
                             variant="contained"> Dipping
                         </Button>
                     </div>
@@ -113,6 +116,9 @@ const RecordSales = (props) => {
                             </Route>
                             <Route path='/home/record-sales/payment'>
                                 <Payments/>
+                            </Route>
+                            <Route path='/home/record-sales/dipping'>
+                                <Dipping/>
                             </Route>
                         </Switch>
                     </div>

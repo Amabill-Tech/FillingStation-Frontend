@@ -28,15 +28,16 @@ const AddTank = (props) => {
     const [tankCapacity, setTankCapacity] = useState('');
     const [deadStockLevel, setDeadStockLevel] = useState('');
     const [calibrationDate, setCalibrationDate] = useState('');
+    const [currentStock, setCurrentStock] = useState('');
 
     const handleAddPump = async() => {
 
         if(tankName === "") return swal("Warning!", "Tank name field cannot be empty", "info");
-        if(tankHeight === "") return swal("Warning!", "Tank height field cannot be empty", "info");
         if(productType === "") return swal("Warning!", "product type field cannot be empty", "info");
         if(tankCapacity === "") return swal("Warning!", "Tank capacity field cannot be empty", "info");
         if(deadStockLevel === "") return swal("Warning!", "Dead stock level field cannot be empty", "info");
         if(calibrationDate === "") return swal("Warning!", "Calibration date field cannot be empty", "info");
+        if(currentStock === "") return swal("Warning!", "Current stock field cannot be empty", "info");
         dispatch(setSpinner());
 
         const today = new Date();
@@ -58,7 +59,7 @@ const AddTank = (props) => {
             station: props.data.state.outletName,
             previousLevel: "None",
             quantityAdded: "None",
-            currentLevel: "None",
+            currentLevel: currentStock,
         } 
 
         await dispatch(createTanks(data));
@@ -85,90 +86,107 @@ const AddTank = (props) => {
                         <img onClick={handleClose} style={{width:'18px', height:'18px'}} src={close} alt={'icon'} />
                     </div>
 
-                    <div className='inputs'>
-                        <div className='head-text2'>Tank Name/ Series</div>
-                        <OutlinedInput 
-                            sx={{
-                                width:'100%',
-                                height: '35px', 
-                                marginTop:'5px', 
-                                background:'#EEF2F1', 
-                                border:'1px solid #777777',
-                                fontSize:'12px',
-                            }} placeholder="" 
-                            onChange={e => setTankName(e.target.value)}
-                        />
-                    </div>
+                    <div style={cont}>
+                        <div style={{marginTop:'15px'}} className='inputs'>
+                            <div className='head-text2'>Choose product type</div>
+                            <div className='radio'>
+                                <div className='rad-item'>
+                                    <Radio onClick={()=>{setProductType('PMS')}} checked={productType === 'PMS'? true: false} />
+                                    <div className='head-text2' style={{marginRight:'5px'}}>PMS</div>
+                                </div>
+                                <div className='rad-item'>
+                                    <Radio onClick={()=>{setProductType('AGO')}} checked={productType === 'AGO'? true: false} />
+                                    <div className='head-text2' style={{marginRight:'5px'}}>AGO</div>
+                                </div>
+                                <div className='rad-item'>
+                                    <Radio onClick={()=>{setProductType('DPK')}} checked={productType === 'DPK'? true: false} />
+                                    <div className='head-text2' style={{marginRight:'5px'}}>DPK</div>
+                                </div>
+                            </div>
+                        </div>
 
-                    <div style={{marginTop:'15px'}} className='inputs'>
-                        <div className='head-text2'>Tank Height (cm)</div>
-                        <OutlinedInput 
-                            sx={{
-                                width:'100%',
-                                height: '35px', 
-                                marginTop:'5px', 
-                                background:'#EEF2F1', 
-                                border:'1px solid #777777',
-                                fontSize:'12px',
-                            }} placeholder="" 
-                            onChange={e => setTankHeight(e.target.value)}
-                        />
-                    </div>
+                        <div className='inputs'>
+                            <div className='head-text2'>Tank Name/ Series</div>
+                            <OutlinedInput 
+                                sx={{
+                                    width:'100%',
+                                    height: '35px', 
+                                    marginTop:'5px', 
+                                    background:'#EEF2F1', 
+                                    border:'1px solid #777777',
+                                    fontSize:'12px',
+                                }} placeholder="" 
+                                onChange={e => setTankName(e.target.value)}
+                            />
+                        </div>
 
-                    <div style={{marginTop:'15px'}} className='inputs'>
-                        <div className='head-text2'>Choose product type</div>
-                        <div className='radio'>
-                            <div className='rad-item'>
-                                <Radio onClick={()=>{setProductType('PMS')}} checked={productType === 'PMS'? true: false} />
-                                <div className='head-text2' style={{marginRight:'5px'}}>PMS</div>
-                            </div>
-                            <div className='rad-item'>
-                                <Radio onClick={()=>{setProductType('AGO')}} checked={productType === 'AGO'? true: false} />
-                                <div className='head-text2' style={{marginRight:'5px'}}>AGO</div>
-                            </div>
-                            <div className='rad-item'>
-                                <Radio onClick={()=>{setProductType('DPK')}} checked={productType === 'DPK'? true: false} />
-                                <div className='head-text2' style={{marginRight:'5px'}}>DPK</div>
-                            </div>
+                        <div style={{marginTop:'15px'}} className='inputs'>
+                            <div className='head-text2'>Tank Height (cm)</div>
+                            <OutlinedInput 
+                                sx={{
+                                    width:'100%',
+                                    height: '35px', 
+                                    marginTop:'5px', 
+                                    background:'#EEF2F1', 
+                                    border:'1px solid #777777',
+                                    fontSize:'12px',
+                                }} placeholder="" 
+                                onChange={e => setTankHeight(e.target.value)}
+                            />
+                        </div>
+
+                        <div style={{marginTop:'15px'}} className='inputs'>
+                            <div className='head-text2'>Tank Capacity</div>
+                            <OutlinedInput 
+                                sx={{
+                                    width:'100%',
+                                    height: '35px', 
+                                    marginTop:'5px', 
+                                    background:'#EEF2F1', 
+                                    border:'1px solid #777777',
+                                    fontSize:'12px',
+                                }} placeholder="" 
+                                onChange={e => setTankCapacity(e.target.value)}
+                            />
+                        </div>
+
+                        <div style={{marginTop:'15px'}} className='inputs'>
+                            <div className='head-text2'>Current Stock Level</div>
+                            <OutlinedInput 
+                                sx={{
+                                    width:'100%',
+                                    height: '35px', 
+                                    marginTop:'5px', 
+                                    background:'#EEF2F1', 
+                                    border:'1px solid #777777',
+                                    fontSize:'12px',
+                                }} placeholder="" 
+                                onChange={e => setCurrentStock(e.target.value)}
+                            />
+                        </div>
+
+                        <div style={{marginTop:'15px'}} className='inputs'>
+                            <div className='head-text2'>Dead Stock Level (Litre)</div>
+                            <OutlinedInput 
+                                sx={{
+                                    width:'100%',
+                                    height: '35px', 
+                                    marginTop:'5px', 
+                                    background:'#EEF2F1', 
+                                    border:'1px solid #777777',
+                                    fontSize:'12px',
+                                }} placeholder="" 
+                                onChange={e => setDeadStockLevel(e.target.value)}
+                            />
+                        </div>
+
+                        <div style={{marginTop:'15px'}} className='inputs'>
+                            <div className='head-text2'>Calibration Date</div>
+                            <input defaultValue={new Date()}  onChange={e => setCalibrationDate(e.target.value)} style={date} type={'date'} />
                         </div>
                     </div>
 
-                    <div style={{marginTop:'15px'}} className='inputs'>
-                        <div className='head-text2'>Tank Capacity</div>
-                        <OutlinedInput 
-                            sx={{
-                                width:'100%',
-                                height: '35px', 
-                                marginTop:'5px', 
-                                background:'#EEF2F1', 
-                                border:'1px solid #777777',
-                                fontSize:'12px',
-                            }} placeholder="" 
-                            onChange={e => setTankCapacity(e.target.value)}
-                        />
-                    </div>
-
-                    <div style={{marginTop:'15px'}} className='inputs'>
-                        <div className='head-text2'>Dead Stock Level (Litre)</div>
-                        <OutlinedInput 
-                            sx={{
-                                width:'100%',
-                                height: '35px', 
-                                marginTop:'5px', 
-                                background:'#EEF2F1', 
-                                border:'1px solid #777777',
-                                fontSize:'12px',
-                            }} placeholder="" 
-                            onChange={e => setDeadStockLevel(e.target.value)}
-                        />
-                    </div>
-
-                    <div style={{marginTop:'15px'}} className='inputs'>
-                        <div className='head-text2'>Calibration Date</div>
-                        <input  onChange={e => setCalibrationDate(e.target.value)} style={date} type={'date'} />
-                    </div>
-
-                    <div className='butt'>
+                    <div style={{marginTop:'10px', height:'30px'}} className='butt'>
                         <Button sx={{
                             width:'100px', 
                             height:'30px',  
@@ -201,6 +219,13 @@ const AddTank = (props) => {
             </div>
         </Modal>
     )
+}
+
+const cont = {
+    width:'100%',
+    height:'500px',
+    overflowY:'scroll',
+    overflowX:'hidden'
 }
 
 const date = {

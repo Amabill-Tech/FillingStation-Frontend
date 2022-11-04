@@ -32,6 +32,7 @@ const PumpUpdate = (props) => {
 
         if(totalizer === "") return swal("Warning!", "Quantity field cannot be empty", "info");
         if(oneTank.activeState === "0") return swal("Warning!", "Tank is currently inactive, contact admin", "info");
+        if(Number(totalizer) < Number(props.current.totalizerReading)) return swal("Warning!", "Closing totalizer must be less than Opening totalizer", "info");
         if((detail)) return swal("Warning!", "Tank deadstock level reached!", "info");
         if(remark === "") return swal("Warning!", "Remark field cannot be empty", "info");
 
@@ -124,6 +125,22 @@ const PumpUpdate = (props) => {
                             </div>
 
                             <div className='inputs'>
+                                <div className='head-text2'>Host Tank Capacity</div>
+                                <OutlinedInput 
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        border:'1px solid #777777',
+                                        fontSize:'12px',
+                                    }} placeholder="" 
+                                    value={oneTank.tankCapacity}
+                                    disabled={true}
+                                />
+                            </div>
+
+                            <div className='inputs'>
                                 <div className='head-text2'>Product Type</div>
                                 <OutlinedInput 
                                     sx={{
@@ -157,14 +174,14 @@ const PumpUpdate = (props) => {
                             </div>
                        </div>
 
-                        <div style={{marginTop:'10px'}} className='butt'>
+                        <div style={{marginTop:'10px', height:'30px'}} className='butt'>
                             <Button sx={{
                                 width:'100px', 
                                 height:'30px',  
                                 background: '#427BBE',
                                 borderRadius: '3px',
                                 fontSize:'10px',
-                                marginTop:'0px',
+                                marginTop:'10px',
                                 '&:hover': {
                                     backgroundColor: '#427BBE'
                                 }
@@ -195,7 +212,7 @@ const PumpUpdate = (props) => {
 
 const inner = {
     width:'100%',
-    height:'420px',
+    height:'500px',
 }
 
 export default PumpUpdate;

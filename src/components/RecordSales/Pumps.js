@@ -24,6 +24,7 @@ const Pumps = () => {
     const pumpList = useSelector(state => state.outletReducer.pumpList);
     const [totalPumps, setTotalPumps] = useState([]);
     const [open, setOpen] = useState(false);
+    const [active, inactive] = useState(0);
 
     const [product, setProduct] = useState('');
 
@@ -86,21 +87,11 @@ const Pumps = () => {
         })
     }
 
-    const pumpItem = (e, index, item) => {
+    const pumpItem = (e, index, item) => {console.log(e, 'hello')
         e.preventDefault();
-
-        if(e.target.parentElement.style.color === "#fff"){
-            e.target.parentElement.style.background = "#fff";
-            e.target.parentElement.style.color = "#000";
-        }else{
-            e.target.parentElement.style.background = "#06805B";
-            e.target.parentElement.style.color = "#fff";
-        }
 
         setSelected(index);
         setCurrentPump(item);
-        setProduct(item.productType);
-        setTotalPumps(prev => [...prev, item]);
     }
 
     return(
@@ -131,10 +122,16 @@ const Pumps = () => {
                     pumpList.map((data, index) => {
                         return(
                             <div key={index} onClick={e => pumpItem(e, index, data)}>
-                                <div className='box2'>
-                                    <p style={{marginRight:'10px'}}>{data.pumpName}</p>
-                                    <img onClick={()=>{diselectPump(index)}} style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
-                                </div>
+                                {index === selected?
+                                    <div className='box'>
+                                        <p style={{marginRight:'10px'}}>{data.pumpName}</p>
+                                        <img onClick={()=>{diselectPump(index)}} style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
+                                    </div>:
+                                    <div className='box2'>
+                                        <p style={{marginRight:'10px'}}>{data.pumpName}</p>
+                                        <img onClick={()=>{diselectPump(index)}} style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
+                                    </div>
+                                }
                             </div>
                         )
                     })
@@ -147,27 +144,28 @@ const Pumps = () => {
                     <div>Please click to select a pump</div>:
                     pumpList.map((item, index) => {
                         return(
-                            <div key={index} data-aos="fade-down" className='item'>
+                            <div key={index} className='item'>
                                 <img style={{width:'55px', height:'65px'}} src={pump1}  alt="icon"/>
                                 <div className='pop'>{item.pumpName}</div>
                                 <div className='label'>Totalizer Reading (Litres)</div>
-                                <Button sx={{
-                                    width:'140px', 
-                                    height:'30px',  
-                                    background: '#06805B',
-                                    borderRadius: '3px',
-                                    fontSize:'12px',
-                                    marginTop:'10px',
-                                    textTransform: 'capitalize',
-                                    display:'none',
-                                    '&:hover': {
-                                        backgroundColor: '#06805B'
-                                    }
-                                    }}  
-                                    onClick={()=>{openSalesModal(item)}}
-                                    variant="contained"> Record Sales
-                                </Button>
-                                <input defaultValue={item.totalizerReading} style={imps} type="text" />
+                                {index === selected?
+                                    <Button sx={{
+                                        width:'140px', 
+                                        height:'30px',  
+                                        background: '#06805B',
+                                        borderRadius: '3px',
+                                        fontSize:'12px',
+                                        marginTop:'10px',
+                                        textTransform: 'capitalize',
+                                        '&:hover': {
+                                            backgroundColor: '#06805B'
+                                        }
+                                        }}  
+                                        onClick={()=>{openSalesModal(item)}}
+                                        variant="contained"> Record Sales
+                                    </Button>:
+                                    <input defaultValue={item.totalizerReading} style={imps} type="text" />
+                                }
                             </div>
                         )
                     })

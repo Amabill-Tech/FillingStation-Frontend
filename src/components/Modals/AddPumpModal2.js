@@ -74,6 +74,24 @@ const AddPump = (props) => {
                         <img onClick={handleClose} style={{width:'18px', height:'18px'}} src={close} alt={'icon'} />
                     </div>
 
+                    <div style={{marginTop:'15px'}} className='inputs'>
+                        <div className='head-text2'>Choose product type</div>
+                        <div className='radio'>
+                            <div className='rad-item'>
+                                <Radio checked={productType === 'PMS'? true: false} />
+                                <div className='head-text2' style={{marginRight:'5px'}}>PMS</div>
+                            </div>
+                            <div className='rad-item'>
+                                <Radio checked={productType === 'AGO'? true: false} />
+                                <div className='head-text2' style={{marginRight:'5px'}}>AGO</div>
+                            </div>
+                            <div className='rad-item'>
+                                <Radio checked={productType === 'DPK'? true: false} />
+                                <div className='head-text2' style={{marginRight:'5px'}}>DPK</div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div className='inputs'>
                         <div className='head-text2'>Pump Name</div>
                         <OutlinedInput 
@@ -114,24 +132,6 @@ const AddPump = (props) => {
                                 })
                             }
                         </Select>
-                    </div>
-
-                    <div style={{marginTop:'15px'}} className='inputs'>
-                        <div className='head-text2'>Choose product type</div>
-                        <div className='radio'>
-                            <div className='rad-item'>
-                                <Radio checked={productType === 'PMS'? true: false} />
-                                <div className='head-text2' style={{marginRight:'5px'}}>PMS</div>
-                            </div>
-                            <div className='rad-item'>
-                                <Radio checked={productType === 'AGO'? true: false} />
-                                <div className='head-text2' style={{marginRight:'5px'}}>AGO</div>
-                            </div>
-                            <div className='rad-item'>
-                                <Radio checked={productType === 'DPK'? true: false} />
-                                <div className='head-text2' style={{marginRight:'5px'}}>DPK</div>
-                            </div>
-                        </div>
                     </div>
 
                     <div style={{marginTop:'15px'}} className='inputs'>

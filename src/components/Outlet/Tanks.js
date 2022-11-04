@@ -28,7 +28,6 @@ const Tank = (props) => {
     const open = useSelector(state => state.outletReducer.openModal);
     const tankList = useSelector(state => state.outletReducer.tankList);
     const dispatch = useDispatch();
-    console.log(typeof tankList, 'tanks in here')
 
     const handleAddTanks = () => {
         dispatch(openModal(2));
@@ -183,6 +182,7 @@ const Tank = (props) => {
                                     background:'#F2F1F1',
                                     color:'#000'
                                 }} 
+                                value={props.data.currentLevel}
                             />
                         </div>
 
