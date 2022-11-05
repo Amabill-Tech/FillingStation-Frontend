@@ -41,7 +41,7 @@ const Dipping = () => {
                 organisationID: data.organisation
             }
             
-            OutletService.getAllOutletTanks(payload).then(data => {console.log(data, 'tabks')
+            OutletService.getAllOutletTanks(payload).then(data => {
                 dispatch(getAllOutletTanks(data.stations));
             });
         })
@@ -65,7 +65,7 @@ const Dipping = () => {
         getAllPumps();
     }, [getAllPumps])
 
-    const changeMenu = (index, item ) => {
+    const changeMenu2 = (index, item ) => {
         setDefault(index);
         setCurrentStation(item);
 
@@ -74,11 +74,9 @@ const Dipping = () => {
             organisationID: item.organisation
         }
         
-        OutletService.getAllStationPumps(payload).then(data => {
-            dispatch(getAllPumps(data));
+        OutletService.getAllOutletTanks(payload).then(data => {console.log(data, 'update')
+            dispatch(getAllOutletTanks(data.stations));
         });
-
-        setTotalPumps([]);
     }
 
     const openSalesModal = (item) => {
@@ -120,7 +118,7 @@ const Dipping = () => {
                 {
                     allOutlets.map((item, index) => {
                         return(
-                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index, item)}} value={index}>{item.outletName +', '+ item.city}</MenuItem>
+                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu2(index, item)}} value={index}>{item.outletName +', '+ item.city}</MenuItem>
                         )
                     })  
                 }
