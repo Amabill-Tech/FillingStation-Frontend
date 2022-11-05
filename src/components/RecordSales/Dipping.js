@@ -120,7 +120,7 @@ const Dipping = () => {
                 {
                     allOutlets.map((item, index) => {
                         return(
-                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index, item)}} value={index}>{item.outletName}</MenuItem>
+                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index, item)}} value={index}>{item.outletName +', '+ item.city}</MenuItem>
                         )
                     })  
                 }
@@ -131,7 +131,7 @@ const Dipping = () => {
             <div className='pumping'>
                 {
                     PMSPumps.length === 0?
-                    <div style={created}>No PMS pump created</div>:
+                    <div style={created}>No PMS tank created</div>:
                     PMSPumps.map((item, index) => {
                         return(
                             <div style={{justifyContent:'flex-start'}} key={index} className='item'>
@@ -167,7 +167,7 @@ const Dipping = () => {
             <div className='pumping'>
                 {
                     AGOPumps.length === 0?
-                    <div style={created}>No AGO pump created</div>:
+                    <div style={created}>No AGO tank created</div>:
                     AGOPumps.map((item, index) => {
                         return(
                             <div style={{justifyContent:'flex-start'}} key={index} className='item'>
@@ -203,7 +203,7 @@ const Dipping = () => {
             <div className='pumping'>
                 {
                     DPKPumps.length === 0?
-                    <div style={created}>No DPK pump created</div>:
+                    <div style={created}>No DPK tank created</div>:
                     DPKPumps.map((item, index) => {
                         return(
                             <div style={{justifyContent:'flex-start'}} key={index} className='item'>
@@ -253,7 +253,7 @@ const imps = {
 }
 
 const selectStyle2 = {
-    width:'130px', 
+    width:'200px', 
     height:'35px', 
     borderRadius:'5px',
     background: '#F2F1F1B2',

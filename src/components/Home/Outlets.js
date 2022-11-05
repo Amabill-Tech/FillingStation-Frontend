@@ -8,7 +8,7 @@ import eye from '../../assets/eye.png';
 import filling from '../../assets/filling.png';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import { useSelector } from 'react-redux';
-import { openModal, getAllStations } from '../../store/actions/outlet';
+import { openModal, getAllStations, searchStations } from '../../store/actions/outlet';
 import { useDispatch } from 'react-redux';
 import Tank from '../Outlet/Tanks';
 import Pumps from '../Outlet/Pumps';
@@ -85,6 +85,10 @@ const Outlets = (props) => {
         setSwitchTabs(!switchTabs);
     }
 
+    const searchStation = (value) => {
+        dispatch(searchStations(value))
+    }
+
     return(
         <>
             {props.activeRoute.split('/').length === 3 &&
@@ -119,18 +123,6 @@ const Outlets = (props) => {
                         <div className='search'>
                             <div className='input-cont'>
                                 <div className='second-select'>
-                                    <Select
-                                        labelId="demo-select-small"
-                                        id="demo-select-small"
-                                        value={10}
-                                        sx={selectStyle2}
-                                    >
-                                        <MenuItem value={10}>07 August, 2022</MenuItem>
-                                        <MenuItem value={20}>Twenty</MenuItem>
-                                        <MenuItem value={30}>Thirty</MenuItem>
-                                    </Select>
-                                </div>
-                                <div className='second-select'>
                                     <OutlinedInput 
                                         placeholder="Search" 
                                         sx={{
@@ -140,6 +132,7 @@ const Outlets = (props) => {
                                             background:'#F2F1F1',
                                             color:'#000'
                                         }} 
+                                        onChange={(e)=>{searchStation(e.target.value)}}
                                     />
                                 </div>
                             </div>
@@ -221,8 +214,8 @@ const Outlets = (props) => {
                                 <div className='column'>Outlet Code</div>
                                 <div className='column'>No of Tanks</div>
                                 <div className='column'>No of Pumps</div>
-                                <div className='column'>State</div>
                                 <div className='column'>Area</div>
+                                <div className='column'>State</div>
                                 <div className='column'>Actions</div>
                             </div>
         

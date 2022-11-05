@@ -257,41 +257,18 @@ const Payments = () => {
                         {
                             allOutlets.map((item, index) => {
                                 return(
-                                    <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index, item)}} value={index}>{item.outletName}</MenuItem>
+                                    <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index, item)}} value={index}>{item.outletName +', '+ item.city}</MenuItem>
                                 )
                             })  
                         }
                     </Select>
                 </div>
                 <div className='tabs'>
-                    <Button sx={{
-                        width:'120px', 
-                        height:'30px',  
-                        background: '#06805B',
-                        borderRadius: '39px',
-                        fontSize:'11px',
-                        marginRight:'10px',
-                        marginTop:'20px',
-                        '&:hover': {
-                            backgroundColor: '#06805B'
-                        }
-                        }}
+                    <Button sx={switchTab? inactive : active}
                         onClick={handleSwitchTab}  
-                        variant="contained"> Take Payment
+                        variant="contained"> Bank Payment
                     </Button>
-                    <Button sx={{
-                        width:'120px', 
-                        height:'30px',  
-                        fontSize:'11px',
-                        background: '#F0F9F7',
-                        border: '1px solid #5B5B5B',
-                        borderRadius: '39px',
-                        color:'#000',
-                        marginTop:'20px',
-                        '&:hover': {
-                            backgroundColor: '#F0F9F7'
-                        }
-                        }} 
+                    <Button sx={switchTab? active : inactive} 
                         onClick={handleSwitchTab2}  
                         variant="contained"> POS Payment
                     </Button>
@@ -429,6 +406,34 @@ const Payments = () => {
     )
 }
 
+const active = {
+    width:'130px', 
+    height:'30px',  
+    background: '#06805B',
+    borderRadius: '39px',
+    fontSize:'11px',
+    marginRight:'10px',
+    marginTop:'20px',
+    '&:hover': {
+        backgroundColor: '#06805B'
+    }
+}
+
+const inactive = {
+    width:'130px', 
+    height:'30px',  
+    fontSize:'11px',
+    background: '#F0F9F7',
+    border: '1px solid #5B5B5B',
+    borderRadius: '39px',
+    color:'#000',
+    marginTop:'20px',
+    marginRight:'10px',
+    '&:hover': {
+        backgroundColor: '#F0F9F7'
+    }
+}
+
 const textAreaStyle = {
     height:'150px',
     paddingTop:'10px',
@@ -439,7 +444,7 @@ const inner = {
 }
 
 const selectStyle2 = {
-    width:'150px', 
+    width:'200px', 
     height:'35px', 
     borderRadius:'5px',
     background: '#F2F1F1B2',

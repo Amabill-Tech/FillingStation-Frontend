@@ -10,7 +10,8 @@ import {
     PUMP_LIST,
     SEARCH_USERS,
     ONE_TANK,
-    ONE_STATION
+    ONE_STATION,
+    SEARCH_STATION
 } from '../types'
 
 const initialState = {
@@ -24,6 +25,7 @@ const initialState = {
     pumpList: [],
     oneTank: {},
     oneStation: {},
+    searchStation:[]
 }
 
 const outletReducer = (state = initialState, action) => {
@@ -70,7 +72,8 @@ const outletReducer = (state = initialState, action) => {
         case OUTLET_DATA: {
             return {
                 ...state,
-                allOutlets: payload
+                allOutlets: payload,
+                searchStation: payload
             }
         }
 
@@ -96,13 +99,13 @@ const outletReducer = (state = initialState, action) => {
             }
         }
 
-        case SEARCH_USERS:{
-            const search = state.searchData.filter(data => !data.tankName.toUpperCase().indexOf(payload.toUpperCase()) ||
-                !data.productType.toUpperCase().indexOf(payload.toUpperCase())
+        case SEARCH_STATION:{
+            const search = state.searchStation.filter(data => !data.outletName.toUpperCase().indexOf(payload.toUpperCase()) ||
+                !data.state.toUpperCase().indexOf(payload.toUpperCase()) || !data.city.toUpperCase().indexOf(payload.toUpperCase())
             );
             return {
                 ...state,
-                tankList: search,
+                allOutlets: search,
             }
         }
 
@@ -117,6 +120,16 @@ const outletReducer = (state = initialState, action) => {
             return {
                 ...state,
                 oneStation: payload
+            }
+        }
+
+        case SEARCH_USERS:{
+            const search = state.searchData.filter(data => !data.tankName.toUpperCase().indexOf(payload.toUpperCase()) ||
+                !data.productType.toUpperCase().indexOf(payload.toUpperCase())
+            );
+            return {
+                ...state,
+                tankList: search,
             }
         }
 

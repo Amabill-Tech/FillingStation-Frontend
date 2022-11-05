@@ -90,18 +90,24 @@ const AddTank = (props) => {
                         <div style={{marginTop:'15px'}} className='inputs'>
                             <div className='head-text2'>Choose product type</div>
                             <div className='radio'>
-                                <div className='rad-item'>
-                                    <Radio onClick={()=>{setProductType('PMS')}} checked={productType === 'PMS'? true: false} />
-                                    <div className='head-text2' style={{marginRight:'5px'}}>PMS</div>
-                                </div>
-                                <div className='rad-item'>
-                                    <Radio onClick={()=>{setProductType('AGO')}} checked={productType === 'AGO'? true: false} />
-                                    <div className='head-text2' style={{marginRight:'5px'}}>AGO</div>
-                                </div>
-                                <div className='rad-item'>
-                                    <Radio onClick={()=>{setProductType('DPK')}} checked={productType === 'DPK'? true: false} />
-                                    <div className='head-text2' style={{marginRight:'5px'}}>DPK</div>
-                                </div>
+                                {(props.tabs === 1 || props.tabs === 0) &&
+                                    <div className='rad-item'>
+                                        <Radio onClick={()=>{setProductType('PMS')}} checked={productType === 'PMS'? true: false} />
+                                        <div className='head-text2' style={{marginRight:'5px'}}>PMS</div>
+                                    </div>
+                                }
+                                {(props.tabs === 2 || props.tabs === 0) &&
+                                    <div className='rad-item'>
+                                        <Radio onClick={()=>{setProductType('AGO')}} checked={productType === 'AGO'? true: false} />
+                                        <div className='head-text2' style={{marginRight:'5px'}}>AGO</div>
+                                    </div>
+                                }
+                                {(props.tabs === 3 || props.tabs === 0) &&
+                                    <div className='rad-item'>
+                                        <Radio onClick={()=>{setProductType('DPK')}} checked={productType === 'DPK'? true: false} />
+                                        <div className='head-text2' style={{marginRight:'5px'}}>DPK</div>
+                                    </div>
+                                }
                             </div>
                         </div>
 
@@ -121,7 +127,7 @@ const AddTank = (props) => {
                         </div>
 
                         <div style={{marginTop:'15px'}} className='inputs'>
-                            <div className='head-text2'>Tank Height (cm)</div>
+                            <div className='head-text2'>Tank Height (optional)</div>
                             <OutlinedInput 
                                 sx={{
                                     width:'100%',

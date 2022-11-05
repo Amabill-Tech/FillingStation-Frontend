@@ -75,18 +75,24 @@ const AddPump = (props) => {
                     <div style={{marginTop:'15px'}} className='inputs'>
                         <div className='head-text2'>Choose product type</div>
                         <div className='radio'>
-                            <div className='rad-item'>
-                                <Radio checked={productType === 'PMS'? true: false} />
-                                <div className='head-text2' style={{marginRight:'5px'}}>PMS</div>
-                            </div>
-                            <div className='rad-item'>
-                                <Radio checked={productType === 'AGO'? true: false} />
-                                <div className='head-text2' style={{marginRight:'5px'}}>AGO</div>
-                            </div>
-                            <div className='rad-item'>
-                                <Radio checked={productType === 'DPK'? true: false} />
-                                <div className='head-text2' style={{marginRight:'5px'}}>DPK</div>
-                            </div>
+                            {(props.tabs === 1 || props.tabs === 0) &&
+                                <div className='rad-item'>
+                                    <Radio checked={productType === 'PMS'? true: false} />
+                                    <div className='head-text2' style={{marginRight:'5px'}}>PMS</div>
+                                </div>
+                            }
+                            {(props.tabs === 2 || props.tabs === 0) &&
+                                <div className='rad-item'>
+                                    <Radio checked={productType === 'AGO'? true: false} />
+                                    <div className='head-text2' style={{marginRight:'5px'}}>AGO</div>
+                                </div>
+                            }
+                            {(props.tabs === 3 || props.tabs === 0) &&
+                                <div className='rad-item'>
+                                    <Radio checked={productType === 'DPK'? true: false} />
+                                    <div className='head-text2' style={{marginRight:'5px'}}>DPK</div>
+                                </div>
+                            }
                         </div>
                     </div>
 
