@@ -74,12 +74,13 @@ const Pumps = (props) => {
                     pumpList.map((item, index) => {
                         return(
                             <div key={index} className='item'>
-                                <img style={{width:'55px', height:'65px'}} src={pump1}  alt="icon"/>
+                                <img style={{width:'55px', height:'60px', marginTop:'10px'}} src={pump1}  alt="icon"/>
                                 <div className='pop'>{item.pumpName}</div>
-                                <div className='label'>Totalizer Reading (Litres)</div>
+                                <div style={{marginTop:'10px'}}  className='label'>Date: {item.updatedAt.split('T')[0]}</div>
+                                <div style={{marginTop:'0px'}} className='label'>Totalizer Reading (Litres)</div>
                                 {index === selected?
                                     <Button sx={{
-                                        width:'140px', 
+                                        width:'160px', 
                                         height:'30px',  
                                         background: '#06805B',
                                         borderRadius: '3px',

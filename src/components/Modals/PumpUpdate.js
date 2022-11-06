@@ -10,6 +10,7 @@ import '../../styles/lpo.scss';
 import LPOService from '../../services/lpo';
 import QueryService from '../../services/query';
 import OutletService from '../../services/outletService';
+import { useEffect } from 'react';
 
 const PumpUpdate = (props) => {
     const [loading, setLoading] = useState(false);
@@ -24,6 +25,10 @@ const PumpUpdate = (props) => {
     const dispatch = useDispatch();
 
     const handleClose = () => props.close(false);
+
+    useEffect(()=>{
+        setTotalizer(props.current.totalizerReading)
+    }, [props])
 
     const submit = () => {
         const fresh = Number(totalizer) < Number(oneTank.deadStockLevel);
@@ -112,6 +117,7 @@ const PumpUpdate = (props) => {
                                         fontSize:'12px',
                                     }} placeholder="" 
                                     type='number'
+                                    value={totalizer}
                                     onChange={e => setTotalizer(e.target.value)}
                                 />
                             </div>
