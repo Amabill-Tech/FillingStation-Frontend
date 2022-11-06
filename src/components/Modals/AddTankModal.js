@@ -127,7 +127,7 @@ const AddTank = (props) => {
                         </div>
 
                         <div style={{marginTop:'15px'}} className='inputs'>
-                            <div className='head-text2'>Tank Height (optional)</div>
+                            <div className='head-text2'>Tank Height in cm (optional)</div>
                             <OutlinedInput 
                                 sx={{
                                     width:'100%',

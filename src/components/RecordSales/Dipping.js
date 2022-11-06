@@ -101,9 +101,7 @@ const Dipping = () => {
 
         OutletService.updateTank(payload).then((data) => {
             console.log('sucess')
-        }).then(()=>{
-            getAllStationData();
-        })
+        });
     }
 
     return(

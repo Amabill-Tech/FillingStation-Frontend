@@ -1,82 +1,25 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import '../../styles/pump.scss';
 import pump1 from '../../assets/pump1.png';
-import plus from '../../assets/plus.png';
 import cross from '../../assets/cross.png';
-import { Button, MenuItem, Select } from '@mui/material';
+import { Button } from '@mui/material';
 import OutletService from '../../services/outletService';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllPumps, getAllStations, getOneTank } from '../../store/actions/outlet';
-import LPOService from '../../services/lpo';
-import { createLPO } from '../../store/actions/lpo';
+import { getOneTank } from '../../store/actions/outlet';
 import PumpUpdate from '../Modals/PumpUpdate';
 
-const Pumps = () => {
+const Pumps = (props) => {
 
-    const [defaultState, setDefault] = useState(0);
-    const [currentStation, setCurrentStation] = useState({});
     const [currentPump, setCurrentPump] = useState({});
-    const [currentTank, setCurrentTank] = useState({});
     const [selected, setSelected] = useState(null);
     const dispatch = useDispatch();
-    const user = useSelector(state => state.authReducer.user);
-    const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const pumpList = useSelector(state => state.outletReducer.pumpList);
-    const [totalPumps, setTotalPumps] = useState([]);
     const [open, setOpen] = useState(false);
-    const [active, inactive] = useState(0);
-
-    const [product, setProduct] = useState('');
-
-    const getAllStationData = useCallback(() => {
-        OutletService.getAllOutletStations({organisation: user.userType === "superAdmin"? user._id : user.organisationID}).then(data => {
-            dispatch(getAllStations(data.station));
-            setCurrentStation(data.station[0]);
-            return data.station[0]
-        }).then((data)=>{
-            const payload = {
-                outletID: data._id, 
-                organisationID: data.organisation
-            }
-            
-            OutletService.getAllStationPumps(payload).then(data => {
-                dispatch(getAllPumps(data));
-            });
-
-            LPOService.getAllLPO(payload).then((data) => {
-                dispatch(createLPO(data.lpo.lpo));
-            })
-        })
-    }, [dispatch, user.organisationID]);
-
-    useEffect(()=>{
-        getAllStationData()
-    }, [getAllStationData])
-
-    const changeMenu = (index, item ) => {
-        setDefault(index);
-        setCurrentStation(item);
-
-        const payload = {
-            outletID: item._id, 
-            organisationID: item.organisation
-        }
-        
-        OutletService.getAllStationPumps(payload).then(data => {
-            dispatch(getAllPumps(data));
-        });
-
-        setTotalPumps([]);
-    }
-
-    const diselectPump = (index) => {alert(index)
-        setSelected(null);
-    }
+    const oneOutletStation = useSelector(state => state.outletReducer.oneStation);
 
     const openSalesModal = (item) => {
         setOpen(true);
         setCurrentPump(item);
-        console.log(item)
 
         const payload = {
             id: item.hostTank
@@ -87,7 +30,7 @@ const Pumps = () => {
         })
     }
 
-    const pumpItem = (e, index, item) => {console.log(e, 'hello')
+    const pumpItem = (e, index, item) => {
         e.preventDefault();
 
         setSelected(index);
@@ -96,22 +39,8 @@ const Pumps = () => {
 
     return(
         <div className='pumpContainer'>
-            {open && <PumpUpdate refresh={getAllStationData} open={open} close={setOpen} currentStation={currentStation} current={currentPump} currentTank={currentTank} />}
+            {open && <PumpUpdate open={open} close={setOpen} currentStation={oneOutletStation} current={currentPump} refresh={props.refresh} />}
             <div>Select Pump used for the day</div>
-            <Select
-                labelId="demo-select-small"
-                id="demo-select-small"
-                value={defaultState}
-                sx={selectStyle2}
-            >
-                {
-                    allOutlets.map((item, index) => {
-                        return(
-                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index, item)}} value={index}>{item.outletName +', '+ item.city}</MenuItem>
-                        )
-                    })  
-                }
-            </Select>
             <div className='pump-list'>
                 {
                     pumpList.length === 0?
@@ -125,11 +54,11 @@ const Pumps = () => {
                                 {index === selected?
                                     <div className='box'>
                                         <p style={{marginRight:'10px'}}>{data.pumpName}</p>
-                                        <img onClick={()=>{diselectPump(index)}} style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
+                                        <img style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
                                     </div>:
                                     <div className='box2'>
                                         <p style={{marginRight:'10px'}}>{data.pumpName}</p>
-                                        <img onClick={()=>{diselectPump(index)}} style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
+                                        <img style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
                                     </div>
                                 }
                             </div>
@@ -164,7 +93,7 @@ const Pumps = () => {
                                         onClick={()=>{openSalesModal(item)}}
                                         variant="contained"> Record Sales
                                     </Button>:
-                                    <input defaultValue={item.totalizerReading} style={imps} type="text" />
+                                    <input disabled={true} defaultValue={item.totalizerReading} style={imps} type="text" />
                                 }
                             </div>
                         )
