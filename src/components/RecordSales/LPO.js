@@ -238,7 +238,8 @@ const LPO = () => {
         <div className='pumpContainer'>
             <CameraModal open={open} />
             <div>Select Pump that gives out lpo for the day</div>
-            <div className='pump-list'>
+
+            <div style={{marginTop:'10px'}} className='pump-list'>
                 {
                     pumpList.length === 0?
                     <div style={{...box, width:'170px'}}>
@@ -247,9 +248,17 @@ const LPO = () => {
                     </div>:
                     pumpList.map((data, index) => {
                         return(
-                            <div onClick={()=>{selectedPump(index, data)}} style={selected === index? box: box2}>
-                                <div style={{marginRight:'10px'}}>{data.pumpName}</div>
-                                <img onClick={diselectPump} style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
+                            <div key={index} onClick={()=>{selectedPump(index, data)}}>
+                                {index === selected?
+                                    <div className='box'>
+                                        <p style={{marginRight:'10px'}}>{data.pumpName}</p>
+                                        <img style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
+                                    </div>:
+                                    <div className='box2'>
+                                        <p style={{marginRight:'10px'}}>{data.pumpName}</p>
+                                        <img style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
+                                    </div>
+                                }
                             </div>
                         )
                     })

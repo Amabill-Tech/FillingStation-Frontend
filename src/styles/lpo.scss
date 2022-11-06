@@ -34,9 +34,13 @@
 }
 
 .lpos{
-  width: 100%;
-  height: 300px;
+  width: 50%;
+  height: 550px;
   margin-top: 20px;
+  background: #fff;
+  padding-top: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
 
     .inputs{
         width: 100%;
@@ -59,7 +63,7 @@
             margin-top: 10px;
             padding-left: 2%;
             padding-right: 2%;
-            background: rgba(215, 215, 215, 0.6);
+            background: rgba(229, 240, 237, 0.6);
             border: 0.938659px solid #606060;
             border-radius: 5.63195px;
         }
@@ -121,7 +125,22 @@
   }
 }
 
+@media (max-width: 1150px){
+    .lpos{
+        width: 80%;
+    }
+}
+
+@media (max-width: 900px){
+    .lpos{
+        width: 96%;
+    }
+}
+
 @media (max-width: 600px){
+    .lpos{
+        width: 96%;
+    }
   .twoInputs{
     flex-direction: column;
     width: 100%;
