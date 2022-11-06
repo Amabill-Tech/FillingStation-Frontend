@@ -17,6 +17,7 @@ import Camera, { IMAGE_TYPES } from 'react-html5-camera-photo';
 import swal from 'sweetalert';
 import axios from 'axios';
 import config from '../../constants';
+import ReactCamera from '../Modals/ReactCamera';
 
 const LPO = () => {
 
@@ -62,59 +63,12 @@ const LPO = () => {
         })
     }
 
-    const refresh = () => {
-        const payload = {
-            id: oneTank._id
-        }
-
-        OutletService.getOneTank(payload).then((data) => {
-            dispatch(getOneTank(data.stations));
-        })
-    }
-
-    const diselectPump = () => {
-        setSelected(null);
-        setCurrentPump({});
-    }
-
     const openCamera = () => {
         setOpen(true);
     }
 
     const openGallery = () => {
         gallery.current.click();
-    }
-
-    const handleTakePhoto = (data) => {
-        setCam(data);
-    }
-
-    const handleCloseCam = () => {
-        setOpen(false);
-    }
-
-    const CameraModal = (props) => {
-        return(
-            <Modal
-                open={props.open}
-                onClose={handleCloseCam}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-                sx={{ display:'flex', justifyContent:'center', alignItems:'center'}}
-            >
-               { open?
-                    <Camera
-                        onTakePhoto = { (dataUri) => { handleTakePhoto(dataUri); } }
-                        idealResolution = {{width: 200, height: 200}}
-                        imageCompression = {0.5}
-                        sizeFactor = {0.5}
-                        isFullscreen={false}
-                        imageType = {IMAGE_TYPES.PNG}
-                    />:
-                    <div></div>
-                }
-            </Modal>
-        )
     }
 
     const pickFromGallery = (e) => {
@@ -126,6 +80,8 @@ const LPO = () => {
         const fresh = Number(litre) < Number(oneTank.deadStockLevel);
         const prev = (Number(oneTank.currentLevel) - Number(litre)) < Number(oneTank.deadStockLevel)
         const detail = oneTank.currentLevel==="None"? fresh : prev;
+
+        console.log(cam)
 
         if((typeof(cam) === "string")){
             if(accountName === "") return swal("Warning!", "Account Name field cannot be empty", "info");
@@ -175,7 +131,6 @@ const LPO = () => {
             if(updatedTank.currentLevel !== null){
                 OutletService.updateTank(updatedTank).then((data) => {
                     console.log(data, 'lop updated tank')
-                    refresh();
                 });
             }   
 
@@ -225,7 +180,6 @@ const LPO = () => {
             if(updatedTank.currentLevel !== null){
                 OutletService.updateTank(updatedTank).then((data) => {
                     console.log(data, 'lop updated tank')
-                    refresh();
                 });
             }   
         }
@@ -236,7 +190,7 @@ const LPO = () => {
 
     return(
         <div className='pumpContainer'>
-            <CameraModal open={open} />
+            <ReactCamera open={open} close={setOpen} setDataUri={setCam} />
             <div>Select Pump that gives out lpo for the day</div>
 
             <div style={{marginTop:'10px'}} className='pump-list'>
@@ -327,11 +281,11 @@ const LPO = () => {
                     <div className='button-container'>
                         <Button onClick={openCamera} style={{background:'#216DB2', fontSize:'12px', textTransform:'capitalize'}} className='buttons'>
                             <img style={{width:'22px', height:'18px', marginRight:'10px'}} src={photo} alt="icon" />
-                            <div>Take Photo</div>
+                            <div>{typeof(cam) === "string"? "Image taken":<span>Take photo</span>}</div>
                         </Button>
                         <Button onClick={openGallery} style={{background:'#087B36', fontSize:'12px', textTransform:'capitalize'}} className='buttons'>
                             <img style={{width:'22px', height:'18px', marginRight:'10px'}} src={upload} alt="icon" />
-                            <div>Upload</div>
+                            <div>{typeof(gall) === "string"? "Upload":<span>File uploaded</span>}</div>
                         </Button>
                     </div>
                 </div>
