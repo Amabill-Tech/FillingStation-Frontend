@@ -73,6 +73,12 @@
     background: #555;
 }
 
+@media (max-width: 1150px){
+    .salesContainer{
+        margin-top: 80px;
+    }
+}
+
 @media (max-width: 1000px){
     .salesContainer{
         width: 100%;

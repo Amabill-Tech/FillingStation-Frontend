@@ -33,7 +33,6 @@ const LPO = (props) => {
     const [product, setProduct] = useState('');
     const [truckNo, setTruckNo] = useState('');
     const [litre, setLitre] = useState('');
-    const [amount, setAmount] = useState('');
     const [cam, setCam] = useState(null);
     const [gall, setGall] = useState('');
 
@@ -134,11 +133,10 @@ const LPO = (props) => {
             });
 
         }else{
-            if(accountName === "") return swal("Warning!", "Account Name field cannot be empty", "info");
+            if(accountName === "" || accountName === undefined) return swal("Warning!", "Account Name field cannot be empty", "info");
             if(product === "") return swal("Warning!", "Product Type field cannot be empty", "info");
             if(truckNo === "") return swal("Warning!", "Truck No field cannot be empty", "info");
             if(litre === "") return swal("Warning!", "Litre field cannot be empty", "info");
-            if(amount === "") return swal("Warning!", "Amount field cannot be empty", "info");
             if(typeof(gall.name) === "undefined") return swal("Warning!", "Please select a file", "info");
             if(oneTank.activeState === "0") return swal("Warning!", "Tank is currently inactive, contact admin", "info");
             if((detail)) return swal("Warning!", "Tank deadstock level reached!", "info");
@@ -148,7 +146,6 @@ const LPO = (props) => {
             formData.append("productType", product);
             formData.append("truckNo", truckNo);
             formData.append("litre", litre);
-            formData.append("amountRate", amount);
             formData.append("attachApprovalGall", gall);
             formData.append("lpoID", accountName._id);
             formData.append("outletID", oneOutletStation._id);
@@ -160,31 +157,43 @@ const LPO = (props) => {
                 }
             };
 
+            console.log(formData, 'forms')
+
             const url = config.BASE_URL + "/360-station/api/lpoSales/create";
             axios.post(url, formData, httpConfig).then((data) => {
-                console.log('form data', data);
+                return data;
             }).then(()=>{
-                swal("Success!", "LPO recorded successfully", "success");
+                const updatedTank = {
+                    id: oneTank._id,
+                    previousLevel: oneTank.currentLevel,
+                    currentLevel: oneTank.currentLevel === "None"? null: String(Number(oneTank.currentLevel) - Number(litre)),
+                    outletID: oneOutletStation._id,
+                    organisationID: oneOutletStation.organisation,
+                }
+
+                if(updatedTank.currentLevel !== null){
+                    OutletService.updateTank(updatedTank).then((data) => {
+                        swal("Success!", "LPO recorded successfully", "success"); 
+                        return data;
+                    }).then(()=>{
+                        const updatedLPO = {
+                            id: accountName._id,
+                            PMS: currentPump.productType==="PMS"? Number(accountName.PMS) - Number(litre): undefined,
+                            AGO: currentPump.productType==="AGO"? Number(accountName.AGO) - Number(litre): undefined,
+                            DPK: currentPump.productType==="DPK"? Number(accountName.DPK) - Number(litre): undefined,
+                        }
+
+                        LPOService.updateLPO(updatedLPO).then(data => {
+                            return data
+                        }).then(()=>{
+                            props.refresh();
+                        })
+                
+                    })
+                }  
             });
-
-            const updatedTank = {
-                id: oneTank._id,
-                previousLevel: oneTank.currentLevel,
-                totalizer: litre,
-                currentLevel: oneTank.currentLevel === "None"? null: String(Number(oneTank.currentLevel) - Number(litre)),
-                outletID: oneOutletStation._id,
-                organisationID: oneOutletStation.organisation,
-            }
-
-            if(updatedTank.currentLevel !== null){
-                OutletService.updateTank(updatedTank).then((data) => {
-                    console.log(data, 'lop updated tank')
-                });
-            }   
         }
         
-
-        //console.log(payload, 'hello world')
     }
 
     return(
@@ -263,15 +272,10 @@ const LPO = (props) => {
                     <input onChange={e => setTruckNo(e.target.value)} className='date' type={'text'}  />
                 </div>
 
-                <div className='twoInputs'>
-                    <div className='inputs2'>
+                <div style={{width:'100%'}} className='twoInputs'>
+                    <div style={{width:'100%'}} className='inputs2'>
                         <div className='text'>Litre (QTY)</div>
                         <input onChange={e => setLitre(e.target.value)} className='date' type={'text'}  />
-                    </div>
-
-                    <div className='inputs2'>
-                        <div className='text'>Amount Rate</div>
-                        <input onChange={e => setAmount(e.target.value)} className='date' type={'text'}  />
                     </div>
                 </div>
 
