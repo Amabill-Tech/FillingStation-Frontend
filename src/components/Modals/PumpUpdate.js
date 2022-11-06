@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import close from '../../assets/close.png';
 import Button from '@mui/material/Button';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -7,22 +7,14 @@ import Modal from '@mui/material/Modal';
 import { ThreeDots } from  'react-loader-spinner';
 import swal from 'sweetalert';
 import '../../styles/lpo.scss';
-import LPOService from '../../services/lpo';
-import QueryService from '../../services/query';
 import OutletService from '../../services/outletService';
 import { useEffect } from 'react';
 
 const PumpUpdate = (props) => {
     const [loading, setLoading] = useState(false);
-    const [defaultState, setDefaultState] = useState(0);
-    const [currentTank, setCurrentTank] = useState({});
-    const [quantity, setQuantity] = useState('');
-    const [date, setDate] = useState('');
     const [totalizer, setTotalizer] = useState('');
     const [remark, setRemark] = useState('');
     const oneTank = useSelector(state => state.outletReducer.oneTank);
-    const user = useSelector(state => state.authReducer.user);
-    const dispatch = useDispatch();
 
     const handleClose = () => props.close(false);
 

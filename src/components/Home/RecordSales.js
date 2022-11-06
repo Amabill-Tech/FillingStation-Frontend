@@ -8,7 +8,7 @@ import Expenses from '../RecordSales/Expenses';
 import Payments from '../RecordSales/Payment';
 import OutletService from '../../services/outletService';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllPumps, getAllStations, oneStation } from '../../store/actions/outlet';
+import { getAllOutletTanks, getAllPumps, getAllStations, oneStation } from '../../store/actions/outlet';
 import Dipping from '../RecordSales/Dipping';
 import { MenuItem, Select } from '@mui/material';
 import { useCallback } from 'react';
@@ -53,6 +53,10 @@ const RecordSales = (props) => {
                 dispatch(getAllPumps(data));
             });
 
+            OutletService.getAllOutletTanks(payload).then(data => {
+                dispatch(dispatch(getAllOutletTanks(data.stations)))
+            });
+
             LPOService.getAllLPO(payload).then((data) => {
                 dispatch(createLPO(data.lpo.lpo));
             });
@@ -72,6 +76,10 @@ const RecordSales = (props) => {
             OutletService.getOneOutletStation(payload).then((data) => {
                 dispatch(oneStation(data.station));
             });
+
+            OutletService.getAllOutletTanks(payload).then(data => {
+                dispatch(dispatch(getAllOutletTanks(data.stations)))
+            })
             
             OutletService.getAllStationPumps(payload).then(data => {
                 dispatch(getAllPumps(data));
@@ -99,6 +107,10 @@ const RecordSales = (props) => {
         OutletService.getAllStationPumps(payload).then(data => {
             dispatch(getAllPumps(data));
         });
+
+        OutletService.getAllOutletTanks(payload).then(data => {
+            dispatch(dispatch(getAllOutletTanks(data.stations)))
+        })
 
         LPOService.getAllLPO(payload).then((data) => {
             dispatch(createLPO(data.lpo.lpo));

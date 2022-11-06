@@ -1,51 +1,22 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import '../../styles/pump.scss';
 import me4 from '../../assets/me4.png';
-import plus from '../../assets/plus.png';
-import cross from '../../assets/cross.png';
-import { Button, MenuItem, Select } from '@mui/material';
+import { Button } from '@mui/material';
 import OutletService from '../../services/outletService';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllOutletTanks, getAllPumps, getAllStations, getOneTank } from '../../store/actions/outlet';
-import LPOService from '../../services/lpo';
-import { createLPO } from '../../store/actions/lpo';
 import PumpUpdate from '../Modals/PumpUpdate';
+import { getOneTank } from '../../store/actions/outlet';
 
-const Dipping = () => {
+const Dipping = (props) => {
 
-    const [defaultState, setDefault] = useState(0);
-    const [currentStation, setCurrentStation] = useState({});
     const [currentPump, setCurrentPump] = useState({});
-    const [currentTank, setCurrentTank] = useState({});
-    const [selected, setSelected] = useState(null);
     const dispatch = useDispatch();
-    const user = useSelector(state => state.authReducer.user);
-    const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const tankList = useSelector(state => state.outletReducer.tankList);
-    const [totalPumps, setTotalPumps] = useState([]);
     const [open, setOpen] = useState(false);
     const [PMSPumps, setPMSPumps] = useState([]);
     const [AGOPumps, setAGOPumps] = useState([]);
     const [DPKPumps, setDPKPumps] = useState([]);
-
-    const [product, setProduct] = useState('');
-
-    const getAllStationData = useCallback(() => {
-        OutletService.getAllOutletStations({organisation: user.userType === "superAdmin"? user._id : user.organisationID}).then(data => {
-            dispatch(getAllStations(data.station));
-            setCurrentStation(data.station[0]);
-            return data.station[0]
-        }).then((data)=>{
-            const payload = {
-                outletID: data._id, 
-                organisationID: data.organisation
-            }
-            
-            OutletService.getAllOutletTanks(payload).then(data => {
-                dispatch(getAllOutletTanks(data.stations));
-            });
-        })
-    }, [dispatch, user._id, user.userType, user.organisationID]);
+    const oneOutletStation = useSelector(state => state.outletReducer.oneStation);
 
     const getAllPumps = useCallback(() => {
         const PMS = tankList.filter(data => data.productType === "PMS");
@@ -58,26 +29,8 @@ const Dipping = () => {
     }, [tankList])
 
     useEffect(()=>{
-        getAllStationData();
-    }, [getAllStationData])
-
-    useEffect(()=>{
         getAllPumps();
     }, [getAllPumps])
-
-    const changeMenu2 = (index, item ) => {
-        setDefault(index);
-        setCurrentStation(item);
-
-        const payload = {
-            outletID: item._id, 
-            organisationID: item.organisation
-        }
-        
-        OutletService.getAllOutletTanks(payload).then(data => {console.log(data, 'update')
-            dispatch(getAllOutletTanks(data.stations));
-        });
-    }
 
     const openSalesModal = (item) => {
         setOpen(true);
@@ -100,27 +53,15 @@ const Dipping = () => {
         }
 
         OutletService.updateTank(payload).then((data) => {
-            console.log('sucess')
+            return data;
+        }).then(()=>{
+            props.refresh();
         });
     }
 
     return(
         <div className='pumpContainer'>
-            {open && <PumpUpdate open={open} close={setOpen} currentStation={currentStation} current={currentPump} currentTank={currentTank} />}
-            <Select
-                labelId="demo-select-small"
-                id="demo-select-small"
-                value={defaultState}
-                sx={selectStyle2}
-            >
-                {
-                    allOutlets.map((item, index) => {
-                        return(
-                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu2(index, item)}} value={index}>{item.outletName +', '+ item.city}</MenuItem>
-                        )
-                    })  
-                }
-            </Select>
+            {open && <PumpUpdate open={open} close={setOpen} currentStation={oneOutletStation} current={currentPump} />}
             
             <div className='pmscont'>PMS</div>
 

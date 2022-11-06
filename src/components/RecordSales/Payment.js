@@ -1,30 +1,20 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import '../../styles/expenses.scss';
-import pluss from '../../assets/pluss.png';
 import photo from '../../assets/photo.png';
 import upload from '../../assets/upload.png';
 import Button from '@mui/material/Button';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import { Modal } from '@mui/material';
-import Camera, { IMAGE_TYPES } from 'react-html5-camera-photo';
-import { useDispatch, useSelector } from 'react-redux';
-import OutletService from '../../services/outletService';
-import { getAllStations } from '../../store/actions/outlet';
 import swal from 'sweetalert';
 import axios from 'axios';
 import config from '../../constants';
+import { useSelector } from 'react-redux';
+import ReactCamera from '../Modals/ReactCamera';
 
 const Payments = () => {
 
     const [switchTab, setSwitchTab] = useState(false);
     const [open, setOpen] = useState(false);
-    const [defaultState, setDefault] = useState(0);
     const gallery1 = useRef();
-    const allOutlets = useSelector(state => state.outletReducer.allOutlets);
-    const dispatch = useDispatch();
-    const user = useSelector(state => state.authReducer.user);
-    const [currentStation, setCurrentStation] = useState({});
+    const oneOutletStation = useSelector(state => state.outletReducer.oneStation);
 
     const [bankName, setBankName] = useState('');
     const [tellerNumber, setTellerNumber] = useState('');
@@ -34,24 +24,6 @@ const Payments = () => {
     const [date, setDate] = useState('');
     const [cam, setCam] = useState(null);
     const [gall, setGall] = useState({});
-
-    const getAllStationData = useCallback(() => {
-        OutletService.getAllOutletStations({organisation: user.userType === "superAdmin"? user._id : user.organisationID}).then(data => {
-            dispatch(getAllStations(data.station));
-            setCurrentStation(data.station[0]);
-            return data.station[0]
-        })
-    }, [dispatch, user.organisationID]);
-
-    useEffect(()=>{
-        getAllStationData()
-    }, [getAllStationData]);
-
-    const changeMenu = (index, item ) => {
-        setDefault(index);
-        setCurrentStation(item);
-    }
-
 
     const handleSwitchTab = () => {
         setSwitchTab(false);
@@ -63,39 +35,6 @@ const Payments = () => {
 
     const pickFromGallery = () => {
         gallery1.current.click();
-    }
-
-    const handleTakePhoto = (data) => {
-        setCam(data);
-    }
-
-    const handleCloseCam = () => {
-        setOpen(false);
-    }
-
-
-    const CameraModal = (props) => {
-        return(
-            <Modal
-                open={props.open}
-                onClose={handleCloseCam}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-                sx={{ display:'flex', justifyContent:'center', alignItems:'center'}}
-            >
-               { open?
-                    <Camera
-                        onTakePhoto = { (dataUri) => { handleTakePhoto(dataUri); } }
-                        idealResolution = {{width: 200, height: 200}}
-                        imageCompression = {0.5}
-                        sizeFactor = {0.5}
-                        isFullscreen={false}
-                        imageType = {IMAGE_TYPES.PNG}
-                    />:
-                    <div></div>
-                }
-            </Modal>
-        )
     }
 
     const takeFromCamera = () => {
@@ -122,8 +61,8 @@ const Payments = () => {
                 amountPaid: amount,
                 paymentDate: date,
                 attachApprovalCam: cam,
-                outletID: currentStation._id,
-                organisationID: currentStation.organisation,
+                outletID: oneOutletStation._id,
+                organisationID: oneOutletStation.organisation,
             }
 
             const url = config.BASE_URL + "/360-station/api/payment/create";
@@ -155,8 +94,8 @@ const Payments = () => {
             formData.append("amountPaid", amount);
             formData.append("paymentDate", date);
             formData.append("attachApproval", gall);
-            formData.append("outletID", currentStation._id);
-            formData.append("organisationID", currentStation.organisation);
+            formData.append("outletID", oneOutletStation._id);
+            formData.append("organisationID", oneOutletStation.organisation);
             const httpConfig = {
                 headers: {
                     "content-type": "multipart/form-data",
@@ -190,8 +129,8 @@ const Payments = () => {
                 amountPaid: amount,
                 paymentDate: date,
                 attachApprovalCam: cam,
-                outletID: currentStation._id,
-                organisationID: currentStation.organisation,
+                outletID: oneOutletStation._id,
+                organisationID: oneOutletStation.organisation,
             }
 
             const url = config.BASE_URL + "/360-station/api/pos-payment/create";
@@ -223,8 +162,8 @@ const Payments = () => {
             formData.append("amountPaid", amount);
             formData.append("paymentDate", date);
             formData.append("attachApproval", gall);
-            formData.append("outletID", currentStation._id);
-            formData.append("organisationID", currentStation.organisation);
+            formData.append("outletID", oneOutletStation._id);
+            formData.append("organisationID", oneOutletStation.organisation);
             const httpConfig = {
                 headers: {
                     "content-type": "multipart/form-data",
@@ -244,25 +183,9 @@ const Payments = () => {
     }
 
     return(
-        <div style={{background:'#fff'}} className='expensesContainer'>
-            <CameraModal open={open} />
+        <div style={{background:'#fff'}} className='lpos'>
+            <ReactCamera open={open} close={setOpen} setDataUri={setCam} />
             <div style={inner}> 
-                <div style={{width:'100%', display:'flex', justifyContent:'flex-start'}}>
-                    <Select
-                        labelId="demo-select-small"
-                        id="demo-select-small"
-                        value={defaultState}
-                        sx={selectStyle2}
-                    >
-                        {
-                            allOutlets.map((item, index) => {
-                                return(
-                                    <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index, item)}} value={index}>{item.outletName +', '+ item.city}</MenuItem>
-                                )
-                            })  
-                        }
-                    </Select>
-                </div>
                 <div className='tabs'>
                     <Button sx={switchTab? inactive : active}
                         onClick={handleSwitchTab}  
