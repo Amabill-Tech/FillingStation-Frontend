@@ -38,7 +38,7 @@ const ReactCamera = (props) => {
                             <div style={cam}>
                                 <Webcam 
                                     height={400}
-                                    screenshotFormat="image/jpeg"
+                                    screenshotFormat="image/jpg"
                                     width={370}
                                 >
                                     {({ getScreenshot }) => (

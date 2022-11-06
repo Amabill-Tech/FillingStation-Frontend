@@ -31,9 +31,8 @@ const PumpUpdate = (props) => {
     }, [props])
 
     const submit = () => {
-        const fresh = Number(totalizer) < Number(oneTank.deadStockLevel);
         const prev = (Number(totalizer) - Number(props.current.totalizerReading)) < Number(oneTank.deadStockLevel)
-        const detail = oneTank.currentLevel==="None"? fresh : prev;
+        const detail = oneTank.currentLevel==="None"? true : prev;
         const difference = Number(totalizer) - Number(props.current.totalizerReading)
 
         if(totalizer === "") return swal("Warning!", "Quantity field cannot be empty", "info");
@@ -67,23 +66,7 @@ const PumpUpdate = (props) => {
                     props.refresh();
                 })
             });
-
-            // const data = {
-            //     totalizer: totalizer,
-            //     hostTank:  oneTank.tankName,
-            //     productType:  oneTank.productType,
-            //     updatedBy:  user._id,
-            //     remark:  remark,
-            //     currentLevel: oneTank.currentLevel === "None"? null: String(Number(oneTank.currentLevel) - Number(totalizer)),
-            //     previousLevel:  oneTank.currentLevel,
-            //     station:  oneTank.station,
-            //     outletID:  oneTank.outletID,
-            //     organisationID:  oneTank.organisationID,
-            // }
-
-            // LPOService.createLPOSales(data).then((data) => {
-            //     //dispatch(createLPO(data.lpo.lpo));
-            // })
+            
         }else{
             swal("Warning!", "This is an empty tank!", "info");
         }

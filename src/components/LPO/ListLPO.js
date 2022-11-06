@@ -158,7 +158,6 @@ const ListLPO = () => {
                     <div className='column'>Truck No</div>
                     <div className='column'>Product</div>
                     <div className='column'>Litre</div>
-                    <div className='column'>Amount Rate</div>
                     <div className='column'>Attach Approval</div>
                 </div>
 
@@ -175,7 +174,6 @@ const ListLPO = () => {
                                     <div className='column'>{data.truckNo}</div>
                                     <div className='column'>{data.productType}</div>
                                     <div className='column'>{data.litre}</div>
-                                    <div className='column'>{data.amountRate}</div>
                                     <div className='column'>
                                         <a href={config.BASE_URL + data.attachApproval} target="_blank" rel="noreferrer">Attachment</a>
                                     </div>

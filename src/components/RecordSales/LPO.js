@@ -1,35 +1,28 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import '../../styles/pump.scss';
 import '../../styles/expenses.scss';
-import pump1 from '../../assets/pump1.png';
-import plus from '../../assets/plus.png';
 import cross from '../../assets/cross.png';
-import { Button, MenuItem, Modal, Select } from '@mui/material';
-import pluss from '../../assets/pluss.png';
+import { Button, MenuItem, Select } from '@mui/material';
 import photo from '../../assets/photo.png';
 import upload from '../../assets/upload.png';
 import OutletService from '../../services/outletService';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllPumps, getAllStations, getOneTank } from '../../store/actions/outlet';
 import LPOService from '../../services/lpo';
 import { createLPO } from '../../store/actions/lpo';
-import Camera, { IMAGE_TYPES } from 'react-html5-camera-photo';
 import swal from 'sweetalert';
 import axios from 'axios';
 import config from '../../constants';
 import ReactCamera from '../Modals/ReactCamera';
+import { getOneTank } from '../../store/actions/outlet';
 
-const LPO = () => {
+const LPO = (props) => {
 
-    const user = useSelector(state => state.authReducer.user);
     const dispatch = useDispatch();
-    const [currentStation, setCurrentStation] = useState({});
+    const oneOutletStation = useSelector(state => state.outletReducer.oneStation);
     const [currentPump, setCurrentPump] = useState({});
-    const [defaultState, setDefault] = useState(0);
     const [defaultState2, setDefault2] = useState(0);
     const pumpList = useSelector(state => state.outletReducer.pumpList);
     const lpos = useSelector(state => state.lpoReducer.lpo);
-    const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const oneTank = useSelector(state => state.outletReducer.oneTank);
     const [open, setOpen] = useState(false);
     const [selected, setSelected] = useState(null);
@@ -77,18 +70,14 @@ const LPO = () => {
     }
 
     const submitRecordSales = () => {
-        const fresh = Number(litre) < Number(oneTank.deadStockLevel);
         const prev = (Number(oneTank.currentLevel) - Number(litre)) < Number(oneTank.deadStockLevel)
-        const detail = oneTank.currentLevel==="None"? fresh : prev;
-
-        console.log(cam)
+        const detail = oneTank.currentLevel==="None"? true : prev;
 
         if((typeof(cam) === "string")){
             if(accountName === "") return swal("Warning!", "Account Name field cannot be empty", "info");
             if(product === "") return swal("Warning!", "Product Type field cannot be empty", "info");
             if(truckNo === "") return swal("Warning!", "Truck No field cannot be empty", "info");
             if(litre === "") return swal("Warning!", "Litre field cannot be empty", "info");
-            if(amount === "") return swal("Warning!", "Amount field cannot be empty", "info");
             if(typeof(cam) !== "string") return swal("Warning!", "Please select a file", "info");
             if(oneTank.activeState === "0") return swal("Warning!", "Tank is currently inactive, contact admin", "info");
             if((detail)) return swal("Warning!", "Tank deadstock level reached!", "info");
@@ -98,11 +87,10 @@ const LPO = () => {
                 productType: product,
                 truckNo: truckNo,
                 litre: litre,
-                amountRate: amount,
                 attachApprovalCam: cam,
                 lpoID: accountName._id,
-                outletID: currentStation._id,
-                organizationID: currentStation.organisation,
+                outletID: oneOutletStation._id,
+                organizationID: oneOutletStation.organisation,
             }
 
             const url = config.BASE_URL + "/360-station/api/lpoSales/create";
@@ -113,26 +101,25 @@ const LPO = () => {
                 }
             };
             axios.post(url, payload, httpConfig).then((data) => {
-                console.log('form data', data);
+                return data;
             }).then(()=>{
-                swal("Success!", "LPO recorded successfully", "success"); 
+                const updatedTank = {
+                    id: oneTank._id,
+                    previousLevel: oneTank.currentLevel,
+                    currentLevel: oneTank.currentLevel === "None"? null: String(Number(oneTank.currentLevel) - Number(litre)),
+                    outletID: oneOutletStation._id,
+                    organisationID: oneOutletStation.organisation,
+                }
+
+                if(updatedTank.currentLevel !== null){
+                    OutletService.updateTank(updatedTank).then((data) => {
+                        swal("Success!", "LPO recorded successfully", "success"); 
+                        return data;
+                    }).then(()=>{
+                        props.refresh();
+                    })
+                }  
             });
-
-            const updatedTank = {
-                id: oneTank._id,
-                previousLevel: oneTank.currentLevel,
-                totalizer: litre,
-                currentLevel: oneTank.currentLevel === "None"? null: String(Number(oneTank.currentLevel) - Number(litre)),
-                outletID: currentStation._id,
-                organisationID: currentStation.organisation,
-            }
-           // console.log(updatedTank, 'update tank')
-
-            if(updatedTank.currentLevel !== null){
-                OutletService.updateTank(updatedTank).then((data) => {
-                    console.log(data, 'lop updated tank')
-                });
-            }   
 
         }else{
             if(accountName === "") return swal("Warning!", "Account Name field cannot be empty", "info");
@@ -152,8 +139,8 @@ const LPO = () => {
             formData.append("amountRate", amount);
             formData.append("attachApprovalGall", gall);
             formData.append("lpoID", accountName._id);
-            formData.append("outletID", currentStation._id);
-            formData.append("organizationID", currentStation.organisation);
+            formData.append("outletID", oneOutletStation._id);
+            formData.append("organizationID", oneOutletStation.organisation);
             const httpConfig = {
                 headers: {
                     "content-type": "multipart/form-data",
@@ -173,8 +160,8 @@ const LPO = () => {
                 previousLevel: oneTank.currentLevel,
                 totalizer: litre,
                 currentLevel: oneTank.currentLevel === "None"? null: String(Number(oneTank.currentLevel) - Number(litre)),
-                outletID: currentStation._id,
-                organisationID: currentStation.organisation,
+                outletID: oneOutletStation._id,
+                organisationID: oneOutletStation.organisation,
             }
 
             if(updatedTank.currentLevel !== null){
