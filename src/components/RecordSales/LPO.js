@@ -116,7 +116,19 @@ const LPO = (props) => {
                         swal("Success!", "LPO recorded successfully", "success"); 
                         return data;
                     }).then(()=>{
-                        props.refresh();
+                        const updatedLPO = {
+                            id: accountName._id,
+                            PMS: currentPump.productType==="PMS"? Number(accountName.PMS) - Number(litre): undefined,
+                            AGO: currentPump.productType==="AGO"? Number(accountName.AGO) - Number(litre): undefined,
+                            DPK: currentPump.productType==="DPK"? Number(accountName.DPK) - Number(litre): undefined,
+                        }
+
+                        LPOService.updateLPO(updatedLPO).then(data => {
+                            return data
+                        }).then(()=>{
+                            props.refresh();
+                        })
+                
                     })
                 }  
             });
