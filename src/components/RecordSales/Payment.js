@@ -231,13 +231,13 @@ const Payments = () => {
                         <div style={{marginTop:'20px'}} className='inputs'>
                             <div className='text'>Upload Teller slip</div>
                             <div className='button-container'>
-                                <Button onClick={takeFromCamera} style={{background:'#216DB2'}} className='buttons'>
+                                <Button onClick={takeFromCamera} style={{background:'#216DB2', textTransform:'capitalize'}} className='buttons'>
                                     <img style={{width:'22px', height:'18px', marginRight:'10px'}} src={photo} alt="icon" />
-                                    <div>Take Photo</div>
+                                    <div>{typeof(cam) === "string"? "Image taken":<span>Take photo</span>}</div>
                                 </Button>
-                                <Button onClick={pickFromGallery} style={{background:'#087B36'}} className='buttons'>
+                                <Button onClick={pickFromGallery} style={{background:'#087B36', textTransform:'capitalize'}} className='buttons'>
                                     <img style={{width:'22px', height:'18px', marginRight:'10px'}} src={upload} alt="icon" />
-                                    <div>Upload</div>
+                                    <div>{typeof(gall) === "string"? "Upload":<span>File uploaded</span>}</div>
                                 </Button>
                             </div>
                         </div>
