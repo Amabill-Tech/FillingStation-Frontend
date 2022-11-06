@@ -20,7 +20,10 @@ const LPOModal = (props) => {
     const [PMS, setPMS] = useState('');
     const [AGO, setAGO] = useState('');
     const [DPK, setDPK] = useState('');
-    const [total, setTotal] = useState('');
+    const [PMSRate, setPMSRate] = useState('');
+    const [AGORate, setAGORate] = useState('');
+    const [DPKRate, setDPKRate] = useState('');
+    const [contactPhone, setContactPhone] = useState('');
 
     const handleClose = () => props.close(false);
 
@@ -31,7 +34,10 @@ const LPOModal = (props) => {
         if(PMS === "") return swal("Warning!", "PMS field cannot be empty", "info");
         if(AGO === "") return swal("Warning!", "AGO field cannot be empty", "info");
         if(DPK === "") return swal("Warning!", "DPK field cannot be empty", "info");
-        if(total === "") return swal("Warning!", "Total amount field cannot be empty", "info");
+        if(PMSRate === "") return swal("Warning!", "PMS rate field cannot be empty", "info");
+        if(AGORate === "") return swal("Warning!", "AGO rate field cannot be empty", "info");
+        if(DPKRate === "") return swal("Warning!", "DPK rate field cannot be empty", "info");
+        if(contactPhone === "") return swal("Warning!", "Contact phone field cannot be empty", "info");
 
         setLoading(true);
 
@@ -39,10 +45,13 @@ const LPOModal = (props) => {
             companyName: companyName,
             address: address,
             personOfContact: personOfContact,
+            contactPhone: contactPhone,
             PMS: PMS,
             AGO: AGO,
             DPK: DPK,
-            totalAmount: total,
+            PMSRate: PMSRate,
+            AGORate: AGORate,
+            DPKRate: DPKRate,
             paymentStructure: productType,
             outletID: props.station._id,
             organizationID: props.station.organisation
@@ -68,7 +77,7 @@ const LPOModal = (props) => {
                 <div className='modalContainer2'>
                     <div className='inner'>
                         <div className='head'>
-                            <div className='head-text'>Create Filling Station</div>
+                            <div className='head-text'>Register LPO Company</div>
                             <img onClick={handleClose} style={{width:'18px', height:'18px'}} src={close} alt={'icon'} />
                         </div>
 
@@ -119,7 +128,23 @@ const LPOModal = (props) => {
                             </div>
 
                             <div className='inputs'>
-                                <div className='head-text2'>PMS Limit</div>
+                                <div className='head-text2'>Contact phone</div>
+                                <OutlinedInput 
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        border:'1px solid #777777',
+                                        fontSize:'12px',
+                                    }} placeholder="" 
+                                    type="number"
+                                    onChange={e => setContactPhone(e.target.value)}
+                                />
+                            </div>
+
+                            <div className='inputs'>
+                                <div className='head-text2'>PMS Limit (Litres)</div>
                                 <OutlinedInput 
                                     sx={{
                                         width:'100%',
@@ -135,7 +160,7 @@ const LPOModal = (props) => {
                             </div>
 
                             <div className='inputs'>
-                                <div className='head-text2'>AGO Limit</div>
+                                <div className='head-text2'>AGO Limit (Litres)</div>
                                 <OutlinedInput 
                                     sx={{
                                         width:'100%',
@@ -151,7 +176,7 @@ const LPOModal = (props) => {
                             </div>
 
                             <div className='inputs'>
-                                <div className='head-text2'>DPK Limit</div>
+                                <div className='head-text2'>DPK Limit (Litres)</div>
                                 <OutlinedInput 
                                     sx={{
                                         width:'100%',
@@ -167,7 +192,7 @@ const LPOModal = (props) => {
                             </div>
 
                             <div className='inputs'>
-                                <div className='head-text2'>Total Amount</div>
+                                <div className='head-text2'>PMS Rate (amount)</div>
                                 <OutlinedInput 
                                     sx={{
                                         width:'100%',
@@ -178,7 +203,39 @@ const LPOModal = (props) => {
                                         fontSize:'12px',
                                     }} placeholder="" 
                                     type='number'
-                                    onChange={e => setTotal(e.target.value)}
+                                    onChange={e => setPMSRate(e.target.value)}
+                                />
+                            </div>
+
+                            <div className='inputs'>
+                                <div className='head-text2'>AGO Rate (amount)</div>
+                                <OutlinedInput 
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        border:'1px solid #777777',
+                                        fontSize:'12px',
+                                    }} placeholder="" 
+                                    type='number'
+                                    onChange={e => setAGORate(e.target.value)}
+                                />
+                            </div>
+
+                            <div className='inputs'>
+                                <div className='head-text2'>DPK Rate (amount)</div>
+                                <OutlinedInput 
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        border:'1px solid #777777',
+                                        fontSize:'12px',
+                                    }} placeholder="" 
+                                    type='number'
+                                    onChange={e => setDPKRate(e.target.value)}
                                 />
                             </div>
 
@@ -187,15 +244,15 @@ const LPOModal = (props) => {
                                 <div className='radio'>
                                     <div className='rad-item'>
                                         <Radio onClick={()=>{setProductType('Weekly')}} checked={productType === 'Weekly'? true: false} />
-                                        <div className='head-text2' style={{marginRight:'5px'}}>PMS</div>
+                                        <div className='head-text2' style={{marginRight:'5px'}}>Weekly</div>
                                     </div>
                                     <div className='rad-item'>
                                         <Radio onClick={()=>{setProductType('Monthly')}} checked={productType === 'Monthly'? true: false} />
-                                        <div className='head-text2' style={{marginRight:'5px'}}>AGO</div>
+                                        <div className='head-text2' style={{marginRight:'5px'}}>Monthly</div>
                                     </div>
                                     <div className='rad-item'>
                                         <Radio onClick={()=>{setProductType('Annually')}} checked={productType === 'Annually'? true: false} />
-                                        <div className='head-text2' style={{marginRight:'5px'}}>DPK</div>
+                                        <div className='head-text2' style={{marginRight:'5px'}}>Yearly</div>
                                     </div>
                                 </div>
                             </div>

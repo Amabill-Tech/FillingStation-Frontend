@@ -42,52 +42,11 @@ const LPO = () => {
     const [amount, setAmount] = useState('');
     const [cam, setCam] = useState(null);
     const [gall, setGall] = useState('');
-    
-
-    const changeMenu = (index, item ) => {
-        setDefault(index);
-        setCurrentStation(item);
-
-        const payload = {
-            outletID: item._id, 
-            organisationID: item.organisation
-        }
-        
-        OutletService.getAllStationPumps(payload).then(data => {
-            dispatch(getAllPumps(data));
-        });
-    }
 
     const changeMenu2 = (index, item ) => {
         setDefault2(index);
         setAccountName(item);
     }
-
-    const getAllStationData = useCallback(() => {
-        OutletService.getAllOutletStations({organisation: user.userType === "superAdmin"? user._id : user.organisationID}).then(data => {
-            dispatch(getAllStations(data.station));
-            setCurrentStation(data.station[0]);
-            return data.station[0]
-        }).then((data)=>{
-            const payload = {
-                outletID: data._id, 
-                organisationID: data.organisation
-            }
-            
-            OutletService.getAllStationPumps(payload).then(data => {
-                dispatch(getAllPumps(data));
-            });
-
-            LPOService.getAllLPO(payload).then((data) => {
-                dispatch(createLPO(data.lpo.lpo));
-            })
-        })
-    }, [dispatch, user.organisationID]);
-
-    useEffect(()=>{
-        getAllStationData()
-    }, [getAllStationData])
-
 
     const selectedPump = (index, item) => {
         setSelected(index);
@@ -279,20 +238,6 @@ const LPO = () => {
         <div className='pumpContainer'>
             <CameraModal open={open} />
             <div>Select Pump that gives out lpo for the day</div>
-            <Select
-                labelId="demo-select-small"
-                id="demo-select-small"
-                value={defaultState}
-                sx={selectStyle2}
-            >
-                {
-                    allOutlets.map((item, index) => {
-                        return(
-                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index, item)}} value={index}>{item.outletName +', '+ item.city}</MenuItem>
-                        )
-                    })  
-                }
-            </Select>
             <div className='pump-list'>
                 {
                     pumpList.length === 0?

@@ -47,6 +47,7 @@ const LPO = (props) => {
         OutletService.getAllOutletStations({organisation: user.userType === "superAdmin"? user._id : user.organisationID}).then(data => {
             dispatch(getAllStations(data.station));
             setCurrentStation(data.station[0]);
+            setDefault(1);
             return data.station[0]
         }).then((data)=>{
             const payload = {
@@ -176,10 +177,11 @@ const LPO = (props) => {
                                         value={defaultState}
                                         sx={selectStyle2}
                                     >
+                                        <MenuItem style={menu} value={0}>Select station</MenuItem>
                                         {
                                         allOutlets.map((item, index) => {
                                                 return(
-                                                    <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index, item)}} value={index}>{item.outletName}</MenuItem>
+                                                    <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' + item.city}</MenuItem>
                                                 )
                                         })  
                                         }

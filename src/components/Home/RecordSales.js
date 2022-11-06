@@ -69,8 +69,8 @@ const RecordSales = (props) => {
                 organisationID: oneOutletStation.organisation
             }
 
-            OutletService.getOneOutletStation(payload).then((data) => {console.log(data, 'updated one station')
-                // dispatch(oneStation(data.station[0]));
+            OutletService.getOneOutletStation(payload).then((data) => {
+                dispatch(oneStation(data.station));
             });
             
             OutletService.getAllStationPumps(payload).then(data => {
