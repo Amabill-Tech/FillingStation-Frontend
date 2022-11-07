@@ -4,7 +4,7 @@ import { useState } from 'react';
 const TankComponent = (props) => {
 
     const canvas = useRef();
-    const [currentLevel, setCurrentLevel] = useState(12000);
+    const [currentLevel, setCurrentLevel] = useState(20000);
     const [capacity, setCapacity] = useState(33000);
     const [deadstock, setDeadStock] = useState(1000);
 
@@ -59,7 +59,7 @@ const TankComponent = (props) => {
             drawSmallLine(i);
         }
 
-        ctx.fillStyle= "#399A19";
+        ctx.fillStyle= "#399A19"
         ctx.fillRect(70*dpi, (300 - current)*dpi , 230*dpi, current*dpi);
     }
 
