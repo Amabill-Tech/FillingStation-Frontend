@@ -38,3 +38,5 @@ export const SEARCH_LPO = "SEARCH_LPO";
 export const ONE_STATION = "ONE_STATION";
 export const UPDATE_USER_DATA = "UPDATE_USER_DATA";
 export const SEARCH_STATION = "SEARCH_STATION";
+export const EXPENSE = "EXPENSE";
+export const SEARCH_EXPENSE = "SEARCH_EXPENSE";

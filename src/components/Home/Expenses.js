@@ -12,6 +12,10 @@ import { useSelector } from 'react-redux';
 import OutletService from '../../services/outletService';
 import { getAllStations } from '../../store/actions/outlet';
 import ProductReport from '../Reports/ProductReport';
+import ExpenseService from '../../services/expense';
+import { allExpenses, searchExpenses } from '../../store/actions/expense';
+import config from '../../constants';
+import ExpenseReport from '../Reports/ExpenseReport';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 
@@ -20,7 +24,7 @@ const Expenses = () => {
     const [open, setOpen] = React.useState(false);
     const dispatch = useDispatch();
     const user = useSelector(state => state.authReducer.user);
-    const productOrder = useSelector(state => state.productOrderReducer.productOrder);
+    const expense = useSelector(state => state.expenseReducer.expense);
     const [defaultState, setDefault] = useState(0);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const [currentStation, setCurrentStation] = useState({});
@@ -48,13 +52,13 @@ const Expenses = () => {
                 organisationID: data.organisation
             }
 
-            ProductService.getAllProductOrder(payload).then((data) => {
-                setTotal(data.product.count);
-                dispatch(createProductOrder(data.product.product));
+            ExpenseService.getAllExpenses(payload).then((data) => {
+                setTotal(data.expense.count);
+                dispatch(allExpenses(data.expense.expense));
             });
         });
 
-    }, [dispatch, user.organisationID, skip, limit]);
+    }, [dispatch, user.organisationID, user._id, user.userType, skip, limit]);
 
     useEffect(()=>{
         getAllProductData();
@@ -68,9 +72,9 @@ const Expenses = () => {
             organisationID: currentStation.organisation
         }
 
-        ProductService.getAllProductOrder(payload).then((data) => {
-            setTotal(data.product.count);
-            dispatch(createProductOrder(data.product.product));
+        ExpenseService.getAllExpenses(payload).then((data) => {
+            setTotal(data.expense.count);
+            dispatch(allExpenses(data.expense.expense));
         });
     }
 
@@ -85,14 +89,14 @@ const Expenses = () => {
             organisationID: item.organisation
         }
 
-        ProductService.getAllProductOrder(payload).then((data) => {
-            setTotal(data.product.count);
-            dispatch(createProductOrder(data.product.product));
+        ExpenseService.getAllExpenses(payload).then((data) => {
+            setTotal(data.expense.count);
+            dispatch(allExpenses(data.expense.expense));
         });
     }
 
     const searchTable = (value) => {
-        dispatch(searchProduct(value));
+        dispatch(searchExpenses(value));
     }
 
     const printReport = () => {
@@ -121,8 +125,7 @@ const Expenses = () => {
 
     return(
         <div data-aos="zoom-in-down" className='paymentsCaontainer'>
-            {<ProductOrderModal station = {currentStation} open={open} close={setOpen} refresh={refresh} />}
-            { prints && <ProductReport allOutlets={productOrder} open={prints} close={setPrints}/>}
+            { prints && <ExpenseReport allOutlets={expense} open={prints} close={setPrints}/>}
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
@@ -152,7 +155,7 @@ const Expenses = () => {
                                 {
                                    allOutlets.map((item, index) => {
                                         return(
-                                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index, item)}} value={index}>{item.outletName}</MenuItem>
+                                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index, item)}} value={index}>{item.outletName+ ', ' +item.city}</MenuItem>
                                         )
                                    })  
                                 }
@@ -174,19 +177,7 @@ const Expenses = () => {
                         </div>
                     </div>
                     <div style={{width:'120px'}} className='butt'>
-                        <Button sx={{
-                            width:'100%', 
-                            height:'30px',  
-                            background: '#427BBE',
-                            borderRadius: '3px',
-                            fontSize:'10px',
-                            '&:hover': {
-                                backgroundColor: '#427BBE'
-                            }
-                            }}  
-                            onClick={createOrderHandler}
-                            variant="contained"> Create Order
-                        </Button>
+                        
                     </div>
                 </div>
 
@@ -240,27 +231,29 @@ const Expenses = () => {
                     <div className='table-head'>
                         <div className='column'>S/N</div>
                         <div className='column'>Date Created</div>
-                        <div className='column'>Depot</div>
-                        <div className='column'>Depot Address</div>
-                        <div className='column'>Quantity (LTR)</div>
-                        <div className='column'>Loading Location</div>
-                        <div className='column'>Status</div>
+                        <div className='column'>Expense Date</div>
+                        <div className='column'>Expense Name</div>
+                        <div className='column'>Description</div>
+                        <div className='column'>Expense Amount</div>
+                        <div className='column'>Action</div>
                     </div>
 
                     <div className='row-container'>
                         {
-                            productOrder.length === 0?
+                            expense.length === 0?
                             <div style={place}>No product data</div>:
-                            productOrder.map((data, index) => {
+                            expense.map((data, index) => {
                                 return(
                                     <div className='table-head2'>
                                         <div className='column'>{index + 1}</div>
+                                        <div className='column'>{data.createdAt.split('T')[0]}</div>
                                         <div className='column'>{data.dateCreated}</div>
-                                        <div className='column'>{data.depot}</div>
-                                        <div className='column'>{data.depotAddress}</div>
-                                        <div className='column'>{data.quantity}</div>
-                                        <div className='column'>{data.loadingLocation}</div>
-                                        <div className='column'>{data.status}</div>
+                                        <div className='column'>{data.expenseName}</div>
+                                        <div className='column'>{data.description}</div>
+                                        <div className='column'>{data.expenseAmount}</div>
+                                        <div className='column'>
+                                            <a href={config.BASE_URL + data.attachApproval} target="_blank" rel="noreferrer">View Invoice</a>
+                                        </div>
                                     </div> 
                                 )
                             })

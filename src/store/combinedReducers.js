@@ -12,6 +12,7 @@ import staffUserReducer from './reducers/staffUsers';
 import salaryReducer from './reducers/salary';
 import queryReducer from './reducers/query';
 import attendanceReducer from './reducers/attendance';
+import expenseReducer from './reducers/expense';
 
 export default combineReducers({
     authReducer,
@@ -27,4 +28,5 @@ export default combineReducers({
     salaryReducer,
     queryReducer,
     attendanceReducer,
+    expenseReducer
 })
