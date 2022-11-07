@@ -20,21 +20,21 @@ const TankComponent = (props) => {
 
         const drawLine = (height, label) => {
             ctx.beginPath();
-            ctx.moveTo(50, height + 3);
-            ctx.lineWidth = 1;
-            ctx.lineTo(70, height + 3);
+            ctx.moveTo(50*dpi, (height + 3)*dpi);
+            ctx.lineWidth = 1*dpi;
+            ctx.lineTo(70*dpi, (height + 3)*dpi);
             ctx.stroke();
 
             ctx.fillStyle = "#000";
             ctx.font = "10px Arial";
-            ctx.fillText(label, 10, height + 8);
+            ctx.fillText(label, 20*dpi, (height + 8)*dpi);
         }
 
         const drawSmallLine = (height) => {
             ctx.beginPath();
-            ctx.moveTo(65, height + 3);
+            ctx.moveTo(65*dpi, (height + 3)*dpi);
             ctx.lineWidth = 1;
-            ctx.lineTo(70, height + 3);
+            ctx.lineTo(70*dpi, (height + 3)*dpi);
             ctx.stroke();
         }
 
@@ -47,7 +47,7 @@ const TankComponent = (props) => {
         canvas.current.setAttribute('width', style_width * dpi);
 
         ctx.beginPath();
-        ctx.strokeRect(70, 0, 80, 300);
+        ctx.strokeRect(70*dpi, 0*dpi, 78*dpi, 300*dpi);
 
         let label = capacity;
         for(let i= 0; i < 300; i = i + 30){
@@ -60,14 +60,19 @@ const TankComponent = (props) => {
         }
 
         ctx.fillStyle= "#399A19";
-        ctx.fillRect(70, 300 - current , 230, current);
+        ctx.fillRect(70*dpi, (300 - current)*dpi , 230*dpi, current*dpi);
     }
 
     return(
-        <div>
+        <div style={canvases}>
             <canvas style={{width:'150px', height:'300px'}} ref={canvas}></canvas>
         </div>
     )
+}
+
+const canvases = {
+    width: '100%',
+    height:'100%',
 }
 
 export default TankComponent;
