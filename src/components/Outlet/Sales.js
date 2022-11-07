@@ -19,7 +19,7 @@ import AGOTank from './AGOTank';
 import DPKTank from './DPKTank';
 import { useLocation } from 'react-router-dom';
 import OutletService from '../../services/outletService';
-import { getAllOutletTanks } from '../../store/actions/outlet';
+import { getAllOutletTanks, getAllPumps } from '../../store/actions/outlet';
 import { useCallback } from 'react';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -79,7 +79,9 @@ const Sales = () => {
     const {state} = useLocation();
     const dispatch = useDispatch();
     const tankList = useSelector(state => state.outletReducer.tankList);
+    const pumpList = useSelector(state => state.outletReducer.pumpList);
     const [cummulatives, setCummulatives] = useState({});
+    const [pumpAndTankMetric, setTankAndPumpMetrics] = useState({});
 
     const getAllStationTanks = useCallback(() => {
         const payload = {
@@ -89,6 +91,11 @@ const Sales = () => {
         OutletService.getAllOutletTanks(payload).then(data => {
             dispatch(getAllOutletTanks(data.stations));
         });
+
+        OutletService.getAllStationPumps(payload).then(data => {
+            dispatch(getAllPumps(data));
+        });
+
     }, [state.state._id, state.state.organisation, dispatch]);
 
     useEffect(()=>{
@@ -154,9 +161,62 @@ const Sales = () => {
         setCummulatives(cummulative);
     }, [tankList]);
 
+    const getActiveTankAndPumps = useCallback(() => {
+
+        const activePMSTank = tankList.filter(tank => tank.productType === "PMS" && tank.activeState === "1");
+        const inActivePMSTank = tankList.filter(tank => tank.productType === "PMS" && tank.activeState === "0");
+
+        const activeAGOTank = tankList.filter(tank => tank.productType === "AGO" && tank.activeState === "1");
+        const inActiveAGOTank = tankList.filter(tank => tank.productType === "AGO" && tank.activeState === "0");
+
+        const activeDPKTank = tankList.filter(tank => tank.productType === "DPK" && tank.activeState === "1");
+        const inActiveDPKTank = tankList.filter(tank => tank.productType === "DPK" && tank.activeState === "0");
+
+        const activePMSPump = pumpList.filter(tank => tank.productType === "PMS" && tank.activeState === "1");
+        const inActivePMSPump = pumpList.filter(tank => tank.productType === "PMS" && tank.activeState === "0");
+
+        const activeAGOPump = pumpList.filter(tank => tank.productType === "AGO" && tank.activeState === "1");
+        const inActiveAGOPump = pumpList.filter(tank => tank.productType === "AGO" && tank.activeState === "0");
+
+        const activeDPKPump = pumpList.filter(tank => tank.productType === "DPK" && tank.activeState === "1");
+        const inActiveDPKPump = pumpList.filter(tank => tank.productType === "DPK" && tank.activeState === "0");
+
+        const totalActiveTank = activePMSTank.length + activeAGOTank.length + activeDPKTank.length;
+        const totalInactiveTank = inActiveAGOTank.length + inActiveAGOTank.length + inActiveDPKTank.length;
+
+        const totalActivePump = activePMSPump.length + activeAGOPump.length + activeDPKPump.length;
+        const totalInactivePump = inActiveAGOPump.length + inActiveAGOPump.length + inActiveDPKPump.length;
+
+        const payload = {
+            activePMSTank: activePMSTank,
+            inActivePMSTank: inActivePMSTank,
+            activeAGOTank: activeAGOTank,
+            inActiveAGOTank: inActiveAGOTank,
+            activeDPKTank: activeDPKTank,
+            inActiveDPKTank: inActiveDPKTank,
+            activePMSPump: activePMSPump,
+            inActivePMSPump: inActivePMSPump,
+            activeAGOPump: activeAGOPump,
+            inActiveAGOPump: inActiveAGOPump,
+            activeDPKPump: activeDPKPump,
+            inActiveDPKPump: inActiveDPKPump,
+            totalActiveTank: totalActiveTank,
+            totalInactiveTank: totalInactiveTank,
+            totalActivePump: totalActivePump,
+            totalInactivePump: totalInactivePump,
+        }
+
+        setTankAndPumpMetrics(payload);
+
+    }, [tankList, pumpList])
+
     useEffect(()=>{
         getProductTanks();
     }, [getProductTanks]);
+
+    useEffect(()=>{
+        getActiveTankAndPumps();
+    }, [getActiveTankAndPumps]);
 
     return(
         <div className='sales-container'>
@@ -169,24 +229,24 @@ const Sales = () => {
                                     <PMSTank data = {cummulatives}/>
                                 </div>
                                 <div style={{marginTop:'10px', color:'#399A19'}} className='tank-head'>PMS</div>
-                                <div className='level'>Level: 92,600 Litres</div>
-                                <div className='capacity'>Capacity: 156,600 Litres</div>
+                                <div className='level'>Level: {cummulatives.totalPMS} Litres</div>
+                                <div className='capacity'>Capacity: {cummulatives.PMSTankCapacity} Litres</div>
                             </div>
                             <div className="tanks">
                                 <div className='canvas-container'>
                                     <AGOTank data = {cummulatives}/>
                                 </div>
                                 <div style={{marginTop:'10px', color:'#FFA010'}} className='tank-head'>AGO</div>
-                                <div className='level'>Level: 92,600 Litres</div>
-                                <div className='capacity'>Capacity: 156,600 Litres</div>
+                                <div className='level'>Level: {cummulatives.totalAGO} Litres</div>
+                                <div className='capacity'>Capacity: {cummulatives.AGOTankCapacity} Litres</div>
                             </div>
                             <div className="tanks">
                                 <div className='canvas-container'>
                                         <DPKTank data = {cummulatives}/>
                                     </div>
                                 <div style={{marginTop:'10px', color:'#35393E'}} className='tank-head'>DPK</div>
-                                    <div className='level'>Level: 92,600 Litres</div>
-                                    <div className='capacity'>Capacity: 156,600 Litres</div>
+                                    <div className='level'>Level: {cummulatives.totalDPK} Litres</div>
+                                    <div className='capacity'>Capacity: {cummulatives.DPKTankCapacity} Litres</div>
                                 </div>
                         </div>
                     </div>
@@ -354,21 +414,21 @@ const Sales = () => {
                                     <img style={{width:'80px', height:'60px'}} src={me4} alt="icon" />
                                     <div className='text'>
                                         <span className='active'>Active Tank</span>
-                                        <span className='num'>20</span>
+                                        <span className='num'>{'totalActiveTank' in pumpAndTankMetric? pumpAndTankMetric.totalActiveTank: 0}</span>
                                     </div>
                                 </div>
                                 <div className='right-card'>
                                     <div style={{color:'#06805B'}} className='text'>
                                         <span className='active'>PMS</span>
-                                        <span className='num'>20</span>
+                                        <span className='num'>{'activePMSTank' in pumpAndTankMetric? pumpAndTankMetric?.activePMSTank.length: 0}</span>
                                     </div>
                                     <div style={{color:'#FFA010'}} className='text'>
                                         <span className='active'>AGO</span>
-                                        <span className='num'>20</span>
+                                        <span className='num'>{'activeAGOTank' in pumpAndTankMetric? pumpAndTankMetric?.activeAGOTank.length: 0}</span>
                                     </div>
                                     <div style={{color:'#525252'}} className='text'>
                                         <span className='active'>DPK</span>
-                                        <span className='num'>20</span>
+                                        <span className='num'>{'activeDPKTank'in pumpAndTankMetric? pumpAndTankMetric?.activeDPKTank.length: 0}</span>
                                     </div>
                                 </div>
                             </div>
@@ -378,22 +438,22 @@ const Sales = () => {
                                 <div className='left-card'>
                                     <img style={{width:'80px', height:'60px'}} src={me4} alt="icon" />
                                     <div className='text'>
-                                        <span className='active'>Active Tank</span>
-                                        <span className='num'>20</span>
+                                        <span className='active'>Inactive Tank</span>
+                                        <span className='num'>{'totalInactiveTank' in pumpAndTankMetric? pumpAndTankMetric.totalInactiveTank: 0}</span>
                                     </div>
                                 </div>
                                 <div className='right-card'>
                                     <div style={{color:'#06805B'}} className='text'>
                                         <span className='active'>PMS</span>
-                                        <span className='num'>20</span>
+                                        <span className='num'>{'inActivePMSTank' in pumpAndTankMetric? pumpAndTankMetric?.inActivePMSTank.length: 0}</span>
                                     </div>
                                     <div style={{color:'#FFA010'}} className='text'>
                                         <span className='active'>AGO</span>
-                                        <span className='num'>20</span>
+                                        <span className='num'>{'inActiveAGOTank' in pumpAndTankMetric? pumpAndTankMetric?.inActiveAGOTank.length: 0}</span>
                                     </div>
                                     <div style={{color:'#525252'}} className='text'>
                                         <span className='active'>DPK</span>
-                                        <span className='num'>20</span>
+                                        <span className='num'>{'inActiveDPKTank' in pumpAndTankMetric? pumpAndTankMetric?.inActiveDPKTank.length: 0}</span>
                                     </div>
                                 </div>
                             </div>
@@ -403,22 +463,22 @@ const Sales = () => {
                                 <div className='left-card'>
                                     <img style={{width:'80px', height:'60px'}} src={me5} alt="icon" />
                                     <div className='text'>
-                                        <span className='active'>Active Tank</span>
-                                        <span className='num'>20</span>
+                                        <span className='active'>Active Pump</span>
+                                        <span className='num'>{'totalActivePump' in pumpAndTankMetric? pumpAndTankMetric.totalActivePump: 0}</span>
                                     </div>
                                 </div>
                                 <div className='right-card'>
                                     <div style={{color:'#06805B'}} className='text'>
                                         <span className='active'>PMS</span>
-                                        <span className='num'>20</span>
+                                        <span className='num'>{'activePMSPump' in pumpAndTankMetric? pumpAndTankMetric?.activePMSPump.length: 0}</span>
                                     </div>
                                     <div style={{color:'#FFA010'}} className='text'>
                                         <span className='active'>AGO</span>
-                                        <span className='num'>20</span>
+                                        <span className='num'>{'activeAGOPump' in pumpAndTankMetric? pumpAndTankMetric?.activeAGOPump.length: 0}</span>
                                     </div>
                                     <div style={{color:'#525252'}} className='text'>
                                         <span className='active'>DPK</span>
-                                        <span className='num'>20</span>
+                                        <span className='num'>{'activeDPKPump' in pumpAndTankMetric? pumpAndTankMetric?.activeDPKPump.length: 0}</span>
                                     </div>
                                 </div>
                             </div>
@@ -428,22 +488,22 @@ const Sales = () => {
                                 <div className='left-card'>
                                     <img style={{width:'80px', height:'60px'}} src={me5} alt="icon" />
                                     <div className='text'>
-                                        <span className='active'>Active Tank</span>
-                                        <span className='num'>20</span>
+                                        <span className='active'>Inactive Pump</span>
+                                        <span className='num'>{'totalInactivePump' in pumpAndTankMetric? pumpAndTankMetric.totalInactivePump: 0}</span>
                                     </div>
                                 </div>
                                 <div className='right-card'>
                                     <div style={{color:'#06805B'}} className='text'>
                                         <span className='active'>PMS</span>
-                                        <span className='num'>20</span>
+                                        <span className='num'>{'inActivePMSPump' in pumpAndTankMetric? pumpAndTankMetric?.inActivePMSPump.length: 0}</span>
                                     </div>
                                     <div style={{color:'#FFA010'}} className='text'>
                                         <span className='active'>AGO</span>
-                                        <span className='num'>20</span>
+                                        <span className='num'>{'inActiveAGOPump' in pumpAndTankMetric? pumpAndTankMetric?.inActiveAGOPump.length: 0}</span>
                                     </div>
                                     <div style={{color:'#525252'}} className='text'>
                                         <span className='active'>DPK</span>
-                                        <span className='num'>20</span>
+                                        <span className='num'>{'inActiveDPKPump' in pumpAndTankMetric? pumpAndTankMetric?.inActiveDPKPump.length: 0}</span>
                                     </div>
                                 </div>
                             </div>

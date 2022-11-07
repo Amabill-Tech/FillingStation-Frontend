@@ -44,7 +44,7 @@ const Pump = (props) => {
 
     useEffect(()=>{
         getAllStationPumps();
-    },[]);
+    },[getAllStationPumps]);
 
     useEffect(() => {
         getSeparateTanks(pumpList);
