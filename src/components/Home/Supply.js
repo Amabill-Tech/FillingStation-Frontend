@@ -152,7 +152,7 @@ const Supply = () => {
                                 {
                                    allOutlets.map((item, index) => {
                                         return(
-                                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index, item)}} value={index}>{item.outletName}</MenuItem>
+                                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index, item)}} value={index}>{item.outletName+ ', ' +item.city}</MenuItem>
                                         )
                                    })  
                                 }

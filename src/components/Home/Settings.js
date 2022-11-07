@@ -901,7 +901,7 @@ const Settings = (props) => {
                                 {
                                     allOutlets.map((item, index) => {
                                         return(
-                                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index+1}>{item.outletName}</MenuItem>
+                                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index+1}>{item.outletName+ ', ' +item.city}</MenuItem>
                                         )
                                     })  
                                 }
