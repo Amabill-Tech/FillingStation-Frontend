@@ -27,8 +27,8 @@ const recordPaymentReducer = (state = initialState, action) => {
         }
 
         case SEARCH_BANK_PAYMENT:{
-            const search = state.searchBank.filter(data => !data.position.toUpperCase().indexOf(payload.toUpperCase()) ||
-                !data.level.toUpperCase().indexOf(payload.toUpperCase())
+            const search = state.searchBank.filter(data => !data.bankName.toUpperCase().indexOf(payload.toUpperCase()) ||
+                !data.tellerNumber.toUpperCase().indexOf(payload.toUpperCase())
             );
             return {
                 ...state,
@@ -45,8 +45,8 @@ const recordPaymentReducer = (state = initialState, action) => {
         }
 
         case SEARCH_POS_PAYMENT:{
-            const search = state.searchPos.filter(data => !data.position.toUpperCase().indexOf(payload.toUpperCase()) ||
-                !data.level.toUpperCase().indexOf(payload.toUpperCase())
+            const search = state.searchPos.filter(data => !data.posName.toUpperCase().indexOf(payload.toUpperCase()) ||
+                !data.terminalID.toUpperCase().indexOf(payload.toUpperCase())
             );
             return {
                 ...state,

@@ -18,7 +18,7 @@ import { Route, Switch } from 'react-router-dom';
 import ListLPO from '../LPO/ListLPO';
 import LPOReport from '../Reports/LpoReport';
 import RecordPaymentService from '../../services/recordPayment';
-import { allBankPayment, allPosPayment } from '../../store/actions/recordPayment';
+import { allBankPayment, allPosPayment, searchBankPayment, searchPosPayment } from '../../store/actions/recordPayment';
 import config from '../../constants';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
@@ -128,7 +128,8 @@ const Payments = (props) => {
     }
 
     const searchTable = (value) => {
-        dispatch(searchLPO(value));
+        dispatch(searchBankPayment(value));
+        dispatch(searchPosPayment(value));
     }
 
     const printReport = () => {
@@ -319,7 +320,7 @@ const Payments = (props) => {
                         <div className='row-container'>
                             {
                                 bank.length === 0?
-                                <div style={place}>No LPO Data </div>:
+                                <div style={place}>No Bank Payment Data </div>:
                                 bank.map((data, index) => {
                                     return(
                                         <div className='table-head2'>
@@ -355,7 +356,7 @@ const Payments = (props) => {
                             <div className='row-container'>
                                 {
                                     pos.length === 0?
-                                    <div style={place}>No LPO Data </div>:
+                                    <div style={place}>No POS Payment Data </div>:
                                     pos.map((data, index) => {
                                         return(
                                             <div className='table-head2'>
