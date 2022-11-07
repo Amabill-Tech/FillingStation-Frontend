@@ -26,7 +26,7 @@ const TankComponent = (props) => {
             ctx.stroke();
 
             ctx.fillStyle = "#000";
-            ctx.font = "20px Arial";
+            ctx.font = `${10*dpi}px Arial`;
             ctx.fillText(label, 10*dpi, (height + 8)*dpi);
         }
 
