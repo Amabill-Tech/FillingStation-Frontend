@@ -527,12 +527,4 @@ const menu = {
     fontFamily:'Nunito-Regular'
 }
 
-const photos = {
-    width:'100%',
-    display:'flex',
-    flexDirection:'row',
-    justifyContent:'space-between',
-    marginTop:'10px'
-}
-
 export default StaffModal;

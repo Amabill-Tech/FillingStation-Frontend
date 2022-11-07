@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { closeModal, getAllStations } from '../../store/actions/outlet';
+import { closeModal, getAllStations, searchStations } from '../../store/actions/outlet';
 import { useSelector } from 'react-redux';
 import close from '../../assets/close.png';
 import Button from '@mui/material/Button';
@@ -97,6 +97,10 @@ const CostPriceModal = (props) => {
         })
     }
 
+    const searchStationList = (e) => {
+        dispatch(searchStations(e.target.value));
+    }
+
     return(
         <Modal
             open={props.open}
@@ -118,14 +122,14 @@ const CostPriceModal = (props) => {
                         </div>
                         <div className='iput'>
                             <img style={{width:'22px', height:'22px', marginLeft:'5px'}} src={search} alt="icon" />
-                            <input className='imput' placeholder='Search' type="text" />
+                            <input onChange={searchStationList} className='imput' placeholder='Search' type="text" />
                         </div>
 
                         <div className='bud'>
                             <div className='mainBody'>
                                 {
                                     allOutlets.length === 0?
-                                    <div>No outlet created</div>:
+                                    <div style={menu}>No station data</div>:
                                     allOutlets.map((item, index) => {
                                         return(
                                             <div key={index} onClick={e => handleSelection(e, item)} className='inactive'>
@@ -188,6 +192,11 @@ const CostPriceModal = (props) => {
             </div>
         </Modal>
     )
+}
+
+const menu = {
+    fontSize:'14px',
+    fontFamily:'Nunito-Regular'
 }
 
 export default CostPriceModal;
