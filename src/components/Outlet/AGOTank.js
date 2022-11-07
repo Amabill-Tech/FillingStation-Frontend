@@ -4,13 +4,19 @@ import { useState } from 'react';
 const TankComponent = (props) => {
 
     const canvas = useRef();
-    const [currentLevel, setCurrentLevel] = useState(10000);
-    const [capacity, setCapacity] = useState(33000);
-    const [deadstock, setDeadStock] = useState(1000);
+    const [currentLevel, setCurrentLevel] = useState(0);
+    const [capacity, setCapacity] = useState(0);
+    const [deadstock, setDeadStock] = useState(0);
 
     useEffect(()=>{
         createTankCanvas(currentLevel, capacity, deadstock);
-    }, [])
+    }, [capacity, currentLevel, deadstock]);
+
+    useEffect(()=>{
+        setCapacity(props.data.AGOTankCapacity);
+        setCurrentLevel(props.data.totalAGO);
+        setDeadStock(props.data.AGODeadStock);
+    }, [props.data.AGOTankCapacity, props.data.totalAGO, props.data.AGODeadStock]);
 
     const createTankCanvas = (level, capacity, deadstock) => {
 

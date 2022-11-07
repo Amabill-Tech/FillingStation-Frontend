@@ -18,6 +18,12 @@ import PMSTank from './PMSTank';
 import AGOTank from './AGOTank';
 import DPKTank from './DPKTank';
 import { useLocation } from 'react-router-dom';
+import OutletService from '../../services/outletService';
+import { getAllOutletTanks } from '../../store/actions/outlet';
+import { useCallback } from 'react';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
 
 ChartJS.register(
     CategoryScale,
@@ -68,9 +74,89 @@ const options = {
     maintainAspectRatio: false,
 }
 
-const Tank = () => {
+const Sales = () => {
 
     const {state} = useLocation();
+    const dispatch = useDispatch();
+    const tankList = useSelector(state => state.outletReducer.tankList);
+    const [cummulatives, setCummulatives] = useState({});
+
+    const getAllStationTanks = useCallback(() => {
+        const payload = {
+            organisationID: state.state.organisation,
+            outletID: state.state._id
+        }
+        OutletService.getAllOutletTanks(payload).then(data => {
+            dispatch(getAllOutletTanks(data.stations));
+        });
+    }, [state.state._id, state.state.organisation, dispatch]);
+
+    useEffect(()=>{
+        getAllStationTanks();
+    },[getAllStationTanks]);
+
+    const getCummulativeVolumePerProduct = (pms, ago, dpk) => {
+        let totalPMS = 0;
+        let PMSTankCapacity = 0;
+        let PMSDeadStock = 0;
+        let totalAGO = 0;
+        let AGOTankCapacity = 0;
+        let AGODeadStock = 0;
+        let totalDPK = 0;
+        let DPKTankCapacity = 0;
+        let DPKDeadStock = 0;
+
+        if(pms.length !== 0){ 
+            for(let pm of pms){
+                totalPMS = totalPMS + Number(pm.currentLevel);
+                PMSTankCapacity = PMSTankCapacity + Number(pm.tankCapacity);
+                PMSDeadStock = PMSDeadStock + Number(pm.deadStockLevel);
+            } 
+        }   
+
+        if(ago.length !== 0){ 
+            for(let ag of ago){
+                totalAGO = totalAGO + Number(ag.currentLevel);
+                AGOTankCapacity = AGOTankCapacity + Number(ag.tankCapacity);
+                AGODeadStock = AGODeadStock + Number(ag.deadStockLevel);
+            } 
+        }  
+
+        if(dpk.length !== 0){ 
+            for(let dp of dpk){
+                totalDPK = totalDPK + Number(dp.currentLevel);
+                DPKTankCapacity = DPKTankCapacity + Number(dp.tankCapacity);
+                DPKDeadStock = DPKDeadStock + Number(dp.deadStockLevel);
+            } 
+        }  
+
+        const payload = {
+            totalPMS: totalPMS,
+            PMSTankCapacity: PMSTankCapacity,
+            PMSDeadStock: PMSDeadStock,
+            totalAGO: totalAGO,
+            AGOTankCapacity: AGOTankCapacity,
+            AGODeadStock: AGODeadStock,
+            totalDPK: totalDPK,
+            DPKTankCapacity: DPKTankCapacity,
+            DPKDeadStock: DPKDeadStock,
+        }
+
+        return payload;
+    }
+
+    const getProductTanks = useCallback(() => {
+        const PMSList = tankList.filter(tank => tank.productType === "PMS");
+        const AGOList = tankList.filter(tank => tank.productType === "AGO");
+        const DPKList = tankList.filter(tank => tank.productType === "DPK");
+
+        const cummulative = getCummulativeVolumePerProduct(PMSList, AGOList, DPKList);
+        setCummulatives(cummulative);
+    }, [tankList]);
+
+    useEffect(()=>{
+        getProductTanks();
+    }, [getProductTanks]);
 
     return(
         <div className='sales-container'>
@@ -80,7 +166,7 @@ const Tank = () => {
                         <div className="tank-inner">
                             <div className="tanks">
                                 <div className='canvas-container'>
-                                    <PMSTank/>
+                                    <PMSTank data = {cummulatives}/>
                                 </div>
                                 <div style={{marginTop:'10px', color:'#399A19'}} className='tank-head'>PMS</div>
                                 <div className='level'>Level: 92,600 Litres</div>
@@ -88,7 +174,7 @@ const Tank = () => {
                             </div>
                             <div className="tanks">
                                 <div className='canvas-container'>
-                                    <AGOTank/>
+                                    <AGOTank data = {cummulatives}/>
                                 </div>
                                 <div style={{marginTop:'10px', color:'#FFA010'}} className='tank-head'>AGO</div>
                                 <div className='level'>Level: 92,600 Litres</div>
@@ -96,7 +182,7 @@ const Tank = () => {
                             </div>
                             <div className="tanks">
                                 <div className='canvas-container'>
-                                        <DPKTank/>
+                                        <DPKTank data = {cummulatives}/>
                                     </div>
                                 <div style={{marginTop:'10px', color:'#35393E'}} className='tank-head'>DPK</div>
                                     <div className='level'>Level: 92,600 Litres</div>
@@ -369,4 +455,4 @@ const Tank = () => {
     )
 }
 
-export default Tank;
+export default Sales;
