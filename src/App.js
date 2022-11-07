@@ -6,6 +6,16 @@ import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import AOS from 'aos';
 import "aos/dist/aos.css";
 import { useEffect } from 'react';
+import {useHistory} from 'react-router-dom';
+
+const LOGIN = () => {
+  const history = useHistory();
+  return(
+    <div style={{marginTop:'300px'}}>
+      <button onClick={()=>{history.push('/login')}}>Login</button>
+    </div>
+  )
+}
 
 function App() {
 
@@ -48,6 +58,7 @@ function App() {
           <Route path='/home/hr/recruitment' component={HomeScreen} />
           <Route path='/home/hr/attendance' component={HomeScreen} />
           <Route path='/login' component={LoginScreen} />
+          <Route path='/' component={LOGIN} />
           <Route render = {() => <h1>404 page not found</h1>} />
         </Switch>
       </div>
@@ -56,3 +67,5 @@ function App() {
 }
 
 export default App;
+
+// https://golden-peony-ca6360.netlify.app
