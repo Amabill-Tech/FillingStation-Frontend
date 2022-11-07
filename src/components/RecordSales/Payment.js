@@ -77,6 +77,11 @@ const Payments = () => {
             }).then(()=>{
                 setCam('');
                 setGall({});
+                setBankName('');
+                setTellerNumber('');
+                setPosName('');
+                setTerminalID('');
+                setAmount('');
                 swal("Success!", "Expenses recorded successfully", "success"); 
             }); 
 
@@ -109,6 +114,13 @@ const Payments = () => {
             }).then(()=>{
                 setCam('');
                 setGall({});
+                setCam('');
+                setGall({});
+                setBankName('');
+                setTellerNumber('');
+                setPosName('');
+                setTerminalID('');
+                setAmount('');
                 swal("Success!", "Expenses recorded successfully", "success");
             });
         }
@@ -141,11 +153,18 @@ const Payments = () => {
                 }
             };
             axios.post(url, payload, httpConfig).then((data) => {
-                console.log('form data', data);
+                console.log('pos cam data', data);
             }).then(()=>{
                 setCam('');
                 setGall({});
-                swal("Success!", "Expenses recorded successfully", "success"); 
+                setCam('');
+                setGall({});
+                setBankName('');
+                setTellerNumber('');
+                setPosName('');
+                setTerminalID('');
+                setAmount('');
+                swal("Success!", "Payments recorded successfully", "success"); 
             }); 
 
         }else{
@@ -173,11 +192,18 @@ const Payments = () => {
 
             const url = config.BASE_URL + "/360-station/api/pos-payment/create";
             axios.post(url, formData, httpConfig).then((data) => {
-                console.log('form data', data);
+                console.log('pos form data', data);
             }).then(()=>{
                 setCam('');
                 setGall({});
-                swal("Success!", "Expenses recorded successfully", "success");
+                setCam('');
+                setGall({});
+                setBankName('');
+                setTellerNumber('');
+                setPosName('');
+                setTerminalID('');
+                setAmount('');
+                swal("Success!", "Payments recorded successfully", "success");
             });
         }
     }
@@ -207,24 +233,24 @@ const Payments = () => {
                         <div className='twoInputs'>
                             <div className='inputs2'>
                                 <div className='text'>Bank Name</div>
-                                <input onChange={e => setBankName(e.target.value)} className='date' type={'text'}  />
+                                <input value={bankName} onChange={e => setBankName(e.target.value)} className='date' type={'text'}  />
                             </div>
 
                             <div className='inputs2'>
                                 <div className='text'>Teller Number</div>
-                                <input onChange={e => setTellerNumber(e.target.value)} className='date' type={'text'}  />
+                                <input value={tellerNumber} onChange={e => setTellerNumber(e.target.value)} className='date' type={'text'}  />
                             </div>
                         </div>
 
                         <div className='twoInputs'>
                             <div className='inputs2'>
                                 <div className='text'>Amount Paid</div>
-                                <input onChange={e => setAmount(e.target.value)} className='date' type={'text'}  />
+                                <input value={amount} onChange={e => setAmount(e.target.value)} className='date' type={'text'}  />
                             </div>
 
                             <div className='inputs2'>
                                 <div className='text'>Payment Date</div>
-                                <input onChange={e => setDate(e.target.value)} className='date' type={'date'}  />
+                                <input value={date} onChange={e => setDate(e.target.value)} className='date' type={'date'}  />
                             </div>
                         </div>
 
@@ -269,37 +295,37 @@ const Payments = () => {
                     <div className='twoInputs'>
                         <div className='inputs2'>
                             <div className='text'>POS Name</div>
-                            <input onChange={e => setPosName(e.target.value)} className='date' type={'text'}  />
+                            <input value={posName} onChange={e => setPosName(e.target.value)} className='date' type={'text'}  />
                         </div>
 
                         <div className='inputs2'>
                             <div className='text'>Terminal ID</div>
-                            <input onChange={e => setTerminalID(e.target.value)} className='date' type={'text'}  />
+                            <input value={terminalID} onChange={e => setTerminalID(e.target.value)} className='date' type={'text'}  />
                         </div>
                     </div>
 
                     <div className='twoInputs'>
                         <div className='inputs2'>
                             <div className='text'>Amount Paid</div>
-                            <input onChange={e => setAmount(e.target.value)} className='date' type={'text'}  />
+                            <input value={amount} onChange={e => setAmount(e.target.value)} className='date' type={'text'}  />
                         </div>
 
                         <div className='inputs2'>
                             <div className='text'>Payment Date</div>
-                            <input onChange={e => setDate(e.target.value)} className='date' type={'date'}  />
+                            <input value={date} onChange={e => setDate(e.target.value)} className='date' type={'date'}  />
                         </div>
                     </div>
 
                     <div style={{marginTop:'20px'}} className='inputs'>
                         <div className='text'>Upload Teller slip</div>
                         <div className='button-container'>
-                            <Button onClick={takeFromCamera} style={{background:'#216DB2'}} className='buttons'>
+                            <Button onClick={takeFromCamera} style={{background:'#216DB2', textTransform:'capitalize'}} className='buttons'>
                                 <img style={{width:'22px', height:'18px', marginRight:'10px'}} src={photo} alt="icon" />
-                                <div>Take Photo</div>
+                                <div>{typeof(cam) === "string"? "Image taken":<span>Take photo</span>}</div>
                             </Button>
-                            <Button onClick={pickFromGallery} style={{background:'#087B36'}} className='buttons'>
+                            <Button onClick={pickFromGallery} style={{background:'#087B36', textTransform:'capitalize'}} className='buttons'>
                                 <img style={{width:'22px', height:'18px', marginRight:'10px'}} src={upload} alt="icon" />
-                                <div>Upload</div>
+                                <div>{typeof(gall) === "string"? "Upload":<span>File uploaded</span>}</div>
                             </Button>
                         </div>
                     </div>
