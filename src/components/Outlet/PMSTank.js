@@ -26,8 +26,8 @@ const TankComponent = (props) => {
             ctx.stroke();
 
             ctx.fillStyle = "#000";
-            ctx.font = "10px Arial";
-            ctx.fillText(label, 20*dpi, (height + 8)*dpi);
+            ctx.font = "20px Arial";
+            ctx.fillText(label, 10*dpi, (height + 8)*dpi);
         }
 
         const drawSmallLine = (height) => {
