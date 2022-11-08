@@ -7,6 +7,8 @@ import { getAllOutletTanks, getAllStations } from '../../store/actions/outlet';
 import '../../styles/listTanks.scss';
 import {useLocation} from 'react-router-dom';
 import PMSTank from './PMSTank';
+import AGOTank from './AGOTank';
+import DPKTank from './DPKTank';
 import { styled } from '@mui/material/styles';
 import swal from 'sweetalert';
 import Button from '@mui/material/Button';
@@ -194,8 +196,7 @@ const ListAllTanks = () => {
                 </div>
 
                 <div className='mains'>
-                    <div className='inner-main'>
-                        
+                    <div className='inner-main'>    
                         {
                             !("PMS" in list)?
                             <div>No data records</div>:
@@ -238,13 +239,102 @@ const ListAllTanks = () => {
                                     </div>
                                 )
                             })
-                            : null
+                            : location.state.state === "AGO"?
+                            list.AGO.map((item, index) => {
+                                return(
+                                    <div className='item'>
+                                    <div key={index} className='tank-cont'>
+                                        <div className='top'>
+                                            <div className='left'>
+                                                <div>{item.tankName}</div>
+                                            </div>
+                                            <div className='right'>
+                                                <div>{item.activeState === '0'? 'Inactive': 'Active'}</div>
+                                                <IOSSwitch onClick={(e)=>{activateTank(e, item)}} sx={{ m: 1 }} defaultChecked={item.activeState === '0'? false: true} />
+                                            </div>
+                                        </div>
+                                        <AGOTank data={{AGOTankCapacity: Number(item.tankCapacity), totalAGO: Number(item.currentLevel), AGODeadStock: Number(item.deadStockLevel)}} />
+                                        <div className='foot'>
+                                            <div className='tex'>
+                                                <div><span style={{color:'#07956A'}}>Level: </span> {item.currentLevel} litres</div>
+                                                <div><span style={{color:'#07956A'}}>Capacity: </span> {item.tankCapacity} litres</div>
+                                            </div>
+                                            <Button sx={{
+                                                width:'70px', 
+                                                height:'30px',  
+                                                background: '#D53620',
+                                                borderRadius: '3.11063px',
+                                                fontSize:'10px',
+                                                color:'#fff',
+                                                '&:hover': {
+                                                    backgroundColor: '#D53620'
+                                                }
+                                                }} 
+                                                onClick={()=>{deleteTank(item)}}
+                                                variant="contained"> Delete
+                                            </Button>
+                                        </div>
+                                    </div>
+                                    </div>
+                                )
+                            })
+                            : location.state.state === "AGO"?
+                            list.DPK.map((item, index) => {
+                                return(
+                                    <div className='item'>
+                                    <div key={index} className='tank-cont'>
+                                        <div className='top'>
+                                            <div className='left'>
+                                                <div>{item.tankName}</div>
+                                            </div>
+                                            <div className='right'>
+                                                <div>{item.activeState === '0'? 'Inactive': 'Active'}</div>
+                                                <IOSSwitch onClick={(e)=>{activateTank(e, item)}} sx={{ m: 1 }} defaultChecked={item.activeState === '0'? false: true} />
+                                            </div>
+                                        </div>
+                                        <DPKTank data={{DPKTankCapacity: Number(item.tankCapacity), totalDPK: Number(item.currentLevel), DPKDeadStock: Number(item.deadStockLevel)}} />
+                                        <div className='foot'>
+                                            <div className='tex'>
+                                                <div><span style={{color:'#07956A'}}>Level: </span> {item.currentLevel} litres</div>
+                                                <div><span style={{color:'#07956A'}}>Capacity: </span> {item.tankCapacity} litres</div>
+                                            </div>
+                                            <Button sx={{
+                                                width:'70px', 
+                                                height:'30px',  
+                                                background: '#D53620',
+                                                borderRadius: '3.11063px',
+                                                fontSize:'10px',
+                                                color:'#fff',
+                                                '&:hover': {
+                                                    backgroundColor: '#D53620'
+                                                }
+                                                }} 
+                                                onClick={()=>{deleteTank(item)}}
+                                                variant="contained"> Delete
+                                            </Button>
+                                        </div>
+                                    </div>
+                                    </div>
+                                )
+                            }): <div style={tankss}>No Tank Created</div>
                         }
                     </div>
                 </div>
             </div>
         </React.Fragment>
     )
+}
+
+const tankss = {
+    width:'100%',
+    height:'500px',
+    display:'flex',
+    justifyContent:'center',
+    alignItems:'center',
+    fontSize:'16px',
+    fontFamily:'Nunito-Regular',
+    color:'green',
+    fontWeight:'200'
 }
 
 const menu = {

@@ -240,7 +240,7 @@ const Sales = (props) => {
                                     <div className='capacity'>Capacity: {cummulatives.PMSTankCapacity} Litres</div>
                                 </div>
                                 <div className="tanks">
-                                    <div onClick={()=>{goToTanks("PMS")}} className='canvas-container'>
+                                    <div onClick={()=>{goToTanks("AGO")}} className='canvas-container'>
                                         <AGOTank data = {cummulatives}/>
                                     </div>
                                     <div style={{marginTop:'10px', color:'#FFA010'}} className='tank-head'>AGO</div>
@@ -248,9 +248,9 @@ const Sales = (props) => {
                                     <div className='capacity'>Capacity: {cummulatives.AGOTankCapacity} Litres</div>
                                 </div>
                                 <div className="tanks">
-                                    <div onClick={()=>{goToTanks("PMS")}} className='canvas-container'>
-                                            <DPKTank data = {cummulatives}/>
-                                        </div>
+                                    <div onClick={()=>{goToTanks("DPK")}} className='canvas-container'>
+                                        <DPKTank data = {cummulatives}/>
+                                    </div>
                                     <div style={{marginTop:'10px', color:'#35393E'}} className='tank-head'>DPK</div>
                                         <div className='level'>Level: {cummulatives.totalDPK} Litres</div>
                                         <div className='capacity'>Capacity: {cummulatives.DPKTankCapacity} Litres</div>
