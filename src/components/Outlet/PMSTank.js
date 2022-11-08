@@ -1,5 +1,6 @@
 import React, {useRef, useEffect} from 'react';
 import { useState } from 'react';
+import Tooltip from '@mui/material/Tooltip';
 
 const TankComponent = (props) => {
 
@@ -71,7 +72,9 @@ const TankComponent = (props) => {
 
     return(
         <div style={canvases}>
-            <canvas style={{width:'150px', height:'300px'}} ref={canvas}></canvas>
+            <Tooltip title={`${props.data.totalPMS} Litres`} followCursor>
+                <canvas style={{width:'150px', height:'300px'}} ref={canvas}></canvas>
+            </Tooltip>
         </div>
     )
 }

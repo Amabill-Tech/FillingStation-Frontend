@@ -74,6 +74,7 @@ const HomeScreen = ({history}) => {
                 '/home/outlets/tanks': 'Outlet Tanks',
                 '/home/outlets/pumps': 'Outlet Pumps',
                 '/home/outlets/sales': 'Outlet Sales',
+                '/home/outlets/sales/list': 'Station Tank List',
                 '/home/record-sales': 'Record Sales (End Of the Day)',
                 '/home/record-sales/lpo': 'LPO',
                 '/home/record-sales/expenses': 'Expenses',

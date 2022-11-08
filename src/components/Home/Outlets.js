@@ -28,6 +28,7 @@ import activeList from '../../assets/activeList.png';
 import inactiveList from '../../assets/inactiveList.png';
 import activeGrid from '../../assets/activeGrid.png';
 import inactiveGrid from '../../assets/inactiveGrid.png';
+import ListAllTanks from '../Outlet/TankList';
 
 const Outlets = (props) => {
 
@@ -320,7 +321,7 @@ const Outlets = (props) => {
                 <div style={contain}>
                     <Switch>
                         <Route path='/home/outlets/sales'>
-                            <Sales/>
+                            <Sales route={props}/>
                         </Route>
                         <Route path='/home/outlets/tanks'>
                             <Tank refresh={getAllStationData}/>
