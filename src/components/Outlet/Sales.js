@@ -220,9 +220,8 @@ const Sales = (props) => {
         getActiveTankAndPumps();
     }, [getActiveTankAndPumps]);
 
-    const goToTanks = () => {
-        props.goToList();
-        
+    const goToTanks = (product) => {
+        props.goToList(product);
     }
 
     return(
@@ -233,7 +232,7 @@ const Sales = (props) => {
                         <div className="tank-container">
                             <div className="tank-inner">
                                 <div className="tanks">
-                                    <div onClick={goToTanks} className='canvas-container'>
+                                    <div onClick={()=>{goToTanks("PMS")}} className='canvas-container'>
                                         <PMSTank data = {cummulatives}/>
                                     </div>
                                     <div style={{marginTop:'10px', color:'#399A19'}} className='tank-head'>PMS</div>
@@ -241,7 +240,7 @@ const Sales = (props) => {
                                     <div className='capacity'>Capacity: {cummulatives.PMSTankCapacity} Litres</div>
                                 </div>
                                 <div className="tanks">
-                                    <div className='canvas-container'>
+                                    <div onClick={()=>{goToTanks("PMS")}} className='canvas-container'>
                                         <AGOTank data = {cummulatives}/>
                                     </div>
                                     <div style={{marginTop:'10px', color:'#FFA010'}} className='tank-head'>AGO</div>
@@ -249,7 +248,7 @@ const Sales = (props) => {
                                     <div className='capacity'>Capacity: {cummulatives.AGOTankCapacity} Litres</div>
                                 </div>
                                 <div className="tanks">
-                                    <div className='canvas-container'>
+                                    <div onClick={()=>{goToTanks("PMS")}} className='canvas-container'>
                                             <DPKTank data = {cummulatives}/>
                                         </div>
                                     <div style={{marginTop:'10px', color:'#35393E'}} className='tank-head'>DPK</div>
