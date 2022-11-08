@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import '../../styles/dailySales.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -18,7 +18,9 @@ import { Bar } from 'react-chartjs-2';
 import PMSTank from '../Outlet/PMSTank';
 import AGOTank from '../Outlet/AGOTank';
 import DPKTank from '../Outlet/DPKTank';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import OutletService from '../../services/outletService';
+import { getAllOutletTanks, getAllStations } from '../../store/actions/outlet';
 
 ChartJS.register(
     CategoryScale,
@@ -72,6 +74,111 @@ const options = {
 const DailySales = () => {
 
     const user = useSelector(state => state.authReducer.user);
+    const dispatch = useDispatch();
+    const tankList = useSelector(state => state.outletReducer.tankList);
+    const allOutlets = useSelector(state => state.outletReducer.allOutlets);
+    const [defaultState, setDefault] = useState(0);
+    const [cummulatives, setCummulatives] = useState({});
+    const [currentStation, setCurrentStation] = useState({});
+
+    const getAllProductData = useCallback(() => {
+
+        OutletService.getAllOutletStations({organisation: user.userType === "superAdmin"? user._id : user.organisationID}).then(data => {
+            dispatch(getAllStations(data.station));
+            setCurrentStation(data.station[0]);
+            setDefault(1);
+            return data.station[0]
+        }).then((data)=>{
+            const payload = {
+                organisationID: data.organisation,
+                outletID: data._id
+            }
+            OutletService.getAllOutletTanks(payload).then(data => {
+                dispatch(getAllOutletTanks(data.stations));
+            });
+        });
+
+    }, [dispatch, user.organisationID, user._id, user.userType]);
+
+    useEffect(()=>{
+        getAllProductData();
+    },[getAllProductData])
+
+    const getCummulativeVolumePerProduct = (pms, ago, dpk) => {
+        let totalPMS = 0;
+        let PMSTankCapacity = 0;
+        let PMSDeadStock = 0;
+        let totalAGO = 0;
+        let AGOTankCapacity = 0;
+        let AGODeadStock = 0;
+        let totalDPK = 0;
+        let DPKTankCapacity = 0;
+        let DPKDeadStock = 0;
+
+        if(pms.length !== 0){ 
+            for(let pm of pms){
+                totalPMS = totalPMS + Number(pm.currentLevel);
+                PMSTankCapacity = PMSTankCapacity + Number(pm.tankCapacity);
+                PMSDeadStock = PMSDeadStock + Number(pm.deadStockLevel);
+            } 
+        }   
+
+        if(ago.length !== 0){ 
+            for(let ag of ago){
+                totalAGO = totalAGO + Number(ag.currentLevel);
+                AGOTankCapacity = AGOTankCapacity + Number(ag.tankCapacity);
+                AGODeadStock = AGODeadStock + Number(ag.deadStockLevel);
+            } 
+        }  
+
+        if(dpk.length !== 0){ 
+            for(let dp of dpk){
+                totalDPK = totalDPK + Number(dp.currentLevel);
+                DPKTankCapacity = DPKTankCapacity + Number(dp.tankCapacity);
+                DPKDeadStock = DPKDeadStock + Number(dp.deadStockLevel);
+            } 
+        }  
+
+        const payload = {
+            totalPMS: totalPMS,
+            PMSTankCapacity: PMSTankCapacity === 0? 33000: PMSTankCapacity,
+            PMSDeadStock: PMSDeadStock,
+            totalAGO: totalAGO,
+            AGOTankCapacity: AGOTankCapacity === 0? 33000: AGOTankCapacity,
+            AGODeadStock: AGODeadStock,
+            totalDPK: totalDPK,
+            DPKTankCapacity: DPKTankCapacity === 0? 33000: DPKTankCapacity,
+            DPKDeadStock: DPKDeadStock,
+        }
+
+        return payload;
+    }
+
+    const getProductTanks = useCallback(() => {
+        const PMSList = tankList.filter(tank => tank.productType === "PMS");
+        const AGOList = tankList.filter(tank => tank.productType === "AGO");
+        const DPKList = tankList.filter(tank => tank.productType === "DPK");
+
+        const cummulative = getCummulativeVolumePerProduct(PMSList, AGOList, DPKList);
+        setCummulatives(cummulative);
+    }, [tankList]);
+
+    useEffect(()=>{
+        getProductTanks();
+    }, [getProductTanks]);
+
+    const changeMenu = (index, item ) => {
+        setDefault(index);
+        setCurrentStation(item);
+
+        const payload = {
+            organisationID: item.organisation,
+            outletID: item._id
+        }
+        OutletService.getAllOutletTanks(payload).then(data => {
+            dispatch(getAllOutletTanks(data.stations));
+        });
+    }
 
     return(
         <div className='daily-sales-container'>
@@ -79,12 +186,17 @@ const DailySales = () => {
                 <Select
                     labelId="demo-select-small"
                     id="demo-select-small"
-                    value={10}
+                    value={defaultState}
                     sx={selectStyle2}
                 >
-                    <MenuItem value={10}>Ammasco Nyanya</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
+                    <MenuItem style={menu} value={0}>Select Station</MenuItem>
+                    {
+                        allOutlets.map((item, index) => {
+                            return(
+                                <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.city}</MenuItem>
+                            )
+                        })  
+                    }
                 </Select>
 
                 <div className='item-dash-daily'>
@@ -140,7 +252,7 @@ const DailySales = () => {
                             <div className='level'>Level: 92,600 Litres</div>
                             <div className='capacity'>Capacity: 156,600 Litres</div>
                             <div className='canvas-container'>
-                                <PMSTank/>
+                                <PMSTank data = {cummulatives}/>
                             </div>
                         </div>
                         <div className="tanks">
@@ -148,7 +260,7 @@ const DailySales = () => {
                                 <div className='level'>Level: 92,600 Litres</div>
                                 <div className='capacity'>Capacity: 156,600 Litres</div>
                                 <div className='canvas-container'>
-                                    <AGOTank/>
+                                    <AGOTank data = {cummulatives}/>
                                 </div>
                             </div>
                         <div className="tanks">
@@ -156,7 +268,7 @@ const DailySales = () => {
                                 <div className='level'>Level: 92,600 Litres</div>
                                 <div className='capacity'>Capacity: 156,600 Litres</div>
                                 <div className='canvas-container'>
-                                    <DPKTank/>
+                                    <DPKTank data = {cummulatives}/>
                                 </div>
                             </div>
                     </div>
@@ -260,6 +372,11 @@ const DailySales = () => {
             </div>
         </div>
     )
+}
+
+const menu = {
+    fontSize:'14px',
+    fontFamily:'Nunito-Regular'
 }
 
 const selectStyle2 = {

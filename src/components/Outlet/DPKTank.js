@@ -6,7 +6,7 @@ const TankComponent = (props) => {
 
     const canvas = useRef();
     const [currentLevel, setCurrentLevel] = useState(0);
-    const [capacity, setCapacity] = useState(0);
+    const [capacity, setCapacity] = useState(33000);
     const [deadstock, setDeadStock] = useState(0);
 
     useEffect(()=>{
@@ -17,6 +17,7 @@ const TankComponent = (props) => {
         setCapacity(props.data.DPKTankCapacity);
         setCurrentLevel(props.data.totalDPK);
         setDeadStock(props.data.DPKDeadStock);
+        
     }, [props.data.DPKTankCapacity, props.data.totalDPK, props.data.DPKDeadStock]);
     const createTankCanvas = (level, capacity, deadstock) => {
 

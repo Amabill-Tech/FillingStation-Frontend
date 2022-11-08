@@ -141,13 +141,13 @@ const Sales = (props) => {
 
         const payload = {
             totalPMS: totalPMS,
-            PMSTankCapacity: PMSTankCapacity,
+            PMSTankCapacity: PMSTankCapacity === 0? 33000: PMSTankCapacity,
             PMSDeadStock: PMSDeadStock,
             totalAGO: totalAGO,
-            AGOTankCapacity: AGOTankCapacity,
+            AGOTankCapacity: AGOTankCapacity === 0? 33000: AGOTankCapacity,
             AGODeadStock: AGODeadStock,
             totalDPK: totalDPK,
-            DPKTankCapacity: DPKTankCapacity,
+            DPKTankCapacity: DPKTankCapacity === 0? 33000: DPKTankCapacity,
             DPKDeadStock: DPKDeadStock,
         }
 
