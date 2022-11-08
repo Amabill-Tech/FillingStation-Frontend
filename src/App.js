@@ -37,7 +37,7 @@ function App() {
           <Route path='/home/outlets/tanks' component={HomeScreen} />
           <Route path='/home/outlets/pumps' component={HomeScreen} />
           <Route path='/home/outlets/sales' component={HomeScreen} />
-          <Route path='/home/outlets/list' component={HomeScreen} />
+          <Route path='/home/outlets/sales/list' component={HomeScreen} />
           <Route path='/home/analysis/payments' component={HomeScreen} />
           <Route path='/home/product-orders' component={HomeScreen} />
           <Route path='/home/record-sales' component={HomeScreen} />

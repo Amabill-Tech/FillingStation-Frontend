@@ -54,6 +54,10 @@ const Outlets = (props) => {
         props.history.push('/home/outlets/pumps', {state: item});
     }
 
+    const goToTankList = (item) => {
+        props.history.push('/home/outlets/list', {state: item});
+    }
+
     const getAllStationData = useCallback(() => {
         const payload = {
             organisation: user.userType === "superAdmin"? user._id : user.organisationID
@@ -321,13 +325,16 @@ const Outlets = (props) => {
                 <div style={contain}>
                     <Switch>
                         <Route path='/home/outlets/sales'>
-                            <Sales route={props}/>
+                            <Sales goToList={goToTankList}/>
                         </Route>
                         <Route path='/home/outlets/tanks'>
                             <Tank refresh={getAllStationData}/>
                         </Route>
                         <Route path='/home/outlets/pumps'>
                             <Pumps refresh={getAllStationData}/>
+                        </Route>
+                        <Route path='/home/outlets/list'>
+                            <ListAllTanks refresh={getAllStationData}/>
                         </Route>
                     </Switch>
                 </div>

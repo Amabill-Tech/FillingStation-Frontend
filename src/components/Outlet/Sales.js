@@ -17,7 +17,7 @@ import me5 from '../../assets/me5.png';
 import PMSTank from './PMSTank';
 import AGOTank from './AGOTank';
 import DPKTank from './DPKTank';
-import { Route, Switch, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import OutletService from '../../services/outletService';
 import { getAllOutletTanks, getAllPumps } from '../../store/actions/outlet';
 import { useCallback } from 'react';
@@ -25,7 +25,6 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import {useHistory} from 'react-router-dom';
-import ListAllTanks from './TankList';
 
 ChartJS.register(
     CategoryScale,
@@ -80,7 +79,7 @@ const Sales = (props) => {
 
     const {state} = useLocation();
     const dispatch = useDispatch();
-    const [listOfTanks, setListOfTanks] = useState(true);
+    const history = useHistory();
     const tankList = useSelector(state => state.outletReducer.tankList);
     const pumpList = useSelector(state => state.outletReducer.pumpList);
     const [cummulatives, setCummulatives] = useState({});
@@ -222,13 +221,13 @@ const Sales = (props) => {
     }, [getActiveTankAndPumps]);
 
     const goToTanks = () => {
-        setListOfTanks(false);
+        props.goToList();
+        
     }
 
     return(
         <div className='sales-container'>
-            {listOfTanks &&
-                <div>
+            <div>
                 <div className='first'>
                     <div className='first-left'>
                         <div className="tank-container">
@@ -520,12 +519,7 @@ const Sales = (props) => {
                         </div>
                     </div>
                 </div>
-                </div>
-            }
-
-            {listOfTanks ||
-                <h1>Hello world</h1>
-            }
+            </div>
         </div>
     )
 }

@@ -74,7 +74,7 @@ const HomeScreen = ({history}) => {
                 '/home/outlets/tanks': 'Outlet Tanks',
                 '/home/outlets/pumps': 'Outlet Pumps',
                 '/home/outlets/sales': 'Outlet Sales',
-                '/home/outlets/sales/list': 'Station Tank List',
+                '/home/outlets/list': 'Tank Stock Levels',
                 '/home/record-sales': 'Record Sales (End Of the Day)',
                 '/home/record-sales/lpo': 'LPO',
                 '/home/record-sales/expenses': 'Expenses',
@@ -261,7 +261,7 @@ const HomeScreen = ({history}) => {
                 </div>
                 <div className='top-bar-menu'>
                     <div style={{color: user.isDark === '0'? '#054834': '#fff'}} className='left-lobe'>
-                        {activeRoute.split('/').length === 4 && <img onClick={goBackToPreviousPage} style={{width:'30px', height:'25px', marginRight:'10px'}} src={goBack} alt="icon"  />}
+                        {(activeRoute.split('/').length === 4 || activeRoute.split('/').length === 5 )&& <img onClick={goBackToPreviousPage} style={{width:'30px', height:'25px', marginRight:'10px'}} src={goBack} alt="icon"  />}
                         {name}
                     </div>
                     <div className='right-lobe'>
