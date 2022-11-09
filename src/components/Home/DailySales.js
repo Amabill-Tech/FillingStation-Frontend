@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import '../../styles/dailySales.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -290,16 +290,98 @@ const DailySales = (props) => {
                             </div>
                         </div>
                     </div>
+
                     <div className='daily-right'>
-                        <div style={{color: user.isDark === '0'? '#000': '#fff'}} className="tank-text">Expenses And Payments</div>
+                        <div className='expen'>
+                            <div style={{background:'#108CFF'}} className='child'>
+                                <div className='ins'>
+                                    <div>Expenses</div>
+                                    <div>N 280, 000</div>
+                                </div>
+                            </div>
+                            <div style={{background:'#06805B'}} className='child'>
+                                <div className='ins'>
+                                    <div>Payments</div>
+                                    <div>N 280, 000</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style={{color: user.isDark === '0'? '#000': '#fff', marginTop:'30px'}} className="tank-text">Expenses And Payments</div>
                         <div className='bar-chart'>
                             <div className='bar'>
                                 <Bar options={options} data={data} />
                             </div>
                         </div>
 
-                        <div className='section'>
-                            <div style={{color: user.isDark === '0'? '#000': '#fff'}} className='bank'>Net to Bank</div>
+                        <div style={{marginTop:'30px'}} className='asset'>
+                            <div style={{color: user.isDark === '0'? '#000': '#fff'}}>Supply</div>
+                            <Button 
+                                variant="contained" 
+                                startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} src={slideMenu} alt="icon" />}
+                                sx={{
+                                    width:'165px',
+                                    height:'30px',
+                                    background:'#06805B',
+                                    fontSize:'11px',
+                                    borderRadius:'0px',
+                                    '&:hover': {
+                                        backgroundColor: '#06805B'
+                                    }
+                                }}
+                            >
+                                View in details
+                            </Button>
+                        </div>
+                        <div className='inner-section'>
+                            <div className="cardss">
+                                <div className='left'>
+                                    PMS
+                                </div>
+                                <div className='right'>
+                                    <div>Litre Qty</div>
+                                    <div>234, 825</div>
+                                </div>
+                            </div>
+                            <div className="cardss">
+                                <div className='left'>
+                                    AGO
+                                </div>
+                                <div className='right'>
+                                    <div>Litre Qty</div>
+                                    <div>234, 825</div>
+                                </div>
+                            </div>
+                            <div style={{marginRight:'0px'}} className="cardss">
+                                <div className='left'>
+                                    DPK
+                                </div>
+                                <div className='right'>
+                                    <div>Litre Qty</div>
+                                    <div>234, 825</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style={{marginTop:'30px'}} className='section'>
+                            <div className='alisss'>
+                                <div style={{color: user.isDark === '0'? '#000': '#fff'}} className='bank'>Net to Bank</div>
+                                <Button 
+                                    variant="contained" 
+                                    startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} src={slideMenu} alt="icon" />}
+                                    sx={{
+                                        width:'165px',
+                                        height:'30px',
+                                        background:'#06805B',
+                                        fontSize:'11px',
+                                        borderRadius:'0px',
+                                        '&:hover': {
+                                            backgroundColor: '#06805B'
+                                        }
+                                    }}
+                                >
+                                    View in details
+                                </Button>
+                            </div>
                             <div className='inner-section'>
                                 <div className='inner-content'>
                                     <div className='conts'>
@@ -320,7 +402,47 @@ const DailySales = (props) => {
                             </div>
                         </div>
 
-                        <div style={{display:'flex', flexDirection:'row', width:'100%', marginTop:'30px', justifyContent:'space-between'}} className="tank-text">
+                        <div style={{marginTop:'30px'}} className='section'>
+                            <div className='alisss'>
+                                <div style={{color: user.isDark === '0'? '#000': '#fff'}} className='bank'>LPO</div>
+                                <Button 
+                                    variant="contained" 
+                                    startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} src={slideMenu} alt="icon" />}
+                                    sx={{
+                                        width:'165px',
+                                        height:'30px',
+                                        background:'#06805B',
+                                        fontSize:'11px',
+                                        borderRadius:'0px',
+                                        '&:hover': {
+                                            backgroundColor: '#06805B'
+                                        }
+                                    }}
+                                >
+                                    View in details
+                                </Button>
+                            </div>
+                            <div className='inner-section'>
+                                <div className='inner-content'>
+                                    <div className='conts'>
+                                        <div className='row-count'>
+                                            <div className='item-count'>Net to bank</div>
+                                            <div className='item-count'>Log to bank</div>
+                                            <div style={{color:'#0872D4'}} className='item-count'>Teller Amount</div>
+                                            <div className='item-count'>POS Amount</div>
+                                        </div>
+                                        <div className='row-count'>
+                                            <div className='item-count'>#213,093</div>
+                                            <div className='item-count'>#213,093</div>
+                                            <div style={{color:'#0872D4'}} className='item-count'>#213,093</div>
+                                            <div className='item-count'>#0,000</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style={{display:'flex', flexDirection:'row', width:'100%', marginTop:'40px', justifyContent:'space-between'}} className="tank-text">
                             <div style={{color: user.isDark === '0'? '#000': '#fff'}}>Incoming Order</div>
                             <Button 
                                 variant="contained" 
