@@ -6,7 +6,7 @@ const PMSDailySales = () => {
     return(
         <div className='sales'>
             <div className='top'>
-                <div className='tex'>Total Amount Of Sales (AGO)</div>
+                <div className='tex'>Total Amount Of Sales (PMS)</div>
                 <div>
                     <Button
                         variant="contained" 
@@ -48,6 +48,50 @@ const PMSDailySales = () => {
                         <div className='col'>PMS</div>
                         <div className='col'>Opening</div>
                         <div className='col'>Closing</div>
+                        <div className='col'>Difference</div>
+                        <div className='col'>LPO</div>
+                        <div className='col'>Rate</div>
+                        <div className='col'>R/T</div>
+                        <div style={{marginRight:'0px'}} className='col'>Amount</div>
+                    </div>
+
+                    <div className='table-heads2'>
+                        <div className='col'>PMS</div>
+                        <div className='col'>Opening</div>
+                        <div className='col'>Closing</div>
+                        <div className='col'>Difference</div>
+                        <div className='col'>LPO</div>
+                        <div className='col'>Rate</div>
+                        <div className='col'>R/T</div>
+                        <div style={{marginRight:'0px'}} className='col'>Amount</div>
+                    </div>
+
+                    <div className='table-heads2'>
+                        <div className='col'>PMS</div>
+                        <div className='col'>Opening</div>
+                        <div className='col'>Closing</div>
+                        <div className='col'>Difference</div>
+                        <div className='col'>LPO</div>
+                        <div className='col'>Rate</div>
+                        <div className='col'>R/T</div>
+                        <div style={{marginRight:'0px'}} className='col'>Amount</div>
+                    </div>
+
+                    <div className='table-heads2'>
+                        <div className='col'>PMS</div>
+                        <div className='col'>Opening</div>
+                        <div className='col'>Closing</div>
+                        <div className='col'>Difference</div>
+                        <div className='col'>LPO</div>
+                        <div className='col'>Rate</div>
+                        <div className='col'>R/T</div>
+                        <div style={{marginRight:'0px'}} className='col'>Amount</div>
+                    </div>
+
+                    <div className='table-heads2'>
+                        <div style={{background: "transparent"}} className='col'></div>
+                        <div style={{background: "transparent"}} className='col'></div>
+                        <div className='col'>Total</div>
                         <div className='col'>Difference</div>
                         <div className='col'>LPO</div>
                         <div className='col'>Rate</div>

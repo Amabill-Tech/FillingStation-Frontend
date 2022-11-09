@@ -284,7 +284,7 @@
 
     .main-sales{
         width: 100%;
-        height: 400px;
+        height: auto;
         background: rgba(230, 245, 241, 0.6);
         border-radius: 5px;
         margin-top: 10px;
@@ -294,8 +294,9 @@
 
         .inner{
             width: 98%;
-            height: 300px;
+            height: auto;
             margin-top: 10px;
+            margin-bottom: 10px;
 
             .table-heads{
                 width: 100%;
@@ -314,6 +315,27 @@
                     margin-right: 5px;
                     font-size: 12px;
                     font-family: 'Nunito-Regular';
+                }
+            }
+
+            .table-heads2{
+                width: 100%;
+                height: 30px;
+                display: flex;
+                flex-direction: row;
+
+                .col{
+                    width: 100%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    background: #EDEDEDB2;
+                    border-radius: 4px;
+                    color: #000;
+                    margin-right: 5px;
+                    font-size: 12px;
+                    font-family: 'Nunito-Regular';
+                    margin-top: 5px;
                 }
             }
         }
