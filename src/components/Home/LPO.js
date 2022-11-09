@@ -38,6 +38,7 @@ const LPO = (props) => {
     const [viewLPO, setViewLpo] = useState(false);
     const [priceModal, setPriceModal] = useState(false);
     const [currentLPO, setCurrentLPO] = useState();
+    console.log(lpos, 'lpos')
 
     const openModal = () => {
         setLpo(true);

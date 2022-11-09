@@ -21,6 +21,10 @@ import DPKTank from '../Outlet/DPKTank';
 import { useDispatch, useSelector } from 'react-redux';
 import OutletService from '../../services/outletService';
 import { getAllOutletTanks, getAllStations } from '../../store/actions/outlet';
+import { Route, Switch } from 'react-router-dom';
+import PMSDailySales from '../DailySales/PMSDailySales';
+import AGODailySales from '../DailySales/AGODailySales';
+import DPKDailySales from '../DailySales/DPKDailySales';
 
 ChartJS.register(
     CategoryScale,
@@ -71,7 +75,7 @@ const options = {
     }
 }
 
-const DailySales = () => {
+const DailySales = (props) => {
 
     const user = useSelector(state => state.authReducer.user);
     const dispatch = useDispatch();
@@ -180,198 +184,230 @@ const DailySales = () => {
         });
     }
 
+    const openDailySales = (data) => {
+        if(data === "pms"){
+            props.history.push('/home/daily-sales/pms');
+        }else if(data === "ago"){
+            props.history.push('/home/daily-sales/ago');
+        }else if(data === "dpk"){
+            props.history.push('/home/daily-sales/dpk');
+        }
+    }
+
     return(
         <div className='daily-sales-container'>
-            <div className='daily-left'>
-                <Select
-                    labelId="demo-select-small"
-                    id="demo-select-small"
-                    value={defaultState}
-                    sx={selectStyle2}
-                >
-                    <MenuItem style={menu} value={0}>Select Station</MenuItem>
-                    {
-                        allOutlets.map((item, index) => {
-                            return(
-                                <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.city}</MenuItem>
-                            )
-                        })  
-                    }
-                </Select>
-
-                <div className='item-dash-daily'>
-                    <div data-aos="flip-left" className="dash-item">
-                        <div className="inner-dash-item">
-                            <div className="dash-image">
-                                <img style={{width:'60px', height:'50px'}} src={me5} alt="icon" />
-                            </div>
-                            <div className="dash-details">
-                                <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
-                                    <div style={{fontFamily:'Nunito-Regular', fontSize:'14px'}}>Total Amount</div>
-                                    <div style={{fontFamily:'Nunito-Regular', marginTop:'5px', fontSize:'14px'}}>PMS</div>
-                                    <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'10px', fontSize:'16px'}}> N 231,925</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div data-aos="flip-left" className="dash-item">
-                        <div className="inner-dash-item">
-                            <div className="dash-image">
-                                <img style={{width:'60px', height:'50px'}} src={me5} alt="icon" />
-                            </div>
-                            <div className="dash-details">
-                                <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
-                                    <div style={{fontFamily:'Nunito-Regular', fontSize:'14px'}}>Total Amount</div>
-                                    <div style={{fontFamily:'Nunito-Regular', marginTop:'5px', fontSize:'14px'}}>AGO</div>
-                                    <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'10px', fontSize:'16px'}}> N 231,925</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div data-aos="flip-left" className="dash-item">
-                        <div className="inner-dash-item">
-                            <div className="dash-image">
-                                <img style={{width:'60px', height:'50px'}} src={me5} alt="icon" />
-                            </div>
-                            <div className="dash-details">
-                                <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
-                                    <div style={{fontFamily:'Nunito-Regular', fontSize:'14px'}}>Total Amount</div>
-                                    <div style={{fontFamily:'Nunito-Regular', marginTop:'5px', fontSize:'14px'}}>DPK</div>
-                                    <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'10px', fontSize:'16px'}}> N 231,925</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div style={{color: user.isDark === '0'? '#000': '#fff'}} className="tank-text">Tank Stock Levels</div>
-                <div className="tank-container">
-                    <div className="tank-inner">
-                        <div className="tanks">
-                            <div className='tank-head'>PMS</div>
-                            <div className='level'>Level: 92,600 Litres</div>
-                            <div className='capacity'>Capacity: 156,600 Litres</div>
-                            <div className='canvas-container'>
-                                <PMSTank data = {cummulatives}/>
-                            </div>
-                        </div>
-                        <div className="tanks">
-                            <div className='tank-head'>AGO</div>
-                                <div className='level'>Level: 92,600 Litres</div>
-                                <div className='capacity'>Capacity: 156,600 Litres</div>
-                                <div className='canvas-container'>
-                                    <AGOTank data = {cummulatives}/>
-                                </div>
-                            </div>
-                        <div className="tanks">
-                            <div className='tank-head'>DPK</div>
-                                <div className='level'>Level: 92,600 Litres</div>
-                                <div className='capacity'>Capacity: 156,600 Litres</div>
-                                <div className='canvas-container'>
-                                    <DPKTank data = {cummulatives}/>
-                                </div>
-                            </div>
-                    </div>
-                </div>
-            </div>
-            <div className='daily-right'>
-                <div style={{color: user.isDark === '0'? '#000': '#fff'}} className="tank-text">Expenses And Payments</div>
-                <div className='bar-chart'>
-                    <div className='bar'>
-                        <Bar options={options} data={data} />
-                    </div>
-                </div>
-
-                <div className='section'>
-                    <div style={{color: user.isDark === '0'? '#000': '#fff'}} className='bank'>Net to Bank</div>
-                    <div className='inner-section'>
-                        <div className='inner-content'>
-                            <div className='conts'>
-                                <div className='row-count'>
-                                    <div className='item-count'>Net to bank</div>
-                                    <div className='item-count'>Log to bank</div>
-                                    <div style={{color:'#0872D4'}} className='item-count'>Teller Amount</div>
-                                    <div className='item-count'>POS Amount</div>
-                                </div>
-                                <div className='row-count'>
-                                    <div className='item-count'>#213,093</div>
-                                    <div className='item-count'>#213,093</div>
-                                    <div style={{color:'#0872D4'}} className='item-count'>#213,093</div>
-                                    <div className='item-count'>#0,000</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div style={{display:'flex', flexDirection:'row', width:'100%', marginTop:'30px', justifyContent:'space-between'}} className="tank-text">
-                    <div style={{color: user.isDark === '0'? '#000': '#fff'}}>Incoming Order</div>
-                    <Button 
-                        variant="contained" 
-                        startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} alt="icon" src={slideMenu} />}
-                        sx={{
-                            width:'165px',
-                            height:'30px',
-                            background:'#06805B',
-                            fontSize:'11px',
-                            '&:hover': {
-                                backgroundColor: '#06805B'
+            { props.activeRoute.split('/').length === 3 &&
+                <>
+                    <div className='daily-left'>
+                        <Select
+                            labelId="demo-select-small"
+                            id="demo-select-small"
+                            value={defaultState}
+                            sx={selectStyle2}
+                        >
+                            <MenuItem style={menu} value={0}>Select Station</MenuItem>
+                            {
+                                allOutlets.map((item, index) => {
+                                    return(
+                                        <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.city}</MenuItem>
+                                    )
+                                })  
                             }
-                        }}
-                    >
-                        View in details
-                    </Button>
-                </div>
+                        </Select>
 
-                <div style={{width:'100%', marginBottom:'40px'}}>
-                    <div className='table-view'>
-                        <div className='table-text'>Outlets</div>
-                        <div className='table-text'>Date approved</div>
-                        <div className='table-text'>Depot</div>
-                        <div className='table-text'>Products</div>
-                        <div className='table-text'>Quantity</div>
+                        <div className='item-dash-daily'>
+                            <div data-aos="flip-left" className="dash-item">
+                                <div onClick={()=>{openDailySales("pms")}} className="inner-dash-item">
+                                    <div className="dash-image">
+                                        <img style={{width:'60px', height:'50px'}} src={me5} alt="icon" />
+                                    </div>
+                                    <div className="dash-details">
+                                        <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
+                                            <div style={{fontFamily:'Nunito-Regular', fontSize:'14px'}}>Total Amount</div>
+                                            <div style={{fontFamily:'Nunito-Regular', marginTop:'5px', fontSize:'14px'}}>PMS</div>
+                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'10px', fontSize:'16px'}}> N 231,925</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div data-aos="flip-left" className="dash-item">
+                                <div onClick={()=>{openDailySales("ago")}} className="inner-dash-item">
+                                    <div className="dash-image">
+                                        <img style={{width:'60px', height:'50px'}} src={me5} alt="icon" />
+                                    </div>
+                                    <div className="dash-details">
+                                        <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
+                                            <div style={{fontFamily:'Nunito-Regular', fontSize:'14px'}}>Total Amount</div>
+                                            <div style={{fontFamily:'Nunito-Regular', marginTop:'5px', fontSize:'14px'}}>AGO</div>
+                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'10px', fontSize:'16px'}}> N 231,925</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div data-aos="flip-left" className="dash-item">
+                                <div onClick={()=>{openDailySales("dpk")}} className="inner-dash-item">
+                                    <div className="dash-image">
+                                        <img style={{width:'60px', height:'50px'}} src={me5} alt="icon" />
+                                    </div>
+                                    <div className="dash-details">
+                                        <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
+                                            <div style={{fontFamily:'Nunito-Regular', fontSize:'14px'}}>Total Amount</div>
+                                            <div style={{fontFamily:'Nunito-Regular', marginTop:'5px', fontSize:'14px'}}>DPK</div>
+                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'10px', fontSize:'16px'}}> N 231,925</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style={{color: user.isDark === '0'? '#000': '#fff'}} className="tank-text">Tank Stock Levels</div>
+                        <div className="tank-container">
+                            <div className="tank-inner">
+                                <div className="tanks">
+                                    <div className='tank-head'>PMS</div>
+                                    <div className='level'>Level: 92,600 Litres</div>
+                                    <div className='capacity'>Capacity: 156,600 Litres</div>
+                                    <div className='canvas-container'>
+                                        <PMSTank data = {cummulatives}/>
+                                    </div>
+                                </div>
+                                <div className="tanks">
+                                    <div className='tank-head'>AGO</div>
+                                        <div className='level'>Level: 92,600 Litres</div>
+                                        <div className='capacity'>Capacity: 156,600 Litres</div>
+                                        <div className='canvas-container'>
+                                            <AGOTank data = {cummulatives}/>
+                                        </div>
+                                    </div>
+                                <div className="tanks">
+                                    <div className='tank-head'>DPK</div>
+                                        <div className='level'>Level: 92,600 Litres</div>
+                                        <div className='capacity'>Capacity: 156,600 Litres</div>
+                                        <div className='canvas-container'>
+                                            <DPKTank data = {cummulatives}/>
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <div className='table-view2'>
-                        <div className='table-text'>Ammasco</div>
-                        <div className='table-text'>Date approved</div>
-                        <div className='table-text'>Abuja</div>
-                        <div className='table-text'>12-23-23</div>
-                        <div className='table-text'>245900</div>
+                    <div className='daily-right'>
+                        <div style={{color: user.isDark === '0'? '#000': '#fff'}} className="tank-text">Expenses And Payments</div>
+                        <div className='bar-chart'>
+                            <div className='bar'>
+                                <Bar options={options} data={data} />
+                            </div>
+                        </div>
+
+                        <div className='section'>
+                            <div style={{color: user.isDark === '0'? '#000': '#fff'}} className='bank'>Net to Bank</div>
+                            <div className='inner-section'>
+                                <div className='inner-content'>
+                                    <div className='conts'>
+                                        <div className='row-count'>
+                                            <div className='item-count'>Net to bank</div>
+                                            <div className='item-count'>Log to bank</div>
+                                            <div style={{color:'#0872D4'}} className='item-count'>Teller Amount</div>
+                                            <div className='item-count'>POS Amount</div>
+                                        </div>
+                                        <div className='row-count'>
+                                            <div className='item-count'>#213,093</div>
+                                            <div className='item-count'>#213,093</div>
+                                            <div style={{color:'#0872D4'}} className='item-count'>#213,093</div>
+                                            <div className='item-count'>#0,000</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style={{display:'flex', flexDirection:'row', width:'100%', marginTop:'30px', justifyContent:'space-between'}} className="tank-text">
+                            <div style={{color: user.isDark === '0'? '#000': '#fff'}}>Incoming Order</div>
+                            <Button 
+                                variant="contained" 
+                                startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} alt="icon" src={slideMenu} />}
+                                sx={{
+                                    width:'165px',
+                                    height:'30px',
+                                    background:'#06805B',
+                                    fontSize:'11px',
+                                    '&:hover': {
+                                        backgroundColor: '#06805B'
+                                    }
+                                }}
+                            >
+                                View in details
+                            </Button>
+                        </div>
+
+                        <div style={{width:'100%', marginBottom:'40px'}}>
+                            <div className='table-view'>
+                                <div className='table-text'>Outlets</div>
+                                <div className='table-text'>Date approved</div>
+                                <div className='table-text'>Depot</div>
+                                <div className='table-text'>Products</div>
+                                <div className='table-text'>Quantity</div>
+                            </div>
+                            
+                            <div className='table-view2'>
+                                <div className='table-text'>Ammasco</div>
+                                <div className='table-text'>Date approved</div>
+                                <div className='table-text'>Abuja</div>
+                                <div className='table-text'>12-23-23</div>
+                                <div className='table-text'>245900</div>
+                            </div>
+                            <div className='table-view2'>
+                                <div className='table-text'>Ammasco</div>
+                                <div className='table-text'>Date approved</div>
+                                <div className='table-text'>Abuja</div>
+                                <div className='table-text'>12-23-23</div>
+                                <div className='table-text'>245900</div>
+                            </div>
+                            <div className='table-view2'>
+                                <div className='table-text'>Ammasco</div>
+                                <div className='table-text'>Date approved</div>
+                                <div className='table-text'>Abuja</div>
+                                <div className='table-text'>12-23-23</div>
+                                <div className='table-text'>245900</div>
+                            </div>
+                            <div className='table-view2'>
+                                <div className='table-text'>Ammasco</div>
+                                <div className='table-text'>Date approved</div>
+                                <div className='table-text'>Abuja</div>
+                                <div className='table-text'>12-23-23</div>
+                                <div className='table-text'>245900</div>
+                            </div>
+                            <div className='table-view2'>
+                                <div className='table-text'>Ammasco</div>
+                                <div className='table-text'>Date approved</div>
+                                <div className='table-text'>Abuja</div>
+                                <div className='table-text'>12-23-23</div>
+                                <div className='table-text'>245900</div>
+                            </div>
+                        </div>  
                     </div>
-                    <div className='table-view2'>
-                        <div className='table-text'>Ammasco</div>
-                        <div className='table-text'>Date approved</div>
-                        <div className='table-text'>Abuja</div>
-                        <div className='table-text'>12-23-23</div>
-                        <div className='table-text'>245900</div>
-                    </div>
-                    <div className='table-view2'>
-                        <div className='table-text'>Ammasco</div>
-                        <div className='table-text'>Date approved</div>
-                        <div className='table-text'>Abuja</div>
-                        <div className='table-text'>12-23-23</div>
-                        <div className='table-text'>245900</div>
-                    </div>
-                    <div className='table-view2'>
-                        <div className='table-text'>Ammasco</div>
-                        <div className='table-text'>Date approved</div>
-                        <div className='table-text'>Abuja</div>
-                        <div className='table-text'>12-23-23</div>
-                        <div className='table-text'>245900</div>
-                    </div>
-                    <div className='table-view2'>
-                        <div className='table-text'>Ammasco</div>
-                        <div className='table-text'>Date approved</div>
-                        <div className='table-text'>Abuja</div>
-                        <div className='table-text'>12-23-23</div>
-                        <div className='table-text'>245900</div>
-                    </div>
+                </>
+            }
+            { props.activeRoute.split('/').length === 4 &&
+                <div style={contain}>
+                    <Switch>
+                        <Route path='/home/daily-sales/pms'>
+                            <PMSDailySales/>
+                        </Route>
+                        <Route path='/home/daily-sales/ago'>
+                            <AGODailySales/>
+                        </Route>
+                        <Route path='/home/daily-sales/dpk'>
+                            <DPKDailySales/>
+                        </Route>
+                    </Switch>
                 </div>
-                
-            </div>
+            }
         </div>
     )
+}
+
+const contain = {
+    width:'100%',
 }
 
 const menu = {
@@ -380,7 +416,7 @@ const menu = {
 }
 
 const selectStyle2 = {
-    width:'250px', 
+    width:'200px', 
     height:'35px', 
     borderRadius:'5px',
     background: '#F2F1F1B2',
