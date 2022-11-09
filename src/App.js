@@ -45,6 +45,7 @@ function App() {
           <Route path='/home/record-sales/expenses' component={HomeScreen} />
           <Route path='/home/record-sales/payment' component={HomeScreen} />
           <Route path='/home/record-sales/dipping' component={HomeScreen} />
+          <Route path='/home/record-sales/supply' component={HomeScreen} />
           <Route path='/home/regulatory' component={HomeScreen} />
           <Route path='/home/analysis' component={HomeScreen} />
           <Route path='/home/lpo' component={HomeScreen} />

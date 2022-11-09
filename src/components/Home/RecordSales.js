@@ -15,6 +15,7 @@ import { useCallback } from 'react';
 import LPOService from '../../services/lpo';
 import { createLPO } from '../../store/actions/lpo';
 import { useEffect } from 'react';
+import Supply from '../RecordSales/Supply';
 
 const RecordSales = (props) => {
     const dispatch = useDispatch();
@@ -34,6 +35,8 @@ const RecordSales = (props) => {
             props.history.push('/home/record-sales/payment');
         }else if(data === 'dipping'){
             props.history.push('/home/record-sales/dipping');
+        }else if(data === 'supply'){
+            props.history.push('/home/record-sales/supply');
         }
     }
 
@@ -147,6 +150,20 @@ const RecordSales = (props) => {
                                 backgroundColor: '#06805B'
                             },
                             }}  
+                            onClick={()=>{handleTabs('supply')}}
+                            variant="contained"> Supply
+                        </Button>
+                        <Button sx={{
+                            height:'35px',  
+                            background: '#06805B',
+                            borderRadius: '39px',
+                            fontSize:'12px',
+                            textTransform:'capitalize',
+                            marginLeft:'10px',
+                            '&:hover': {
+                                backgroundColor: '#06805B'
+                            },
+                            }}  
                             onClick={()=>{handleTabs('pump')}}
                             variant="contained"> Pump update
                         </Button>
@@ -210,6 +227,9 @@ const RecordSales = (props) => {
 
                     <div className='tabs-content'>
                         <Switch>
+                            <Route exact path='/home/record-sales/supply'>
+                                <Supply refresh = {refresh}/>
+                            </Route>
                             <Route exact path='/home/record-sales/'>
                                 <Pumps refresh = {refresh}/>
                             </Route>
