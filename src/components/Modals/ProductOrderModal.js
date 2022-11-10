@@ -10,6 +10,7 @@ import swal from 'sweetalert';
 import '../../styles/lpo.scss';
 import ProductService from '../../services/productService';
 import axios from 'axios';
+import { MenuItem, Select } from '@mui/material';
 
 const ProductOrderModal = (props) => {
     const [loading, setLoading] = useState(false);
@@ -22,6 +23,8 @@ const ProductOrderModal = (props) => {
     const [loadingLocation, setLoadingLocation] = useState('');
     const [uploadFile, setUpload] = useState('');
     const [loading2, setLoading2] = useState(0);
+    const [defaults, setDefaults] = useState(10);
+    const [productType, setProductType] = useState("");
     const attach = useRef();
 
     const handleClose = () => props.close(false);
@@ -31,6 +34,7 @@ const ProductOrderModal = (props) => {
         if(depot === "") return swal("Warning!", "Depot field cannot be empty", "info");
         if(depotAddress === "") return swal("Warning!", "Depot address field cannot be empty", "info");
         if(quantity === "") return swal("Warning!", "Quantity field cannot be empty", "info");
+        if(productType === "") return swal("Warning!", "Product field cannot be empty", "info");
         if(loadingLocation === "") return swal("Warning!", "Location field cannot be empty", "info");
         if(uploadFile === "") return swal("Warning!", "File upload cannot be empty", "info");
 
@@ -41,6 +45,7 @@ const ProductOrderModal = (props) => {
             depot: depot,
             depotAddress: depotAddress,
             quantity: quantity,
+            productType: productType,
             loadingLocation: loadingLocation,
             attachCertificate: uploadFile,
             outletID: props.station._id,
@@ -78,6 +83,11 @@ const ProductOrderModal = (props) => {
         }).then(()=>{
             setLoading2(2);
         });
+    }
+
+    const menuSelection = (e, data) => {
+        setDefaults(e);
+        setProductType(data);
     }
 
     return(
@@ -140,6 +150,28 @@ const ProductOrderModal = (props) => {
                                     }} placeholder="" 
                                     onChange={e => setDepotAddress(e.target.value)}
                                 />
+                            </div>
+
+                            <div style={{marginTop:'15px'}} className='inputs'>
+                                <div className='head-text2'>Product</div>
+                                <Select
+                                    labelId="demo-select-small"
+                                    id="demo-select-small"
+                                    value={defaults}
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        border:'1px solid #777777',
+                                        fontSize:'12px',
+                                    }}
+                                >
+                                    <MenuItem onClick={() => {menuSelection(10, "")}} style={menu} value={10}>Select Product</MenuItem>
+                                    <MenuItem onClick={() => {menuSelection(20, "PMS")}} style={menu} value={20}>PMS</MenuItem>
+                                    <MenuItem onClick={() => {menuSelection(30, "AGO")}} style={menu} value={30}>AGO</MenuItem>
+                                    <MenuItem onClick={() => {menuSelection(40, "DPK")}} style={menu} value={40}>DPK</MenuItem>
+                                </Select>
                             </div>
 
                             <div className='inputs'>
@@ -208,7 +240,7 @@ const ProductOrderModal = (props) => {
                             <input onChange={selectedFile} ref={attach} type="file" style={{visibility:'hidden'}} />
                        </div>
 
-                        <div style={{marginTop:'10px'}} className='butt'>
+                        <div style={{marginTop:'10px', height:'30px'}} className='butt'>
                             <Button sx={{
                                 width:'100px', 
                                 height:'30px',  
@@ -248,6 +280,11 @@ const inner = {
     width:'100%',
     height:'500px',
     overflowY: 'scroll'
+}
+
+const menu = {
+    fontSize:'14px',
+    fontFamily:'Nunito-Regular'
 }
 
 export default ProductOrderModal;

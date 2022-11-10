@@ -242,9 +242,9 @@ const ProductOrders = () => {
                         <div className='column'>Date Created</div>
                         <div className='column'>Depot</div>
                         <div className='column'>Depot Address</div>
+                        <div className='column'>Product</div>
                         <div className='column'>Quantity (LTR)</div>
                         <div className='column'>Loading Location</div>
-                        <div className='column'>Status</div>
                     </div>
 
                     <div className='row-container'>
@@ -258,9 +258,9 @@ const ProductOrders = () => {
                                         <div className='column'>{data.dateCreated}</div>
                                         <div className='column'>{data.depot}</div>
                                         <div className='column'>{data.depotAddress}</div>
+                                        <div className='column'>{data.productType}</div>
                                         <div className='column'>{data.quantity}</div>
                                         <div className='column'>{data.loadingLocation}</div>
-                                        <div className='column'>{data.status}</div>
                                     </div> 
                                 )
                             })

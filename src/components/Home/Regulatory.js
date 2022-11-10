@@ -54,7 +54,7 @@ const Regulatory = () => {
                 dispatch(createPayment(data.pay));
             });
         });
-    }, [user.organisationID, skip, limit, dispatch]);
+    }, [user.organisationID, user._id, user.userType, skip, limit, dispatch]);
 
     useEffect(()=>{
         getTankData();

@@ -248,7 +248,6 @@ const IncomingOrder = () => {
                         <div className='column'>Product Order ID</div>
                         <div className='column'>Truck No</div>
                         <div className='column'>Waybill No</div>
-                        <div className='column'>Divert status</div>
                     </div>
 
                     <div className='row-container'>
@@ -268,7 +267,6 @@ const IncomingOrder = () => {
                                         <div className='column'>{data.productOrderID}</div>
                                         <div className='column'>{data.truckNo}</div>
                                         <div className='column'>{data.wayBillNo}</div>
-                                        <div className='column'>{data.divertStatus}</div>
                                     </div>
                                 )
                             })

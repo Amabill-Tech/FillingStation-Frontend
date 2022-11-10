@@ -80,6 +80,7 @@ const HomeScreen = ({history}) => {
                 '/home/record-sales/lpo': 'LPO',
                 '/home/record-sales/expenses': 'Expenses',
                 '/home/record-sales/payment': 'Payment',
+                '/home/record-sales/supply': 'Supply',
                 '/home/analysis': 'Analysis',
                 '/home/lpo': 'LPO',
                 '/home/lpo/list': 'LPO',

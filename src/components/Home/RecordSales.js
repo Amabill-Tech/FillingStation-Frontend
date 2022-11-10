@@ -26,7 +26,7 @@ const RecordSales = (props) => {
 
     const handleTabs = (data) => {
         if(data === 'pump'){
-            props.history.push('/home/record-sales');
+            props.history.push('/home/record-sales/pump');
         }else if(data === 'lpo'){
             props.history.push('/home/record-sales/lpo');
         }else if(data === 'expenses'){
@@ -36,7 +36,7 @@ const RecordSales = (props) => {
         }else if(data === 'dipping'){
             props.history.push('/home/record-sales/dipping');
         }else if(data === 'supply'){
-            props.history.push('/home/record-sales/supply');
+            props.history.push('/home/record-sales/');
         }
     }
 
@@ -227,10 +227,10 @@ const RecordSales = (props) => {
 
                     <div className='tabs-content'>
                         <Switch>
-                            <Route exact path='/home/record-sales/supply'>
+                            <Route exact path='/home/record-sales/'>
                                 <Supply refresh = {refresh}/>
                             </Route>
-                            <Route exact path='/home/record-sales/'>
+                            <Route exact path='/home/record-sales/pump'>
                                 <Pumps refresh = {refresh}/>
                             </Route>
                             <Route path='/home/record-sales/lpo'>

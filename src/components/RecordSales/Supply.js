@@ -1,151 +1,120 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {  useState } from 'react';
 import '../../styles/expenses.scss';
-import pluss from '../../assets/pluss.png';
-import photo from '../../assets/photo.png';
-import upload from '../../assets/upload.png';
 import Button from '@mui/material/Button';
 import { MenuItem, Modal, Select } from '@mui/material';
-import Camera, { IMAGE_TYPES } from 'react-html5-camera-photo';
-import swal from 'sweetalert';
-import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux';
-import config from '../../constants';
 import ReactCamera from '../Modals/ReactCamera';
+import SupplyService from '../../services/supplyService';
+import swal from 'sweetalert';
 
 const Supply = () => {
 
-    const gallery = useRef();
     const [open, setOpen] = useState(false);
-    const [cam, setCam] = useState(null);
-    const [gall, setGall] = useState({});
     const oneOutletStation = useSelector(state => state.outletReducer.oneStation);
 
+    const [defaults, setDefault] = useState(10);
+    const [loading, setLoading] = useState(false);
+    const [productType, setProductType] = useState('PMS');
+    const [transportationName, setTransportationName] = useState('');
+    const [truckNo, setTruckNo] = useState('');
+    const [wayBillNo, setWayBillNo] = useState('');
+    const [quantity, setQuantity] = useState('');
+    const [shortage, setShortage] = useState('');
     const [date, setDate] = useState('');
-    const [expenseName, setExpenseName] = useState('');
-    const [description, setDescription] = useState('');
-    const [expenseAmount, setExpenseAmount] = useState('');
 
-    const uploadFromGallery = () => {
-        gallery.current.click();
+    const setProduct = (value, data) => {
+        setDefault(value);
+        setProductType(data)
     }
 
-    const getPictureFromCam = () => {
-        setOpen(true);
-    }
+    const submitSupply = () => {
+        if(transportationName === "") return swal("Warning!", "Transportation name field cannot be empty", "info");
+        if(truckNo === "") return swal("Warning!", "Truck no field cannot be empty", "info");
+        if(wayBillNo === "") return swal("Warning!", "Waybill no field cannot be empty", "info");
+        if(quantity === "") return swal("Warning!", "Quantity field cannot be empty", "info");
+        if(shortage === "") return swal("Warning!", "Shortage field cannot be empty", "info");
+        if(date === "") return swal("Warning!", "Date field cannot be empty", "info");
 
-    const pickFromGallery = (e) => {
-        let file = e.target.files[0];
-        setGall(file);
-    }
+        setLoading(true);
 
-    const submitExpenses = () => {
-
-        if((typeof(cam) === "string")){
-            if(date === "") return swal("Warning!", "Expense date field cannot be empty", "info");
-            if(expenseName === "") return swal("Warning!", "Expense name field cannot be empty", "info");
-            if(description === "") return swal("Warning!", "Description field cannot be empty", "info");
-            if(expenseAmount === "") return swal("Warning!", "Expense amount field cannot be empty", "info");
-            if(cam === null) return swal("Warning!", "Please select a file", "info");
-
-            const payload = {
-                dateCreated: date,
-                expenseName: expenseName,
-                description: description,
-                expenseAmount: expenseAmount,
-                attachApprovalCam: cam,
-                outletID: oneOutletStation._id,
-                organisationID: oneOutletStation.organisation,
-            }
-
-            const url = config.BASE_URL + "/360-station/api/expenses/create";
-            const httpConfig = {
-                headers: {
-                    "content-type": "multipart/form-data",
-                    "Authorization": "Bearer "+ localStorage.getItem('token'),
-                }
-            };
-            axios.post(url, payload, httpConfig).then((data) => {
-                console.log('form data', data);
-            }).then(()=>{
-                swal("Success!", "Expenses recorded successfully", "success"); 
-            }); 
-
-        }else{
-            if(date === "") return swal("Warning!", "Expense date field cannot be empty", "info");
-            if(expenseName === "") return swal("Warning!", "Expense name field cannot be empty", "info");
-            if(description === "") return swal("Warning!", "Description field cannot be empty", "info");
-            if(expenseAmount === "") return swal("Warning!", "Expense amount field cannot be empty", "info");
-            if(typeof(gall.name) === "undefined") return swal("Warning!", "Please select a file", "info");
-
-            const formData = new FormData();
-            formData.append("dateCreated", date);
-            formData.append("expenseName", expenseName);
-            formData.append("description", description);
-            formData.append("expenseAmount", expenseAmount);
-            formData.append("attachApproval", gall);
-            formData.append("outletID", oneOutletStation._id);
-            formData.append("organisationID", oneOutletStation.organisation);
-            const httpConfig = {
-                headers: {
-                    "content-type": "multipart/form-data",
-                    "Authorization": "Bearer "+ localStorage.getItem('token'),
-                }
-            };
-
-            const url = config.BASE_URL + "/360-station/api/expenses/create";
-            axios.post(url, formData, httpConfig).then((data) => {
-                console.log('form data', data);
-            }).then(()=>{
-                swal("Success!", "Expenses recorded successfully", "success");
-            });
+        const payload = {
+            transportationName: transportationName,
+            wayBillNo: wayBillNo,
+            truckNo: truckNo,
+            quantity: quantity,
+            productType: productType,
+            shortage: shortage,
+            date: date,
+            outletID: oneOutletStation._id,
+            organizationID: oneOutletStation.organisation
         }
+
+        SupplyService.createSupply(payload).then((data) => { 
+            swal("Success", "Supply created successfully!", "success");
+        }).then(()=>{
+            setLoading(false);
+        })
     }
 
     return(
         <div className='expensesContainer'>
-            <ReactCamera open={open} close={setOpen} setDataUri={setCam} />
             <div className='lpos'>
+
+                <div className='twoInputs'>
+                    <div className='inputs2'>
+                        <div className='text'>Transporter</div>
+                        <input onChange={e => setTransportationName(e.target.value)} className='date' type={'text'}  />
+                    </div>
+
+                    <div className='inputs2'>
+                        <div className='text'>Truck No</div>
+                        <input onChange={e => setTruckNo(e.target.value)} className='date' type={'text'}  />
+                    </div>
+                </div>
+
                 <div style={{marginTop: '20px'}} className='inputs'>
-                    <div className='text'>Date Created</div>
-                    <input className='date' type={'date'}  />
+                    <div className='text'>Waybill No</div>
+                    <input onChange={e => setWayBillNo(e.target.value)} className='date' type={'text'}  />
+                </div>
+
+                <div style={{marginTop:'20px'}} className='inputs'>
+                    <div className='text'>Product Type</div>
+                    <Select
+                        labelId="demo-select-small"
+                        id="demo-select-small"
+                        value={defaults}
+                        sx={{
+                            width:'100%',
+                            height:'40px',
+                            marginTop:'10px',
+                            fontSize:'12px',                                 
+                            background: 'rgba(229, 240, 237, 0.6)',
+                            border: '0.938659px solid #606060',
+                            borderRadius: '5.63195px',
+                        }}
+                    >
+                        <MenuItem onClick={()=>{setProduct(10, "PMS")}} style={menu} value={10}>PMS</MenuItem>
+                        <MenuItem onClick={()=>{setProduct(20, "AGO")}} style={menu} value={20}>AGO</MenuItem>
+                        <MenuItem onClick={()=>{setProduct(30, "DPK")}} style={menu} value={30}>DPK</MenuItem>
+                    </Select>
                 </div>
 
                 <div className='twoInputs'>
                     <div className='inputs2'>
-                        <div className='text'>Expenses Name</div>
-                        <input onChange={e => setExpenseName(e.target.value)} className='date' type={'text'}  />
+                        <div className='text'>Quantity Loaded</div>
+                        <input onChange={e => setQuantity(e.target.value)} className='date' type={'text'}  />
                     </div>
 
                     <div className='inputs2'>
-                        <div className='text'>Expenses Date</div>
+                        <div className='text'>Date</div>
                         <input onChange={e => setDate(e.target.value)} className='date' type={'date'}  />
                     </div>
                 </div>
 
-                <div style={{marginTop:'30px'}} className='inputs'>
-                    <div className='text'>Description</div>
-                    <textarea onChange={e => setDescription(e.target.value)} style={textAreaStyle} className='date' type={'date'}  />
-                </div>
-
                 <div style={{marginTop: '20px'}} className='inputs'>
-                    <div className='text'>Expense Amount</div>
-                    <input onChange={e => setExpenseAmount(e.target.value)} className='date' type={'number'}  />
+                    <div className='text'>Shortage/Overage</div>
+                    <input onChange={e => setShortage(e.target.value)} className='date' type={'text'}  />
                 </div>
-
-                <div style={{marginTop:'20px'}} className='inputs'>
-                    <div className='text'>Expenses Invoice</div>
-                    <div className='button-container'>
-                        <Button onClick={getPictureFromCam} style={{background:'#216DB2', textTransform:'capitalize'}} className='buttons'>
-                            <img style={{width:'22px', height:'18px', marginRight:'10px'}} src={photo} alt="icon" />
-                            <div>{typeof(cam) === "string"? "Image taken":<span>Take photo</span>}</div>
-                        </Button>
-                        <Button onClick={uploadFromGallery} style={{background:'#087B36', textTransform:'capitalize'}} className='buttons'>
-                            <img style={{width:'22px', height:'18px', marginRight:'10px'}} src={upload} alt="icon" />
-                            <div>{typeof(gall) === "string"? "Upload":<span>File uploaded</span>}</div>
-                        </Button>
-                    </div>
-                </div>
-                <input onChange={pickFromGallery} ref={gallery} type={'file'} style={{visibility:'hidden'}} />
 
                 <div className='submit'>
                     <Button sx={{
@@ -158,7 +127,7 @@ const Supply = () => {
                             backgroundColor: '#427BBE'
                         }
                         }}  
-                        onClick={submitExpenses}
+                        onClick={submitSupply}
                         variant="contained"> Submit
                     </Button>
                 </div>
@@ -167,23 +136,6 @@ const Supply = () => {
             </div>
         </div>
     )
-}
-
-const textAreaStyle = {
-    height:'150px',
-    paddingTop:'10px',
-}
-
-const selectStyle2 = {
-    width:'200px', 
-    height:'35px', 
-    borderRadius:'5px',
-    background: '#F2F1F1B2',
-    color:'#000',
-    fontFamily: 'Nunito-Regular',
-    fontSize:'14px',
-    outline:'none',
-    marginTop:'10px'
 }
 
 const menu = {
