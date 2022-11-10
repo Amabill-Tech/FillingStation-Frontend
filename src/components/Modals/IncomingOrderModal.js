@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import close from '../../assets/close.png';
 import Button from '@mui/material/Button';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -10,14 +10,21 @@ import '../../styles/lpo.scss';
 import IncomingService from '../../services/IncomingService';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import ProductService from '../../services/productService';
+import { createProductOrder } from '../../store/actions/productOrder';
+import { Radio } from '@mui/material';
 
 const IncomingOrderModal = (props) => {
     const [loading, setLoading] = useState(false);
     const user = useSelector(state => state.authReducer.user);
+    const [defaultState, setDefault] = useState(0);
+    const productOrder = useSelector(state => state.productOrderReducer.productOrder);
+    const dispatch = useDispatch();
+    const [productType, setProductType] = useState('available');
 
     const [depotStation, setDepotStation] = useState('');
     const [destination, setDestination] = useState('');
-    const [product, setProduct] = useState('PMS');
+    const [product, setProduct] = useState('');
     const [quantity, setQuantity] = useState('');
     const [dateCreated, setDateCreated] = useState('');
     const [productOrderID, setProductOrderID] = useState('');
@@ -61,11 +68,29 @@ const IncomingOrderModal = (props) => {
         })
     }
 
-    const menuSelection = (e) => {
+    const menuSelection = (e, item) => {
         if(Number(e.target.dataset.value) === 1) setProduct('PMS');
         if(Number(e.target.dataset.value) === 2) setProduct('AGO');
         if(Number(e.target.dataset.value) === 3) setProduct('DPK');
         setVal(e.target.dataset.value);
+        
+        const payload = {
+            productType: item,
+            outletID: props.station._id,
+            organisationID: props.station.organisation
+        }
+
+        ProductService.getAllProductOrder2(payload).then((data) => {
+            dispatch(createProductOrder(data.product.product));
+        });
+    }
+
+    const changeMenu = (index, item) => {
+        setDefault(index);
+        setDepotStation(item.depot);
+        setDestination(item.loadingLocation);
+        setQuantity(item.quantity);
+        setProductOrderID(item._id);
     }
 
     return(
@@ -84,6 +109,63 @@ const IncomingOrderModal = (props) => {
                         </div>
 
                        <div className='middleDiv' style={inner}>
+                            <div style={{marginTop:'15px'}} className='inputs'>
+                                    <div className='head-text2'>Choose Order Type</div>
+                                    <div className='radio'>
+                                        <div className='rad-item'>
+                                            <Radio onClick={()=>{setProductType('available')}} checked={productType === 'available'? true: false} />
+                                            <div className='head-text2' style={{marginRight:'5px'}}>Available Order</div>
+                                        </div>
+
+                                        <div className='rad-item'>
+                                            <Radio onClick={()=>{setProductType('new')}} checked={productType === 'new'? true: false} />
+                                            <div className='head-text2' style={{marginRight:'5px'}}>New Order</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <div style={{marginTop:'15px'}} className='inputs'>
+                                <div className='head-text2'>Product Type</div>
+                                <Select
+                                    labelId="demo-select-small"
+                                    id="demo-select-small"
+                                    value={val}
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        border:'1px solid #777777',
+                                        fontSize:'12px',
+                                    }}
+                                >
+                                    <MenuItem style={menu} value={1}>Select Product</MenuItem>
+                                    <MenuItem onClick={(e) => {menuSelection(e, "PMS")}} style={menu} value={2}>PMS</MenuItem>
+                                    <MenuItem onClick={(e) => {menuSelection(e, "AGO")}} style={menu} value={3}>AGO</MenuItem>
+                                    <MenuItem onClick={(e) => {menuSelection(e, "DPK")}} style={menu} value={4}>DPK</MenuItem>
+                                </Select>
+                            </div>
+
+                            {productType === 'available' &&
+                                <div className='inputs'>
+                                    <div className='head-text2'>Product Order </div>
+                                    <Select
+                                        labelId="demo-select-small"
+                                        id="demo-select-small"
+                                        value={defaultState}
+                                        sx={selectStyle2}
+                                    >
+                                        <MenuItem style={menu} value={0}>Select Product Order</MenuItem>
+                                        {
+                                            productOrder.map((item, index) => {
+                                                    return(
+                                                        <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.depot}</MenuItem>
+                                                    )
+                                            })  
+                                        }
+                                    </Select>
+                                </div>
+                            }
+
                             <div className='inputs'>
                                 <div className='head-text2'>Depot station</div>
                                 <OutlinedInput 
@@ -95,6 +177,7 @@ const IncomingOrderModal = (props) => {
                                         border:'1px solid #777777',
                                         fontSize:'12px',
                                     }} placeholder="" 
+                                    value={depotStation}
                                     type='text'
                                     onChange={e => setDepotStation(e.target.value)}
                                 />
@@ -111,29 +194,9 @@ const IncomingOrderModal = (props) => {
                                         border:'1px solid #777777',
                                         fontSize:'12px',
                                     }} placeholder="" 
+                                    value={destination}
                                     onChange={e => setDestination(e.target.value)}
                                 />
-                            </div>
-
-                            <div style={{marginTop:'15px'}} className='inputs'>
-                                <div className='head-text2'>Product</div>
-                                <Select
-                                    labelId="demo-select-small"
-                                    id="demo-select-small"
-                                    value={val}
-                                    sx={{
-                                        width:'100%',
-                                        height: '35px', 
-                                        marginTop:'5px', 
-                                        background:'#EEF2F1', 
-                                        border:'1px solid #777777',
-                                        fontSize:'12px',
-                                    }}
-                                >
-                                    <MenuItem onClick={(e) => {menuSelection(e)}} style={menu} value={1}>PMS</MenuItem>
-                                    <MenuItem onClick={(e) => {menuSelection(e)}} style={menu} value={2}>AGO</MenuItem>
-                                    <MenuItem onClick={(e) => {menuSelection(e)}} style={menu} value={3}>DPK</MenuItem>
-                                </Select>
                             </div>
 
                             <div className='inputs'>
@@ -148,6 +211,7 @@ const IncomingOrderModal = (props) => {
                                         fontSize:'12px',
                                     }} placeholder="" 
                                     type='number'
+                                    value={quantity}
                                     onChange={e => setQuantity(e.target.value)}
                                 />
                             </div>
@@ -164,6 +228,7 @@ const IncomingOrderModal = (props) => {
                                         fontSize:'12px',
                                     }} placeholder="" 
                                     type='date'
+                                    value={dateCreated}
                                     onChange={e => setDateCreated(e.target.value)}
                                 />
                             </div>
@@ -180,6 +245,7 @@ const IncomingOrderModal = (props) => {
                                         fontSize:'12px',
                                     }} placeholder="" 
                                     type='text'
+                                    value={productOrderID}
                                     onChange={e => setProductOrderID(e.target.value)}
                                 />
                             </div>
@@ -196,6 +262,7 @@ const IncomingOrderModal = (props) => {
                                         fontSize:'12px',
                                     }} placeholder="" 
                                     type='text'
+                                    value={truckNo}
                                     onChange={e => setTruckNo(e.target.value)}
                                 />
                             </div>
@@ -212,12 +279,13 @@ const IncomingOrderModal = (props) => {
                                         fontSize:'12px',
                                     }} placeholder="" 
                                     type='text'
+                                    value={wayBillNo}
                                     onChange={e => setWayBillNo(e.target.value)}
                                 />
                             </div>
                        </div>
 
-                        <div style={{marginTop:'10px'}} className='butt'>
+                        <div style={{marginTop:'10px', height:'30px'}} className='butt'>
                             <Button sx={{
                                 width:'100px', 
                                 height:'30px',  
@@ -261,8 +329,19 @@ const inner = {
 
 
 const menu = {
-    fontSize:'14px',
+    fontSize:'12px',
     fontFamily:'Nunito-Regular'
+}
+
+const selectStyle2 = {
+    width:'100%', 
+    height:'35px', 
+    borderRadius:'5px',
+    background: '#F2F1F1B2',
+    color:'#000',
+    fontFamily: 'Nunito-Regular',
+    fontSize:'14px',
+    outline:'none'
 }
 
 export default IncomingOrderModal;

@@ -54,7 +54,7 @@ const ProductOrders = () => {
             });
         });
 
-    }, [dispatch, user.organisationID, skip, limit]);
+    }, [dispatch, user.organisationID, user._id, user.userType, skip, limit]);
 
     useEffect(()=>{
         getAllProductData();

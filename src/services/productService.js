@@ -23,6 +23,17 @@ const ProductService = {
             throw err
         });
     },
+
+    getAllProductOrder2: (data) => {
+        return APIs.post('/product-order/allRecords2', data)
+        .then(({data}) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        });
+    },
 }
 
 export default ProductService;
