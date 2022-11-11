@@ -122,7 +122,7 @@ const RecordSales = (props) => {
 
     return(
         <div data-aos="zoom-in-down" className='salesContainer'>
-            <div className='inner'>
+            <div style={{flexDirection:'column', alignItems:'center'}} className='inner'>
                 <Select
                     labelId="demo-select-small"
                     id="demo-select-small"
@@ -139,7 +139,7 @@ const RecordSales = (props) => {
                     }
                 </Select>
                 <div style={{width:'100%'}} className='leftContainer'>
-                    <div className='tabContainer'>
+                    <div style={{flexDirection:'row', justifyContent:'center'}} className='tabContainer'>
                         <Button sx={{
                             height:'35px',  
                             background: '#06805B',

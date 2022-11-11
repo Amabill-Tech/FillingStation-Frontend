@@ -69,10 +69,10 @@ const IncomingOrderModal = (props) => {
     }
 
     const menuSelection = (e, item) => {
-        if(Number(e.target.dataset.value) === 1) setProduct('PMS');
-        if(Number(e.target.dataset.value) === 2) setProduct('AGO');
-        if(Number(e.target.dataset.value) === 3) setProduct('DPK');
-        setVal(e.target.dataset.value);
+        if(e === 2) setProduct('PMS');
+        if(e === 3) setProduct('AGO');
+        if(e === 4) setProduct('DPK');
+        setVal(e);
         
         const payload = {
             productType: item,
@@ -139,9 +139,9 @@ const IncomingOrderModal = (props) => {
                                     }}
                                 >
                                     <MenuItem style={menu} value={1}>Select Product</MenuItem>
-                                    <MenuItem onClick={(e) => {menuSelection(e, "PMS")}} style={menu} value={2}>PMS</MenuItem>
-                                    <MenuItem onClick={(e) => {menuSelection(e, "AGO")}} style={menu} value={3}>AGO</MenuItem>
-                                    <MenuItem onClick={(e) => {menuSelection(e, "DPK")}} style={menu} value={4}>DPK</MenuItem>
+                                    <MenuItem onClick={() => {menuSelection(2, "PMS")}} style={menu} value={2}>PMS</MenuItem>
+                                    <MenuItem onClick={() => {menuSelection(3, "AGO")}} style={menu} value={3}>AGO</MenuItem>
+                                    <MenuItem onClick={() => {menuSelection(4, "DPK")}} style={menu} value={4}>DPK</MenuItem>
                                 </Select>
                             </div>
 

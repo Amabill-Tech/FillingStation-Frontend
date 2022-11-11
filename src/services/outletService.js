@@ -82,6 +82,17 @@ const OutletService = {
         })
     },
 
+    getAllOutletTanks2: (data) => {
+        return APIs.post('/station/tank/allRecords2', data)
+        .then(({ data }) => {
+            return data.stations;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        })
+    },
+
     activateTanks: (data) => {
         return APIs.post('/station/tank/activateTank', data)
         .then(({ data }) => {

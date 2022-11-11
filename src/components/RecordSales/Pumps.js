@@ -38,10 +38,10 @@ const Pumps = (props) => {
     }
 
     return(
-        <div className='pumpContainer'>
+        <div style={{flexDirection:'column', alignItems:'center'}} className='pumpContainer'>
             {open && <PumpUpdate open={open} close={setOpen} currentStation={oneOutletStation} current={currentPump} refresh={props.refresh} />}
             <div>Select Pump used for the day</div>
-            <div className='pump-list'>
+            <div style={{flexDirection:'row', justifyContent:'center'}} className='pump-list'>
                 {
                     pumpList.length === 0?
                     <div style={{...box, width:'170px'}}>
@@ -67,7 +67,7 @@ const Pumps = (props) => {
                 }
             </div>
 
-            <div className='pumping'>
+            <div style={{width:'100%', marginTop:'20px', justifyContent:'center'}} className='pumping'>
                 {
                     pumpList.length === 0?
                     <div>Please click to select a pump</div>:
@@ -100,6 +100,22 @@ const Pumps = (props) => {
                         )
                     })
                 }
+            </div>
+
+            <div style={{marginBottom:'0px', width:'100%', justifyContent:'flex-end', marginRight:'12%'}} className='submit'>
+                <Button sx={{
+                    width:'140px', 
+                    height:'30px',  
+                    background: '#427BBE',
+                    borderRadius: '3px',
+                    fontSize:'11px',
+                    '&:hover': {
+                        backgroundColor: '#427BBE'
+                    }
+                    }}  
+                    // onClick={addSupplyToList}
+                    variant="contained"> Record Update
+                </Button>
             </div>
         </div>
     )
