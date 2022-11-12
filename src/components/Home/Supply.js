@@ -242,10 +242,12 @@ const Supply = () => {
                         <div className='column'>Date</div>
                         <div className='column'>Transporter</div>
                         <div className='column'>Truck No</div>
-                        <div className='column'>Waybill No (Amount)</div>
+                        <div className='column'>Waybill No</div>
+                        <div className='column'>Station</div>
                         <div className='column'>Product Supply</div>
                         <div className='column'>Quantity</div>
-                        <div className='column'>Shortage/Overage</div>
+                        <div className='column'>Shortage</div>
+                        <div className='column'>Overage</div>
                     </div>
 
                     <div className='row-container'>
@@ -260,9 +262,11 @@ const Supply = () => {
                                         <div className='column'>{data.transportationName}</div>
                                         <div className='column'>{data.truckNo}</div>
                                         <div className='column'>{data.wayBillNo}</div>
+                                        <div className='column'>{data.outletName}</div>
                                         <div className='column'>{data.productType}</div>
                                         <div className='column'>{data.quantity}</div>
                                         <div className='column'>{data.shortage}</div>
+                                        <div className='column'>{data.overage}</div>
                                     </div>
                                 )
                             })

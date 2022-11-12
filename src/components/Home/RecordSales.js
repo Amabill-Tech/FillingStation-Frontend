@@ -16,6 +16,8 @@ import LPOService from '../../services/lpo';
 import { createLPO } from '../../store/actions/lpo';
 import { useEffect } from 'react';
 import Supply from '../RecordSales/Supply';
+import SupplyService from '../../services/supplyService';
+import { pendingSupply } from '../../store/actions/supply';
 
 const RecordSales = (props) => {
     const dispatch = useDispatch();
@@ -63,6 +65,10 @@ const RecordSales = (props) => {
             LPOService.getAllLPO(payload).then((data) => {
                 dispatch(createLPO(data.lpo.lpo));
             });
+
+            SupplyService.getAllPendingSupply(payload).then(data => {
+                dispatch(pendingSupply(data.supply));
+            });
         })
     }, [dispatch, user._id, user.userType, user.organisationID]);
 
@@ -90,6 +96,10 @@ const RecordSales = (props) => {
 
             LPOService.getAllLPO(payload).then((data) => {
                 dispatch(createLPO(data.lpo.lpo));
+            });
+
+            SupplyService.getAllPendingSupply(payload).then(data => {
+                dispatch(pendingSupply(data.supply));
             });
         })
     }

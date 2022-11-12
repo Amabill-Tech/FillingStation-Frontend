@@ -1,11 +1,13 @@
 import { 
     SUPPLY ,
-    SEARCH_SUPPLY
+    SEARCH_SUPPLY,
+    PENDING_SUPPLY,
 } from '../types'
 
 const initialState = {
     supply: [],
-    searchData: []
+    searchData: [],
+    pendingSupply: [],
 }
 
 const supplyReducer = (state = initialState, action) => {
@@ -29,6 +31,13 @@ const supplyReducer = (state = initialState, action) => {
             return {
                 ...state,
                 supply: search,
+            }
+        }
+
+        case PENDING_SUPPLY: {
+            return {
+                ...state,
+                pendingSupply: payload
             }
         }
 

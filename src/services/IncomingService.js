@@ -13,6 +13,17 @@ const IncomingService = {
         });
     },
 
+    updateIncoming: (data) => {
+        return APIs.post('/incoming-order/update', data)
+        .then(({data}) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        });
+    },
+
     getAllIncoming: (data) => {
         return APIs.post('/incoming-order/allRecords', data)
         .then(({data}) => {
@@ -26,6 +37,17 @@ const IncomingService = {
 
     getAllIncoming2: (data) => {
         return APIs.post('/incoming-order/allRecords2', data)
+        .then(({data}) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        });
+    },
+
+    getOneIncoming: (data) => {
+        return APIs.post('/incoming-order/oneIncoming', data)
         .then(({data}) => {
             return data;
         })

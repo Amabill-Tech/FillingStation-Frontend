@@ -1,5 +1,6 @@
-import React, {  useState } from 'react';
+import React, {  useCallback, useEffect, useState } from 'react';
 import '../../styles/expenses.scss';
+import hr8 from '../../assets/hr8.png';
 import Button from '@mui/material/Button';
 import { MenuItem, Modal, Select } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,8 +11,9 @@ import IncomingService from '../../services/IncomingService';
 import { createIncomingOrder } from '../../store/actions/incomingOrder';
 import OutletService from '../../services/outletService';
 import { getAllOutletTanks } from '../../store/actions/outlet';
+import { pendingSupply } from '../../store/actions/supply';
 
-const Supply = () => {
+const Supply = (props) => {
 
     const [open, setOpen] = useState(false);
     const [defaultState1, setDefaultState1] = useState(0);
@@ -20,9 +22,11 @@ const Supply = () => {
     const oneOutletStation = useSelector(state => state.outletReducer.oneStation);
     const incomingOrder = useSelector(state => state.incomingOrderReducer.incomingOrder);
     const tankList = useSelector(state => state.outletReducer.tankList);
+    const pendingSupplies = useSelector(state => state.supplyReducer.pendingSupply);
 
     const [defaults, setDefault] = useState(10);
     const [loading, setLoading] = useState(false);
+    const [loading2, setLoading2] = useState(false);
     const [productType, setProductType] = useState('PMS');
     const [incoming, setIncoming] = useState({});
     const [tanks, setTanks] = useState({});
@@ -54,54 +58,78 @@ const Supply = () => {
     }
 
     const submitSupply = () => {
-        if(transportationName === "") return swal("Warning!", "Transportation name field cannot be empty", "info");
-        if(truckNo === "") return swal("Warning!", "Truck no field cannot be empty", "info");
-        if(wayBillNo === "") return swal("Warning!", "Waybill no field cannot be empty", "info");
-        if(quantity === "") return swal("Warning!", "Quantity field cannot be empty", "info");
-        if(date === "") return swal("Warning!", "Date field cannot be empty", "info");
+        swal({
+            title: "Alert!",
+            text: "Are you sure you want to submit supply?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+                if(pendingSupplies.length === 0){
+                    return swal("Warning!", "Supply list is empty!", "info");
+                }
+                setLoading2(true);
 
-        setLoading(true);
+                const payload = {
+                    pendingSupplies: pendingSupplies,
+                }
 
-        const payload = {
-            transportationName: transportationName,
-            wayBillNo: wayBillNo,
-            truckNo: truckNo,
-            quantity: quantity,
-            productType: productType,
-            shortage: shortage,
-            date: date,
-            outletID: oneOutletStation._id,
-            organizationID: oneOutletStation.organisation
-        }
-
-        SupplyService.createSupply(payload).then((data) => { 
-            swal("Success", "Supply created successfully!", "success");
-        }).then(()=>{
-            setLoading(false);
+                SupplyService.createSupply(payload).then(data => {
+                    return data;
+                }).then(()=>{
+                    props.refresh();
+                    setLoading2(false);
+                });
+            }
         })
     }
 
     const changeMenu1 = (index, item) => {
         setDefaultState1(index);
         setIncoming(item);
-        console.log(item, 'selected incoming')
+
+        if('productType' in tanks){
+            let room = Number(tanks.tankCapacity) - Number(tanks.currentLevel);
+            if(room === 0){
+                swal("Warning!", "This tank is full, please select another tank", "info");
+            }else if(incoming.quantity <= room){
+                setQuantity(incoming.quantity);
+                setShortage(Number(room) - Number(incoming.quantity));
+                setOverage("None");
+                setTruckNo(item.truckNo);
+                setWayBillNo(item.wayBillNo);
+            }else{
+                setQuantity(Number(room));
+                setShortage("None");
+                setOverage(Number(incoming.quantity) - Number(room));
+                setTruckNo(item.truckNo);
+                setWayBillNo(item.wayBillNo);
+            }
+        }
     }
 
     const changeMenu2 = (index, item) => {
         if('product' in incoming){
             setDefaultState2(index);
             setTanks(item);
-            console.log(item, 'selected tank')
 
             let room = Number(item.tankCapacity) - Number(item.currentLevel);
-            if(incoming.quantity <= room){
+            if(room === 0){
+                swal("Warning!", "This tank is full, please select another tank", "info");
+            }else if(incoming.quantity <= room){
                 setQuantity(incoming.quantity);
                 setShortage(Number(room) - Number(incoming.quantity));
-                setOverage('None');
+                setOverage("None");
+                setTruckNo(incoming.truckNo);
+                setWayBillNo(incoming.wayBillNo);
             }else{
                 setQuantity(Number(room));
                 setShortage("None");
                 setOverage(Number(incoming.quantity) - Number(room));
+                setTruckNo(incoming.truckNo);
+                setWayBillNo(incoming.wayBillNo);
             }
         }else{
             swal("Warning!", "Please select an incoming order first", "info");
@@ -109,13 +137,125 @@ const Supply = () => {
     }
 
     const addSupplyToList = () => {
-        const payload = {
-            quantity: quantity,
-            shortage: shortage,
-            overage: overage
+
+        if(transportationName === "") return swal("Warning!", "Transportation name field cannot be empty", "info");
+        if(truckNo === "") return swal("Warning!", "Truck no field cannot be empty", "info");
+        if(wayBillNo === "") return swal("Warning!", "Waybill no field cannot be empty", "info");
+        if(quantity === "") return swal("Warning!", "Quantity field cannot be empty", "info");
+        if(date === "") return swal("Warning!", "Date field cannot be empty", "info");
+        setLoading(true);
+
+        const incomingPayload = {
+            id: incoming._id,
+            currentLevel: shortage === "None"? overage: "0",
         }
 
-        console.log(payload);
+        const tankPayload = {
+            id: tanks._id,
+            currentLevel: Number(tanks.currentLevel) + Number(quantity),
+            quantityAdded: quantity,
+            previousLevel: Number(tanks.currentLevel),
+        }
+
+        const pendingPayload = {
+            'transportationName': transportationName,
+            'wayBillNo': wayBillNo,
+            'truckNo': truckNo,
+            'quantity': quantity,
+            'outletName': oneOutletStation.outletName,
+            'productType': productType,
+            'shortage': overage === "None"? (Number(tanks.tankCapacity) - Number(tanks.currentLevel) - Number(quantity)) : "None",
+            'overage': shortage === "None"? overage: "None",
+            'date': date,
+            'incomingID': incoming._id,
+            'tankID': tanks._id,
+            'outletID': oneOutletStation._id,
+            'organizationID': oneOutletStation.organisation,
+        }
+
+        IncomingService.updateIncoming(incomingPayload).then(data => {
+            console.log('incoming update', data)
+        }).then(() => {
+            OutletService.updateTank(tankPayload).then(data =>{
+                console.log('tank update', data);
+            }).then(()=>{
+                SupplyService.pendingSupply(pendingPayload).then(data => {
+                    console.log('pending supply', data)
+                }).then(()=>{
+                    props.refresh();
+                }).then(()=>{
+                    setLoading(false);
+                });
+            });
+        })
+    }
+
+    const getOneIncomingData = async(data)=>{
+        const payload = {
+            id: data.incomingID
+        }
+        let result = await IncomingService.getOneIncoming(payload);
+        return result;
+    }
+
+    const getOneTankData = async(data)=>{
+        const payload = {
+            id: data.tankID
+        }
+        let result = await OutletService.getOneTank(payload);
+        return result;
+    }
+
+    const removePendingSupply = (item) => {
+        Promise.all([getOneIncomingData(item), getOneTankData(item)]).then(data => {
+            return data;
+        }).then(data => {
+            swal({
+                title: "Alert!",
+                text: "Are you sure you want to cancel this supply?",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDelete) => {
+                if (willDelete) {
+
+                    // const addedProduct = item.shortage === "None"? (Number(item.quantity) - Number(item.overage)) : Number(data[0].quantity);
+
+                    const incomingPayload = {
+                        id: data[0].stations._id,
+                        currentLevel: Number(data[0].stations.currentLevel) + Number(item.quantity),
+                    }
+            
+                    const tankPayload = {
+                        id: data[1].stations._id,
+                        currentLevel: Number(data[1].stations.currentLevel) - Number(item.quantity),
+                        quantityAdded: "0",
+                        previousLevel: "0",
+                    }
+
+                    const pendingPayload = {
+                        id: item._id
+                    }
+
+                    IncomingService.updateIncoming(incomingPayload).then(data => {
+                        console.log('incoming update', data)
+                    }).then(() => {
+                        OutletService.updateTank(tankPayload).then(data =>{
+                            console.log('tank update', data);
+                        }).then(()=>{
+                            SupplyService.deletePendingSupply(pendingPayload).then(data => {
+                                console.log('pending supply', data)
+                            }).then(()=>{
+                                props.refresh();
+                            }).then(()=>{
+                                setLoading(false);
+                            });
+                        });
+                    })
+                }
+            });
+        });
     }
 
     return(
@@ -125,18 +265,18 @@ const Supply = () => {
                 <div className='twoInputs'>
                     <div className='inputs2'>
                         <div className='text'>Transporter</div>
-                        <input onChange={e => setTransportationName(e.target.value)} className='date' type={'text'}  />
+                        <input value={transportationName} onChange={e => setTransportationName(e.target.value)} className='date' type={'text'}  />
                     </div>
 
                     <div className='inputs2'>
                         <div className='text'>Truck No</div>
-                        <input onChange={e => setTruckNo(e.target.value)} className='date' type={'text'}  />
+                        <input disabled={true} value={truckNo} onChange={e => setTruckNo(e.target.value)} className='date' type={'text'}  />
                     </div>
                 </div>
 
                 <div style={{marginTop: '20px'}} className='inputs'>
                     <div className='text'>Waybill No</div>
-                    <input onChange={e => setWayBillNo(e.target.value)} className='date' type={'text'}  />
+                    <input disabled={true} value={wayBillNo} onChange={e => setWayBillNo(e.target.value)} className='date' type={'text'}  />
                 </div>
 
                 <div style={{marginTop:'20px'}} className='inputs'>
@@ -193,7 +333,7 @@ const Supply = () => {
                         {
                             tankList.map((item, index) => {
                                 return(
-                                    <MenuItem key={index} style={menu} onClick={()=>{changeMenu2(index + 1, item)}} value={index + 1}>{item.tankName}</MenuItem>
+                                    item.tankCapacity === item.currentLevel || <MenuItem key={index} style={menu} onClick={()=>{changeMenu2(index + 1, item)}} value={index + 1}>{item.tankName}</MenuItem>
                                 )
                             })  
                         }
@@ -203,7 +343,7 @@ const Supply = () => {
                 <div className='twoInputs'>
                     <div className='inputs2'>
                         <div className='text'>Quantity Loaded</div>
-                        <input value={quantity} onChange={e => setQuantity(e.target.value)} className='date' type={'text'}  />
+                        <input disabled={true} value={quantity} onChange={e => setQuantity(e.target.value)} className='date' type={'text'}  />
                     </div>
 
                     <div className='inputs2'>
@@ -215,12 +355,12 @@ const Supply = () => {
                 <div className='twoInputs'>
                     <div className='inputs2'>
                         <div className='text'>Shortage</div>
-                        <input value={shortage} onChange={e => setShortage(e.target.value)} className='date' type={'text'}  />
+                        <input disabled={true} value={shortage} onChange={e => setShortage(e.target.value)} className='date' type={'text'}  />
                     </div>
 
                     <div className='inputs2'>
                         <div className='text'>Overage</div>
-                        <input value={overage} onChange={e => setOverage(e.target.value)} className='date' type={'text'}  />
+                        <input disabled={true} value={overage} onChange={e => setOverage(e.target.value)} className='date' type={'text'}  />
                     </div>
                 </div>
 
@@ -251,29 +391,36 @@ const Supply = () => {
                     <div className='headText'>Action</div>
                 </div>
 
-                <div className='rows'>
-                    <div className='headText'>S/N</div>
-                    <div className='headText'>Transporter</div>
-                    <div className='headText'>Product</div>
-                    <div className='headText'>Quality</div>
-                    <div className='headText'>Action</div>
-                </div>
-
-                <div className='rows'>
-                    <div className='headText'>S/N</div>
-                    <div className='headText'>Transporter</div>
-                    <div className='headText'>Product</div>
-                    <div className='headText'>Quality</div>
-                    <div className='headText'>Action</div>
-                </div>
-
-                <div className='rows'>
-                    <div className='headText'>S/N</div>
-                    <div className='headText'>Transporter</div>
-                    <div className='headText'>Product</div>
-                    <div className='headText'>Quality</div>
-                    <div className='headText'>Action</div>
-                </div>
+                {
+                    pendingSupplies.length === 0?
+                    loading? 
+                    <div style={{width:'100%', height:'30px', display:'flex', justifyContent:'center'}}>
+                        <ThreeDots 
+                            height="60" 
+                            width="50" 
+                            radius="9"
+                            color="#076146" 
+                            ariaLabel="three-dots-loading"
+                            wrapperStyle={{position:'absolute', zIndex:'30'}}
+                            wrapperClassName=""
+                            visible={loading}
+                        />
+                    </div>:
+                    <div style={{fontSize:'14px', fontFamily:'Nunito-Regular', marginTop:'20px', color:'green'}}>No pending supply record</div>:
+                    pendingSupplies.map((data, index) => {
+                        return(
+                            <div className='rows'>
+                                <div className='headText'>{index + 1}</div>
+                                <div className='headText'>{data.transportationName}</div>
+                                <div className='headText'>{data.productType}</div>
+                                <div className='headText'>{data.quantity}</div>
+                                <div className='headText'>
+                                    <img onClick={()=>{removePendingSupply(data)}} style={{width:'22px', height:'22px'}} src={hr8} alt="icon" />
+                                </div>
+                            </div>
+                        )
+                    })
+                }
 
                 <div style={{marginBottom:'0px', width:'100%', height:'30px', justifyContent:'space-between'}} className='submit'>
                     <div>
@@ -285,7 +432,7 @@ const Supply = () => {
                             ariaLabel="three-dots-loading"
                             wrapperStyle={{position:'absolute', zIndex:'30'}}
                             wrapperClassName=""
-                            visible={false}
+                            visible={loading2}
                         />
                     </div>
                     <Button sx={{

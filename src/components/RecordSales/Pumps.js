@@ -73,11 +73,10 @@ const Pumps = (props) => {
                     <div>Please click to select a pump</div>:
                     pumpList.map((item, index) => {
                         return(
-                            <div key={index} className='item'>
+                            <div style={{height:'300px'}} key={index} className='item'>
                                 <img style={{width:'55px', height:'60px', marginTop:'10px'}} src={pump1}  alt="icon"/>
                                 <div className='pop'>{item.pumpName}</div>
                                 <div style={{marginTop:'10px'}}  className='label'>Date: {item.updatedAt.split('T')[0]}</div>
-                                <div style={{marginTop:'0px'}} className='label'>Totalizer Reading (Litres)</div>
                                 {index === selected?
                                     <Button sx={{
                                         width:'160px', 
@@ -94,7 +93,13 @@ const Pumps = (props) => {
                                         onClick={()=>{openSalesModal(item)}}
                                         variant="contained"> Record Sales
                                     </Button>:
-                                    <input disabled={true} defaultValue={item.totalizerReading} style={imps} type="text" />
+                                    <div>
+                                        <div style={{marginTop:'0px'}} className='label'>Totalizer Reading (Litres)</div>
+                                        <input disabled={true} defaultValue={item.totalizerReading} style={imps} type="text" />
+
+                                        <div style={{marginTop:'0px'}} className='label'>Totalizer Reading (Litres)</div>
+                                        <input disabled={true} defaultValue={item.totalizerReading} style={imps} type="text" />
+                                    </div>
                                 }
                             </div>
                         )
