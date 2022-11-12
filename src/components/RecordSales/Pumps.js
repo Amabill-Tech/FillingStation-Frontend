@@ -5,7 +5,7 @@ import cross from '../../assets/cross.png';
 import { Button } from '@mui/material';
 import OutletService from '../../services/outletService';
 import { useDispatch, useSelector } from 'react-redux';
-import { getOneTank } from '../../store/actions/outlet';
+import { deselectPumps, getOneTank, selectPumps } from '../../store/actions/outlet';
 import PumpUpdate from '../Modals/PumpUpdate';
 
 const Pumps = (props) => {
@@ -16,6 +16,8 @@ const Pumps = (props) => {
     const pumpList = useSelector(state => state.outletReducer.pumpList);
     const [open, setOpen] = useState(false);
     const oneOutletStation = useSelector(state => state.outletReducer.oneStation);
+    const [activePumps, setActivePumps] = useState([]);
+    const [closingMeter, setclosingMeter] = useState("");
 
     const openSalesModal = (item) => {
         setOpen(true);
@@ -30,11 +32,23 @@ const Pumps = (props) => {
         })
     }
 
+    const addSupplyToList = () => {
+        
+    }
+
+    console.log('pumps 00', pumpList)
+
     const pumpItem = (e, index, item) => {
         e.preventDefault();
 
         setSelected(index);
         setCurrentPump(item);
+
+        dispatch(selectPumps(item));
+    }
+
+    const deselect = (data) => {
+        dispatch(deselectPumps(data));
     }
 
     return(
@@ -51,14 +65,16 @@ const Pumps = (props) => {
                     pumpList.map((data, index) => {
                         return(
                             <div key={index} onClick={e => pumpItem(e, index, data)}>
-                                {index === selected?
+                                {data.identity === index &&
                                     <div className='box'>
                                         <p style={{marginRight:'10px'}}>{data.pumpName}</p>
-                                        <img style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
-                                    </div>:
+                                        <img onClick={()=>{deselect(data)}} style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
+                                    </div>
+                                }
+                                {data.identity !== index &&
                                     <div className='box2'>
                                         <p style={{marginRight:'10px'}}>{data.pumpName}</p>
-                                        <img style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
+                                        <img onClick={()=>{deselect(data)}} style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
                                     </div>
                                 }
                             </div>
@@ -77,30 +93,13 @@ const Pumps = (props) => {
                                 <img style={{width:'55px', height:'60px', marginTop:'10px'}} src={pump1}  alt="icon"/>
                                 <div className='pop'>{item.pumpName}</div>
                                 <div style={{marginTop:'10px'}}  className='label'>Date: {item.updatedAt.split('T')[0]}</div>
-                                {index === selected?
-                                    <Button sx={{
-                                        width:'160px', 
-                                        height:'30px',  
-                                        background: '#06805B',
-                                        borderRadius: '3px',
-                                        fontSize:'12px',
-                                        marginTop:'10px',
-                                        textTransform: 'capitalize',
-                                        '&:hover': {
-                                            backgroundColor: '#06805B'
-                                        }
-                                        }}  
-                                        onClick={()=>{openSalesModal(item)}}
-                                        variant="contained"> Record Sales
-                                    </Button>:
-                                    <div>
-                                        <div style={{marginTop:'0px'}} className='label'>Totalizer Reading (Litres)</div>
-                                        <input disabled={true} defaultValue={item.totalizerReading} style={imps} type="text" />
+                                <div>
+                                    <div style={{marginTop:'10px'}} className='label'>Opening meter (Litres)</div>
+                                    <input disabled={true} defaultValue={item.totalizerReading} style={imps} type="text" />
 
-                                        <div style={{marginTop:'0px'}} className='label'>Totalizer Reading (Litres)</div>
-                                        <input disabled={true} defaultValue={item.totalizerReading} style={imps} type="text" />
-                                    </div>
-                                }
+                                    <div style={{marginTop:'10px'}} className='label'>Closing meter (Litres)</div>
+                                    <input onChange={e => setclosingMeter(e.target.value)} defaultValue={item.totalizerReading} style={imps} type="text" />
+                                </div>
                             </div>
                         )
                     })
@@ -118,7 +117,7 @@ const Pumps = (props) => {
                         backgroundColor: '#427BBE'
                     }
                     }}  
-                    // onClick={addSupplyToList}
+                    onClick={addSupplyToList}
                     variant="contained"> Record Update
                 </Button>
             </div>
@@ -129,7 +128,6 @@ const Pumps = (props) => {
 const imps = {
     height:'30px', 
     width:'160px', 
-    marginTop:'10px',
     background:'#D7D7D799',
     outline:'none',
     border:'1px solid #000',

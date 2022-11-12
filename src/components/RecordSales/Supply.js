@@ -1,8 +1,8 @@
-import React, {  useCallback, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import '../../styles/expenses.scss';
 import hr8 from '../../assets/hr8.png';
 import Button from '@mui/material/Button';
-import { MenuItem, Modal, Select } from '@mui/material';
+import { MenuItem, Select } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import SupplyService from '../../services/supplyService';
 import swal from 'sweetalert';
@@ -11,11 +11,9 @@ import IncomingService from '../../services/IncomingService';
 import { createIncomingOrder } from '../../store/actions/incomingOrder';
 import OutletService from '../../services/outletService';
 import { getAllOutletTanks } from '../../store/actions/outlet';
-import { pendingSupply } from '../../store/actions/supply';
 
 const Supply = (props) => {
 
-    const [open, setOpen] = useState(false);
     const [defaultState1, setDefaultState1] = useState(0);
     const [defaultState2, setDefaultState2] = useState(0);
     const dispatch = useDispatch();

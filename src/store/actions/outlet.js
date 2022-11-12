@@ -12,7 +12,9 @@ import {
     SEARCH_USERS,
     ONE_TANK,
     ONE_STATION,
-    SEARCH_STATION
+    SEARCH_STATION,
+    SELECTED_PUMPS,
+    DESELECTED_PUMPS
 } from '../types';
 
 export const createFillingStation = (params) => dispatch => {
@@ -55,6 +57,14 @@ export const createPumps = (params) => dispatch => {
 
 export const getAllPumps = (params) => dispatch => {
     dispatch({ type: PUMP_LIST, payload: params});
+}
+
+export const selectPumps = (params) => dispatch => {
+    dispatch({ type: SELECTED_PUMPS, payload: params});
+}
+
+export const deselectPumps = (params) => dispatch => {
+    dispatch({ type: DESELECTED_PUMPS, payload: params});
 }
 
 export const openModal = (param) => dispatch => {

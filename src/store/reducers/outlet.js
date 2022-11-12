@@ -11,7 +11,9 @@ import {
     SEARCH_USERS,
     ONE_TANK,
     ONE_STATION,
-    SEARCH_STATION
+    SEARCH_STATION,
+    SELECTED_PUMPS,
+    DESELECTED_PUMPS
 } from '../types'
 
 const initialState = {
@@ -93,9 +95,15 @@ const outletReducer = (state = initialState, action) => {
         }
 
         case PUMP_LIST: {
+            const load = payload.map(data => {
+                let craze = {...data};
+                craze['identity'] = null;
+                return craze;
+            })
+            
             return {
                 ...state,
-                pumpList: payload
+                pumpList: load
             }
         }
 
@@ -130,6 +138,32 @@ const outletReducer = (state = initialState, action) => {
             return {
                 ...state,
                 tankList: search,
+            }
+        }
+
+        case SELECTED_PUMPS: {
+            const list = [...state.pumpList]
+            const item = {...payload};
+            const index = list.indexOf(payload);
+            item['identity'] = index;
+            list[index] = item;
+
+            return {
+                ...state,
+                pumpList: list
+            }
+        }
+
+        case DESELECTED_PUMPS: {
+            const list = [...state.pumpList]
+            const item = {...payload};
+            const index = list.indexOf(payload);
+            item['identity'] = null;
+            list[index] = item;
+
+            return {
+                ...state,
+                pumpList: list,
             }
         }
 

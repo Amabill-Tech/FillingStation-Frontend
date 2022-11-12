@@ -174,7 +174,7 @@ const Supply = () => {
                         </div>
                     </div>
                     <div style={{width:'130px'}} className='butt'>
-                        <Button sx={{
+                        {/* <Button sx={{
                             width:'100%', 
                             height:'30px',  
                             background: '#427BBE',
@@ -185,8 +185,8 @@ const Supply = () => {
                             }
                             }}  
                             onClick={openPaymentModal}
-                            variant="contained"> Add Payment
-                        </Button>
+                            variant="contained"> Add Supply
+                        </Button> */}
                     </div>
                 </div>
 
