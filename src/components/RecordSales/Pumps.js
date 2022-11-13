@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import '../../styles/pump.scss';
 import pump1 from '../../assets/pump1.png';
 import cross from '../../assets/cross.png';
 import { Button } from '@mui/material';
 import OutletService from '../../services/outletService';
 import { useDispatch, useSelector } from 'react-redux';
-import { deselectPumps, getOneTank, selectPumps, setTotalizerReading } from '../../store/actions/outlet';
+import { deselectPumps, getAllPumps, getOneTank, selectPumps, setTotalizerReading } from '../../store/actions/outlet';
 import PumpUpdate from '../Modals/PumpUpdate';
 import swal from 'sweetalert';
+import { ThreeDots } from 'react-loader-spinner';
+import { refresh } from 'aos';
 
 const Pumps = (props) => {
 
@@ -15,36 +17,92 @@ const Pumps = (props) => {
     const [selected, setSelected] = useState(null);
     const dispatch = useDispatch();
     const pumpList = useSelector(state => state.outletReducer.pumpList);
+    const tankList = useSelector(state => state.outletReducer.tankList);
     const [open, setOpen] = useState(false);
     const oneOutletStation = useSelector(state => state.outletReducer.oneStation);
     const [activePumps, setActivePumps] = useState([]);
-    const [closingMeter, setclosingMeter] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [trigger, setTrigger] = useState(false);
 
-    const openSalesModal = (item) => {
-        setOpen(true);
-        setCurrentPump(item);
-
-        const payload = {
-            id: item.hostTank
-        }
-
-        OutletService.getOneTank(payload).then((data) => {
-            dispatch(getOneTank(data.stations));
-        })
+    const getOneOutletTank = async(payload) => {
+        let res = await OutletService.getOneTank(payload)
+        console.log('marathon')
+        return res;
     }
 
-    const addSupplyToList = () => {
+    const updateCurrentTank = async(payload) => {
+        let res = await OutletService.updateTank(payload)
+        console.log("race")
+        return res;
+    }
+
+    const updateCurrentPump = async(activePumps, i) => {
+        let res = await OutletService.pumpUpdate({id: activePumps[i]._id, totalizerReading: activePumps[i].closingMeter});
+        console.log("over to pump")
+        return res;
+    }
+
+    const addSupplyToList = async() => {
         if(activePumps.length === 0){
             return swal("Warning!", "Please select a pump to add readings!", "info");
         }
 
         for(let pump of activePumps){
+            const currentTank = tankList.filter(tank => tank._id === pump.hostTank);
+            const Tank = {...currentTank[0]};
+            const difference = Number(pump.closingMeter) - Number(pump.totalizerReading);
+            const canTankServe = Number(Tank.currentLevel) - difference;
+
             if(Number(pump.totalizerReading) > Number(pump.closingMeter)){
                 return swal("Warning!", `Closing meter less than opening for ${pump.pumpName} !`, "info");
             }
+
+            if(canTankServe < 0){
+                return swal("Warning!", `${Tank.tankName} limit cannot dispense reading from ${pump.pumpName}!`, "info");
+            }
         }
 
-        console.log(activePumps);
+        for(let i = 0, max = activePumps.length; i < max; i++){
+            const payload = {
+                id: activePumps[i].hostTank
+            }
+            setLoading(true);
+            let data = await getOneOutletTank(payload);
+            // console.log('one tank', data)
+
+            const difference = Number(activePumps[i].closingMeter) - Number(activePumps[i].totalizerReading);
+            const canTankServe = Number(data.stations.currentLevel) - difference;
+
+            if(payload.currentLevel !== null){
+                const TankPayload = {
+                    id: data.stations._id,
+                    previousLevel: data.stations.currentLevel,
+                    totalizer: activePumps[i].closingMeter,
+                    currentLevel: data.stations.currentLevel === "None"? null: String(canTankServe),
+                }
+    
+                let updateOneTank = await updateCurrentTank(TankPayload);
+                // console.log('taks update', updateOneTank)
+    
+                let updatePumpTotalizer = await updateCurrentPump(activePumps, i);
+                // console.log('pumps update', updatePumpTotalizer)
+
+                if(updateOneTank.code === 200 && updatePumpTotalizer.code === 200){
+                    setLoading(false);
+                }else{
+                    return;
+                }
+            }else{
+                swal("Warning!", "This is an empty tank!", "info");
+            }
+        }
+
+        OutletService.getAllStationPumps({outletID: oneOutletStation._id, organisationID: oneOutletStation.organisation}).then(data => {
+            dispatch(getAllPumps(data));
+        }).then(()=>{
+            swal("Success!", "Pump update is successful!", "success");
+            setTrigger(!trigger);
+        })
     }
 
     const pumpItem = (e, index, item) => {
@@ -131,7 +189,7 @@ const Pumps = (props) => {
                                     <div style={{marginTop:'10px'}} className='label'>Closing meter (Litres)</div>
                                     <input 
                                         onChange={e => setTotalizer(e, item)} 
-                                        defaultValue={0} 
+                                        defaultValue={item.closingMeter} 
                                         style={{...imps, border: (Number(item.totalizerReading) > Number(item.closingMeter)) && item.closingMeter !== '0'? '1px solid red': '1px solid black'}} 
                                         type="text" 
                                     />
@@ -142,7 +200,21 @@ const Pumps = (props) => {
                 }
             </div>
 
-            <div style={{marginBottom:'0px', width:'100%', justifyContent:'flex-end', marginRight:'12%'}} className='submit'>
+            <div style={{marginBottom:'0px', height:'30px', width:'90%', justifyContent:'space-between', alignItems:'center'}} className='submit'>
+                <div>
+                    {loading?
+                        <ThreeDots 
+                            height="60" 
+                            width="50" 
+                            radius="9"
+                            color="#076146" 
+                            ariaLabel="three-dots-loading"
+                            wrapperStyle={{}}
+                            wrapperClassName=""
+                            visible={true}
+                        />: null
+                    }
+                </div>
                 <Button sx={{
                     width:'140px', 
                     height:'30px',  

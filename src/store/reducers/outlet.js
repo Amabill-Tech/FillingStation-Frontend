@@ -147,6 +147,7 @@ const outletReducer = (state = initialState, action) => {
             const item = {...payload};
             const index = list.indexOf(payload);
             item['identity'] = index;
+            item['closingMeter'] = "0";
             list[index] = item;
 
             return {
@@ -160,6 +161,7 @@ const outletReducer = (state = initialState, action) => {
             const item = {...payload};
             const index = list.indexOf(payload);
             item['identity'] = null;
+            item['closingMeter'] = "0";
             list[index] = item;
 
             return {
