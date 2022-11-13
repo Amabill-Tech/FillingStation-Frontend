@@ -14,7 +14,7 @@ import {
     ONE_STATION,
     SEARCH_STATION,
     SELECTED_PUMPS,
-    DESELECTED_PUMPS
+    DESELECTED_PUMPS,
 } from '../types';
 
 export const createFillingStation = (params) => dispatch => {

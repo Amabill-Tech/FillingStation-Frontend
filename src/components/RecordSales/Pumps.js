@@ -5,8 +5,9 @@ import cross from '../../assets/cross.png';
 import { Button } from '@mui/material';
 import OutletService from '../../services/outletService';
 import { useDispatch, useSelector } from 'react-redux';
-import { deselectPumps, getOneTank, selectPumps } from '../../store/actions/outlet';
+import { deselectPumps, getOneTank, selectPumps, setTotalizerReading } from '../../store/actions/outlet';
 import PumpUpdate from '../Modals/PumpUpdate';
+import swal from 'sweetalert';
 
 const Pumps = (props) => {
 
@@ -33,22 +34,52 @@ const Pumps = (props) => {
     }
 
     const addSupplyToList = () => {
-        
-    }
+        if(activePumps.length === 0){
+            return swal("Warning!", "Please select a pump to add readings!", "info");
+        }
 
-    console.log('pumps 00', pumpList)
+        for(let pump of activePumps){
+            if(Number(pump.totalizerReading) > Number(pump.closingMeter)){
+                return swal("Warning!", `Closing meter less than opening for ${pump.pumpName} !`, "info");
+            }
+        }
+
+        console.log(activePumps);
+    }
 
     const pumpItem = (e, index, item) => {
         e.preventDefault();
 
         setSelected(index);
-        setCurrentPump(item);
+
+        if(activePumps.length === 0){
+            setActivePumps(prev => [...prev, item]);
+        }else{
+            let available = activePumps.findIndex(data => data._id === item._id);
+            if(available === -1){
+                setActivePumps(prev => [...prev, item]);
+            }
+        }
 
         dispatch(selectPumps(item));
     }
 
-    const deselect = (data) => {
-        dispatch(deselectPumps(data));
+    const deselect = (item) => {
+        let available = activePumps.findIndex(data => data._id === item._id);
+        if(available !== -1){
+            let newList = activePumps.filter(data => data._id !== item._id);
+            setActivePumps(newList);
+        }
+        dispatch(deselectPumps(item));
+    }
+
+    const setTotalizer = (e, item) => {
+        const list = [...activePumps];
+        const pump = {...item};
+        const index = activePumps.findIndex(data => data._id === pump._id);
+        item['closingMeter'] = e.target.value;
+        list[index] = item;
+        setActivePumps(list);
     }
 
     return(
@@ -98,7 +129,12 @@ const Pumps = (props) => {
                                     <input disabled={true} defaultValue={item.totalizerReading} style={imps} type="text" />
 
                                     <div style={{marginTop:'10px'}} className='label'>Closing meter (Litres)</div>
-                                    <input onChange={e => setclosingMeter(e.target.value)} defaultValue={item.totalizerReading} style={imps} type="text" />
+                                    <input 
+                                        onChange={e => setTotalizer(e, item)} 
+                                        defaultValue={0} 
+                                        style={{...imps, border: (Number(item.totalizerReading) > Number(item.closingMeter)) && item.closingMeter !== '0'? '1px solid red': '1px solid black'}} 
+                                        type="text" 
+                                    />
                                 </div>
                             </div>
                         )

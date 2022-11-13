@@ -13,7 +13,7 @@ import {
     ONE_STATION,
     SEARCH_STATION,
     SELECTED_PUMPS,
-    DESELECTED_PUMPS
+    DESELECTED_PUMPS,
 } from '../types'
 
 const initialState = {
@@ -98,6 +98,7 @@ const outletReducer = (state = initialState, action) => {
             const load = payload.map(data => {
                 let craze = {...data};
                 craze['identity'] = null;
+                craze['closingMeter'] = "0";
                 return craze;
             })
             
