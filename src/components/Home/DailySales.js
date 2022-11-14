@@ -25,6 +25,8 @@ import { Route, Switch } from 'react-router-dom';
 import PMSDailySales from '../DailySales/PMSDailySales';
 import AGODailySales from '../DailySales/AGODailySales';
 import DPKDailySales from '../DailySales/DPKDailySales';
+import ComprehensiveReport from '../DailySales/ComprehensiveReport';
+import { DateRangePicker } from 'rsuite';
 
 ChartJS.register(
     CategoryScale,
@@ -191,6 +193,8 @@ const DailySales = (props) => {
             props.history.push('/home/daily-sales/ago');
         }else if(data === "dpk"){
             props.history.push('/home/daily-sales/dpk');
+        }else if(data === "report"){
+            props.history.push('/home/daily-sales/report');
         }
     }
 
@@ -199,21 +203,41 @@ const DailySales = (props) => {
             { props.activeRoute.split('/').length === 3 &&
                 <>
                     <div className='daily-left'>
-                        <Select
-                            labelId="demo-select-small"
-                            id="demo-select-small"
-                            value={defaultState}
-                            sx={selectStyle2}
-                        >
-                            <MenuItem style={menu} value={0}>Select Station</MenuItem>
-                            {
-                                allOutlets.map((item, index) => {
-                                    return(
-                                        <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.city}</MenuItem>
-                                    )
-                                })  
-                            }
-                        </Select>
+                        <div>
+                            <Select
+                                labelId="demo-select-small"
+                                id="demo-select-small"
+                                value={defaultState}
+                                sx={selectStyle2}
+                            >
+                                <MenuItem style={menu} value={0}>Select Station</MenuItem>
+                                {
+                                    allOutlets.map((item, index) => {
+                                        return(
+                                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.city}</MenuItem>
+                                        )
+                                    })  
+                                }
+                            </Select>
+                            <Button 
+                                variant="contained" 
+                                sx={{
+                                    width:'210px',
+                                    height:'35px',
+                                    background:'#06805B',
+                                    fontSize:'13px',
+                                    marginLeft:'10px',
+                                    borderRadius:'5px',
+                                    textTransform:'capitalize',
+                                    '&:hover': {
+                                        backgroundColor: '#06805B'
+                                    }
+                                }}
+                                onClick={()=>{openDailySales("report")}}
+                            >
+                                View comprehensive report
+                            </Button>
+                        </div>
 
                         <div className='item-dash-daily'>
                             <div data-aos="flip-left" className="dash-item">
@@ -520,6 +544,9 @@ const DailySales = (props) => {
                         </Route>
                         <Route path='/home/daily-sales/dpk'>
                             <DPKDailySales/>
+                        </Route>
+                        <Route path='/home/daily-sales/report'>
+                            <ComprehensiveReport/>
                         </Route>
                     </Switch>
                 </div>

@@ -8,12 +8,13 @@ import upload from '../../assets/upload.png';
 import OutletService from '../../services/outletService';
 import { useDispatch, useSelector } from 'react-redux';
 import LPOService from '../../services/lpo';
-import { createLPO } from '../../store/actions/lpo';
 import swal from 'sweetalert';
 import axios from 'axios';
 import config from '../../constants';
 import ReactCamera from '../Modals/ReactCamera';
 import { getOneTank } from '../../store/actions/outlet';
+import { ThreeDots } from 'react-loader-spinner';
+import hr8 from '../../assets/hr8.png';
 
 const LPO = (props) => {
 
@@ -157,8 +158,6 @@ const LPO = (props) => {
                 }
             };
 
-            console.log(formData, 'forms')
-
             const url = config.BASE_URL + "/360-station/api/lpoSales/create";
             axios.post(url, formData, httpConfig).then((data) => {
                 return data;
@@ -197,122 +196,194 @@ const LPO = (props) => {
     }
 
     return(
-        <div className='pumpContainer'>
+        <div style={{height:'auto', flexDirection:'column', alignItems:'center'}} className='pumpContainer'>
             <ReactCamera open={open} close={setOpen} setDataUri={setCam} />
             <div>Select Pump that gives out lpo for the day</div>
 
-            <div style={{marginTop:'10px'}} className='pump-list'>
-                {
-                    pumpList.length === 0?
-                    <div style={{...box, width:'170px'}}>
-                        <div style={{marginRight:'10px'}}>No pump Created</div>
-                        <img style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
-                    </div>:
-                    pumpList.map((data, index) => {
-                        return(
-                            <div key={index} onClick={()=>{selectedPump(index, data)}}>
-                                {index === selected?
-                                    <div className='box'>
-                                        <p style={{marginRight:'10px'}}>{data.pumpName}</p>
-                                        <img style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
-                                    </div>:
-                                    <div className='box2'>
-                                        <p style={{marginRight:'10px'}}>{data.pumpName}</p>
-                                        <img style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
-                                    </div>
-                                }
-                            </div>
-                        )
-                    })
-                }
+            <div>
+                <div style={{marginTop:'10px', width:'auto'}} className='pump-list'>
+                    {
+                        pumpList.length === 0?
+                        <div style={{...box, width:'170px'}}>
+                            <div style={{marginRight:'10px'}}>No pump Created</div>
+                            <img style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
+                        </div>:
+                        pumpList.map((data, index) => {
+                            return(
+                                <div key={index} onClick={()=>{selectedPump(index, data)}}>
+                                    {index === selected?
+                                        <div className='box'>
+                                            <p style={{marginRight:'10px'}}>{data.pumpName}</p>
+                                            <img style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
+                                        </div>:
+                                        <div className='box2'>
+                                            <p style={{marginRight:'10px'}}>{data.pumpName}</p>
+                                            <img style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
+                                        </div>
+                                    }
+                                </div>
+                            )
+                        })
+                    }
+                </div>
             </div>
 
-            <div className='lpos'>
-                <div style={{marginTop:'0px'}} className='inputs'>
-                    <div className='text'>Account Name</div>
-                    <Select
-                        labelId="demo-select-small"
-                        id="demo-select-small"
-                        value={defaultState2}
-                        sx={{...selectStyle2, width:'100%'}}
-                    >
-                        <MenuItem style={menu} value={0}>Select Account</MenuItem>
-                        {
-                            lpos.map((item, index) => {
-                                return(
-                                    <MenuItem key={index} style={menu} onClick={()=>{changeMenu2(index + 1, item)}} value={index + 1}>{item.companyName}</MenuItem>
-                                )
-                            })  
-                        }
-                    </Select>
-                </div>
+            <div style={{height:'auto'}} className='expensesContainer'>
+                <div className='lpos'>
+                    <div style={{marginTop:'0px'}} className='inputs'>
+                        <div className='text'>Account Name</div>
+                        <Select
+                            labelId="demo-select-small"
+                            id="demo-select-small"
+                            value={defaultState2}
+                            sx={{...selectStyle2, width:'100%'}}
+                        >
+                            <MenuItem style={menu} value={0}>Select Account</MenuItem>
+                            {
+                                lpos.map((item, index) => {
+                                    return(
+                                        <MenuItem key={index} style={menu} onClick={()=>{changeMenu2(index + 1, item)}} value={index + 1}>{item.companyName}</MenuItem>
+                                    )
+                                })  
+                            }
+                        </Select>
+                    </div>
 
-                <div style={{marginTop:'20px'}} className='inputs'>
-                    <div className='text'>Product Type</div>
-                    <Select
-                        labelId="demo-select-small"
-                        id="demo-select-small"
-                        value={10}
-                        sx={{
-                            width:'100%',
-                            height:'40px',
-                            marginTop:'10px',
-                            fontSize:'12px',                                 
-                            background: 'rgba(229, 240, 237, 0.6)',
-                            border: '0.938659px solid #606060',
-                            borderRadius: '5.63195px',
-                        }}
-                    >
-                        <MenuItem style={menu} value={10}>{currentPump.productType}</MenuItem>
-                    </Select>
-                </div>
+                    <div style={{marginTop:'20px'}} className='inputs'>
+                        <div className='text'>Product Type</div>
+                        <Select
+                            labelId="demo-select-small"
+                            id="demo-select-small"
+                            value={10}
+                            sx={{
+                                width:'100%',
+                                height:'40px',
+                                marginTop:'10px',
+                                fontSize:'12px',                                 
+                                background: 'rgba(229, 240, 237, 0.6)',
+                                border: '0.938659px solid #606060',
+                                borderRadius: '5.63195px',
+                            }}
+                        >
+                            <MenuItem style={menu} value={10}>{currentPump.productType}</MenuItem>
+                        </Select>
+                    </div>
 
-                <div style={{marginTop:'20px'}} className='inputs'>
-                    <div className='text'>Truck No</div>
-                    <input onChange={e => setTruckNo(e.target.value)} className='date' type={'text'}  />
-                </div>
+                    <div style={{marginTop:'20px'}} className='inputs'>
+                        <div className='text'>Truck No</div>
+                        <input onChange={e => setTruckNo(e.target.value)} className='date' type={'text'}  />
+                    </div>
 
-                <div style={{width:'100%'}} className='twoInputs'>
-                    <div style={{width:'100%'}} className='inputs2'>
-                        <div className='text'>Litre (QTY)</div>
-                        <input onChange={e => setLitre(e.target.value)} className='date' type={'text'}  />
+                    <div style={{width:'100%'}} className='twoInputs'>
+                        <div style={{width:'100%'}} className='inputs2'>
+                            <div className='text'>Litre (QTY)</div>
+                            <input onChange={e => setLitre(e.target.value)} className='date' type={'text'}  />
+                        </div>
+                    </div>
+
+                    <div style={{marginTop:'20px'}} className='inputs'>
+                        <div className='text'>Upload Teller slip</div>
+                        <div className='button-container'>
+                            <Button onClick={openCamera} style={{background:'#216DB2', fontSize:'12px', textTransform:'capitalize'}} className='buttons'>
+                                <img style={{width:'22px', height:'18px', marginRight:'10px'}} src={photo} alt="icon" />
+                                <div>{typeof(cam) === "string"? "Image taken":<span>Take photo</span>}</div>
+                            </Button>
+                            <Button onClick={openGallery} style={{background:'#087B36', fontSize:'12px', textTransform:'capitalize'}} className='buttons'>
+                                <img style={{width:'22px', height:'18px', marginRight:'10px'}} src={upload} alt="icon" />
+                                <div>{typeof(gall) === "string"? "Upload":<span>File uploaded</span>}</div>
+                            </Button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <input ref={camera} style={{visibility:'hidden'}} type={'file'} />
+                        <input onChange={pickFromGallery} ref={gallery} style={{visibility:'hidden'}} type={'file'} />
+                    </div>
+
+                    <div style={{marginTop:'0px'}} className='submit'>
+                        <Button sx={{
+                            width:'120px', 
+                            height:'30px',  
+                            background: '#427BBE',
+                            borderRadius: '3px',
+                            fontSize:'11px',
+                            '&:hover': {
+                                backgroundColor: '#427BBE'
+                            }
+                            }}  
+                            onClick={submitRecordSales}
+                            variant="contained"> Submit
+                        </Button>
                     </div>
                 </div>
 
-                <div style={{marginTop:'20px'}} className='inputs'>
-                    <div className='text'>Upload Teller slip</div>
-                    <div className='button-container'>
-                        <Button onClick={openCamera} style={{background:'#216DB2', fontSize:'12px', textTransform:'capitalize'}} className='buttons'>
-                            <img style={{width:'22px', height:'18px', marginRight:'10px'}} src={photo} alt="icon" />
-                            <div>{typeof(cam) === "string"? "Image taken":<span>Take photo</span>}</div>
-                        </Button>
-                        <Button onClick={openGallery} style={{background:'#087B36', fontSize:'12px', textTransform:'capitalize'}} className='buttons'>
-                            <img style={{width:'22px', height:'18px', marginRight:'10px'}} src={upload} alt="icon" />
-                            <div>{typeof(gall) === "string"? "Upload":<span>File uploaded</span>}</div>
+                <div className='right'>
+                    <div className='headers'>
+                        <div className='headText'>S/N</div>
+                        <div className='headText'>Transporter</div>
+                        <div className='headText'>Product</div>
+                        <div className='headText'>Quality</div>
+                        <div className='headText'>Action</div>
+                    </div>
+
+                    {
+                        [].length === 0?
+                        false? 
+                        <div style={{width:'100%', height:'30px', display:'flex', justifyContent:'center'}}>
+                            <ThreeDots 
+                                height="60" 
+                                width="50" 
+                                radius="9"
+                                color="#076146" 
+                                ariaLabel="three-dots-loading"
+                                wrapperStyle={{position:'absolute', zIndex:'30'}}
+                                wrapperClassName=""
+                                visible={false}
+                            />
+                        </div>:
+                        <div style={{fontSize:'14px', fontFamily:'Nunito-Regular', marginTop:'20px', color:'green'}}>No pending supply record</div>:
+                        [].map((data, index) => {
+                            return(
+                                <div className='rows'>
+                                    <div className='headText'>{index + 1}</div>
+                                    <div className='headText'>{data.transportationName}</div>
+                                    <div className='headText'>{data.productType}</div>
+                                    <div className='headText'>{data.quantity}</div>
+                                    <div className='headText'>
+                                        <img style={{width:'22px', height:'22px'}} src={hr8} alt="icon" />
+                                    </div>
+                                </div>
+                            )
+                        })
+                    }
+
+                    <div style={{marginBottom:'0px', width:'100%', height:'30px', justifyContent:'space-between'}} className='submit'>
+                        <div>
+                            <ThreeDots 
+                                height="60" 
+                                width="50" 
+                                radius="9"
+                                color="#076146" 
+                                ariaLabel="three-dots-loading"
+                                wrapperStyle={{position:'absolute', zIndex:'30'}}
+                                wrapperClassName=""
+                                visible={false}
+                            />
+                        </div>
+                        <Button sx={{
+                            width:'120px', 
+                            height:'30px',  
+                            background: '#427BBE',
+                            borderRadius: '3px',
+                            fontSize:'11px',
+                            '&:hover': {
+                                backgroundColor: '#427BBE'
+                            }
+                            }}  
+                            // onClick={submitSupply}
+                            variant="contained"> Submit
                         </Button>
                     </div>
-                </div>
-
-                <div>
-                    <input ref={camera} style={{visibility:'hidden'}} type={'file'} />
-                    <input onChange={pickFromGallery} ref={gallery} style={{visibility:'hidden'}} type={'file'} />
-                </div>
-
-                <div className='submit'>
-                    <Button sx={{
-                        width:'120px', 
-                        height:'30px',  
-                        background: '#427BBE',
-                        borderRadius: '3px',
-                        fontSize:'11px',
-                        marginBottom:'20px',
-                        '&:hover': {
-                            backgroundColor: '#427BBE'
-                        }
-                        }}  
-                        onClick={submitRecordSales}
-                        variant="contained"> Submit
-                    </Button>
                 </div>
             </div>
         </div>

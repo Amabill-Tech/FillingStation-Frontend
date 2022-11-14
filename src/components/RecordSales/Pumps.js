@@ -26,19 +26,16 @@ const Pumps = (props) => {
 
     const getOneOutletTank = async(payload) => {
         let res = await OutletService.getOneTank(payload)
-        console.log('marathon')
         return res;
     }
 
     const updateCurrentTank = async(payload) => {
         let res = await OutletService.updateTank(payload)
-        console.log("race")
         return res;
     }
 
     const updateCurrentPump = async(activePumps, i) => {
         let res = await OutletService.pumpUpdate({id: activePumps[i]._id, totalizerReading: activePumps[i].closingMeter});
-        console.log("over to pump")
         return res;
     }
 

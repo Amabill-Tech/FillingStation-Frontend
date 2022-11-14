@@ -66,6 +66,7 @@ const HomeScreen = ({history}) => {
             {
                 '/home': 'Dashboard',
                 '/home/daily-sales': 'Daily Sales',
+                '/home/daily-sales/report': 'Daily Sales',
                 '/home/daily-sales/pms': 'Daily Sales',
                 '/home/daily-sales/ago': 'Daily Sales',
                 '/home/daily-sales/dpk': 'Daily Sales',
