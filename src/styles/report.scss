@@ -127,6 +127,20 @@
                         }
                     }
                 }
+
+                .paym{
+                    width: 100%;
+                    height: auto;
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: flex-start;
+
+                    .pleft{
+                        width: 50%;
+                        height: auto;
+                    }
+                }
             }
         }
 
@@ -135,6 +149,24 @@
             height: 300px;
             background-color: green;
             display: none;
+        }
+    }
+}
+
+@media (max-width: 1150px){
+    .reportContainer{
+        .mains-report{
+            .left{
+                .inner-main{
+                    .paym{
+                        flex-direction: column;
+
+                        .pleft{
+                            width: 100%;
+                        }
+                    }
+                }
+            }
         }
     }
 }
