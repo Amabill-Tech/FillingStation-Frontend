@@ -29,6 +29,7 @@ const LPO = (props) => {
     const [selected, setSelected] = useState(null);
     const camera = useRef();
     const gallery = useRef();
+    const [listOfLpos, setListOfLpos] = useState([]);
 
     const [accountName, setAccountName] = useState({});
     const [product, setProduct] = useState('');
@@ -68,7 +69,7 @@ const LPO = (props) => {
         let file = e.target.files[0];
         setGall(file);
     }
-
+    
     const submitRecordSales = () => {
         const prev = (Number(oneTank.currentLevel) - Number(litre)) < Number(oneTank.deadStockLevel)
         const detail = oneTank.currentLevel==="None"? true : prev;
@@ -93,6 +94,181 @@ const LPO = (props) => {
                 organizationID: oneOutletStation.organisation,
             }
 
+            const load = {type: "cam", lpoAccount:accountName, currentPump: currentPump, payload: payload}
+
+            setListOfLpos(prev => [...prev, load]);
+
+            setAccountName({});
+            setTruckNo("");
+            setLitre("");
+            setCam(null);
+            setGall("");
+        }else{
+            if(accountName === "" || accountName === undefined) return swal("Warning!", "Account Name field cannot be empty", "info");
+            if(product === "") return swal("Warning!", "Product Type field cannot be empty", "info");
+            if(truckNo === "") return swal("Warning!", "Truck No field cannot be empty", "info");
+            if(litre === "") return swal("Warning!", "Litre field cannot be empty", "info");
+            if(typeof(gall.name) === "undefined") return swal("Warning!", "Please select a file", "info");
+            if(oneTank.activeState === "0") return swal("Warning!", "Tank is currently inactive, contact admin", "info");
+            if((detail)) return swal("Warning!", "Tank deadstock level reached!", "info");
+
+            const payload = {
+                accountName: accountName.companyName,
+                productType: product,
+                truckNo: truckNo,
+                litre: litre,
+                attachApprovalCam: gall,
+                lpoID: accountName._id,
+                outletID: oneOutletStation._id,
+                organizationID: oneOutletStation.organisation,
+            }
+
+            const load = {type: "gall", lpoAccount:accountName, currentPump: currentPump, payload: payload}
+
+            setListOfLpos(prev => [...prev, load]);
+            setAccountName({});
+            setTruckNo("");
+            setLitre("");
+            setCam(null);
+            setGall("");
+        }
+    }
+
+    const createLPORecord = async(url, payload, httpConfig) => {
+        let res = await axios.post(url, payload, httpConfig).then((data) => {
+            return data;
+        });
+        return res;
+    }
+
+    const effectTankUpdate = async(updatedTank) => {
+        let res = await OutletService.updateTank(updatedTank).then((data) => {
+            return data;
+        });
+
+        return res;
+    }
+
+    const updatedLPOHandler = async(updatedLPO) => {
+        let res = await LPOService.updateLPO(updatedLPO).then(data => {
+            return data
+        });
+
+        return res;
+    }
+
+    const createLPOGallRecord = async(url, payload, httpConfig) => {
+        let res = await axios.post(url, payload, httpConfig).then((data) => {
+            return data;
+        })
+        return res;
+    }     
+    
+    const UpdatedGallTank = async(updatedTank) => {
+        let res = await OutletService.updateTank(updatedTank).then((data) => {
+            return data;
+        });
+        return res;
+    }
+
+    const UpdateGallLpoHandler = async(updatedLPO) => {
+        let res = await LPOService.updateLPO(updatedLPO).then(data => {
+            return data
+        });
+        return res
+    }
+
+    const submitAllRecordSales  = async() => { console.log(listOfLpos, 'lpos')
+
+        for(let i = 0, max = listOfLpos.length; i < max; i++){
+            if(listOfLpos[i].type === "cam"){
+                // console.log(listOfLpos[i], 'cams')
+
+                const url = config.BASE_URL + "/360-station/api/lpoSales/create";
+                const httpConfig = {
+                    headers: {
+                        "content-type": "multipart/form-data",
+                        "Authorization": "Bearer "+ localStorage.getItem('token'),
+                    }
+                };
+
+                let lpoData = await createLPORecord(url, listOfLpos[i].payload, httpConfig);
+                console.log(lpoData, 'lpo is done here oo');
+
+                const updatedTank = {
+                    id: oneTank._id,
+                    previousLevel: oneTank.currentLevel,
+                    currentLevel: oneTank.currentLevel === "None"? null: String(Number(oneTank.currentLevel) - Number(listOfLpos[i].payload.litre)),
+                    outletID: oneOutletStation._id,
+                    organisationID: oneOutletStation.organisation,
+                }
+
+                if(updatedTank.currentLevel !== null){
+                    let updatedTankData = await effectTankUpdate(updatedTank);
+                    console.log(updatedTankData, 'Tank is updated successfully')
+
+                    const updatedLPO = {
+                        id: accountName._id,
+                        PMS: listOfLpos[i].currentPump.productType === "PMS"? Number(listOfLpos[i].lpoAccount.PMS) - Number(listOfLpos[i].payload.litre): undefined,
+                        AGO: listOfLpos[i].currentPump.productType ==="AGO"? Number(listOfLpos[i].lpoAccount.AGO) - Number(listOfLpos[i].payload.litre): undefined,
+                        DPK: listOfLpos[i].currentPump.productType ==="DPK"? Number(listOfLpos[i].lpoAccount.DPK) - Number(listOfLpos[i].payload.litre): undefined,
+                    }
+
+                    let lpoUpdate = await updatedLPOHandler(updatedLPO);
+                    console.log(lpoUpdate, 'updated lpos');
+                }
+            }else{
+                // console.log(listOfLpos[i], 'gall')
+
+                const formData = new FormData();
+                formData.append("accountName", listOfLpos[i].lpoAccount.companyName);
+                formData.append("productType", listOfLpos[i].payload.productType);
+                formData.append("truckNo", listOfLpos[i].payload.truckNo);
+                formData.append("litre", listOfLpos[i].payload.litre);
+                formData.append("attachApprovalGall", listOfLpos[i].payload.attachApprovalCam);
+                formData.append("lpoID", listOfLpos[i].lpoAccount._id);
+                formData.append("outletID", oneOutletStation._id);
+                formData.append("organizationID", oneOutletStation.organisation);
+                
+                const httpConfig = {
+                    headers: {
+                        "content-type": "multipart/form-data",
+                        "Authorization": "Bearer "+ localStorage.getItem('token'),
+                    }
+                };
+
+                const url = config.BASE_URL + "/360-station/api/lpoSales/create";
+                let lpoGallData = await createLPOGallRecord(url, listOfLpos[i].payload, httpConfig);
+                console.log(lpoGallData, 'lpo Gall is done here oo');
+
+                const updatedTank = {
+                    id: oneTank._id,
+                    previousLevel: oneTank.currentLevel,
+                    currentLevel: oneTank.currentLevel === "None"? null: String(Number(oneTank.currentLevel) - Number(listOfLpos[i].payload.litre)),
+                    outletID: oneOutletStation._id,
+                    organisationID: oneOutletStation.organisation,
+                }
+
+                if(updatedTank.currentLevel !== null){
+                    let updatedTankData = await UpdatedGallTank(updatedTank);
+                    console.log(updatedTankData, 'Tank from gall is updated successfully');
+
+                    const updatedLPO = {
+                        id: accountName._id,
+                        PMS: listOfLpos[i].currentPump.productType === "PMS"? Number(listOfLpos[i].lpoAccount.PMS) - Number(listOfLpos[i].payload.litre): undefined,
+                        AGO: listOfLpos[i].currentPump.productType ==="AGO"? Number(listOfLpos[i].lpoAccount.AGO) - Number(listOfLpos[i].payload.litre): undefined,
+                        DPK: listOfLpos[i].currentPump.productType ==="DPK"? Number(listOfLpos[i].lpoAccount.DPK) - Number(listOfLpos[i].payload.litre): undefined,
+                    }
+
+                    let updateGallLpo = await UpdateGallLpoHandler(updatedLPO);
+                    console.log(updateGallLpo, 'updated gall lpos');
+                }
+            }
+        }
+
+        props.refresh();
+
+        /*if((typeof(cam) === "string")){
             const url = config.BASE_URL + "/360-station/api/lpoSales/create";
             const httpConfig = {
                 headers: {
@@ -134,13 +310,6 @@ const LPO = (props) => {
             });
 
         }else{
-            if(accountName === "" || accountName === undefined) return swal("Warning!", "Account Name field cannot be empty", "info");
-            if(product === "") return swal("Warning!", "Product Type field cannot be empty", "info");
-            if(truckNo === "") return swal("Warning!", "Truck No field cannot be empty", "info");
-            if(litre === "") return swal("Warning!", "Litre field cannot be empty", "info");
-            if(typeof(gall.name) === "undefined") return swal("Warning!", "Please select a file", "info");
-            if(oneTank.activeState === "0") return swal("Warning!", "Tank is currently inactive, contact admin", "info");
-            if((detail)) return swal("Warning!", "Tank deadstock level reached!", "info");
 
             const formData = new FormData();
             formData.append("accountName", accountName.companyName);
@@ -151,6 +320,7 @@ const LPO = (props) => {
             formData.append("lpoID", accountName._id);
             formData.append("outletID", oneOutletStation._id);
             formData.append("organizationID", oneOutletStation.organisation);
+            
             const httpConfig = {
                 headers: {
                     "content-type": "multipart/form-data",
@@ -191,8 +361,14 @@ const LPO = (props) => {
                     })
                 }  
             });
-        }
+        }*/
         
+    }
+
+    const deleteFromList = (index) => {
+        const newList = [...listOfLpos];
+        newList.pop(index);
+        setListOfLpos(newList);
     }
 
     return(
@@ -271,13 +447,13 @@ const LPO = (props) => {
 
                     <div style={{marginTop:'20px'}} className='inputs'>
                         <div className='text'>Truck No</div>
-                        <input onChange={e => setTruckNo(e.target.value)} className='date' type={'text'}  />
+                        <input value={truckNo} onChange={e => setTruckNo(e.target.value)} className='date' type={'text'}  />
                     </div>
 
                     <div style={{width:'100%'}} className='twoInputs'>
                         <div style={{width:'100%'}} className='inputs2'>
                             <div className='text'>Litre (QTY)</div>
-                            <input onChange={e => setLitre(e.target.value)} className='date' type={'text'}  />
+                            <input value={litre} onChange={e => setLitre(e.target.value)} className='date' type={'text'}  />
                         </div>
                     </div>
 
@@ -312,7 +488,7 @@ const LPO = (props) => {
                             }
                             }}  
                             onClick={submitRecordSales}
-                            variant="contained"> Submit
+                            variant="contained"> Add to list
                         </Button>
                     </div>
                 </div>
@@ -320,14 +496,14 @@ const LPO = (props) => {
                 <div className='right'>
                     <div className='headers'>
                         <div className='headText'>S/N</div>
-                        <div className='headText'>Transporter</div>
+                        <div className='headText'>Account</div>
                         <div className='headText'>Product</div>
-                        <div className='headText'>Quality</div>
+                        <div className='headText'>Quantity</div>
                         <div className='headText'>Action</div>
                     </div>
 
                     {
-                        [].length === 0?
+                        listOfLpos.length === 0?
                         false? 
                         <div style={{width:'100%', height:'30px', display:'flex', justifyContent:'center'}}>
                             <ThreeDots 
@@ -342,15 +518,15 @@ const LPO = (props) => {
                             />
                         </div>:
                         <div style={{fontSize:'14px', fontFamily:'Nunito-Regular', marginTop:'20px', color:'green'}}>No pending supply record</div>:
-                        [].map((data, index) => {
+                        listOfLpos.map((data, index) => {
                             return(
                                 <div className='rows'>
                                     <div className='headText'>{index + 1}</div>
-                                    <div className='headText'>{data.transportationName}</div>
-                                    <div className='headText'>{data.productType}</div>
-                                    <div className='headText'>{data.quantity}</div>
+                                    <div className='headText'>{data.payload.accountName}</div>
+                                    <div className='headText'>{data.payload.productType}</div>
+                                    <div className='headText'>{data.payload.litre}</div>
                                     <div className='headText'>
-                                        <img style={{width:'22px', height:'22px'}} src={hr8} alt="icon" />
+                                        <img onClick={()=>{deleteFromList(index)}} style={{width:'22px', height:'22px'}} src={hr8} alt="icon" />
                                     </div>
                                 </div>
                             )
@@ -380,7 +556,7 @@ const LPO = (props) => {
                                 backgroundColor: '#427BBE'
                             }
                             }}  
-                            // onClick={submitSupply}
+                            onClick={submitAllRecordSales}
                             variant="contained"> Submit
                         </Button>
                     </div>

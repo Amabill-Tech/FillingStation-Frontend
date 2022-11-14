@@ -141,6 +141,25 @@
                         height: auto;
                     }
                 }
+
+                .paym2{
+                    width: 100%;
+                    height: auto;
+                    display: flex;
+                    flex-direction: row;
+                    align-items: flex-start;
+                    justify-content: center;
+
+                    .pleft{
+                        width: 30%;
+                        height: auto;
+                    }
+
+                    .pright{
+                        width: 60%;
+                        height: auto;
+                    }
+                }
             }
         }
 
@@ -163,6 +182,20 @@
 
                         .pleft{
                             width: 100%;
+                        }
+                    }
+
+                    .paym2{
+                        flex-direction: column;
+                        height: auto;
+
+                        .pleft{
+                            width: 100%;
+                        }
+
+                        .pright{
+                            width: 100%;
+                            margin-top: 10px;
                         }
                     }
                 }
