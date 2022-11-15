@@ -178,10 +178,10 @@ const LPO = (props) => {
         return res
     }
 
-    const submitAllRecordSales  = async() => { console.log(listOfLpos, 'lpos')
+    const submitAllRecordSales  = async() => { 
 
         for(let i = 0, max = listOfLpos.length; i < max; i++){
-            if(listOfLpos[i].type === "cam"){
+            if(listOfLpos[i].type === "cam"){ 
                 // console.log(listOfLpos[i], 'cams')
 
                 const url = config.BASE_URL + "/360-station/api/lpoSales/create";
@@ -208,7 +208,7 @@ const LPO = (props) => {
                     console.log(updatedTankData, 'Tank is updated successfully')
 
                     const updatedLPO = {
-                        id: accountName._id,
+                        id: listOfLpos[i].lpoAccount._id,
                         PMS: listOfLpos[i].currentPump.productType === "PMS"? Number(listOfLpos[i].lpoAccount.PMS) - Number(listOfLpos[i].payload.litre): undefined,
                         AGO: listOfLpos[i].currentPump.productType ==="AGO"? Number(listOfLpos[i].lpoAccount.AGO) - Number(listOfLpos[i].payload.litre): undefined,
                         DPK: listOfLpos[i].currentPump.productType ==="DPK"? Number(listOfLpos[i].lpoAccount.DPK) - Number(listOfLpos[i].payload.litre): undefined,
@@ -238,7 +238,7 @@ const LPO = (props) => {
                 };
 
                 const url = config.BASE_URL + "/360-station/api/lpoSales/create";
-                let lpoGallData = await createLPOGallRecord(url, listOfLpos[i].payload, httpConfig);
+                let lpoGallData = await createLPOGallRecord(url, formData, httpConfig);
                 console.log(lpoGallData, 'lpo Gall is done here oo');
 
                 const updatedTank = {
@@ -254,7 +254,7 @@ const LPO = (props) => {
                     console.log(updatedTankData, 'Tank from gall is updated successfully');
 
                     const updatedLPO = {
-                        id: accountName._id,
+                        id: listOfLpos[i].lpoAccount._id,
                         PMS: listOfLpos[i].currentPump.productType === "PMS"? Number(listOfLpos[i].lpoAccount.PMS) - Number(listOfLpos[i].payload.litre): undefined,
                         AGO: listOfLpos[i].currentPump.productType ==="AGO"? Number(listOfLpos[i].lpoAccount.AGO) - Number(listOfLpos[i].payload.litre): undefined,
                         DPK: listOfLpos[i].currentPump.productType ==="DPK"? Number(listOfLpos[i].lpoAccount.DPK) - Number(listOfLpos[i].payload.litre): undefined,
@@ -267,102 +267,8 @@ const LPO = (props) => {
         }
 
         props.refresh();
-
-        /*if((typeof(cam) === "string")){
-            const url = config.BASE_URL + "/360-station/api/lpoSales/create";
-            const httpConfig = {
-                headers: {
-                    "content-type": "multipart/form-data",
-                    "Authorization": "Bearer "+ localStorage.getItem('token'),
-                }
-            };
-            axios.post(url, payload, httpConfig).then((data) => {
-                return data;
-            }).then(()=>{
-                const updatedTank = {
-                    id: oneTank._id,
-                    previousLevel: oneTank.currentLevel,
-                    currentLevel: oneTank.currentLevel === "None"? null: String(Number(oneTank.currentLevel) - Number(litre)),
-                    outletID: oneOutletStation._id,
-                    organisationID: oneOutletStation.organisation,
-                }
-
-                if(updatedTank.currentLevel !== null){
-                    OutletService.updateTank(updatedTank).then((data) => {
-                        swal("Success!", "LPO recorded successfully", "success"); 
-                        return data;
-                    }).then(()=>{
-                        const updatedLPO = {
-                            id: accountName._id,
-                            PMS: currentPump.productType==="PMS"? Number(accountName.PMS) - Number(litre): undefined,
-                            AGO: currentPump.productType==="AGO"? Number(accountName.AGO) - Number(litre): undefined,
-                            DPK: currentPump.productType==="DPK"? Number(accountName.DPK) - Number(litre): undefined,
-                        }
-
-                        LPOService.updateLPO(updatedLPO).then(data => {
-                            return data
-                        }).then(()=>{
-                            props.refresh();
-                        })
-                
-                    })
-                }  
-            });
-
-        }else{
-
-            const formData = new FormData();
-            formData.append("accountName", accountName.companyName);
-            formData.append("productType", product);
-            formData.append("truckNo", truckNo);
-            formData.append("litre", litre);
-            formData.append("attachApprovalGall", gall);
-            formData.append("lpoID", accountName._id);
-            formData.append("outletID", oneOutletStation._id);
-            formData.append("organizationID", oneOutletStation.organisation);
-            
-            const httpConfig = {
-                headers: {
-                    "content-type": "multipart/form-data",
-                    "Authorization": "Bearer "+ localStorage.getItem('token'),
-                }
-            };
-
-            const url = config.BASE_URL + "/360-station/api/lpoSales/create";
-            axios.post(url, formData, httpConfig).then((data) => {
-                return data;
-            }).then(()=>{
-                const updatedTank = {
-                    id: oneTank._id,
-                    previousLevel: oneTank.currentLevel,
-                    currentLevel: oneTank.currentLevel === "None"? null: String(Number(oneTank.currentLevel) - Number(litre)),
-                    outletID: oneOutletStation._id,
-                    organisationID: oneOutletStation.organisation,
-                }
-
-                if(updatedTank.currentLevel !== null){
-                    OutletService.updateTank(updatedTank).then((data) => {
-                        swal("Success!", "LPO recorded successfully", "success"); 
-                        return data;
-                    }).then(()=>{
-                        const updatedLPO = {
-                            id: accountName._id,
-                            PMS: currentPump.productType==="PMS"? Number(accountName.PMS) - Number(litre): undefined,
-                            AGO: currentPump.productType==="AGO"? Number(accountName.AGO) - Number(litre): undefined,
-                            DPK: currentPump.productType==="DPK"? Number(accountName.DPK) - Number(litre): undefined,
-                        }
-
-                        LPOService.updateLPO(updatedLPO).then(data => {
-                            return data
-                        }).then(()=>{
-                            props.refresh();
-                        })
-                
-                    })
-                }  
-            });
-        }*/
-        
+        setListOfLpos([]);
+        swal("Sucess!", "LPO Recorded Successfully!", "success");
     }
 
     const deleteFromList = (index) => {
