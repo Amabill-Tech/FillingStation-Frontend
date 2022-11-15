@@ -262,21 +262,21 @@ const Supply = (props) => {
                 <div className='twoInputs'>
                     <div className='inputs2'>
                         <div className='text'>Transporter</div>
-                        <input style={{marginRight:'1%'}} value={transportationName} onChange={e => setTransportationName(e.target.value)} className='date' type={'text'}  />
+                        <input style={{marginRight:'1%', background:'transparent'}} value={transportationName} onChange={e => setTransportationName(e.target.value)} className='date' type={'text'}  />
                     </div>
 
                     <div className='inputs2'>
                         <div className='text'>Truck No</div>
-                        <input style={{marginLeft:'1%'}} disabled={true} value={truckNo} onChange={e => setTruckNo(e.target.value)} className='date' type={'text'}  />
+                        <input style={{marginLeft:'1%', background:'transparent'}} disabled={true} value={truckNo} onChange={e => setTruckNo(e.target.value)} className='date' type={'text'}  />
                     </div>
                 </div>
 
-                <div style={{marginTop: '20px'}} className='inputs'>
+                <div style={{marginTop: '30px'}} className='inputs'>
                     <div className='text'>Waybill No</div>
-                    <input style={{width:'100%'}} disabled={true} value={wayBillNo} onChange={e => setWayBillNo(e.target.value)} className='date' type={'text'}  />
+                    <input style={{width:'100%', background:'transparent'}} disabled={true} value={wayBillNo} onChange={e => setWayBillNo(e.target.value)} className='date' type={'text'}  />
                 </div>
 
-                <div style={{marginTop:'20px'}} className='inputs'>
+                <div style={{marginTop:'30px'}} className='inputs'>
                     <div className='text'>Product Type</div>
                     <Select
                         labelId="demo-select-small"
@@ -287,9 +287,11 @@ const Supply = (props) => {
                             height:'40px',
                             marginTop:'10px',
                             fontSize:'12px',                                 
-                            background: 'rgba(229, 240, 237, 0.6)',
-                            border: '0.938659px solid #606060',
+                            background:'transparent',
                             borderRadius: '5.63195px',
+                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                border: "1px solid #484850",
+                            },
                         }}
                     >
                         <MenuItem style={menu} value={10}>Select product type</MenuItem>
@@ -299,7 +301,7 @@ const Supply = (props) => {
                     </Select>
                 </div>
 
-                <div style={{marginTop:'20px'}} className='inputs'>
+                <div style={{marginTop:'30px'}} className='inputs'>
                     <div className='text'>Incoming Order</div>
                     <Select
                         labelId="demo-select-small"
@@ -318,7 +320,7 @@ const Supply = (props) => {
                     </Select>
                 </div>
 
-                <div style={{marginTop:'20px'}} className='inputs'>
+                <div style={{marginTop:'30px'}} className='inputs'>
                     <div className='text'>Product Tanks</div>
                     <Select
                         labelId="demo-select-small"
@@ -340,24 +342,24 @@ const Supply = (props) => {
                 <div className='twoInputs'>
                     <div className='inputs2'>
                         <div className='text'>Quantity Loaded</div>
-                        <input style={{marginRight:'1%'}} disabled={true} value={quantity} onChange={e => setQuantity(e.target.value)} className='date' type={'text'}  />
+                        <input style={{marginRight:'1%', background:'transparent'}} disabled={true} value={quantity} onChange={e => setQuantity(e.target.value)} className='date' type={'text'}  />
                     </div>
 
                     <div className='inputs2'>
                         <div className='text'>Date</div>
-                        <input style={{marginLeft:'1%'}} onChange={e => setDate(e.target.value)} className='date' type={'date'}  />
+                        <input style={{marginLeft:'1%', background:'transparent'}} onChange={e => setDate(e.target.value)} className='date' type={'date'}  />
                     </div>
                 </div>
 
                 <div className='twoInputs'>
                     <div className='inputs2'>
                         <div className='text'>Shortage</div>
-                        <input style={{marginRight:'1%'}} disabled={true} value={shortage} onChange={e => setShortage(e.target.value)} className='date' type={'text'}  />
+                        <input style={{marginRight:'1%', background:'transparent'}} disabled={true} value={shortage} onChange={e => setShortage(e.target.value)} className='date' type={'text'}  />
                     </div>
 
                     <div className='inputs2'>
                         <div className='text'>Overage</div>
-                        <input style={{marginLeft:'1%'}} disabled={true} value={overage} onChange={e => setOverage(e.target.value)} className='date' type={'text'}  />
+                        <input style={{marginLeft:'1%', background:'transparent'}} disabled={true} value={overage} onChange={e => setOverage(e.target.value)} className='date' type={'text'}  />
                     </div>
                 </div>
 
@@ -455,11 +457,15 @@ const selectStyle2 = {
     width:'100%', 
     height:'35px', 
     borderRadius:'5px',
-    background: '#F2F1F1B2',
     color:'#000',
     fontFamily: 'Nunito-Regular',
     fontSize:'14px',
-    outline:'none'
+    outline:'none',
+    background:'transparent',
+    borderColor: '#000',
+    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+        borderColor: "#000",
+    },
 }
 
 const menu = {
