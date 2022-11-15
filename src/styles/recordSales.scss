@@ -1,94 +1,85 @@
-.salesContainer{
+.salesContainer2{
     width: 96%;
-    height: 88%;
+    height: 98%;
     background: #F0F9F7;
     border-radius: 4px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     margin-top: 10px;
     overflow-y: scroll;
     overflow-x: hidden;
 
     .inner{
-        width: 96%;
-        height: 96%;
+        width: 100%;
+        height: auto;
         display: flex;
         flex-direction: column;
-        margin-top: 20px;
-        margin-bottom: 20px;
 
         .leftContainer{
-            width: 65%;
-            height: 100%;
+            width: 100%;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
 
             .tabContainer{
                 width: 100%;
                 display: flex;
                 flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                flex-wrap: wrap;
+
+                .butContain{
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: flex-start;
+                    flex-wrap: wrap;
+                }
             }
 
             .tabs-content{
                 width: 100%;
-                height: 400px;
-                margin-top: 20px;
-            }
-        }
-    
-        .rightContainer{
-            width: 30%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-
-            .head{
-                font-family: 'Nunito-Regular';
-                font-style: normal;
-                font-weight: 600;
-                font-size: 16px;
-                line-height: 30px;
-                color: #000000;
+                height: auto;
+                margin-top: 10px;
             }
         }
     }
 }
 
-.salesContainer::-webkit-scrollbar {
+.salesContainer2::-webkit-scrollbar {
     width: 6px;
 }
   
   /* Track */
-.salesContainer::-webkit-scrollbar-track {
+.salesContainer2::-webkit-scrollbar-track {
     background: #f1f1f1;
 }
   
   /* Handle */
-.salesContainer::-webkit-scrollbar-thumb {
+.salesContainer2::-webkit-scrollbar-thumb {
     background: #054834;
 }
   
   /* Handle on hover */
-.salesContainer::-webkit-scrollbar-thumb:hover {
+.salesContainer2::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
 
 @media (max-width: 1150px){
-    .salesContainer{
+    .salesContainer2{
         margin-top: 80px;
     }
 }
 
 @media (max-width: 1000px){
-    .salesContainer{
+    .salesContainer2{
         width: 100%;
+        height: auto;
         margin-top: 80px;
         margin-bottom: 30px;
 
         .inner{
             flex-direction: column;
-            margin-top: 20px;
-            margin-bottom: 20px;
+            height: auto;
 
             .leftContainer{
                 width: 100%;

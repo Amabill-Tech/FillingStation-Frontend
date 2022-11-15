@@ -8,6 +8,7 @@ import axios from 'axios';
 import config from '../../constants';
 import { useSelector } from 'react-redux';
 import ReactCamera from '../Modals/ReactCamera';
+import {ThreeDots} from 'react-loader-spinner'
 
 const Payments = () => {
 
@@ -209,22 +210,85 @@ const Payments = () => {
     }
 
     return(
-        <div style={{background:'#fff'}} className='lpos'>
+        <div className='expensesContainer'>
             <ReactCamera open={open} close={setOpen} setDataUri={setCam} />
-            <div style={inner}> 
-                <div className='tabs'>
-                    <Button sx={switchTab? inactive : active}
-                        onClick={handleSwitchTab}  
-                        variant="contained"> Bank Payment
-                    </Button>
-                    <Button sx={switchTab? active : inactive} 
-                        onClick={handleSwitchTab2}  
-                        variant="contained"> POS Payment
-                    </Button>
-                </div>
+            <div style={{background:'#fff'}} className='lpos'> 
+                <div style={inner}> 
+                    <div className='tabs'>
+                        <Button sx={switchTab? inactive : active}
+                            onClick={handleSwitchTab}  
+                            variant="contained"> Bank Payment
+                        </Button>
+                        <Button sx={switchTab? active : inactive} 
+                            onClick={handleSwitchTab2}  
+                            variant="contained"> POS Payment
+                        </Button>
+                    </div>
 
-                {!switchTab?
-                    <div className='cashPayment'>
+                    {!switchTab?
+                        <div className='cashPayment'>
+                            <div style={{marginTop:'25px'}} className='inputs'>
+                                <div className='text'>Date Created</div>
+                                <input className='date' type={'date'}  />
+                            </div>
+
+                            <div className='twoInputs'>
+                                <div className='inputs2'>
+                                    <div className='text'>Bank Name</div>
+                                    <input value={bankName} onChange={e => setBankName(e.target.value)} className='date' type={'text'}  />
+                                </div>
+
+                                <div className='inputs2'>
+                                    <div className='text'>Teller Number</div>
+                                    <input value={tellerNumber} onChange={e => setTellerNumber(e.target.value)} className='date' type={'text'}  />
+                                </div>
+                            </div>
+
+                            <div className='twoInputs'>
+                                <div className='inputs2'>
+                                    <div className='text'>Amount Paid</div>
+                                    <input value={amount} onChange={e => setAmount(e.target.value)} className='date' type={'text'}  />
+                                </div>
+
+                                <div className='inputs2'>
+                                    <div className='text'>Payment Date</div>
+                                    <input value={date} onChange={e => setDate(e.target.value)} className='date' type={'date'}  />
+                                </div>
+                            </div>
+
+                            <div style={{marginTop:'20px'}} className='inputs'>
+                                <div className='text'>Upload Teller slip</div>
+                                <div className='button-container'>
+                                    <Button onClick={takeFromCamera} style={{background:'#216DB2', textTransform:'capitalize'}} className='buttons'>
+                                        <img style={{width:'22px', height:'18px', marginRight:'10px'}} src={photo} alt="icon" />
+                                        <div>{typeof(cam) === "string"? "Image taken":<span>Take photo</span>}</div>
+                                    </Button>
+                                    <Button onClick={pickFromGallery} style={{background:'#087B36', textTransform:'capitalize'}} className='buttons'>
+                                        <img style={{width:'22px', height:'18px', marginRight:'10px'}} src={upload} alt="icon" />
+                                        <div>{typeof(gall) === "string"? "Upload":<span>File uploaded</span>}</div>
+                                    </Button>
+                                </div>
+                            </div>
+                            <input onChange={getFileFromGallery} ref={gallery1} type={'file'} style={{visibility:'hidden'}} />
+
+                            <div className='submit'>
+                                <Button sx={{
+                                    width:'120px', 
+                                    height:'30px',  
+                                    background: '#427BBE',
+                                    borderRadius: '3px',
+                                    fontSize:'11px',
+                                    '&:hover': {
+                                        backgroundColor: '#427BBE'
+                                    }
+                                    }}  
+                                    onClick={submitPayment}
+                                    variant="contained"> Submit
+                                </Button>
+                            </div>
+                        </div>:
+            
+                        <div className='cashPayment'>
                         <div style={{marginTop:'25px'}} className='inputs'>
                             <div className='text'>Date Created</div>
                             <input className='date' type={'date'}  />
@@ -232,13 +296,13 @@ const Payments = () => {
 
                         <div className='twoInputs'>
                             <div className='inputs2'>
-                                <div className='text'>Bank Name</div>
-                                <input value={bankName} onChange={e => setBankName(e.target.value)} className='date' type={'text'}  />
+                                <div className='text'>POS Name</div>
+                                <input value={posName} onChange={e => setPosName(e.target.value)} className='date' type={'text'}  />
                             </div>
 
                             <div className='inputs2'>
-                                <div className='text'>Teller Number</div>
-                                <input value={tellerNumber} onChange={e => setTellerNumber(e.target.value)} className='date' type={'text'}  />
+                                <div className='text'>Terminal ID</div>
+                                <input value={terminalID} onChange={e => setTerminalID(e.target.value)} className='date' type={'text'}  />
                             </div>
                         </div>
 
@@ -280,76 +344,88 @@ const Payments = () => {
                                     backgroundColor: '#427BBE'
                                 }
                                 }}  
-                                onClick={submitPayment}
+                                onClick={submitPOSpayment}
                                 variant="contained"> Submit
                             </Button>
                         </div>
+                        </div>
+                    }
+
+                    <div style={{width:'100%', height:'5px'}}></div>
+                </div>
+            </div>
+            <div className='right'>
+                <div className='headers'>
+                    <div className='headText'>S/N</div>
+                    <div className='headText'>Account</div>
+                    <div className='headText'>Product</div>
+                    <div className='headText'>Quantity</div>
+                    <div className='headText'>Action</div>
+                </div>
+
+                {
+                    [].length === 0?
+                    false? 
+                    <div style={{width:'100%', height:'30px', display:'flex', justifyContent:'center'}}>
+                        <ThreeDots 
+                            height="60" 
+                            width="50" 
+                            radius="9"
+                            color="#076146" 
+                            ariaLabel="three-dots-loading"
+                            wrapperStyle={{position:'absolute', zIndex:'30'}}
+                            wrapperClassName=""
+                            visible={false}
+                        />
                     </div>:
-        
-                    <div className='cashPayment'>
-                    <div style={{marginTop:'25px'}} className='inputs'>
-                        <div className='text'>Date Created</div>
-                        <input className='date' type={'date'}  />
-                    </div>
-
-                    <div className='twoInputs'>
-                        <div className='inputs2'>
-                            <div className='text'>POS Name</div>
-                            <input value={posName} onChange={e => setPosName(e.target.value)} className='date' type={'text'}  />
-                        </div>
-
-                        <div className='inputs2'>
-                            <div className='text'>Terminal ID</div>
-                            <input value={terminalID} onChange={e => setTerminalID(e.target.value)} className='date' type={'text'}  />
-                        </div>
-                    </div>
-
-                    <div className='twoInputs'>
-                        <div className='inputs2'>
-                            <div className='text'>Amount Paid</div>
-                            <input value={amount} onChange={e => setAmount(e.target.value)} className='date' type={'text'}  />
-                        </div>
-
-                        <div className='inputs2'>
-                            <div className='text'>Payment Date</div>
-                            <input value={date} onChange={e => setDate(e.target.value)} className='date' type={'date'}  />
-                        </div>
-                    </div>
-
-                    <div style={{marginTop:'20px'}} className='inputs'>
-                        <div className='text'>Upload Teller slip</div>
-                        <div className='button-container'>
-                            <Button onClick={takeFromCamera} style={{background:'#216DB2', textTransform:'capitalize'}} className='buttons'>
-                                <img style={{width:'22px', height:'18px', marginRight:'10px'}} src={photo} alt="icon" />
-                                <div>{typeof(cam) === "string"? "Image taken":<span>Take photo</span>}</div>
-                            </Button>
-                            <Button onClick={pickFromGallery} style={{background:'#087B36', textTransform:'capitalize'}} className='buttons'>
-                                <img style={{width:'22px', height:'18px', marginRight:'10px'}} src={upload} alt="icon" />
-                                <div>{typeof(gall) === "string"? "Upload":<span>File uploaded</span>}</div>
-                            </Button>
-                        </div>
-                    </div>
-                    <input onChange={getFileFromGallery} ref={gallery1} type={'file'} style={{visibility:'hidden'}} />
-
-                    <div className='submit'>
-                        <Button sx={{
-                            width:'120px', 
-                            height:'30px',  
-                            background: '#427BBE',
-                            borderRadius: '3px',
-                            fontSize:'11px',
-                            '&:hover': {
-                                backgroundColor: '#427BBE'
-                            }
-                            }}  
-                            onClick={submitPOSpayment}
-                            variant="contained"> Submit
-                        </Button>
-                    </div>
-                    </div>
+                    <div style={{fontSize:'14px', fontFamily:'Nunito-Regular', marginTop:'20px', color:'green'}}>No pending supply record</div>:
+                    [].map((data, index) => {
+                        return(
+                            <div className='rows'>
+                                <div className='headText'>{index + 1}</div>
+                                <div className='headText'>{data.payload.accountName}</div>
+                                <div className='headText'>{data.payload.productType}</div>
+                                <div className='headText'>{data.payload.litre}</div>
+                                <div className='headText'>
+                                    <img 
+                                        // onClick={()=>{deleteFromList(index)}} 
+                                        style={{width:'22px', height:'22px'}} 
+                                        // src={hr8} 
+                                        alt="icon" 
+                                    />
+                                </div>
+                            </div>
+                        )
+                    })
                 }
 
-                <div style={{width:'100%', height:'5px'}}></div>
+                <div style={{marginBottom:'0px', width:'100%', height:'30px', justifyContent:'space-between'}} className='submit'>
+                    <div>
+                        <ThreeDots 
+                            height="60" 
+                            width="50" 
+                            radius="9"
+                            color="#076146" 
+                            ariaLabel="three-dots-loading"
+                            wrapperStyle={{position:'absolute', zIndex:'30'}}
+                            wrapperClassName=""
+                            visible={false}
+                        />
+                    </div>
+                    <Button sx={{
+                        width:'120px', 
+                        height:'30px',  
+                        background: '#427BBE',
+                        borderRadius: '3px',
+                        fontSize:'11px',
+                        '&:hover': {
+                            backgroundColor: '#427BBE'
+                        }
+                        }}  
+                        // onClick={submitAllRecordSales}
+                        variant="contained"> Submit
+                    </Button>
+                </div>
             </div>
         </div>
     )

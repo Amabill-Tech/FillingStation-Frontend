@@ -11,6 +11,7 @@ import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux';
 import config from '../../constants';
 import ReactCamera from '../Modals/ReactCamera';
+import {ThreeDots} from 'react-loader-spinner'
 
 const Expenses = () => {
 
@@ -164,6 +165,80 @@ const Expenses = () => {
                 </div>
 
                 <div style={{width:'100%', height:'50px'}}></div>
+            </div>
+
+            <div className='right'>
+                    <div className='headers'>
+                        <div className='headText'>S/N</div>
+                        <div className='headText'>Account</div>
+                        <div className='headText'>Product</div>
+                        <div className='headText'>Quantity</div>
+                        <div className='headText'>Action</div>
+                    </div>
+
+                    {
+                        [].length === 0?
+                        false? 
+                        <div style={{width:'100%', height:'30px', display:'flex', justifyContent:'center'}}>
+                            <ThreeDots 
+                                height="60" 
+                                width="50" 
+                                radius="9"
+                                color="#076146" 
+                                ariaLabel="three-dots-loading"
+                                wrapperStyle={{position:'absolute', zIndex:'30'}}
+                                wrapperClassName=""
+                                visible={false}
+                            />
+                        </div>:
+                        <div style={{fontSize:'14px', fontFamily:'Nunito-Regular', marginTop:'20px', color:'green'}}>No pending supply record</div>:
+                        [].map((data, index) => {
+                            return(
+                                <div className='rows'>
+                                    <div className='headText'>{index + 1}</div>
+                                    <div className='headText'>{data.payload.accountName}</div>
+                                    <div className='headText'>{data.payload.productType}</div>
+                                    <div className='headText'>{data.payload.litre}</div>
+                                    <div className='headText'>
+                                        <img 
+                                            // onClick={()=>{deleteFromList(index)}} 
+                                            style={{width:'22px', height:'22px'}} 
+                                            // src={hr8} 
+                                            alt="icon" 
+                                        />
+                                    </div>
+                                </div>
+                            )
+                        })
+                    }
+
+                    <div style={{marginBottom:'0px', width:'100%', height:'30px', justifyContent:'space-between'}} className='submit'>
+                        <div>
+                            <ThreeDots 
+                                height="60" 
+                                width="50" 
+                                radius="9"
+                                color="#076146" 
+                                ariaLabel="three-dots-loading"
+                                wrapperStyle={{position:'absolute', zIndex:'30'}}
+                                wrapperClassName=""
+                                visible={false}
+                            />
+                        </div>
+                        <Button sx={{
+                            width:'120px', 
+                            height:'30px',  
+                            background: '#427BBE',
+                            borderRadius: '3px',
+                            fontSize:'11px',
+                            '&:hover': {
+                                backgroundColor: '#427BBE'
+                            }
+                            }}  
+                            // onClick={submitAllRecordSales}
+                            variant="contained"> Submit
+                        </Button>
+                    </div>
             </div>
         </div>
     )

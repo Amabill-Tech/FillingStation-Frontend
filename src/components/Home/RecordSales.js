@@ -131,8 +131,8 @@ const RecordSales = (props) => {
     }
 
     return(
-        <div data-aos="zoom-in-down" className='salesContainer'>
-            <div style={{flexDirection:'column', alignItems:'center'}} className='inner'>
+        <div className='salesContainer2'>
+            <div className='inner'>
                 <Select
                     labelId="demo-select-small"
                     id="demo-select-small"
@@ -148,91 +148,100 @@ const RecordSales = (props) => {
                         })  
                     }
                 </Select>
-                <div style={{width:'100%'}} className='leftContainer'>
-                    <div style={{flexDirection:'row', justifyContent:'center'}} className='tabContainer'>
-                        <Button sx={{
-                            height:'35px',  
-                            background: '#06805B',
-                            borderRadius: '39px',
-                            fontSize:'12px',
-                            textTransform:'capitalize',
-                            '&:hover': {
-                                backgroundColor: '#06805B'
-                            },
-                            }}  
-                            onClick={()=>{handleTabs('supply')}}
-                            variant="contained"> Supply
-                        </Button>
-                        <Button sx={{
-                            height:'35px',  
-                            background: '#06805B',
-                            borderRadius: '39px',
-                            fontSize:'12px',
-                            textTransform:'capitalize',
-                            marginLeft:'10px',
-                            '&:hover': {
-                                backgroundColor: '#06805B'
-                            },
-                            }}  
-                            onClick={()=>{handleTabs('pump')}}
-                            variant="contained"> Pump update
-                        </Button>
-                        <Button sx={{
-                            height:'35px',  
-                            background: '#06805B',
-                            borderRadius: '39px',
-                            fontSize:'12px',
-                            textTransform:'capitalize',
-                            marginLeft:'10px',
-                            '&:hover': {
-                                backgroundColor: '#06805B'
-                            }
-                            }}  
-                            onClick={()=>{handleTabs('lpo')}}
-                            variant="contained"> LPO
-                        </Button>
-                        <Button sx={{ 
-                            height:'35px',  
-                            background: '#06805B',
-                            borderRadius: '39px',
-                            fontSize:'12px',
-                            textTransform:'capitalize',
-                            marginLeft:'10px',
-                            '&:hover': {
-                                backgroundColor: '#06805B'
-                            }
-                            }} 
-                            onClick={()=>{handleTabs('expenses')}} 
-                            variant="contained"> Expenses
-                        </Button>
-                        <Button sx={{ 
-                            height:'35px',  
-                            background: '#06805B',
-                            borderRadius: '39px',
-                            fontSize:'12px',
-                            textTransform:'capitalize',
-                            marginLeft:'10px',
-                            '&:hover': {
-                                backgroundColor: '#06805B'
-                            }
-                            }} 
-                            onClick={()=>{handleTabs('payment')}} 
-                            variant="contained"> Payments
-                        </Button>
-                        <Button sx={{ 
-                            height:'35px',  
-                            background: '#06805B',
-                            borderRadius: '39px',
-                            fontSize:'12px',
-                            textTransform:'capitalize',
-                            marginLeft:'10px',
-                            '&:hover': {
-                                backgroundColor: '#06805B'
-                            }
-                            }} 
-                            onClick={()=>{handleTabs('dipping')}} 
-                            variant="contained"> Dipping
-                        </Button>
+                <div className='leftContainer'>
+                    <div className='tabContainer'>
+                        <div className='butContain'>
+                            <Button sx={{
+                                height:'35px',  
+                                background: '#06805B',
+                                borderRadius: '39px',
+                                fontSize:'12px',
+                                textTransform:'capitalize',
+                                marginLeft:'10px',
+                                marginTop:'10px',
+                                '&:hover': {
+                                    backgroundColor: '#06805B'
+                                },
+                                }}  
+                                onClick={()=>{handleTabs('supply')}}
+                                variant="contained"> Supply
+                            </Button>
+                            <Button sx={{
+                                height:'35px',  
+                                background: '#06805B',
+                                borderRadius: '39px',
+                                fontSize:'12px',
+                                textTransform:'capitalize',
+                                marginLeft:'10px',
+                                marginTop:'10px',
+                                '&:hover': {
+                                    backgroundColor: '#06805B'
+                                },
+                                }}  
+                                onClick={()=>{handleTabs('pump')}}
+                                variant="contained"> Pump update
+                            </Button>
+                            <Button sx={{
+                                height:'35px',  
+                                background: '#06805B',
+                                borderRadius: '39px',
+                                fontSize:'12px',
+                                textTransform:'capitalize',
+                                marginLeft:'10px',
+                                marginTop:'10px',
+                                '&:hover': {
+                                    backgroundColor: '#06805B'
+                                }
+                                }}  
+                                onClick={()=>{handleTabs('lpo')}}
+                                variant="contained"> LPO
+                            </Button>
+                            <Button sx={{ 
+                                height:'35px',  
+                                background: '#06805B',
+                                borderRadius: '39px',
+                                fontSize:'12px',
+                                textTransform:'capitalize',
+                                marginLeft:'10px',
+                                marginTop:'10px',
+                                '&:hover': {
+                                    backgroundColor: '#06805B'
+                                }
+                                }} 
+                                onClick={()=>{handleTabs('expenses')}} 
+                                variant="contained"> Expenses
+                            </Button>
+                            <Button sx={{ 
+                                height:'35px',  
+                                background: '#06805B',
+                                borderRadius: '39px',
+                                fontSize:'12px',
+                                textTransform:'capitalize',
+                                marginLeft:'10px',
+                                marginTop:'10px',
+                                '&:hover': {
+                                    backgroundColor: '#06805B'
+                                }
+                                }} 
+                                onClick={()=>{handleTabs('payment')}} 
+                                variant="contained"> Payments
+                            </Button>
+                            <Button sx={{ 
+                                height:'35px',  
+                                background: '#06805B',
+                                borderRadius: '39px',
+                                fontSize:'12px',
+                                textTransform:'capitalize',
+                                marginLeft:'10px',
+                                marginTop:'10px',
+                                '&:hover': {
+                                    backgroundColor: '#06805B'
+                                }
+                                }} 
+                                onClick={()=>{handleTabs('dipping')}} 
+                                variant="contained"> Dipping
+                            </Button>
+                        </div>
                     </div>
 
                     <div className='tabs-content'>
@@ -273,7 +282,11 @@ const selectStyle2 = {
     fontSize:'14px',
     outline:'none',
     marginTop:'10px',
-    marginBottom:'20px'
+    marginBottom:'20px',
+    marginLeft:'10px',
+    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+        border: "1px solid #484850",
+    },
 }
 
 const menu = {

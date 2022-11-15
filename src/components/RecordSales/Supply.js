@@ -258,23 +258,22 @@ const Supply = (props) => {
 
     return(
         <div className='expensesContainer'>
-            <div style={{height:'auto', marginTop:'0px'}} className='lpos'>
-
+            <div className='form-container'>
                 <div className='twoInputs'>
                     <div className='inputs2'>
                         <div className='text'>Transporter</div>
-                        <input value={transportationName} onChange={e => setTransportationName(e.target.value)} className='date' type={'text'}  />
+                        <input style={{marginRight:'1%'}} value={transportationName} onChange={e => setTransportationName(e.target.value)} className='date' type={'text'}  />
                     </div>
 
                     <div className='inputs2'>
                         <div className='text'>Truck No</div>
-                        <input disabled={true} value={truckNo} onChange={e => setTruckNo(e.target.value)} className='date' type={'text'}  />
+                        <input style={{marginLeft:'1%'}} disabled={true} value={truckNo} onChange={e => setTruckNo(e.target.value)} className='date' type={'text'}  />
                     </div>
                 </div>
 
                 <div style={{marginTop: '20px'}} className='inputs'>
                     <div className='text'>Waybill No</div>
-                    <input disabled={true} value={wayBillNo} onChange={e => setWayBillNo(e.target.value)} className='date' type={'text'}  />
+                    <input style={{width:'100%'}} disabled={true} value={wayBillNo} onChange={e => setWayBillNo(e.target.value)} className='date' type={'text'}  />
                 </div>
 
                 <div style={{marginTop:'20px'}} className='inputs'>
@@ -341,24 +340,24 @@ const Supply = (props) => {
                 <div className='twoInputs'>
                     <div className='inputs2'>
                         <div className='text'>Quantity Loaded</div>
-                        <input disabled={true} value={quantity} onChange={e => setQuantity(e.target.value)} className='date' type={'text'}  />
+                        <input style={{marginRight:'1%'}} disabled={true} value={quantity} onChange={e => setQuantity(e.target.value)} className='date' type={'text'}  />
                     </div>
 
                     <div className='inputs2'>
                         <div className='text'>Date</div>
-                        <input onChange={e => setDate(e.target.value)} className='date' type={'date'}  />
+                        <input style={{marginLeft:'1%'}} onChange={e => setDate(e.target.value)} className='date' type={'date'}  />
                     </div>
                 </div>
 
                 <div className='twoInputs'>
                     <div className='inputs2'>
                         <div className='text'>Shortage</div>
-                        <input disabled={true} value={shortage} onChange={e => setShortage(e.target.value)} className='date' type={'text'}  />
+                        <input style={{marginRight:'1%'}} disabled={true} value={shortage} onChange={e => setShortage(e.target.value)} className='date' type={'text'}  />
                     </div>
 
                     <div className='inputs2'>
                         <div className='text'>Overage</div>
-                        <input disabled={true} value={overage} onChange={e => setOverage(e.target.value)} className='date' type={'text'}  />
+                        <input style={{marginLeft:'1%'}} disabled={true} value={overage} onChange={e => setOverage(e.target.value)} className='date' type={'text'}  />
                     </div>
                 </div>
 
