@@ -105,7 +105,7 @@ const Expenses = () => {
     return(
         <div className='expensesContainer'>
             <ReactCamera open={open} close={setOpen} setDataUri={setCam} />
-            <div className='lpos'>
+            <div className='form-container'>
                 <div style={{marginTop: '20px'}} className='inputs'>
                     <div className='text'>Date Created</div>
                     <input className='date' type={'date'}  />

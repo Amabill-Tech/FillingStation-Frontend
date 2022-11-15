@@ -212,7 +212,7 @@ const Payments = () => {
     return(
         <div className='expensesContainer'>
             <ReactCamera open={open} close={setOpen} setDataUri={setCam} />
-            <div style={{background:'#fff'}} className='lpos'> 
+            <div style={{background:'#fff', marginTop:'20px'}} className='form-container'> 
                 <div style={inner}> 
                     <div className='tabs'>
                         <Button sx={switchTab? inactive : active}
@@ -354,7 +354,7 @@ const Payments = () => {
                     <div style={{width:'100%', height:'5px'}}></div>
                 </div>
             </div>
-            <div className='right'>
+            <div style={{marginTop:'20px'}} className='right'>
                 <div className='headers'>
                     <div className='headText'>S/N</div>
                     <div className='headText'>Account</div>

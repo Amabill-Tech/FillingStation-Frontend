@@ -1,6 +1,4 @@
 import React, { useRef, useState } from 'react';
-import '../../styles/pump.scss';
-import '../../styles/expenses.scss';
 import cross from '../../assets/cross.png';
 import { Button, MenuItem, Select } from '@mui/material';
 import photo from '../../assets/photo.png';
@@ -282,7 +280,7 @@ const LPO = (props) => {
             <ReactCamera open={open} close={setOpen} setDataUri={setCam} />
             <div>Select Pump that gives out lpo for the day</div>
 
-            <div>
+            <div style={{marginLeft:'10px'}}>
                 <div style={{marginTop:'10px', width:'auto'}} className='pump-list'>
                     {
                         pumpList.length === 0?
@@ -310,8 +308,8 @@ const LPO = (props) => {
                 </div>
             </div>
 
-            <div style={{height:'auto'}} className='expensesContainer'>
-                <div className='lpos'>
+            <div style={{height:'auto', marginTop:'20px'}} className='expensesContainer'>
+                <div className='form-container'>
                     <div style={{marginTop:'0px'}} className='inputs'>
                         <div className='text'>Account Name</div>
                         <Select
@@ -351,9 +349,9 @@ const LPO = (props) => {
                         </Select>
                     </div>
 
-                    <div style={{marginTop:'20px'}} className='inputs'>
+                    <div style={{marginTop:'20px', width:'100%'}} className='inputs'>
                         <div className='text'>Truck No</div>
-                        <input value={truckNo} onChange={e => setTruckNo(e.target.value)} className='date' type={'text'}  />
+                        <input style={{width:'100%'}} value={truckNo} onChange={e => setTruckNo(e.target.value)} className='date' type={'text'}  />
                     </div>
 
                     <div style={{width:'100%'}} className='twoInputs'>
