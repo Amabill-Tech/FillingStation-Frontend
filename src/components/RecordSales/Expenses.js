@@ -21,6 +21,7 @@ const Expenses = (props) => {
     const [gall, setGall] = useState({});
     const oneOutletStation = useSelector(state => state.outletReducer.oneStation);
     const [listOfExpenses, setListOfExpenses] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const [date, setDate] = useState('');
     const [expenseName, setExpenseName] = useState('');
@@ -111,7 +112,7 @@ const Expenses = (props) => {
 
 
     const submitAllExpenses = async() => {
-
+        setLoading(true);
         for(let i = 0, max = listOfExpenses.length; i < max; i++){
             if((typeof(listOfExpenses[i].attachApprovalCam) === "string")){
                 const url = config.BASE_URL + "/360-station/api/expenses/create";
@@ -149,6 +150,7 @@ const Expenses = (props) => {
 
         props.refresh();
         setListOfExpenses([]);
+        setLoading(false);
         swal("Sucess!", "Expenses Recorded Successfully!", "success");
 
         /*if((typeof(cam) === "string")){
@@ -345,7 +347,7 @@ const Expenses = (props) => {
                                 ariaLabel="three-dots-loading"
                                 wrapperStyle={{position:'absolute', zIndex:'30'}}
                                 wrapperClassName=""
-                                visible={false}
+                                visible={loading}
                             />
                         </div>
                         <Button sx={{
