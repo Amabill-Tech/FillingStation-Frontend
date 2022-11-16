@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import '../../styles/expenses.scss';
 import photo from '../../assets/photo.png';
+import hr8 from '../../assets/hr8.png';
 import upload from '../../assets/upload.png';
 import Button from '@mui/material/Button';
 import swal from 'sweetalert';
@@ -9,13 +10,16 @@ import config from '../../constants';
 import { useSelector } from 'react-redux';
 import ReactCamera from '../Modals/ReactCamera';
 import {ThreeDots} from 'react-loader-spinner'
+import { useEffect } from 'react';
 
-const Payments = () => {
+const Payments = (props) => {
 
     const [switchTab, setSwitchTab] = useState(false);
     const [open, setOpen] = useState(false);
     const gallery1 = useRef();
     const oneOutletStation = useSelector(state => state.outletReducer.oneStation);
+    const [listOfBankPayments, setListOfBankPayments] = useState([]);
+    const [listOfPOSPayments, setListOfPOSPayments] = useState(null);
 
     const [bankName, setBankName] = useState('');
     const [tellerNumber, setTellerNumber] = useState('');
@@ -24,14 +28,19 @@ const Payments = () => {
     const [amount, setAmount] = useState('');
     const [date, setDate] = useState('');
     const [cam, setCam] = useState(null);
-    const [gall, setGall] = useState({});
+    const [gall, setGall] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const handleSwitchTab = () => {
         setSwitchTab(false);
+        setListOfPOSPayments(null);
+        setListOfBankPayments([]);
     }
 
     const handleSwitchTab2 = () => {
         setSwitchTab(true);
+        setListOfPOSPayments([]);
+        setListOfBankPayments(null);
     }
 
     const pickFromGallery = () => {
@@ -48,6 +57,7 @@ const Payments = () => {
     }
 
     const submitPayment = () => {
+
         if((typeof(cam) === "string")){
             if(date === "") return swal("Warning!", "Payment date field cannot be empty", "info");
             if(bankName === "") return swal("Warning!", "Bank name field cannot be empty", "info");
@@ -56,7 +66,7 @@ const Payments = () => {
             if(cam === null) return swal("Warning!", "Please select a file", "info");
 
             const payload = {
-                dateCreated: null,
+                dateCreated: date,
                 bankName: bankName,
                 tellerNumber: tellerNumber,
                 amountPaid: amount,
@@ -66,26 +76,15 @@ const Payments = () => {
                 organisationID: oneOutletStation.organisation,
             }
 
-            const url = config.BASE_URL + "/360-station/api/payment/create";
-            const httpConfig = {
-                headers: {
-                    "content-type": "multipart/form-data",
-                    "Authorization": "Bearer "+ localStorage.getItem('token'),
-                }
-            };
-            axios.post(url, payload, httpConfig).then((data) => {
-                console.log('form data', data);
-            }).then(()=>{
-                setCam('');
-                setGall({});
-                setBankName('');
-                setTellerNumber('');
-                setPosName('');
-                setTerminalID('');
-                setAmount('');
-                swal("Success!", "Expenses recorded successfully", "success"); 
-            }); 
+            setListOfBankPayments(prev => [...prev, payload]);
 
+            setCam(null);
+            setGall("");
+            setBankName('');
+            setTellerNumber('');
+            setPosName('');
+            setTerminalID('');
+            setAmount('');
         }else{
             if(date === "") return swal("Warning!", "Payment date field cannot be empty", "info");
             if(bankName === "") return swal("Warning!", "Bank name field cannot be empty", "info");
@@ -93,42 +92,199 @@ const Payments = () => {
             if(amount === "") return swal("Warning!", "Amount field cannot be empty", "info");
             if(typeof(gall.name) === "undefined") return swal("Warning!", "Please select a file", "info");
 
-            const formData = new FormData();
-            formData.append("dateCreated", null);
-            formData.append("bankName", bankName);
-            formData.append("tellerNumber", tellerNumber);
-            formData.append("amountPaid", amount);
-            formData.append("paymentDate", date);
-            formData.append("attachApproval", gall);
-            formData.append("outletID", oneOutletStation._id);
-            formData.append("organisationID", oneOutletStation.organisation);
-            const httpConfig = {
-                headers: {
-                    "content-type": "multipart/form-data",
-                    "Authorization": "Bearer "+ localStorage.getItem('token'),
-                }
-            };
+            const payload = {
+                dateCreated: date,
+                bankName: bankName,
+                tellerNumber: tellerNumber,
+                amountPaid: amount,
+                paymentDate: date,
+                attachApprovalCam: gall,
+                outletID: oneOutletStation._id,
+                organisationID: oneOutletStation.organisation,
+            }
 
-            const url = config.BASE_URL + "/360-station/api/payment/create";
-            axios.post(url, formData, httpConfig).then((data) => {
-                console.log('form data', data);
-            }).then(()=>{
-                setCam('');
-                setGall({});
-                setCam('');
-                setGall({});
-                setBankName('');
-                setTellerNumber('');
-                setPosName('');
-                setTerminalID('');
-                setAmount('');
-                swal("Success!", "Expenses recorded successfully", "success");
-            });
+            setListOfBankPayments(prev => [...prev, payload]);
+
+            setCam(null);
+            setGall("");
+            setBankName('');
+            setTellerNumber('');
+            setPosName('');
+            setTerminalID('');
+            setAmount('');
         }
     }
 
+    const addBankPayment = async(url, payload, httpConfig) => {
+        let res = await axios.post(url, payload, httpConfig).then((data) => {
+            return data;
+        });
+        return res;
+    }
+
+    const addBankGallPayment = async(url, formData, httpConfig) => {
+        let res = await axios.post(url, formData, httpConfig).then((data) => {
+            return data;
+        });
+        return res;
+    }
+
+    const submitAllPayment = async() => {
+
+        setLoading(true);
+        for(let i = 0, max = listOfBankPayments.length; i < max; i++){
+            if((typeof(listOfBankPayments[i].attachApprovalCam) === "string")){
+                const url = config.BASE_URL + "/360-station/api/payment/create";
+                const httpConfig = {
+                    headers: {
+                        "content-type": "multipart/form-data",
+                        "Authorization": "Bearer "+ localStorage.getItem('token'),
+                    }
+                };
+
+                const bankPaid = await addBankPayment(url, listOfBankPayments[i], httpConfig);
+                console.log(bankPaid, "bank payment is successful");
+            }else{
+                const formData = new FormData();
+                formData.append("dateCreated", listOfBankPayments[i].dateCreated);
+                formData.append("bankName", listOfBankPayments[i].bankName);
+                formData.append("tellerNumber", listOfBankPayments[i].tellerNumber);
+                formData.append("amountPaid", listOfBankPayments[i].amount);
+                formData.append("paymentDate", listOfBankPayments[i].date);
+                formData.append("attachApproval", listOfBankPayments[i].attachApprovalCam);
+                formData.append("outletID", listOfBankPayments[i].outletID);
+                formData.append("organisationID", listOfBankPayments[i].organisationID);
+                const httpConfig = {
+                    headers: {
+                        "content-type": "multipart/form-data",
+                        "Authorization": "Bearer "+ localStorage.getItem('token'),
+                    }
+                };
+
+                const url = config.BASE_URL + "/360-station/api/payment/create";
+                const addBankGall = await addBankGallPayment(url, formData, httpConfig);
+                console.log(addBankGall, "bank payment is successfull");
+            }
+        }
+
+        props.refresh();
+        setListOfBankPayments([]);
+        setLoading(false);
+        swal("Sucess!", "Bank Payment Recorded Successfully!", "success");
+    }
+
     const submitPOSpayment = () => {
+
         if((typeof(cam) === "string")){
+            if(date === "") return swal("Warning!", "Payment date field cannot be empty", "info");
+            if(posName === "") return swal("Warning!", "Bank name field cannot be empty", "info");
+            if(terminalID === "") return swal("Warning!", "Teller Number field cannot be empty", "info");
+            if(amount === "") return swal("Warning!", "Amount field cannot be empty", "info");
+            if(cam === null) return swal("Warning!", "Please select a file", "info");
+
+            const payload = {
+                dateCreated: date,
+                posName: posName,
+                terminalID: terminalID,
+                amountPaid: amount,
+                paymentDate: date,
+                attachApprovalCam: cam,
+                outletID: oneOutletStation._id,
+                organisationID: oneOutletStation.organisation,
+            }
+
+            setListOfPOSPayments(prev => [...prev, payload]);
+
+            setCam(null);
+            setGall("");
+            setPosName('');
+            setTerminalID('');
+            setAmount('');
+        }else{
+            if(date === "") return swal("Warning!", "Payment date field cannot be empty", "info");
+            if(posName === "") return swal("Warning!", "Bank name field cannot be empty", "info");
+            if(terminalID === "") return swal("Warning!", "Teller Number field cannot be empty", "info");
+            if(amount === "") return swal("Warning!", "Amount field cannot be empty", "info");
+            if(typeof(gall.name) === "undefined") return swal("Warning!", "Please select a file", "info");
+
+            const payload = {
+                dateCreated: date,
+                posName: posName,
+                terminalID: terminalID,
+                amountPaid: amount,
+                paymentDate: date,
+                attachApprovalCam: gall,
+                outletID: oneOutletStation._id,
+                organisationID: oneOutletStation.organisation,
+            }
+
+            setListOfPOSPayments(prev => [...prev, payload]);
+
+            setCam(null);
+            setGall("");
+            setPosName('');
+            setTerminalID('');
+            setAmount('');
+        }
+    }
+
+    const addPOSPayment = async(url, payload, httpConfig) => {
+        let res = await axios.post(url, payload, httpConfig).then((data) => {
+            return data;
+        });
+        return res;
+    }
+
+    const addPOSGallPayment = async(url, formData, httpConfig) => {
+        let res = await axios.post(url, formData, httpConfig).then((data) => {
+            return data;
+        });
+        return res;
+    }
+
+    const submitAllPOSpayment = async() => {
+
+        setLoading(true);
+        for(let i = 0, max = listOfPOSPayments.length; i < max; i++){
+            if((typeof(listOfPOSPayments[i].attachApprovalCam) === "string")){
+                const url = config.BASE_URL + "/360-station/api/pos-payment/create";
+                const httpConfig = {
+                    headers: {
+                        "content-type": "multipart/form-data",
+                        "Authorization": "Bearer "+ localStorage.getItem('token'),
+                    }
+                };
+
+                const posPaid = await addPOSPayment(url, listOfPOSPayments[i], httpConfig);
+                console.log(posPaid, "pos payment is successful");
+            }else{
+                const formData = new FormData();
+                formData.append("dateCreated", listOfPOSPayments[i].dateCreated);
+                formData.append("posName", listOfPOSPayments[i].posName);
+                formData.append("terminalID", listOfPOSPayments[i].terminalID);
+                formData.append("amountPaid", listOfPOSPayments[i].amountPaid);
+                formData.append("paymentDate", listOfPOSPayments[i].paymentDate);
+                formData.append("attachApproval", listOfPOSPayments[i].attachApprovalCam);
+                formData.append("outletID", listOfPOSPayments[i].outletID);
+                formData.append("organisationID", listOfPOSPayments[i].organisationID);
+                const httpConfig = {
+                    headers: {
+                        "content-type": "multipart/form-data",
+                        "Authorization": "Bearer "+ localStorage.getItem('token'),
+                    }
+                };
+
+                const url = config.BASE_URL + "/360-station/api/pos-payment/create";
+                const addPosGall = await addPOSGallPayment(url, formData, httpConfig);
+                console.log(addPosGall, "pos payment is successfull");
+            }
+        }
+
+        props.refresh();
+        setListOfPOSPayments([]);
+        setLoading(false);
+        swal("Sucess!", "POS Payment Recorded Successfully!", "success");
+        /*if((typeof(cam) === "string")){
             if(date === "") return swal("Warning!", "Payment date field cannot be empty", "info");
             if(posName === "") return swal("Warning!", "Bank name field cannot be empty", "info");
             if(terminalID === "") return swal("Warning!", "Teller Number field cannot be empty", "info");
@@ -206,7 +362,31 @@ const Payments = () => {
                 setAmount('');
                 swal("Success!", "Payments recorded successfully", "success");
             });
-        }
+        }*/
+    }
+
+    const deleteFromList2 = (index) => {
+        const newList = [...listOfPOSPayments];
+        newList.pop(index);
+        setListOfPOSPayments(newList);
+
+        setCam(null);
+        setGall("");
+        setPosName('');
+        setTerminalID('');
+        setAmount('');
+    }
+
+    const deleteFromList1 = (index) => {
+        const newList = [...listOfBankPayments];
+        newList.pop(index);
+        setListOfBankPayments(newList);
+
+        setCam(null);
+        setGall("");
+        setBankName('');
+        setTellerNumber('');
+        setAmount('');
     }
 
     return(
@@ -283,7 +463,7 @@ const Payments = () => {
                                     }
                                     }}  
                                     onClick={submitPayment}
-                                    variant="contained"> Submit
+                                    variant="contained"> Add to list
                                 </Button>
                             </div>
                         </div>:
@@ -345,7 +525,7 @@ const Payments = () => {
                                 }
                                 }}  
                                 onClick={submitPOSpayment}
-                                variant="contained"> Submit
+                                variant="contained"> Add to list
                             </Button>
                         </div>
                         </div>
@@ -355,16 +535,28 @@ const Payments = () => {
                 </div>
             </div>
             <div style={{marginTop:'20px'}} className='right'>
-                <div className='headers'>
-                    <div className='headText'>S/N</div>
-                    <div className='headText'>Account</div>
-                    <div className='headText'>Product</div>
-                    <div className='headText'>Quantity</div>
-                    <div className='headText'>Action</div>
-                </div>
+                {listOfBankPayments === null ||
+                    <div className='headers'>
+                        <div className='headText'>S/N</div>
+                        <div className='headText'>Bank Name</div>
+                        <div className='headText'>Teller No</div>
+                        <div className='headText'>Amount</div>
+                        <div className='headText'>Action</div>
+                    </div>
+                }
 
-                {
-                    [].length === 0?
+                {listOfPOSPayments === null ||
+                    <div className='headers'>
+                        <div className='headText'>S/N</div>
+                        <div className='headText'>Pos Name</div>
+                        <div className='headText'>Terminal ID</div>
+                        <div className='headText'>Amount</div>
+                        <div className='headText'>Action</div>
+                    </div>
+                }
+
+                {(listOfBankPayments === null) &&
+                    listOfPOSPayments !== null && listOfPOSPayments.length === 0?
                     false? 
                     <div style={{width:'100%', height:'30px', display:'flex', justifyContent:'center'}}>
                         <ThreeDots 
@@ -379,18 +571,18 @@ const Payments = () => {
                         />
                     </div>:
                     <div style={{fontSize:'14px', fontFamily:'Nunito-Regular', marginTop:'20px', color:'green'}}>No pending supply record</div>:
-                    [].map((data, index) => {
+                    listOfPOSPayments !== null && listOfPOSPayments.map((data, index) => {
                         return(
                             <div className='rows'>
                                 <div className='headText'>{index + 1}</div>
-                                <div className='headText'>{data.payload.accountName}</div>
-                                <div className='headText'>{data.payload.productType}</div>
-                                <div className='headText'>{data.payload.litre}</div>
+                                <div className='headText'>{data.hasOwnProperty('bankName')? data.bankName: data.posName}</div>
+                                <div className='headText'>{data.hasOwnProperty('tellerNumber')? data.tellerNumber: data.terminalID}</div>
+                                <div className='headText'>{data.amountPaid}</div>
                                 <div className='headText'>
                                     <img 
-                                        // onClick={()=>{deleteFromList(index)}} 
+                                        onClick={()=>{deleteFromList2(index)}} 
                                         style={{width:'22px', height:'22px'}} 
-                                        // src={hr8} 
+                                        src={hr8} 
                                         alt="icon" 
                                     />
                                 </div>
@@ -398,6 +590,43 @@ const Payments = () => {
                         )
                     })
                 }
+
+                {(listOfPOSPayments === null ) &&
+                    listOfBankPayments !== null && listOfBankPayments.length === 0?
+                    false? 
+                    <div style={{width:'100%', height:'30px', display:'flex', justifyContent:'center'}}>
+                        <ThreeDots 
+                            height="60" 
+                            width="50" 
+                            radius="9"
+                            color="#076146" 
+                            ariaLabel="three-dots-loading"
+                            wrapperStyle={{position:'absolute', zIndex:'30'}}
+                            wrapperClassName=""
+                            visible={false}
+                        />
+                    </div>:
+                    <div style={{fontSize:'14px', fontFamily:'Nunito-Regular', marginTop:'20px', color:'green'}}>No pending supply record</div>:
+                    listOfBankPayments !== null && listOfBankPayments.map((data, index) => {
+                        return(
+                            <div className='rows'>
+                                <div className='headText'>{index + 1}</div>
+                                <div className='headText'>{data.hasOwnProperty('bankName')? data.bankName: data.posName}</div>
+                                <div className='headText'>{data.hasOwnProperty('tellerNumber')? data.tellerNumber: data.terminalID}</div>
+                                <div className='headText'>{data.amountPaid}</div>
+                                <div className='headText'>
+                                    <img 
+                                        onClick={()=>{deleteFromList1(index)}} 
+                                        style={{width:'22px', height:'22px'}} 
+                                        src={hr8} 
+                                        alt="icon" 
+                                    />
+                                </div>
+                            </div>
+                        )
+                    })
+                }
+
 
                 <div style={{marginBottom:'0px', width:'100%', height:'30px', justifyContent:'space-between'}} className='submit'>
                     <div>
@@ -409,7 +638,7 @@ const Payments = () => {
                             ariaLabel="three-dots-loading"
                             wrapperStyle={{position:'absolute', zIndex:'30'}}
                             wrapperClassName=""
-                            visible={false}
+                            visible={loading}
                         />
                     </div>
                     <Button sx={{
@@ -422,7 +651,7 @@ const Payments = () => {
                             backgroundColor: '#427BBE'
                         }
                         }}  
-                        // onClick={submitAllRecordSales}
+                        onClick={listOfBankPayments === null? submitAllPOSpayment: submitAllPayment}
                         variant="contained"> Submit
                     </Button>
                 </div>
