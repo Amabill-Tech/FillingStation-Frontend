@@ -43,6 +43,12 @@ const labels = [
     'April',
     'May',
     'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
 ];
 
 const data = {
@@ -51,17 +57,17 @@ const data = {
         {
             label: 'AGO',
             borderColor: '#399A19',
-            data: [0, 10, 5, 2, 20, 30, 45],
+            data: [0, 10, 5, 2, 20, 30, 45, 25, 50, 35, 10, 40],
         },
         {
             label: 'PMS',
             borderColor: '#FFA010',
-            data: [40, 10,20, 26, 20, 10, 45],
+            data: [40, 10, 20, 26, 20, 10, 45, 30, 10, 15, 25, 40],
         },
         {
             label: 'DPK',
             borderColor: '#000',
-            data: [20, 40,10, 20, 30, 5, 18],
+            data: [20, 40, 10, 20, 30, 5, 18, 50, 35, 40, 25, 30],
         }
     ]
 };

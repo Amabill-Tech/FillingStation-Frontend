@@ -9,7 +9,6 @@ import folder2 from '../../assets/folder2.png';
 import hand from '../../assets/hand.png';
 import naira from '../../assets/naira.png';
 import me6 from '../../assets/me6.png';
-import { OutlinedInput } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import OutletService from '../../services/outletService';
 import { getAllStations } from '../../store/actions/outlet';
@@ -18,11 +17,13 @@ import CostPriceModal from '../Modals/CostPriceModal';
 import { Route, Switch, useHistory } from 'react-router-dom';
 import Payments from './Payments';
 import Expenses from './Expenses';
+import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 
 const Analysis = (props) => {
 
+    const [value, onChange] = useState([new Date(), new Date()]);
     const user = useSelector(state => state.authReducer.user);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const dispatch = useDispatch();
@@ -36,8 +37,11 @@ const Analysis = (props) => {
     const [defaultState, setDefault] = useState(0);
     const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
+    const [open3, setOpen3] = useState(false);
     const [type, setType] = useState(false);
     const [mode, setMode] = useState("");
+
+    console.log(value, 'datesssss')
 
     const getAllOutletData = useCallback(() => {
 
@@ -81,7 +85,8 @@ const Analysis = (props) => {
                         </div>
                     </div>
                     <div className='bottom-first-image'>
-                        <img style={{width:'30px', height:'10px'}} src={me6} alt="icon" />
+                        <img style=
+                        {{width:'30px', height:'10px'}} src={me6} alt="icon" />
                     </div>
                 </div>
             </div>
@@ -101,6 +106,10 @@ const Analysis = (props) => {
         }else if(type === "expenses"){
              history.push("/home/analysis/expenses");
         }
+    }
+
+    const selectDateRange = () => {
+        setOpen3(true);
     }
 
     return(
@@ -144,23 +153,8 @@ const Analysis = (props) => {
                                 </Select>
                             </div>
                         </div>
-                        <div style={{width:'130px'}} className='butt'>
-                            <OutlinedInput 
-                                sx={{
-                                    width:'100%', 
-                                    height:'30px',  
-                                    background: '#427BBE',
-                                    borderRadius: '3px',
-                                    fontSize:'12px',
-                                    textTransform:'capitalize',
-                                    color:'#fff',
-                                    '&:hover': {
-                                        backgroundColor: '#427BBE'
-                                    }
-                                    }} placeholder="Date" 
-                                type="date"
-                                // onChange={e => setAmount(e.target.value)}
-                            />
+                        <div style={{justifyContent:'flex-end'}} className='butt'>
+                            <DateRangePicker onChange={onChange} value={value} />
                         </div>
                     </div>
 
@@ -283,6 +277,8 @@ const selectStyle2 = {
 const contain2 = {
     width:'100%',
 }
+
+const styles = { width: 260, display: 'block', marginBottom: 10 };
 
 const menu = {
     fontSize:'14px',

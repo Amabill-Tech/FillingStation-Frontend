@@ -252,7 +252,7 @@ const Expenses = () => {
                                         <div className='column'>{data.description}</div>
                                         <div className='column'>{data.expenseAmount}</div>
                                         <div className='column'>
-                                            <a href={config.BASE_URL + data.attachApproval} target="_blank" rel="noreferrer">View Invoice</a>
+                                            <a href={data.attachApproval === "0"? config.BASE_URL + data.attachApprovalCam: config.BASE_URL + data.attachApproval} target="_blank" rel="noreferrer">View Invoice</a>
                                         </div>
                                     </div> 
                                 )
