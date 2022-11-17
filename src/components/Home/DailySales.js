@@ -3,6 +3,7 @@ import '../../styles/dailySales.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import me5 from '../../assets/me5.png';
+import calendar from '../../assets/calendar.png';
 import slideMenu from '../../assets/slideMenu.png';
 import Button from '@mui/material/Button';
 import {
@@ -21,12 +22,13 @@ import DPKTank from '../Outlet/DPKTank';
 import { useDispatch, useSelector } from 'react-redux';
 import OutletService from '../../services/outletService';
 import { getAllOutletTanks, getAllStations } from '../../store/actions/outlet';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, useHistory } from 'react-router-dom';
 import PMSDailySales from '../DailySales/PMSDailySales';
 import AGODailySales from '../DailySales/AGODailySales';
 import DPKDailySales from '../DailySales/DPKDailySales';
 import ComprehensiveReport from '../DailySales/ComprehensiveReport';
-import { DateRangePicker } from 'rsuite';
+import ListAllTanks from '../Outlet/TankList';
+import { useRef } from 'react';
 
 ChartJS.register(
     CategoryScale,
@@ -78,14 +80,23 @@ const options = {
 }
 
 const DailySales = (props) => {
+    const date = new Date();
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear();
+
+    const date2 = new Date(year+"-"+month+"-"+day)
 
     const user = useSelector(state => state.authReducer.user);
     const dispatch = useDispatch();
+    const history = useHistory();
     const tankList = useSelector(state => state.outletReducer.tankList);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const [defaultState, setDefault] = useState(0);
     const [cummulatives, setCummulatives] = useState({});
     const [currentStation, setCurrentStation] = useState({});
+    const dateHandle = useRef();
+    const [currentDate, setCurrentDate] = useState(date2.toDateString());
 
     const getAllProductData = useCallback(() => {
 
@@ -198,8 +209,16 @@ const DailySales = (props) => {
         }
     }
 
+    const goToTanks = (product) => {
+        history.push('/home/outlets/list', {state: product});
+    }
+
+    const dateHandleInputDate = () => {
+        dateHandle.current.showPicker();
+    }
+
     return(
-        <div className='daily-sales-container'>
+        <div style={{marginTop:'20px'}} className='daily-sales-container'>
             { props.activeRoute.split('/').length === 3 &&
                 <>
                     <div className='daily-left'>
@@ -291,7 +310,7 @@ const DailySales = (props) => {
                                     <div className='tank-head'>PMS</div>
                                     <div className='level'>Level: 92,600 Litres</div>
                                     <div className='capacity'>Capacity: 156,600 Litres</div>
-                                    <div className='canvas-container'>
+                                    <div onClick={()=>{goToTanks("PMS")}} className='canvas-container'>
                                         <PMSTank data = {cummulatives}/>
                                     </div>
                                 </div>
@@ -299,7 +318,7 @@ const DailySales = (props) => {
                                     <div className='tank-head'>AGO</div>
                                         <div className='level'>Level: 92,600 Litres</div>
                                         <div className='capacity'>Capacity: 156,600 Litres</div>
-                                        <div className='canvas-container'>
+                                        <div onClick={()=>{goToTanks("AGO")}} className='canvas-container'>
                                             <AGOTank data = {cummulatives}/>
                                         </div>
                                     </div>
@@ -307,7 +326,7 @@ const DailySales = (props) => {
                                     <div className='tank-head'>DPK</div>
                                         <div className='level'>Level: 92,600 Litres</div>
                                         <div className='capacity'>Capacity: 156,600 Litres</div>
-                                        <div className='canvas-container'>
+                                        <div onClick={()=>{goToTanks("DPK")}} className='canvas-container'>
                                             <DPKTank data = {cummulatives}/>
                                         </div>
                                     </div>
@@ -316,7 +335,31 @@ const DailySales = (props) => {
                     </div>
 
                     <div className='daily-right'>
-                        <div className='expen'>
+                        <div style={{width:'100%', display:'flex', flexDirection:'row', justifyContent:'flex-end'}}>
+                            <input ref={dateHandle} style={{position:"absolute", marginTop:'10px', visibility:'hidden'}} type="date" />
+                            <Button 
+                                variant="contained" 
+                                sx={{
+                                    width:'170px',
+                                    height:'30px',
+                                    background:'#06805B',
+                                    fontSize:'12px',
+                                    borderRadius:'0px',
+                                    textTransform:'capitalize',
+                                    display:'flex',
+                                    flexDirection:'row',
+                                    alignItems:'center',
+                                    '&:hover': {
+                                        backgroundColor: '#06805B'
+                                    }
+                                }}
+                                onClick={dateHandleInputDate}
+                            >
+                                <div style={{marginRight:'10px'}}>{currentDate}</div>
+                                <img style={{width:'20px', height:'20px'}} src={calendar} alt="icon"/>
+                            </Button>
+                        </div>
+                        <div style={{marginTop:'10px'}} className='expen'>
                             <div style={{background:'#108CFF'}} className='child'>
                                 <div className='ins'>
                                     <div>Expenses</div>
@@ -547,6 +590,9 @@ const DailySales = (props) => {
                         </Route>
                         <Route path='/home/daily-sales/report'>
                             <ComprehensiveReport/>
+                        </Route>
+                        <Route path='/home/outlets/list'>
+                            <ListAllTanks refresh={getAllProductData}/>
                         </Route>
                     </Switch>
                 </div>

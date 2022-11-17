@@ -10,7 +10,6 @@ import config from '../../constants';
 import { useSelector } from 'react-redux';
 import ReactCamera from '../Modals/ReactCamera';
 import {ThreeDots} from 'react-loader-spinner'
-import { useEffect } from 'react';
 
 const Payments = (props) => {
 
@@ -284,85 +283,6 @@ const Payments = (props) => {
         setListOfPOSPayments([]);
         setLoading(false);
         swal("Sucess!", "POS Payment Recorded Successfully!", "success");
-        /*if((typeof(cam) === "string")){
-            if(date === "") return swal("Warning!", "Payment date field cannot be empty", "info");
-            if(posName === "") return swal("Warning!", "Bank name field cannot be empty", "info");
-            if(terminalID === "") return swal("Warning!", "Teller Number field cannot be empty", "info");
-            if(amount === "") return swal("Warning!", "Amount field cannot be empty", "info");
-            if(cam === null) return swal("Warning!", "Please select a file", "info");
-
-            const payload = {
-                dateCreated: null,
-                posName: posName,
-                terminalID: terminalID,
-                amountPaid: amount,
-                paymentDate: date,
-                attachApprovalCam: cam,
-                outletID: oneOutletStation._id,
-                organisationID: oneOutletStation.organisation,
-            }
-
-            const url = config.BASE_URL + "/360-station/api/pos-payment/create";
-            const httpConfig = {
-                headers: {
-                    "content-type": "multipart/form-data",
-                    "Authorization": "Bearer "+ localStorage.getItem('token'),
-                }
-            };
-            axios.post(url, payload, httpConfig).then((data) => {
-                console.log('pos cam data', data);
-            }).then(()=>{
-                setCam('');
-                setGall({});
-                setCam('');
-                setGall({});
-                setBankName('');
-                setTellerNumber('');
-                setPosName('');
-                setTerminalID('');
-                setAmount('');
-                swal("Success!", "Payments recorded successfully", "success"); 
-            }); 
-
-        }else{
-            if(date === "") return swal("Warning!", "Payment date field cannot be empty", "info");
-            if(posName === "") return swal("Warning!", "Bank name field cannot be empty", "info");
-            if(terminalID === "") return swal("Warning!", "Teller Number field cannot be empty", "info");
-            if(amount === "") return swal("Warning!", "Amount field cannot be empty", "info");
-            if(typeof(gall.name) === "undefined") return swal("Warning!", "Please select a file", "info");
-
-            const formData = new FormData();
-            formData.append("dateCreated", null);
-            formData.append("posName", posName);
-            formData.append("terminalID", terminalID);
-            formData.append("amountPaid", amount);
-            formData.append("paymentDate", date);
-            formData.append("attachApproval", gall);
-            formData.append("outletID", oneOutletStation._id);
-            formData.append("organisationID", oneOutletStation.organisation);
-            const httpConfig = {
-                headers: {
-                    "content-type": "multipart/form-data",
-                    "Authorization": "Bearer "+ localStorage.getItem('token'),
-                }
-            };
-
-            const url = config.BASE_URL + "/360-station/api/pos-payment/create";
-            axios.post(url, formData, httpConfig).then((data) => {
-                console.log('pos form data', data);
-            }).then(()=>{
-                setCam('');
-                setGall({});
-                setCam('');
-                setGall({});
-                setBankName('');
-                setTellerNumber('');
-                setPosName('');
-                setTerminalID('');
-                setAmount('');
-                swal("Success!", "Payments recorded successfully", "success");
-            });
-        }*/
     }
 
     const deleteFromList2 = (index) => {
