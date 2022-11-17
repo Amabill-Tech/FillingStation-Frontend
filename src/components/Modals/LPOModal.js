@@ -258,7 +258,7 @@ const LPOModal = (props) => {
                             </div>
                        </div>
 
-                        <div style={{marginTop:'10px'}} className='butt'>
+                        <div style={{marginTop:'10px', height:'30px'}} className='butt'>
                             <Button sx={{
                                 width:'100px', 
                                 height:'30px',  

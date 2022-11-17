@@ -326,16 +326,16 @@ const LPO = (props) => {
                                                 <div className='column'>{data.address}</div>
                                                 <div className='column'>{data.personOfContact}</div>
                                                 <div style={{display:'flex', flexDirection:'column', alignItems:'center'}} className='column'>
-                                                    {data.PMS}
-                                                    <span style={{color:'green', fontSize:'12px'}}>{data.PMSRate === "pending"? 'N 0. 000': 'NGN '+ String(Number(data.PMSRate) * Number(data.PMS))}</span>
+                                                    {data.currentPMS}
+                                                    <span style={{color:'green', fontSize:'12px'}}>{data.PMSRate === "pending"? 'N 0. 000': 'NGN '+ String(Number(data.PMSRate) * Number(data.currentPMS))}</span>
                                                 </div>
                                                 <div style={{display:'flex', flexDirection:'column', alignItems:'center'}} className='column'>
-                                                    {data.AGO}
-                                                    <span style={{color:'green', fontSize:'12px'}}>{data.AGORate === "pending"? 'N 0. 000': 'NGN '+ String(Number(data.AGORate) * Number(data.AGO))}</span>
+                                                    {data.currentAGO}
+                                                    <span style={{color:'green', fontSize:'12px'}}>{data.AGORate === "pending"? 'N 0. 000': 'NGN '+ String(Number(data.AGORate) * Number(data.currentAGO))}</span>
                                                 </div>
                                                 <div style={{display:'flex', flexDirection:'column', alignItems:'center'}} className='column'>
-                                                    {data.DPK}
-                                                    <span style={{color:'green', fontSize:'12px'}}>{data.DPKRate === "pending"? 'N 0. 000': 'NGN '+ String(Number(data.DPKRate) * Number(data.DPK))}</span>
+                                                    {data.currentDPK}
+                                                    <span style={{color:'green', fontSize:'12px'}}>{data.DPKRate === "pending"? 'N 0. 000': 'NGN '+ String(Number(data.DPKRate) * Number(data.currentDPK))}</span>
                                                 </div>
                                                 <div className='column'>{data.paymentStructure}</div>
                                                 <div className='column'>

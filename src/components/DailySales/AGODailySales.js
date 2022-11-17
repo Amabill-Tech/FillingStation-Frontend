@@ -45,7 +45,7 @@ const AGODailySales = () => {
             <div className='main-sales'>
                 <div className='inner'>
                     <div className='table-heads'>
-                        <div className='col'>PMS</div>
+                        <div className='col'>Pump Name</div>
                         <div className='col'>Opening</div>
                         <div className='col'>Closing</div>
                         <div className='col'>Difference</div>
