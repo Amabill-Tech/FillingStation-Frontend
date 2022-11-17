@@ -79,13 +79,26 @@ const options = {
     }
 }
 
+const months = {
+    '01' : 'Jan',
+    '02': 'Feb',
+    '03': 'Mar',
+    '04': 'Apr',
+    '05': 'May',
+    '06': 'Jun',
+    '07': 'Jul',
+    '08': 'Aug',
+    '09': 'Sep',
+    '10': 'Oct',
+    '11': 'Nov',
+    '12': 'Dec',
+}
+
 const DailySales = (props) => {
     const date = new Date();
-    let day = date.getDate();
-    let month = date.getMonth() + 1;
-    let year = date.getFullYear();
-
-    const date2 = new Date(year+"-"+month+"-"+day)
+    const toString = date.toDateString();
+    const [name, month, day, year] = toString.split(' ');
+    const date2 = `${day} ${month} ${year}`;
 
     const user = useSelector(state => state.authReducer.user);
     const dispatch = useDispatch();
@@ -96,7 +109,7 @@ const DailySales = (props) => {
     const [cummulatives, setCummulatives] = useState({});
     const [currentStation, setCurrentStation] = useState({});
     const dateHandle = useRef();
-    const [currentDate, setCurrentDate] = useState(date2.toDateString());
+    const [currentDate, setCurrentDate] = useState(date2);
 
     const getAllProductData = useCallback(() => {
 
@@ -215,6 +228,12 @@ const DailySales = (props) => {
 
     const dateHandleInputDate = () => {
         dateHandle.current.showPicker();
+    }
+
+    const updateDate = (e) => {
+        const date = e.target.value.split('-');
+        const format = `${date[2]} ${months[date[1]]} ${date[0]}`;
+        setCurrentDate(format)
     }
 
     return(
@@ -336,7 +355,7 @@ const DailySales = (props) => {
 
                     <div className='daily-right'>
                         <div style={{width:'100%', display:'flex', flexDirection:'row', justifyContent:'flex-end'}}>
-                            <input ref={dateHandle} style={{position:"absolute", marginTop:'10px', visibility:'hidden'}} type="date" />
+                            <input onChange={updateDate} ref={dateHandle} style={{position:"absolute", marginTop:'10px', visibility:'hidden'}} type="date" />
                             <Button 
                                 variant="contained" 
                                 sx={{

@@ -10,6 +10,7 @@ import PumpUpdate from '../Modals/PumpUpdate';
 import swal from 'sweetalert';
 import { ThreeDots } from 'react-loader-spinner';
 import { refresh } from 'aos';
+import DailySalesService from '../../services/DailySales';
 
 const Pumps = (props) => {
 
@@ -36,6 +37,11 @@ const Pumps = (props) => {
 
     const updateCurrentPump = async(activePumps, i) => {
         let res = await OutletService.pumpUpdate({id: activePumps[i]._id, totalizerReading: activePumps[i].closingMeter});
+        return res;
+    }
+
+    const recordOneSale =  async(payload) => {
+        let res = await DailySalesService.createSales(payload);
         return res;
     }
 
@@ -67,6 +73,8 @@ const Pumps = (props) => {
             let data = await getOneOutletTank(payload);
             // console.log('one tank', data)
 
+            const currentTank = tankList.filter(tank => tank._id === activePumps[i].hostTank);
+            const Tank = {...currentTank[0]};
             const difference = Number(activePumps[i].closingMeter) - Number(activePumps[i].totalizerReading);
             const canTankServe = Number(data.stations.currentLevel) - difference;
 
@@ -77,12 +85,36 @@ const Pumps = (props) => {
                     totalizer: activePumps[i].closingMeter,
                     currentLevel: data.stations.currentLevel === "None"? null: String(canTankServe),
                 }
-    
+
+                const salesPayload = {
+                    sales: difference,
+                    previousLevel: data.stations.currentLevel,
+                    currentLevel: data.stations.currentLevel === "None"? null: String(canTankServe),
+                    tankID: Tank._id,
+                    tankName: Tank.tankName,
+                    pumpID: activePumps[i]._id,
+                    pumpName: activePumps[i].pumpName,
+                    openingMeter: activePumps[i].totalizerReading,
+                    closingMeter: activePumps[i].closingMeter,
+                    productType: activePumps[i].productType,
+                    PMSCostPrice: oneOutletStation.PMSCost,
+                    PMSSellingPrice: oneOutletStation.PMSPrice,
+                    AGOCostPrice: oneOutletStation.AGOCost,
+                    AGOSellingPrice: oneOutletStation.AGOPrice,
+                    DPKCostPrice: oneOutletStation.DPKCost,
+                    DPKSellingPrice: oneOutletStation.DPKPrice,
+                    outletID : oneOutletStation._id,
+                    organisationID: oneOutletStation.organisation,
+                }
+
                 let updateOneTank = await updateCurrentTank(TankPayload);
                 // console.log('taks update', updateOneTank)
     
                 let updatePumpTotalizer = await updateCurrentPump(activePumps, i);
                 // console.log('pumps update', updatePumpTotalizer)
+
+                const recordSales = await recordOneSale(salesPayload);
+                console.log('sales update', recordSales)
 
                 if(updateOneTank.code === 200 && updatePumpTotalizer.code === 200){
                     setLoading(false);
