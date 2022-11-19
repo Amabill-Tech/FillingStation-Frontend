@@ -29,6 +29,8 @@ import DPKDailySales from '../DailySales/DPKDailySales';
 import ComprehensiveReport from '../DailySales/ComprehensiveReport';
 import ListAllTanks from '../Outlet/TankList';
 import { useRef } from 'react';
+import DailySalesService from '../../services/DailySales';
+import LPOService from '../../services/lpo';
 
 ChartJS.register(
     CategoryScale,
@@ -110,29 +112,149 @@ const DailySales = (props) => {
     const [currentStation, setCurrentStation] = useState({});
     const dateHandle = useRef();
     const [currentDate, setCurrentDate] = useState(date2);
+    const [rangeDate, setRangeDate] = useState({});
+    const [totalPMSSales, setTotalPMSSales] = useState(0.00);
+    const [totalAGOSales, setTotalAGOSales] = useState(0.00);
+    const [totalDPKSales, setTotalDPKSales] = useState(0.00);
 
-    const getAllProductData = useCallback(() => {
+       
+
+    const getMasterRows = ({sales, lpo, rtVolumes}) => {
+
+        // filter all records by product Type
+        const salesPMSData = sales.filter(data => data.productType === "PMS");
+        const salesAGOData = sales.filter(data => data.productType === "AGO");
+        const salesDPKData = sales.filter(data => data.productType === "DPK");
+
+        const lpoPMSData = lpo.filter(data => data.productType === "PMS");
+        const lpoAGOData = lpo.filter(data => data.productType === "AGO");
+        const lpoDPKData = lpo.filter(data => data.productType === "DPK");
+
+        const rtPMSData = rtVolumes.filter(data => data.productType === "PMS");
+        const rtAGOData = rtVolumes.filter(data => data.productType === "AGO");
+        const rtDPKData = rtVolumes.filter(data => data.productType === "DPK");
+
+
+        var mergedList1 = salesPMSData.map(({ids, ...data}) => {
+            let res = lpoPMSData.filter(detail => data.pumpID === detail.pumpID);
+            let [{pumpID, ...newData}] = [{}];
+            if(res.length !== 0){
+                [{pumpID, ...newData}] = res;
+            }
+            return {pumpID, ...data, ...newData}
+        });
+
+        console.log(mergedList1, 'mergged PMS LPO')
+        console.log(rtPMSData, 'mergged rt vol LPO')
+    }
+
+    const getAllProductData = useCallback((getDataRange) => {
 
         OutletService.getAllOutletStations({organisation: user.userType === "superAdmin"? user._id : user.organisationID}).then(data => {
             dispatch(getAllStations(data.station));
             setCurrentStation(data.station[0]);
             setDefault(1);
             return data.station[0]
-        }).then((data)=>{
+        }).then(async(data)=>{
             const payload = {
                 organisationID: data.organisation,
                 outletID: data._id
             }
+
+            const salesPayload = {
+                organisationID: data.organisation,
+                outletID: data._id,
+                today: rangeDate.today,
+                tomorrow: rangeDate.tomorrow,
+            }
+
+            const salesRecord = {};
+
             OutletService.getAllOutletTanks(payload).then(data => {
                 dispatch(getAllOutletTanks(data.stations));
             });
+
+            await DailySalesService.getAllSales(salesPayload).then(data => {
+                salesRecord.sales = data.sales.sales;
+            });
+
+            await DailySalesService.getAllLPOSales(salesPayload).then((data) => {
+                salesRecord.lpo = data.lpo.lpo;
+            });
+
+            await DailySalesService.getAllRT(salesPayload).then((data) => {
+                salesRecord.rtVolumes = data.rtVolumes.rtVolumes;
+            });
+
+            getMasterRows(salesRecord);
         });
 
-    }, [dispatch, user.organisationID, user._id, user.userType]);
+    }, [dispatch, user.organisationID, rangeDate.today, rangeDate.tomorrow, user._id, user.userType]);
 
     useEffect(()=>{
-        getAllProductData();
+        const now = new Date();
+        const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const toISOType = startOfToday.toISOString().split('T')[0];
+        const getDataRange = getTodayAndTomorrow(toISOType);
+        setRangeDate(getDataRange);
+        getAllProductData(getDataRange);
     },[getAllProductData])
+
+    const getTodayAndTomorrow = (value) => {
+        const today = value;
+        let tomorrow;
+        const [year, month, day] = today.split('-');
+
+        switch(month){
+            case "02":{
+                if(day === "28"){
+                    let newMonth = String(Number(month) + 1);
+                    tomorrow = `${year}-${newMonth.length === 1? `0${newMonth}`: newMonth}-01`;
+                }else{
+                    let newDay = String(Number(day) + 1);
+                    tomorrow = `${year}-${month}-${newDay.length === 1? `0${newDay}`: newDay}`;
+                }
+                break
+            }
+
+            case "01":
+            case "03":
+            case "05":
+            case "07":
+            case "08":
+            case "10":
+            case "12":{
+                if(day === "31"){
+                    let newMonth = String(Number(month) + 1);
+                    tomorrow = `${year}-${newMonth.length === 1? `0${newMonth}`: newMonth}-01`;
+                }else{
+                    let newDay = String(Number(day) + 1);
+                    tomorrow = `${year}-${month}-${newDay.length === 1? `0${newDay}`: newDay}`;
+                }
+                break
+            }
+
+            case "04":
+            case "06":
+            case "09":
+            case "11":{
+                if(day === "30"){
+                    let newDay = String(Number(day) + 1);
+                    tomorrow = `${year}-${month}-${newDay.length === 1? `0${newDay}`: newDay}`;
+                }else{
+                    let newDay = String(Number(day) + 1);
+                    tomorrow = `${year}-${month}-${newDay.length === 1? `0${newDay}`: newDay}`;
+                }
+                break
+            }
+
+            default:{
+                tomorrow = today;
+            }
+        }
+
+        return {today, tomorrow}
+    }
 
     const getCummulativeVolumePerProduct = (pms, ago, dpk) => {
         let totalPMS = 0;
@@ -287,7 +409,7 @@ const DailySales = (props) => {
                                         <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
                                             <div style={{fontFamily:'Nunito-Regular', fontSize:'14px'}}>Total Amount</div>
                                             <div style={{fontFamily:'Nunito-Regular', marginTop:'5px', fontSize:'14px'}}>PMS</div>
-                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'10px', fontSize:'16px'}}> N 231,925</div>
+                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'10px', fontSize:'16px'}}> N {totalPMSSales}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -301,7 +423,7 @@ const DailySales = (props) => {
                                         <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
                                             <div style={{fontFamily:'Nunito-Regular', fontSize:'14px'}}>Total Amount</div>
                                             <div style={{fontFamily:'Nunito-Regular', marginTop:'5px', fontSize:'14px'}}>AGO</div>
-                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'10px', fontSize:'16px'}}> N 231,925</div>
+                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'10px', fontSize:'16px'}}> N {totalAGOSales}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -315,7 +437,7 @@ const DailySales = (props) => {
                                         <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
                                             <div style={{fontFamily:'Nunito-Regular', fontSize:'14px'}}>Total Amount</div>
                                             <div style={{fontFamily:'Nunito-Regular', marginTop:'5px', fontSize:'14px'}}>DPK</div>
-                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'10px', fontSize:'16px'}}> N 231,925</div>
+                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'10px', fontSize:'16px'}}> N {totalDPKSales}</div>
                                         </div>
                                     </div>
                                 </div>

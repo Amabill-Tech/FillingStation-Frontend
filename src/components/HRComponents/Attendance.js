@@ -74,7 +74,7 @@ const Attendance = () => {
             });*/
         }
         
-    }, [user.organisationID, user.userType, limit, skip, dispatch]);
+    }, [user.organisationID, user.userType, user._id, limit, skip, dispatch]);
 
     useEffect(()=>{
         const now = new Date();

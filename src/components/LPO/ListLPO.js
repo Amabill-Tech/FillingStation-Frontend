@@ -33,7 +33,7 @@ const ListLPO = () => {
         LPOService.getAllLPOSales(payload).then((data) => {
             setTotal(data.lpo.count);
             dispatch(createLPOSales(data.lpo.lpo));
-        })
+        });
     }, [dispatch, location.state.state.organizationID, location.state.state.outletID, location.state.state._id, skip, limit]);
 
     useEffect(()=>{

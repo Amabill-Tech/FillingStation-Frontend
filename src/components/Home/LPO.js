@@ -38,7 +38,6 @@ const LPO = (props) => {
     const [viewLPO, setViewLpo] = useState(false);
     const [priceModal, setPriceModal] = useState(false);
     const [currentLPO, setCurrentLPO] = useState();
-    console.log(lpos, 'lpos')
 
     const openModal = () => {
         setLpo(true);
@@ -63,7 +62,7 @@ const LPO = (props) => {
                 dispatch(createLPO(data.lpo.lpo));
             })
         });
-    }, [dispatch, user.organisationID, skip, limit]);
+    }, [dispatch, user.organisationID, user._id, user.userType, skip, limit]);
 
     useEffect(()=>{
         getAllLPOData();

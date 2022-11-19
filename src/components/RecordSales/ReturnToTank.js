@@ -1,18 +1,17 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import '../../styles/pump.scss';
 import pump1 from '../../assets/pump1.png';
 import cross from '../../assets/cross.png';
 import { Button } from '@mui/material';
 import OutletService from '../../services/outletService';
 import { useDispatch, useSelector } from 'react-redux';
-import { deselectPumps, getAllPumps, getOneTank, selectPumps, setTotalizerReading } from '../../store/actions/outlet';
+import { deselectPumps, getAllPumps, selectPumps } from '../../store/actions/outlet';
 import PumpUpdate from '../Modals/PumpUpdate';
 import swal from 'sweetalert';
 import { ThreeDots } from 'react-loader-spinner';
-import { refresh } from 'aos';
 import DailySalesService from '../../services/DailySales';
 
-const Pumps = (props) => {
+const ReturnToTank = (props) => {
 
     const [currentPump, setCurrentPump] = useState({});
     const [selected, setSelected] = useState(null);
@@ -35,13 +34,13 @@ const Pumps = (props) => {
         return res;
     }
 
-    const updateCurrentPump = async(activePumps, i) => {
-        let res = await OutletService.pumpUpdate({id: activePumps[i]._id, totalizerReading: activePumps[i].closingMeter});
+    const updateCurrentPump = async(activePumps, i, totalizer) => {
+        let res = await OutletService.pumpUpdate({id: activePumps[i]._id, totalizerReading: totalizer});
         return res;
     }
 
-    const recordOneSale =  async(payload) => {
-        let res = await DailySalesService.createSales(payload);
+    const returnToTankService = async(RTPayload) => {
+        let res = await DailySalesService.createRT(RTPayload);
         return res;
     }
 
@@ -53,19 +52,9 @@ const Pumps = (props) => {
         for(let pump of activePumps){
             const currentTank = tankList.filter(tank => tank._id === pump.hostTank);
             const Tank = {...currentTank[0]};
-            const difference = Number(pump.closingMeter) - Number(pump.totalizerReading);
-            const canTankServe = Number(Tank.currentLevel) - difference;
-            const capacity = Number(Tank.tankCapacity) - Number(Tank.currentLevel);
+            const canTankServe = Number(Tank.tankCapacity) - Number(Tank.currentLevel);
 
-            if(Number(pump.totalizerReading) > Number(pump.closingMeter)){
-                return swal("Warning!", `Closing meter less than opening for ${pump.pumpName} !`, "info");
-            }
-
-            if(canTankServe < 0){
-                return swal("Warning!", `${Tank.tankName} limit cannot dispense reading from ${pump.pumpName}!`, "info");
-            }
-
-            if(capacity <= 0){
+            if(canTankServe <= 0){
                 return swal("Warning!", `${Tank.tankName} connected to ${pump.pumpName} is full!`, "info");
             }
         }
@@ -78,57 +67,51 @@ const Pumps = (props) => {
             let data = await getOneOutletTank(payload);
             // console.log('one tank', data)
 
-            const currentTank = tankList.filter(tank => tank._id === activePumps[i].hostTank);
-            const Tank = {...currentTank[0]};
-            const difference = Number(activePumps[i].closingMeter) - Number(activePumps[i].totalizerReading);
-            const canTankServe = Number(data.stations.currentLevel) - difference;
+            const difference = Number(activePumps[i].closingMeter);
+            const canTankServe = Number(data.stations.currentLevel) + difference;
+            const totalizer = Number(activePumps[i].totalizerReading - Number(activePumps[i].closingMeter));
 
-            if(payload.currentLevel !== null){
-                const TankPayload = {
-                    id: data.stations._id,
-                    previousLevel: data.stations.currentLevel,
-                    totalizer: activePumps[i].closingMeter,
-                    currentLevel: data.stations.currentLevel === "None"? null: String(canTankServe),
-                }
-
-                const salesPayload = {
-                    sales: difference,
-                    previousLevel: data.stations.currentLevel,
-                    currentLevel: data.stations.currentLevel === "None"? null: String(canTankServe),
-                    tankID: Tank._id,
-                    tankName: Tank.tankName,
-                    pumpID: activePumps[i]._id,
-                    pumpName: activePumps[i].pumpName,
-                    openingMeter: activePumps[i].totalizerReading,
-                    closingMeter: activePumps[i].closingMeter,
-                    productType: activePumps[i].productType,
-                    PMSCostPrice: oneOutletStation.PMSCost,
-                    PMSSellingPrice: oneOutletStation.PMSPrice,
-                    AGOCostPrice: oneOutletStation.AGOCost,
-                    AGOSellingPrice: oneOutletStation.AGOPrice,
-                    DPKCostPrice: oneOutletStation.DPKCost,
-                    DPKSellingPrice: oneOutletStation.DPKPrice,
-                    outletID : oneOutletStation._id,
-                    organisationID: oneOutletStation.organisation,
-                }
-
-                let updateOneTank = await updateCurrentTank(TankPayload);
-                // console.log('taks update', updateOneTank)
-    
-                let updatePumpTotalizer = await updateCurrentPump(activePumps, i);
-                // console.log('pumps update', updatePumpTotalizer)
-
-                const recordSales = await recordOneSale(salesPayload);
-                console.log('sales update', recordSales)
-
-                if(updateOneTank.code === 200 && updatePumpTotalizer.code === 200){
-                    setLoading(false);
-                }else{
-                    return;
-                }
+            if(totalizer < 0){
+                swal("Warning!", "Return to tank must not be greater than opening meter!", "info");
             }else{
-                swal("Warning!", "This is an empty tank!", "info");
+                if(payload.currentLevel !== null){
+                    const TankPayload = {
+                        id: data.stations._id,
+                        previousLevel: data.stations.currentLevel,
+                        totalizer:  totalizer,
+                        currentLevel: data.stations.currentLevel === "None"? null: String(canTankServe),
+                    }
+
+                    const RTPayload = {
+                        litre: difference,
+                        productType: activePumps[i].productType,
+                        pumpID: activePumps[i]._id,
+                        tankID: data.stations._id,
+                        pumpName: activePumps[i].pumpName,
+                        tankName: data.stations.tankName,
+                        outletID : activePumps[i].outletID,
+                        organizationID: activePumps[i].organisationID,
+                    }
+    
+                    let updateOneTank = await updateCurrentTank(TankPayload);
+                    // console.log('taks update', updateOneTank)
+        
+                    let updatePumpTotalizer = await updateCurrentPump(activePumps, i, totalizer);
+                    // console.log('pumps update', updatePumpTotalizer)
+
+                    let returnToTankData = await returnToTankService(RTPayload);
+                    console.log('Return to tank', returnToTankData)
+    
+                    if(updateOneTank.code === 200 && updatePumpTotalizer.code === 200){
+                        setLoading(false);
+                    }else{
+                        return;
+                    }
+                }else{
+                    swal("Warning!", "This is an empty tank!", "info");
+                }
             }
+
         }
 
         OutletService.getAllStationPumps({outletID: oneOutletStation._id, organisationID: oneOutletStation.organisation}).then(data => {
@@ -212,19 +195,16 @@ const Pumps = (props) => {
                     <div>Please click to select a pump</div>:
                     pumpList.map((item, index) => {
                         return(
-                            <div style={{height:'300px'}} key={index} className='item'>
+                            <div style={{height:'230px'}} key={index} className='item'>
                                 <img style={{width:'55px', height:'60px', marginTop:'10px'}} src={pump1}  alt="icon"/>
                                 <div className='pop'>{item.pumpName}</div>
                                 <div style={{marginTop:'10px'}}  className='label'>Date: {item.updatedAt.split('T')[0]}</div>
-                                <div>
-                                    <div style={{marginTop:'10px'}} className='label'>Opening meter (Litres)</div>
-                                    <input disabled={true} defaultValue={item.totalizerReading} style={imps} type="text" />
-
-                                    <div style={{marginTop:'10px'}} className='label'>Closing meter (Litres)</div>
+                                <div style={{width:'88%'}}>
+                                    <div style={{marginTop:'10px'}} className='label'>Quantity (Litres)</div>
                                     <input 
                                         onChange={e => setTotalizer(e, item)} 
-                                        defaultValue={item.closingMeter} 
-                                        style={{...imps, border: (Number(item.totalizerReading) > Number(item.closingMeter)) && item.closingMeter !== '0'? '1px solid red': '1px solid black'}} 
+                                        defaultValue={0} 
+                                        style={imps} 
                                         type="text" 
                                     />
                                 </div>
@@ -269,7 +249,7 @@ const Pumps = (props) => {
 
 const imps = {
     height:'30px', 
-    width:'160px', 
+    width:'100%', 
     background:'#D7D7D799',
     outline:'none',
     border:'1px solid #000',
@@ -322,4 +302,4 @@ const box2 = {
     border: '1px solid #8D8D8D',
 }
 
-export default Pumps;
+export default ReturnToTank;

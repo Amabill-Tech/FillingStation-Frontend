@@ -82,6 +82,7 @@ const HomeScreen = ({history}) => {
                 '/home/record-sales/expenses': 'Expenses',
                 '/home/record-sales/payment': 'Payment',
                 '/home/record-sales/': 'Supply',
+                '/home/record-sales/rt': 'Return To Tank',
                 '/home/analysis': 'Analysis',
                 '/home/lpo': 'LPO',
                 '/home/lpo/list': 'LPO',

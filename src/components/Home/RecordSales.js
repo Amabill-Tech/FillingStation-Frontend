@@ -18,6 +18,7 @@ import { useEffect } from 'react';
 import Supply from '../RecordSales/Supply';
 import SupplyService from '../../services/supplyService';
 import { pendingSupply } from '../../store/actions/supply';
+import ReturnToTank from '../RecordSales/ReturnToTank';
 
 const RecordSales = (props) => {
     const dispatch = useDispatch();
@@ -39,6 +40,8 @@ const RecordSales = (props) => {
             props.history.push('/home/record-sales/dipping');
         }else if(data === 'supply'){
             props.history.push('/home/record-sales/');
+        }else if(data === 'rt'){
+            props.history.push('/home/record-sales/rt');
         }
     }
 
@@ -191,6 +194,21 @@ const RecordSales = (props) => {
                                 marginTop:'10px',
                                 '&:hover': {
                                     backgroundColor: '#06805B'
+                                },
+                                }}  
+                                onClick={()=>{handleTabs('rt')}}
+                                variant="contained"> Return to Tank
+                            </Button>
+                            <Button sx={{
+                                height:'35px',  
+                                background: '#06805B',
+                                borderRadius: '39px',
+                                fontSize:'12px',
+                                textTransform:'capitalize',
+                                marginLeft:'10px',
+                                marginTop:'10px',
+                                '&:hover': {
+                                    backgroundColor: '#06805B'
                                 }
                                 }}  
                                 onClick={()=>{handleTabs('lpo')}}
@@ -251,6 +269,9 @@ const RecordSales = (props) => {
                             </Route>
                             <Route exact path='/home/record-sales/pump'>
                                 <Pumps refresh = {refresh}/>
+                            </Route>
+                            <Route exact path='/home/record-sales/rt'>
+                                <ReturnToTank refresh = {refresh}/>
                             </Route>
                             <Route path='/home/record-sales/lpo'>
                                 <LPO refresh = {refresh}/>

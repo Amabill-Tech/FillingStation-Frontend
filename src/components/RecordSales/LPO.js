@@ -88,6 +88,10 @@ const LPO = (props) => {
                 litre: litre,
                 attachApprovalCam: cam,
                 lpoID: accountName._id,
+                PMSRate: accountName.PMSRate,
+                AGORate: accountName.AGORate,
+                DPKRate: accountName.DPKRate,
+                pumpID: currentPump._id,
                 outletID: oneOutletStation._id,
                 organizationID: oneOutletStation.organisation,
             }
@@ -117,6 +121,10 @@ const LPO = (props) => {
                 litre: litre,
                 attachApprovalCam: gall,
                 lpoID: accountName._id,
+                PMSRate: accountName.PMSRate,
+                AGORate: accountName.AGORate,
+                DPKRate: accountName.DPKRate,
+                pumpID: currentPump._id,
                 outletID: oneOutletStation._id,
                 organizationID: oneOutletStation.organisation,
             }
@@ -205,15 +213,15 @@ const LPO = (props) => {
                     let updatedTankData = await effectTankUpdate(updatedTank);
                     console.log(updatedTankData, 'Tank is updated successfully')
 
-                    const updatedLPO = {
-                        id: listOfLpos[i].lpoAccount._id,
-                        PMS: listOfLpos[i].currentPump.productType === "PMS"? Number(listOfLpos[i].lpoAccount.PMS) - Number(listOfLpos[i].payload.litre): undefined,
-                        AGO: listOfLpos[i].currentPump.productType ==="AGO"? Number(listOfLpos[i].lpoAccount.AGO) - Number(listOfLpos[i].payload.litre): undefined,
-                        DPK: listOfLpos[i].currentPump.productType ==="DPK"? Number(listOfLpos[i].lpoAccount.DPK) - Number(listOfLpos[i].payload.litre): undefined,
-                    }
+                    // const updatedLPO = {
+                    //     id: listOfLpos[i].lpoAccount._id,
+                    //     PMS: listOfLpos[i].currentPump.productType === "PMS"? Number(listOfLpos[i].lpoAccount.PMS) - Number(listOfLpos[i].payload.litre): undefined,
+                    //     AGO: listOfLpos[i].currentPump.productType ==="AGO"? Number(listOfLpos[i].lpoAccount.AGO) - Number(listOfLpos[i].payload.litre): undefined,
+                    //     DPK: listOfLpos[i].currentPump.productType ==="DPK"? Number(listOfLpos[i].lpoAccount.DPK) - Number(listOfLpos[i].payload.litre): undefined,
+                    // }
 
-                    let lpoUpdate = await updatedLPOHandler(updatedLPO);
-                    console.log(lpoUpdate, 'updated lpos');
+                    // let lpoUpdate = await updatedLPOHandler(updatedLPO);
+                    // console.log(lpoUpdate, 'updated lpos');
                 }
             }else{
                 // console.log(listOfLpos[i], 'gall')
@@ -225,6 +233,10 @@ const LPO = (props) => {
                 formData.append("litre", listOfLpos[i].payload.litre);
                 formData.append("attachApprovalGall", listOfLpos[i].payload.attachApprovalCam);
                 formData.append("lpoID", listOfLpos[i].lpoAccount._id);
+                formData.append("PMSRate", listOfLpos[i].PMSRate);
+                formData.append("AGORate", listOfLpos[i].AGORate);
+                formData.append("DPKRate", listOfLpos[i].DPKRate);
+                formData.append("pumpID", listOfLpos[i].payload.pumpID);
                 formData.append("outletID", oneOutletStation._id);
                 formData.append("organizationID", oneOutletStation.organisation);
                 
@@ -251,15 +263,15 @@ const LPO = (props) => {
                     let updatedTankData = await UpdatedGallTank(updatedTank);
                     console.log(updatedTankData, 'Tank from gall is updated successfully');
 
-                    const updatedLPO = {
-                        id: listOfLpos[i].lpoAccount._id,
-                        PMS: listOfLpos[i].currentPump.productType === "PMS"? Number(listOfLpos[i].lpoAccount.PMS) - Number(listOfLpos[i].payload.litre): undefined,
-                        AGO: listOfLpos[i].currentPump.productType ==="AGO"? Number(listOfLpos[i].lpoAccount.AGO) - Number(listOfLpos[i].payload.litre): undefined,
-                        DPK: listOfLpos[i].currentPump.productType ==="DPK"? Number(listOfLpos[i].lpoAccount.DPK) - Number(listOfLpos[i].payload.litre): undefined,
-                    }
+                    // const updatedLPO = {
+                    //     id: listOfLpos[i].lpoAccount._id,
+                    //     PMS: listOfLpos[i].currentPump.productType === "PMS"? Number(listOfLpos[i].lpoAccount.PMS) - Number(listOfLpos[i].payload.litre): undefined,
+                    //     AGO: listOfLpos[i].currentPump.productType ==="AGO"? Number(listOfLpos[i].lpoAccount.AGO) - Number(listOfLpos[i].payload.litre): undefined,
+                    //     DPK: listOfLpos[i].currentPump.productType ==="DPK"? Number(listOfLpos[i].lpoAccount.DPK) - Number(listOfLpos[i].payload.litre): undefined,
+                    // }
 
-                    let updateGallLpo = await UpdateGallLpoHandler(updatedLPO);
-                    console.log(updateGallLpo, 'updated gall lpos');
+                    // let updateGallLpo = await UpdateGallLpoHandler(updatedLPO);
+                    // console.log(updateGallLpo, 'updated gall lpos');
                 }
             }
         }
