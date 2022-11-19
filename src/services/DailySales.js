@@ -35,6 +35,61 @@ const DailySalesService = {
         });
     },
 
+    getAllDailyExpenses: (data) => {
+        return APIs.post('/daily-sales/allExpensesRecords', data)
+        .then(({data}) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        });
+    },
+
+    getAllDailyPayments: (data) => {
+        return APIs.post('/daily-sales/allPaymentsRecords', data)
+        .then(({data}) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        });
+    },
+
+    getAllDailyPOSPayments: (data) => {
+        return APIs.post('/daily-sales/allPOSPaymentsRecords', data)
+        .then(({data}) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        });
+    },
+
+    getAllDailyIncomingOrder: (data) => {
+        return APIs.post('/daily-sales/allIncomingOrderRecords', data)
+        .then(({data}) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        });
+    },
+
+    getAllDailySupply: (data) => {
+        return APIs.post('/daily-sales/allSupplyRecords', data)
+        .then(({data}) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        });
+    },
+
     createRT: (data) => {
         return APIs.post('/return-to-tank/create', data)
         .then(({data}) => {

@@ -117,8 +117,6 @@ const DailySales = (props) => {
     const [rangeDate, setRangeDate] = useState({});
     const dailySales = useSelector(state => state.dailySalesReducer.dailySales);
 
-       
-
     const getMasterRows = ({sales, lpo, rtVolumes}) => {
 
         // filter all records by product Type
@@ -308,6 +306,26 @@ const DailySales = (props) => {
             });
 
             getMasterRows(salesRecord);
+
+            await DailySalesService.getAllDailyExpenses(salesPayload).then((data) => {
+                console.log(data, 'daily expenses');
+            });
+
+            await DailySalesService.getAllDailyPayments(salesPayload).then((data) => {
+                console.log(data, 'daily payment');
+            });
+
+            await DailySalesService.getAllDailySupply(salesPayload).then((data) => {
+                console.log(data, 'daily supply');
+            });
+
+            await DailySalesService.getAllDailyPOSPayments(salesPayload).then((data) => {
+                console.log(data, 'daily pos payment');
+            });
+
+            await DailySalesService.getAllDailyIncomingOrder(salesPayload).then((data) => {
+                console.log(data, 'daily incoming order');
+            });
         });
 
     }, [dispatch, user.organisationID, rangeDate.today, rangeDate.tomorrow, user._id, user.userType]);
