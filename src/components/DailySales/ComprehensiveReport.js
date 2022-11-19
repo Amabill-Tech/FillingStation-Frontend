@@ -145,7 +145,7 @@ const PMSDailySales = (props) => {
                                 <div className='col'>{data.rtLitre}</div>
                                 <div style={{marginRight:'0px'}} className='col'>
                                     {data.productType === "PMS" && Number(data.sales)*Number(data.PMSSellingPrice) + Number(data.lpoLitre)*Number(data.PMSRate) - Number(data.rtLitre)*Number(data.PMSSellingPrice)}
-                                    {data.productType === "AGO" && Number(data.sales)*Number(data.AGOSSellingPrice) + Number(data.lpoLitre)*Number(data.AGORate) - Number(data.rtLitre)*Number(data.AGOSellingPrice)}
+                                    {data.productType === "AGO" && Number(data.sales)*Number(data.AGOSellingPrice) + Number(data.lpoLitre)*Number(data.AGORate) - Number(data.rtLitre)*Number(data.AGOSellingPrice)}
                                     {data.productType === "DPK" && Number(data.sales)*Number(data.DPKSellingPrice) + Number(data.lpoLitre)*Number(data.DPKRate) - Number(data.rtLitre)*Number(data.DPKSellingPrice)}
                                 </div>
                             </div>
