@@ -1,8 +1,10 @@
 import { Button } from '@mui/material';
 import React from 'react';
+import { useSelector } from 'react-redux';
 import '../../styles/report.scss';
 
 const LeftTableView = () => {
+
     return(
         <div className='column-head1'>
             <div className='header1'>
@@ -124,49 +126,46 @@ const PMSDailySales = (props) => {
                     <div style={{marginRight:'0px'}} className='col'>Amount</div>
                 </div>
 
-                <div className='table-heads2'>
-                    <div className='col'>1</div>
-                    <div className='col'>Opening</div>
-                    <div className='col'>Closing</div>
-                    <div className='col'>Difference</div>
-                    <div className='col'>LPO</div>
-                    <div className='col'>Rate</div>
-                    <div className='col'>R/T</div>
-                    <div style={{marginRight:'0px'}} className='col'>Amount</div>
-                </div>
+                {
+                    props.data.rows.length === 0?
+                    <div style={dats}> No Data </div>:
+                    props.data.rows.map(data => {
+                        return(
+                            <div className='table-heads2'>
+                                <div className='col'>{data.pumpName}</div>
+                                <div className='col'>{data.openingMeter}</div>
+                                <div className='col'>{data.closingMeter}</div>
+                                <div className='col'>{Number(data.closingMeter) - Number(data.openingMeter)}</div>
+                                <div className='col'>{data.lpoLitre}</div>
+                                <div className='col'>
+                                    {data.productType === "PMS" && data.PMSRate}
+                                    {data.productType === "AGO" && data.AGORate}
+                                    {data.productType === "DPK" && data.DPKRate}
+                                </div>
+                                <div className='col'>{data.rtLitre}</div>
+                                <div style={{marginRight:'0px'}} className='col'>
+                                    {data.productType === "PMS" && Number(data.sales)*Number(data.PMSSellingPrice) + Number(data.lpoLitre)*Number(data.PMSRate) - Number(data.rtLitre)*Number(data.PMSSellingPrice)}
+                                    {data.productType === "AGO" && Number(data.sales)*Number(data.AGOSSellingPrice) + Number(data.lpoLitre)*Number(data.AGORate) - Number(data.rtLitre)*Number(data.AGOSellingPrice)}
+                                    {data.productType === "DPK" && Number(data.sales)*Number(data.DPKSellingPrice) + Number(data.lpoLitre)*Number(data.DPKRate) - Number(data.rtLitre)*Number(data.DPKSellingPrice)}
+                                </div>
+                            </div>
+                        )
+                    })
+                }
 
-                <div className='table-heads2'>
-                    <div className='col'>2</div>
-                    <div className='col'>Opening</div>
-                    <div className='col'>Closing</div>
-                    <div className='col'>Difference</div>
-                    <div className='col'>LPO</div>
-                    <div className='col'>Rate</div>
-                    <div className='col'>R/T</div>
-                    <div style={{marginRight:'0px'}} className='col'>Amount</div>
-                </div>
-
-                <div className='table-heads2'>
-                    <div className='col'>3</div>
-                    <div className='col'>Opening</div>
-                    <div className='col'>Closing</div>
-                    <div className='col'>Difference</div>
-                    <div className='col'>LPO</div>
-                    <div className='col'>Rate</div>
-                    <div className='col'>R/T</div>
-                    <div style={{marginRight:'0px'}} className='col'>Amount</div>
-                </div>
-
-                <div className='table-heads2'>
-                    <div style={{background: "transparent"}} className='col'></div>
-                    <div style={{background: "transparent"}} className='col'></div>
-                    <div className='col'>Total</div>
-                    <div className='col'>Difference</div>
-                    <div className='col'>LPO</div>
-                    <div className='col'>Rate</div>
-                    <div className='col'>R/T</div>
-                    <div style={{marginRight:'0px'}} className='col'>Amount</div>
-                </div>
+                {
+                    props.data.rows.length === 0 ||
+                    <div className='table-heads2'>
+                        <div style={{background: "transparent"}} className='col'></div>
+                        <div style={{background: "transparent"}} className='col'></div>
+                        <div className='col'>Total</div>
+                        <div className='col'>{props.data.total.totalDifference}</div>
+                        <div className='col'>{props.data.total.totalLpo}</div>
+                        <div className='col'></div>
+                        <div className='col'>{props.data.total.totalrt}</div>
+                        <div style={{marginRight:'0px'}} className='col'>{props.data.total.amount}</div>
+                    </div>
+                }
             </div>
         </div>
     )
@@ -452,6 +451,9 @@ const DippingDailySales = () => {
 }
 
 const ComprehensiveReport = () => {
+
+    const dailySales = useSelector(state => state.dailySalesReducer.dailySales);
+
     return(
         <div className='reportContainer'>
             <div className='controls'>
@@ -502,9 +504,9 @@ const ComprehensiveReport = () => {
                             <RightTableView />
                         </div>
 
-                        <PMSDailySales name={'PMS'} />
-                        <PMSDailySales name={'AGO'} />
-                        <PMSDailySales name={'DPK'} />
+                        <PMSDailySales name={'PMS'} data={dailySales.PMS} />
+                        <PMSDailySales name={'AGO'} data={dailySales.AGO} />
+                        <PMSDailySales name={'DPK'} data={dailySales.DPK} />
                         <LPODailySales />
                         <ExpensesDailySales />
 
@@ -531,6 +533,13 @@ const ComprehensiveReport = () => {
             </div>
         </div>
     )
+}
+
+const dats = {
+    marginTop:'20px',
+    fontSize:'14px',
+    fontWeight:'bold',
+    fontFamily:'Nunito-Regular'
 }
 
 export default ComprehensiveReport;

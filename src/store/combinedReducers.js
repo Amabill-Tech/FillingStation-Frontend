@@ -14,6 +14,7 @@ import queryReducer from './reducers/query';
 import attendanceReducer from './reducers/attendance';
 import expenseReducer from './reducers/expense';
 import recordPaymentReducer from './reducers/recordPayments';
+import dailySalesReducer from './reducers/dailySales';
 
 export default combineReducers({
     authReducer,
@@ -30,5 +31,6 @@ export default combineReducers({
     queryReducer,
     attendanceReducer,
     expenseReducer,
-    recordPaymentReducer
+    recordPaymentReducer,
+    dailySalesReducer
 })

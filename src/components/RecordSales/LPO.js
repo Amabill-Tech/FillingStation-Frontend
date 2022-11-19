@@ -85,7 +85,7 @@ const LPO = (props) => {
                 accountName: accountName.companyName,
                 productType: product,
                 truckNo: truckNo,
-                litre: litre,
+                lpoLitre: litre,
                 attachApprovalCam: cam,
                 lpoID: accountName._id,
                 PMSRate: accountName.PMSRate,
@@ -118,7 +118,7 @@ const LPO = (props) => {
                 accountName: accountName.companyName,
                 productType: product,
                 truckNo: truckNo,
-                litre: litre,
+                lpoLitre: litre,
                 attachApprovalCam: gall,
                 lpoID: accountName._id,
                 PMSRate: accountName.PMSRate,
@@ -230,7 +230,7 @@ const LPO = (props) => {
                 formData.append("accountName", listOfLpos[i].lpoAccount.companyName);
                 formData.append("productType", listOfLpos[i].payload.productType);
                 formData.append("truckNo", listOfLpos[i].payload.truckNo);
-                formData.append("litre", listOfLpos[i].payload.litre);
+                formData.append("lpoLitre", listOfLpos[i].payload.lpoLitre);
                 formData.append("attachApprovalGall", listOfLpos[i].payload.attachApprovalCam);
                 formData.append("lpoID", listOfLpos[i].lpoAccount._id);
                 formData.append("PMSRate", listOfLpos[i].PMSRate);
@@ -440,7 +440,7 @@ const LPO = (props) => {
                                     <div className='headText'>{index + 1}</div>
                                     <div className='headText'>{data.payload.accountName}</div>
                                     <div className='headText'>{data.payload.productType}</div>
-                                    <div className='headText'>{data.payload.litre}</div>
+                                    <div className='headText'>{data.payload.lpoLitre}</div>
                                     <div className='headText'>
                                         <img onClick={()=>{deleteFromList(index)}} style={{width:'22px', height:'22px'}} src={hr8} alt="icon" />
                                     </div>

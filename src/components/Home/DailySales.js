@@ -31,6 +31,8 @@ import ListAllTanks from '../Outlet/TankList';
 import { useRef } from 'react';
 import DailySalesService from '../../services/DailySales';
 import LPOService from '../../services/lpo';
+import dailySalesReducer from '../../store/reducers/dailySales';
+import { passAllDailySales } from '../../store/actions/dailySales';
 
 ChartJS.register(
     CategoryScale,
@@ -113,9 +115,7 @@ const DailySales = (props) => {
     const dateHandle = useRef();
     const [currentDate, setCurrentDate] = useState(date2);
     const [rangeDate, setRangeDate] = useState({});
-    const [totalPMSSales, setTotalPMSSales] = useState(0.00);
-    const [totalAGOSales, setTotalAGOSales] = useState(0.00);
-    const [totalDPKSales, setTotalDPKSales] = useState(0.00);
+    const dailySales = useSelector(state => state.dailySalesReducer.dailySales);
 
        
 
@@ -134,18 +134,139 @@ const DailySales = (props) => {
         const rtAGOData = rtVolumes.filter(data => data.productType === "AGO");
         const rtDPKData = rtVolumes.filter(data => data.productType === "DPK");
 
-
-        var mergedList1 = salesPMSData.map(({ids, ...data}) => {
+        // merge pms data records for the day
+        const mergedPMSToLPOList = salesPMSData.map(({ids, ...data}) => {
             let res = lpoPMSData.filter(detail => data.pumpID === detail.pumpID);
-            let [{pumpID, ...newData}] = [{}];
+            let [{pumpID, lpoLitre, PMSRate, AGORate, DPKRate, ...newData}] = [{}];
             if(res.length !== 0){
-                [{pumpID, ...newData}] = res;
+                [{pumpID, lpoLitre, PMSRate, AGORate, DPKRate, ...newData}] = res;
             }
-            return {pumpID, ...data, ...newData}
+            return {pumpID, lpoLitre, PMSRate, AGORate, DPKRate, ...data}
         });
 
-        console.log(mergedList1, 'mergged PMS LPO')
-        console.log(rtPMSData, 'mergged rt vol LPO')
+        const mergedPMSToLPOToRTList = mergedPMSToLPOList.map(({ids, ...data}) => {
+            let res = rtPMSData.filter(detail => data.pumpID === detail.pumpID);
+            let [{pumpID, rtLitre, ...newData}] = [{}];
+            if(res.length !== 0){
+                [{pumpID, rtLitre, ...newData}] = res;
+            }
+            return {pumpID, rtLitre, ...data}
+        });
+
+        const pmsTotals = () => {
+            let totalDifference = 0;
+            let totalLpo = 0;
+            let totalrt = 0;
+            let amount = 0;
+
+            for(let row of mergedPMSToLPOToRTList){
+                totalDifference = totalDifference + Number(row.sales);
+                totalLpo = totalLpo + Number(row.lpoLitre);
+                totalrt = totalrt + Number(row.rtLitre);
+                amount = amount + Number(row.sales)*Number(row.PMSSellingPrice) + Number(row.lpoLitre)*Number(row.PMSRate) - Number(row.rtLitre)*Number(row.PMSSellingPrice);
+            }
+
+            const pmsTotalDetails = {
+                totalDifference,
+                totalLpo,
+                totalrt,
+                amount
+            }
+
+            return pmsTotalDetails;
+        }
+
+        // merge ago data records for the day
+        const mergedAGOToLPOList = salesAGOData.map(({ids, ...data}) => {
+            let res = lpoAGOData.filter(detail => data.pumpID === detail.pumpID);
+            let [{pumpID, lpoLitre, PMSRate, AGORate, DPKRate, ...newData}] = [{}];
+            if(res.length !== 0){
+                [{pumpID, lpoLitre, PMSRate, AGORate, DPKRate, ...newData}] = res;
+            }
+            return {pumpID, lpoLitre, PMSRate, AGORate, DPKRate, ...data}
+        });
+
+        const mergedAGOToLPOToRTList = mergedAGOToLPOList.map(({ids, ...data}) => {
+            let res = rtAGOData.filter(detail => data.pumpID === detail.pumpID);
+            let [{pumpID, rtLitre, ...newData}] = [{}];
+            if(res.length !== 0){
+                [{pumpID, rtLitre, ...newData}] = res;
+            }
+            return {pumpID, rtLitre, ...data}
+        });
+
+        const agoTotals = () => {
+            let totalDifference = 0;
+            let totalLpo = 0;
+            let totalrt = 0;
+            let amount = 0;
+
+            for(let row of mergedAGOToLPOToRTList){
+                totalDifference = totalDifference + Number(row.sales);
+                totalLpo = totalLpo + Number(row.lpoLitre);
+                totalrt = totalrt + Number(row.rtLitre);
+                amount = amount + Number(row.sales)*Number(row.AGOSellingPrice) + Number(row.lpoLitre)*Number(row.AGORate) - Number(row.rtLitre)*Number(row.AGOSellingPrice);
+            }
+
+            const agoTotalDetails = {
+                totalDifference,
+                totalLpo,
+                totalrt,
+                amount
+            }
+
+            return agoTotalDetails;
+        }
+
+        // merge dpk data records for the day
+        const mergedDPKToLPOList = salesDPKData.map(({ids, ...data}) => {
+            let res = lpoDPKData.filter(detail => data.pumpID === detail.pumpID);
+            let [{pumpID, lpoLitre, PMSRate, AGORate, DPKRate, ...newData}] = [{}];
+            if(res.length !== 0){
+                [{pumpID, lpoLitre, PMSRate, AGORate, DPKRate, ...newData}] = res;
+            }
+            return {pumpID, lpoLitre, PMSRate, AGORate, DPKRate, ...data}
+        });
+
+        const mergedDPKToLPOToRTList = mergedDPKToLPOList.map(({ids, ...data}) => {
+            let res = rtDPKData.filter(detail => data.pumpID === detail.pumpID);
+            let [{pumpID, rtLitre, ...newData}] = [{}];
+            if(res.length !== 0){
+                [{pumpID, rtLitre, ...newData}] = res;
+            }
+            return {pumpID, rtLitre, ...data}
+        });
+
+        const dpkTotals = () => {
+            let totalDifference = 0;
+            let totalLpo = 0;
+            let totalrt = 0;
+            let amount = 0;
+
+            for(let row of mergedDPKToLPOToRTList){
+                totalDifference = totalDifference + Number(row.sales);
+                totalLpo = totalLpo + Number(row.lpoLitre);
+                totalrt = totalrt + Number(row.rtLitre);
+                amount = amount + Number(row.sales)*Number(row.DPKSellingPrice) + Number(row.lpoLitre)*Number(row.DPKRate) - Number(row.rtLitre)*Number(row.DPKSellingPrice);
+            }
+
+            const dpkTotalDetails = {
+                totalDifference,
+                totalLpo,
+                totalrt,
+                amount
+            }
+
+            return dpkTotalDetails;
+        }
+
+        const masterDailySales = {
+            PMS: {rows: mergedPMSToLPOToRTList, total: pmsTotals()},
+            AGO: {rows: mergedAGOToLPOToRTList, total: agoTotals()},
+            DPK: {rows: mergedDPKToLPOToRTList, total: dpkTotals()},
+        }
+
+        dispatch(passAllDailySales(masterDailySales));
     }
 
     const getAllProductData = useCallback((getDataRange) => {
@@ -409,7 +530,9 @@ const DailySales = (props) => {
                                         <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
                                             <div style={{fontFamily:'Nunito-Regular', fontSize:'14px'}}>Total Amount</div>
                                             <div style={{fontFamily:'Nunito-Regular', marginTop:'5px', fontSize:'14px'}}>PMS</div>
-                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'10px', fontSize:'16px'}}> N {totalPMSSales}</div>
+                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'10px', fontSize:'16px'}}> N {
+                                                dailySales.hasOwnProperty("PMS")? dailySales.PMS.total.amount: 0.00
+                                            }</div>
                                         </div>
                                     </div>
                                 </div>
@@ -423,7 +546,9 @@ const DailySales = (props) => {
                                         <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
                                             <div style={{fontFamily:'Nunito-Regular', fontSize:'14px'}}>Total Amount</div>
                                             <div style={{fontFamily:'Nunito-Regular', marginTop:'5px', fontSize:'14px'}}>AGO</div>
-                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'10px', fontSize:'16px'}}> N {totalAGOSales}</div>
+                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'10px', fontSize:'16px'}}> N {
+                                                dailySales.hasOwnProperty("AGO")? dailySales.AGO.total.amount: 0.00
+                                            }</div>
                                         </div>
                                     </div>
                                 </div>
@@ -437,7 +562,9 @@ const DailySales = (props) => {
                                         <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
                                             <div style={{fontFamily:'Nunito-Regular', fontSize:'14px'}}>Total Amount</div>
                                             <div style={{fontFamily:'Nunito-Regular', marginTop:'5px', fontSize:'14px'}}>DPK</div>
-                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'10px', fontSize:'16px'}}> N {totalDPKSales}</div>
+                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'10px', fontSize:'16px'}}> N {
+                                                dailySales.hasOwnProperty("DPK")? dailySales.DPK.total.amount: 0.00
+                                            }</div>
                                         </div>
                                     </div>
                                 </div>
