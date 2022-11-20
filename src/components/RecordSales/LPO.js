@@ -204,7 +204,7 @@ const LPO = (props) => {
                 const updatedTank = {
                     id: oneTank._id,
                     previousLevel: oneTank.currentLevel,
-                    currentLevel: oneTank.currentLevel === "None"? null: String(Number(oneTank.currentLevel) - Number(listOfLpos[i].payload.litre)),
+                    currentLevel: oneTank.currentLevel === "None"? null: String(Number(oneTank.currentLevel) - Number(listOfLpos[i].payload.lpoLitre)),
                     outletID: oneOutletStation._id,
                     organisationID: oneOutletStation.organisation,
                 }
@@ -254,7 +254,7 @@ const LPO = (props) => {
                 const updatedTank = {
                     id: oneTank._id,
                     previousLevel: oneTank.currentLevel,
-                    currentLevel: oneTank.currentLevel === "None"? null: String(Number(oneTank.currentLevel) - Number(listOfLpos[i].payload.litre)),
+                    currentLevel: oneTank.currentLevel === "None"? null: String(Number(oneTank.currentLevel) - Number(listOfLpos[i].payload.lpoLitre)),
                     outletID: oneOutletStation._id,
                     organisationID: oneOutletStation.organisation,
                 }

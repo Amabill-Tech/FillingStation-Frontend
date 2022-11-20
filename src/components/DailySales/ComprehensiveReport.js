@@ -1,7 +1,9 @@
 import { Button } from '@mui/material';
 import React from 'react';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import '../../styles/report.scss';
+import ComprehensiveReports from '../Reports/ConprehensiveReports';
 
 const LeftTableView = () => {
 
@@ -453,9 +455,15 @@ const DippingDailySales = () => {
 const ComprehensiveReport = () => {
 
     const dailySales = useSelector(state => state.dailySalesReducer.dailySales);
+    const [prints, setPrints] = useState(false);
+
+    const printReport = () => {
+        setPrints(true);
+    }
 
     return(
         <div className='reportContainer'>
+            { prints && <ComprehensiveReports data={dailySales} open={prints} close={setPrints}/>}
             <div className='controls'>
                 <Button 
                     variant="contained" 
@@ -489,7 +497,7 @@ const ComprehensiveReport = () => {
                             backgroundColor: '#F36A4C'
                         }
                     }}
-                    // onClick={()=>{openDailySales("report")}}
+                    onClick={printReport}
                 >
                     Print
                 </Button>
@@ -498,7 +506,7 @@ const ComprehensiveReport = () => {
             <div className='mains-report'>
                 <div className='left'>
                     <div className='inner-main'>
-                        <div className='table-cont'>
+                        <div style={{marginBottom:'30px'}} className='table-cont'>
                             <LeftTableView />
                             <MiddleTableView />
                             <RightTableView />
