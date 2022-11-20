@@ -54,6 +54,8 @@ const TankUpdateModal = (props) => {
             activeState: currentTank.activeState,
         }
 
+        console.log(payload, 'tank payload')
+
         OutletService.updateTank(payload).then((data) => {
             swal("Success", data.message, "success");
         }).then(()=>{

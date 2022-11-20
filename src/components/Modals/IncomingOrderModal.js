@@ -55,6 +55,7 @@ const IncomingOrderModal = (props) => {
             productOrderID: productOrderID,
             truckNo: truckNo,
             wayBillNo: wayBillNo,
+            outletName: props.station.outletName,
             outletID: props.station._id,
             organizationID: props.station.organisation
         }

@@ -55,7 +55,6 @@ const Pumps = (props) => {
             const Tank = {...currentTank[0]};
             const difference = Number(pump.closingMeter) - Number(pump.totalizerReading);
             const canTankServe = Number(Tank.currentLevel) - difference;
-            const capacity = Number(Tank.tankCapacity) - Number(Tank.currentLevel);
 
             if(Number(pump.totalizerReading) > Number(pump.closingMeter)){
                 return swal("Warning!", `Closing meter less than opening for ${pump.pumpName} !`, "info");
@@ -65,8 +64,8 @@ const Pumps = (props) => {
                 return swal("Warning!", `${Tank.tankName} limit cannot dispense reading from ${pump.pumpName}!`, "info");
             }
 
-            if(capacity <= 0){
-                return swal("Warning!", `${Tank.tankName} connected to ${pump.pumpName} is full!`, "info");
+            if(canTankServe < Number(Tank.deadStockLevel)){
+                return swal("Warning!", `${Tank.tankName} connected to ${pump.pumpName} is Empty!`, "info");
             }
         }
 

@@ -32,7 +32,7 @@ import { useRef } from 'react';
 import DailySalesService from '../../services/DailySales';
 import LPOService from '../../services/lpo';
 import dailySalesReducer from '../../store/reducers/dailySales';
-import { passAllDailySales } from '../../store/actions/dailySales';
+import { passAllDailySales, passExpensesAndPayments, passIncomingOrder } from '../../store/actions/dailySales';
 
 ChartJS.register(
     CategoryScale,
@@ -116,6 +116,8 @@ const DailySales = (props) => {
     const [currentDate, setCurrentDate] = useState(date2);
     const [rangeDate, setRangeDate] = useState({});
     const dailySales = useSelector(state => state.dailySalesReducer.dailySales);
+    const payments = useSelector(state => state.dailySalesReducer.payments);
+    const dailyIncoming = useSelector(state => state.dailySalesReducer.dailyIncoming);
 
     const getMasterRows = ({sales, lpo, rtVolumes}) => {
 
@@ -267,7 +269,31 @@ const DailySales = (props) => {
         dispatch(passAllDailySales(masterDailySales));
     }
 
-    const getAllProductData = useCallback((getDataRange) => {
+    const getAggregatePayment = ({expenses, bankPayment, posPayment}) => {
+        let totalExpenses = 0;
+        let totalPayment = 0;
+
+        for(let expense of expenses){
+            totalExpenses = totalExpenses + Number(expense.expenseAmount);
+        }
+
+        for(let bankpay of bankPayment){
+            totalPayment = totalPayment + Number(bankpay.amountPaid);
+        }
+
+        for(let pospay of posPayment){
+            totalPayment = totalPayment + Number(pospay.amountPaid);
+        }
+
+        const total = {
+            expenses: totalExpenses,
+            payments: totalPayment
+        }
+
+        dispatch(passExpensesAndPayments(total));
+    }
+
+    const getAllProductData = useCallback((rangeDate) => {
 
         OutletService.getAllOutletStations({organisation: user.userType === "superAdmin"? user._id : user.organisationID}).then(data => {
             dispatch(getAllStations(data.station));
@@ -287,7 +313,10 @@ const DailySales = (props) => {
                 tomorrow: rangeDate.tomorrow,
             }
 
+            console.log(salesPayload, 'payloads')
+
             const salesRecord = {};
+            let paymentsRecords = {};
 
             OutletService.getAllOutletTanks(payload).then(data => {
                 dispatch(getAllOutletTanks(data.stations));
@@ -308,23 +337,25 @@ const DailySales = (props) => {
             getMasterRows(salesRecord);
 
             await DailySalesService.getAllDailyExpenses(salesPayload).then((data) => {
-                console.log(data, 'daily expenses');
+                paymentsRecords.expenses = data.expense.expense;
             });
 
             await DailySalesService.getAllDailyPayments(salesPayload).then((data) => {
-                console.log(data, 'daily payment');
+                paymentsRecords.bankPayment = data.payment.payment;
             });
+
+            await DailySalesService.getAllDailyPOSPayments(salesPayload).then((data) => {
+                paymentsRecords.posPayment = data.pospayment.pospayment;
+            });
+
+            getAggregatePayment(paymentsRecords);
 
             await DailySalesService.getAllDailySupply(salesPayload).then((data) => {
                 console.log(data, 'daily supply');
             });
 
-            await DailySalesService.getAllDailyPOSPayments(salesPayload).then((data) => {
-                console.log(data, 'daily pos payment');
-            });
-
             await DailySalesService.getAllDailyIncomingOrder(salesPayload).then((data) => {
-                console.log(data, 'daily incoming order');
+                dispatch(passIncomingOrder(data.incoming.incoming));
             });
         });
 
@@ -546,9 +577,11 @@ const DailySales = (props) => {
                                     </div>
                                     <div className="dash-details">
                                         <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
-                                            <div style={{fontFamily:'Nunito-Regular', fontSize:'14px'}}>Total Amount</div>
-                                            <div style={{fontFamily:'Nunito-Regular', marginTop:'5px', fontSize:'14px'}}>PMS</div>
-                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'10px', fontSize:'16px'}}> N {
+                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', fontSize:'14px'}}>PMS</div>
+                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Litre {
+                                                dailySales.hasOwnProperty("PMS")? Number(dailySales.PMS.total.totalDifference) + Number(dailySales.PMS.total.totalLpo) - Number(dailySales.PMS.total.totalrt): 0.00
+                                            } ltr</div>
+                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Total Amount N {
                                                 dailySales.hasOwnProperty("PMS")? dailySales.PMS.total.amount: 0.00
                                             }</div>
                                         </div>
@@ -562,9 +595,11 @@ const DailySales = (props) => {
                                     </div>
                                     <div className="dash-details">
                                         <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
-                                            <div style={{fontFamily:'Nunito-Regular', fontSize:'14px'}}>Total Amount</div>
-                                            <div style={{fontFamily:'Nunito-Regular', marginTop:'5px', fontSize:'14px'}}>AGO</div>
-                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'10px', fontSize:'16px'}}> N {
+                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', fontSize:'14px'}}>AGO</div>
+                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Litre {
+                                                dailySales.hasOwnProperty("PMS")? Number(dailySales.AGO.total.totalDifference) + Number(dailySales.AGO.total.totalLpo) - Number(dailySales.AGO.total.totalrt): 0.00
+                                            } ltr</div>
+                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Total Amount N {
                                                 dailySales.hasOwnProperty("AGO")? dailySales.AGO.total.amount: 0.00
                                             }</div>
                                         </div>
@@ -578,9 +613,11 @@ const DailySales = (props) => {
                                     </div>
                                     <div className="dash-details">
                                         <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
-                                            <div style={{fontFamily:'Nunito-Regular', fontSize:'14px'}}>Total Amount</div>
-                                            <div style={{fontFamily:'Nunito-Regular', marginTop:'5px', fontSize:'14px'}}>DPK</div>
-                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'10px', fontSize:'16px'}}> N {
+                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', fontSize:'14px'}}>DPK</div>
+                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Litre {
+                                                dailySales.hasOwnProperty("PMS")? Number(dailySales.DPK.total.totalDifference) + Number(dailySales.DPK.total.totalLpo) - Number(dailySales.DPK.total.totalrt): 0.00
+                                            } ltr</div>
+                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Total Amount N {
                                                 dailySales.hasOwnProperty("DPK")? dailySales.DPK.total.amount: 0.00
                                             }</div>
                                         </div>
@@ -649,13 +686,13 @@ const DailySales = (props) => {
                             <div style={{background:'#108CFF'}} className='child'>
                                 <div className='ins'>
                                     <div>Expenses</div>
-                                    <div>N 280, 000</div>
+                                    <div>N {payments.hasOwnProperty("payments")? payments.expenses: "0.00"}</div>
                                 </div>
                             </div>
                             <div style={{background:'#06805B'}} className='child'>
                                 <div className='ins'>
                                     <div>Payments</div>
-                                    <div>N 280, 000</div>
+                                    <div>N {payments.hasOwnProperty("payments")? payments.payments: "0.00"}</div>
                                 </div>
                             </div>
                         </div>
@@ -779,15 +816,11 @@ const DailySales = (props) => {
                                 <div className='inner-content'>
                                     <div className='conts'>
                                         <div className='row-count'>
-                                            <div className='item-count'>Net to bank</div>
-                                            <div className='item-count'>Log to bank</div>
-                                            <div style={{color:'#0872D4'}} className='item-count'>Teller Amount</div>
-                                            <div className='item-count'>POS Amount</div>
+                                            <div style={{fontSize:'13px', fontWeight:'bold'}} className='item-count'>Total LPO (Ltrs)</div>
+                                            <div style={{fontSize:'13px', fontWeight:'bold'}} className='item-count'>Total Amount</div>
                                         </div>
                                         <div className='row-count'>
-                                            <div className='item-count'>#213,093</div>
-                                            <div className='item-count'>#213,093</div>
-                                            <div style={{color:'#0872D4'}} className='item-count'>#213,093</div>
+                                            <div className='item-count'># 000</div>
                                             <div className='item-count'>#0,000</div>
                                         </div>
                                     </div>
@@ -822,42 +855,22 @@ const DailySales = (props) => {
                                 <div className='table-text'>Products</div>
                                 <div className='table-text'>Quantity</div>
                             </div>
-                            
-                            <div className='table-view2'>
-                                <div className='table-text'>Ammasco</div>
-                                <div className='table-text'>Date approved</div>
-                                <div className='table-text'>Abuja</div>
-                                <div className='table-text'>12-23-23</div>
-                                <div className='table-text'>245900</div>
-                            </div>
-                            <div className='table-view2'>
-                                <div className='table-text'>Ammasco</div>
-                                <div className='table-text'>Date approved</div>
-                                <div className='table-text'>Abuja</div>
-                                <div className='table-text'>12-23-23</div>
-                                <div className='table-text'>245900</div>
-                            </div>
-                            <div className='table-view2'>
-                                <div className='table-text'>Ammasco</div>
-                                <div className='table-text'>Date approved</div>
-                                <div className='table-text'>Abuja</div>
-                                <div className='table-text'>12-23-23</div>
-                                <div className='table-text'>245900</div>
-                            </div>
-                            <div className='table-view2'>
-                                <div className='table-text'>Ammasco</div>
-                                <div className='table-text'>Date approved</div>
-                                <div className='table-text'>Abuja</div>
-                                <div className='table-text'>12-23-23</div>
-                                <div className='table-text'>245900</div>
-                            </div>
-                            <div className='table-view2'>
-                                <div className='table-text'>Ammasco</div>
-                                <div className='table-text'>Date approved</div>
-                                <div className='table-text'>Abuja</div>
-                                <div className='table-text'>12-23-23</div>
-                                <div className='table-text'>245900</div>
-                            </div>
+
+                            {
+                                dailyIncoming.length === 0?
+                                <div style={dats}> No incoming order today </div>:
+                                dailyIncoming.map((data, index) => {
+                                    return(
+                                        <div key={index} className='table-view2'>
+                                            <div className='table-text'>{data.outletName}</div>
+                                            <div className='table-text'>{data.createdAt.split('T')[0]}</div>
+                                            <div className='table-text'>{data.depotStation}</div>
+                                            <div className='table-text'>{data.product}</div>
+                                            <div className='table-text'>{data.quantity}</div>
+                                        </div>
+                                    )
+                                })
+                            }
                         </div>  
                     </div>
                 </>
@@ -885,6 +898,13 @@ const DailySales = (props) => {
             }
         </div>
     )
+}
+
+const dats = {
+    marginTop:'20px',
+    fontSize:'14px',
+    fontWeight:'bold',
+    fontFamily:'Nunito-Regular'
 }
 
 const contain = {
