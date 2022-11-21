@@ -1,13 +1,15 @@
 import { 
     SALES_DATA, 
     EXPENSES_AND_PAYMENTS,
-    DAILY_INCOMING_ORDER
+    DAILY_INCOMING_ORDER,
+    CUMMULATIVES
 } from '../types'
 
 const initialState = {
     dailySales: {},
     payments: {},
     dailyIncoming:[],
+    cummulative: {},
 }
 
 const dailySalesReducer = (state = initialState, action) => {
@@ -34,6 +36,13 @@ const dailySalesReducer = (state = initialState, action) => {
             return {
                 ...state,
                 dailyIncoming: payload
+            }
+        }
+
+        case CUMMULATIVES: {
+            return {
+                ...state,
+                cummulative: payload
             }
         }
 

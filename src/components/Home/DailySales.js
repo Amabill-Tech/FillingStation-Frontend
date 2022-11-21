@@ -32,7 +32,7 @@ import { useRef } from 'react';
 import DailySalesService from '../../services/DailySales';
 import LPOService from '../../services/lpo';
 import dailySalesReducer from '../../store/reducers/dailySales';
-import { passAllDailySales, passExpensesAndPayments, passIncomingOrder } from '../../store/actions/dailySales';
+import { passAllDailySales, passCummulative, passExpensesAndPayments, passIncomingOrder } from '../../store/actions/dailySales';
 
 ChartJS.register(
     CategoryScale,
@@ -118,6 +118,8 @@ const DailySales = (props) => {
     const dailySales = useSelector(state => state.dailySalesReducer.dailySales);
     const payments = useSelector(state => state.dailySalesReducer.payments);
     const dailyIncoming = useSelector(state => state.dailySalesReducer.dailyIncoming);
+    const cummulative = useSelector(state => state.dailySalesReducer.cummulative);
+    console.log(dailySales, 'yeaaaahhhhh')
 
     const getMasterRows = ({sales, lpo, rtVolumes}) => {
 
@@ -152,26 +154,31 @@ const DailySales = (props) => {
             }
             return {pumpID, rtLitre, ...data}
         });
-        console.log(mergedPMSToLPOToRTList, "merges")
 
         const pmsTotals = () => {
             let totalDifference = 0;
             let totalLpo = 0;
             let totalrt = 0;
             let amount = 0;
+            let lpoAmount = 0;
+            let noLpoAmount = 0;
 
             for(let row of mergedPMSToLPOToRTList){
                 totalDifference = totalDifference + Number(row.sales);
                 totalLpo = totalLpo + Number(row.lpoLitre);
                 totalrt = totalrt + Number(row.rtLitre);
                 amount = amount + Number(row.sales)*Number(row.PMSSellingPrice) + Number(row.lpoLitre)*Number(row.PMSRate) - Number(row.rtLitre)*Number(row.PMSSellingPrice);
+                lpoAmount = lpoAmount + Number(row.lpoLitre)*Number(row.PMSRate);
+                noLpoAmount = noLpoAmount + Number(row.sales)*Number(row.PMSSellingPrice) - Number(row.rtLitre)*Number(row.PMSSellingPrice);
             }
 
             const pmsTotalDetails = {
-                totalDifference,
-                totalLpo,
-                totalrt,
-                amount
+                totalDifference: totalDifference,
+                totalLpo: totalLpo,
+                totalrt: totalrt,
+                amount: amount,
+                lpoAmount: lpoAmount,
+                noLpoAmount: noLpoAmount,
             }
 
             return pmsTotalDetails;
@@ -201,19 +208,25 @@ const DailySales = (props) => {
             let totalLpo = 0;
             let totalrt = 0;
             let amount = 0;
+            let lpoAmount = 0;
+            let noLpoAmount = 0;
 
             for(let row of mergedAGOToLPOToRTList){
                 totalDifference = totalDifference + Number(row.sales);
                 totalLpo = totalLpo + Number(row.lpoLitre);
                 totalrt = totalrt + Number(row.rtLitre);
                 amount = amount + Number(row.sales)*Number(row.AGOSellingPrice) + Number(row.lpoLitre)*Number(row.AGORate) - Number(row.rtLitre)*Number(row.AGOSellingPrice);
+                lpoAmount = lpoAmount + Number(row.lpoLitre)*Number(row.PMSRate);
+                noLpoAmount = noLpoAmount + Number(row.sales)*Number(row.PMSSellingPrice) - Number(row.rtLitre)*Number(row.PMSSellingPrice);
             }
 
             const agoTotalDetails = {
-                totalDifference,
-                totalLpo,
-                totalrt,
-                amount
+                totalDifference: totalDifference,
+                totalLpo: totalLpo,
+                totalrt: totalrt,
+                amount: amount,
+                lpoAmount: lpoAmount,
+                noLpoAmount: noLpoAmount
             }
 
             return agoTotalDetails;
@@ -243,19 +256,25 @@ const DailySales = (props) => {
             let totalLpo = 0;
             let totalrt = 0;
             let amount = 0;
+            let lpoAmount = 0;
+            let noLpoAmount = 0;
 
             for(let row of mergedDPKToLPOToRTList){
                 totalDifference = totalDifference + Number(row.sales);
                 totalLpo = totalLpo + Number(row.lpoLitre);
                 totalrt = totalrt + Number(row.rtLitre);
                 amount = amount + Number(row.sales)*Number(row.DPKSellingPrice) + Number(row.lpoLitre)*Number(row.DPKRate) - Number(row.rtLitre)*Number(row.DPKSellingPrice);
+                lpoAmount = lpoAmount + Number(row.lpoLitre)*Number(row.PMSRate);
+                noLpoAmount = noLpoAmount + Number(row.sales)*Number(row.PMSSellingPrice) - Number(row.rtLitre)*Number(row.PMSSellingPrice);
             }
 
             const dpkTotalDetails = {
-                totalDifference,
-                totalLpo,
-                totalrt,
-                amount
+                totalDifference: totalDifference,
+                totalLpo: totalLpo,
+                totalrt: totalrt,
+                amount: amount,
+                lpoAmount: lpoAmount,
+                noLpoAmount: noLpoAmount
             }
 
             return dpkTotalDetails;
@@ -273,6 +292,8 @@ const DailySales = (props) => {
     const getAggregatePayment = ({expenses, bankPayment, posPayment}) => {
         let totalExpenses = 0;
         let totalPayment = 0;
+        let oneBankPayment = 0;
+        let onePosPayment = 0;
 
         for(let expense of expenses){
             totalExpenses = totalExpenses + Number(expense.expenseAmount);
@@ -280,15 +301,19 @@ const DailySales = (props) => {
 
         for(let bankpay of bankPayment){
             totalPayment = totalPayment + Number(bankpay.amountPaid);
+            oneBankPayment  = oneBankPayment + Number(bankpay.amountPaid);
         }
 
         for(let pospay of posPayment){
             totalPayment = totalPayment + Number(pospay.amountPaid);
+            onePosPayment = onePosPayment + Number(pospay.amountPaid);
         }
 
         const total = {
             expenses: totalExpenses,
-            payments: totalPayment
+            payments: totalPayment,
+            oneBankPayment: oneBankPayment,
+            onePosPayment: onePosPayment,
         }
 
         dispatch(passExpensesAndPayments(total));
@@ -341,16 +366,18 @@ const DailySales = (props) => {
 
             await DailySalesService.getAllDailyPayments(salesPayload).then((data) => {
                 paymentsRecords.bankPayment = data.payment.payment;
+                // console.log(data.payment.payment, 'bank payment')
             });
 
             await DailySalesService.getAllDailyPOSPayments(salesPayload).then((data) => {
                 paymentsRecords.posPayment = data.pospayment.pospayment;
+                // console.log(data.pospayment.pospayment, 'pos payment')
             });
 
             getAggregatePayment(paymentsRecords);
 
             await DailySalesService.getAllDailySupply(salesPayload).then((data) => {
-                console.log(data, 'daily supply');
+                // console.log(data, 'daily supply');
             });
 
             await DailySalesService.getAllDailyIncomingOrder(salesPayload).then((data) => {
@@ -362,9 +389,11 @@ const DailySales = (props) => {
 
     useEffect(()=>{
         const now = new Date();
-        const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const toISOType = startOfToday.toISOString().split('T')[0];
-        const getDataRange = getTodayAndTomorrow(toISOType);
+        const year = now.getFullYear();
+        const month = now.getMonth() + 1;
+        const day = now.getDate();
+        const formatWell = year + "-"+ month + "-" + day;
+        const getDataRange = getTodayAndTomorrow(formatWell);
         setRangeDate(getDataRange);
         getAllProductData(getDataRange);
     },[getAllProductData])
@@ -481,6 +510,7 @@ const DailySales = (props) => {
         const DPKList = tankList.filter(tank => tank.productType === "DPK");
 
         const cummulative = getCummulativeVolumePerProduct(PMSList, AGOList, DPKList);
+        dispatch(passCummulative(cummulative));
         setCummulatives(cummulative);
     }, [tankList]);
 
@@ -630,24 +660,24 @@ const DailySales = (props) => {
                             <div className="tank-inner">
                                 <div className="tanks">
                                     <div className='tank-head'>PMS</div>
-                                    <div className='level'>Level: 92,600 Litres</div>
-                                    <div className='capacity'>Capacity: 156,600 Litres</div>
+                                    <div style={{fontWeight:'500'}} className='level'>Level: {cummulative.totalPMS} Litres</div>
+                                    <div style={{fontWeight:'500'}} className='capacity'>Capacity: {cummulative.PMSTankCapacity} Litres</div>
                                     <div onClick={()=>{goToTanks("PMS")}} className='canvas-container'>
                                         <PMSTank data = {cummulatives}/>
                                     </div>
                                 </div>
                                 <div className="tanks">
                                     <div className='tank-head'>AGO</div>
-                                        <div className='level'>Level: 92,600 Litres</div>
-                                        <div className='capacity'>Capacity: 156,600 Litres</div>
+                                        <div style={{fontWeight:'500'}} className='level'>Level: {cummulative.totalAGO} Litres</div>
+                                        <div style={{fontWeight:'500'}} className='capacity'>Capacity: {cummulative.AGOTankCapacity} Litres</div>
                                         <div onClick={()=>{goToTanks("AGO")}} className='canvas-container'>
                                             <AGOTank data = {cummulatives}/>
                                         </div>
                                     </div>
                                 <div className="tanks">
                                     <div className='tank-head'>DPK</div>
-                                        <div className='level'>Level: 92,600 Litres</div>
-                                        <div className='capacity'>Capacity: 156,600 Litres</div>
+                                        <div style={{fontWeight:'500'}} className='level'>Level: {cummulative.totalDPK} Litres</div>
+                                        <div style={{fontWeight:'500'}} className='capacity'>Capacity: {cummulative.DPKTankCapacity} Litres</div>
                                         <div onClick={()=>{goToTanks("DPK")}} className='canvas-container'>
                                             <DPKTank data = {cummulatives}/>
                                         </div>
@@ -775,16 +805,32 @@ const DailySales = (props) => {
                                 <div className='inner-content'>
                                     <div className='conts'>
                                         <div className='row-count'>
-                                            <div className='item-count'>Net to bank</div>
-                                            <div className='item-count'>Log to bank</div>
-                                            <div style={{color:'#0872D4'}} className='item-count'>Teller Amount</div>
-                                            <div className='item-count'>POS Amount</div>
+                                            <div style={{fontSize:'14px', fontWeight:'bold'}} className='item-count'>Net to bank</div>
+                                            <div style={{fontSize:'14px', fontWeight:'bold'}} className='item-count'>Payment</div>
+                                            <div style={{fontSize:'14px', fontWeight:'bold', color:'#0872D4'}} className='item-count'>
+                                                # {payments.hasOwnProperty("payments")? payments.payments: "0.00"}
+                                            </div>
+                                            <div style={{fontSize:'14px', fontWeight:'bold'}} className='item-count'>Outstanding</div>
                                         </div>
                                         <div className='row-count'>
-                                            <div className='item-count'>#213,093</div>
-                                            <div className='item-count'>#213,093</div>
-                                            <div style={{color:'#0872D4'}} className='item-count'>#213,093</div>
-                                            <div className='item-count'>#0,000</div>
+                                            <div className='item-count'>
+                                                {(dailySales.hasOwnProperty("PMS") && payments.hasOwnProperty("expenses"))? Number(dailySales.PMS.total.noLpoAmount) + Number(dailySales.AGO.total.noLpoAmount) + Number(dailySales.DPK.total.noLpoAmount) - Number(payments.expenses) : "0.00"}
+                                            </div>
+                                            <div className='item-count'>Teller</div>
+                                            <div style={{color:'#0872D4'}} className='item-count'>
+                                                # {payments.hasOwnProperty("oneBankPayment")? payments.oneBankPayment: "0.00"}
+                                            </div>
+                                            <div className='item-count'>
+                                                {(dailySales.hasOwnProperty("PMS") && payments.hasOwnProperty("expenses"))? Number(dailySales.PMS.total.noLpoAmount) + Number(dailySales.AGO.total.noLpoAmount) + Number(dailySales.DPK.total.noLpoAmount) - Number(payments.expenses) - Number(payments.payments) : "0.00"}
+                                            </div>
+                                        </div>
+                                        <div className='row-count'>
+                                            <div className='item-count'></div>
+                                            <div className='item-count'>POS</div>
+                                            <div style={{color:'#0872D4'}} className='item-count'>
+                                                # {payments.hasOwnProperty("onePosPayment")? payments.onePosPayment: "0.00"}
+                                            </div>
+                                            <div className='item-count'></div>
                                         </div>
                                     </div>
                                 </div>
@@ -819,8 +865,12 @@ const DailySales = (props) => {
                                             <div style={{fontSize:'13px', fontWeight:'bold'}} className='item-count'>Total Amount</div>
                                         </div>
                                         <div className='row-count'>
-                                            <div className='item-count'># 000</div>
-                                            <div className='item-count'>#0,000</div>
+                                            <div className='item-count'>
+                                                {dailySales.hasOwnProperty("PMS")? Number(dailySales.PMS.total.totalLpo) + Number(dailySales.AGO.total.totalLpo) + Number(dailySales.DPK.total.totalLpo): "0.00"} Litres
+                                            </div>
+                                            <div className='item-count'>
+                                                # {dailySales.hasOwnProperty("PMS")?  Number(dailySales.PMS.total.lpoAmount) + Number(dailySales.AGO.total.lpoAmount) + Number(dailySales.DPK.total.lpoAmount): "0.00"}: 00
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

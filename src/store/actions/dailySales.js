@@ -1,7 +1,8 @@
 import { 
     SALES_DATA, 
     EXPENSES_AND_PAYMENTS,
-    DAILY_INCOMING_ORDER
+    DAILY_INCOMING_ORDER,
+    CUMMULATIVES
 } from '../types';
 
 export const passAllDailySales = (params) => dispatch => {
@@ -14,4 +15,8 @@ export const passExpensesAndPayments = (params) => dispatch => {
 
 export const passIncomingOrder = (params) => dispatch => {
     dispatch({ type: DAILY_INCOMING_ORDER, payload: params});
+}
+
+export const passCummulative = (params) => dispatch => {
+    dispatch({ type: CUMMULATIVES, payload: params});
 }

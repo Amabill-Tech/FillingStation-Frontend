@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 const DPKDailySales = () => {
 
     const dailySales = useSelector(state => state.dailySalesReducer.dailySales);
-    console.log(dailySales, 'daily sales')
 
     return(
         <div className='sales'>

@@ -242,7 +242,7 @@ const IncomingOrder = () => {
                         <div className='column'>S/N</div>
                         <div className='column'>Date Created</div>
                         <div className='column'>Depot Station</div>
-                        <div className='column'>Destination</div>
+                        <div className='column'>Discharge Station</div>
                         <div className='column'>Products</div>
                         <div className='column'>Quantity</div>
                         <div className='column'>Current Level</div>
