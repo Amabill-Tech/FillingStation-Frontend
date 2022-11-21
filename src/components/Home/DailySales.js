@@ -137,21 +137,22 @@ const DailySales = (props) => {
         // merge pms data records for the day
         const mergedPMSToLPOList = salesPMSData.map(({ids, ...data}) => {
             let res = lpoPMSData.filter(detail => data.pumpID === detail.pumpID);
-            let [{pumpID, lpoLitre, PMSRate, AGORate, DPKRate, ...newData}] = [{}];
+            let [{pumpID, lpoLitre, PMSRate, AGORate, DPKRate}] = [{pumpID:'', lpoLitre: 0, PMSRate: 0, AGORate: 0, DPKRate: 0}];
             if(res.length !== 0){
-                [{pumpID, lpoLitre, PMSRate, AGORate, DPKRate, ...newData}] = res;
+                [{pumpID, lpoLitre, PMSRate, AGORate, DPKRate}] = res;
             }
             return {pumpID, lpoLitre, PMSRate, AGORate, DPKRate, ...data}
         });
 
         const mergedPMSToLPOToRTList = mergedPMSToLPOList.map(({ids, ...data}) => {
             let res = rtPMSData.filter(detail => data.pumpID === detail.pumpID);
-            let [{pumpID, rtLitre, ...newData}] = [{}];
+            let [{pumpID, rtLitre}] = [{pumpID:'', rtLitre: 0}];
             if(res.length !== 0){
-                [{pumpID, rtLitre, ...newData}] = res;
+                [{pumpID, rtLitre}] = res;
             }
             return {pumpID, rtLitre, ...data}
         });
+        console.log(mergedPMSToLPOToRTList, "merges")
 
         const pmsTotals = () => {
             let totalDifference = 0;
@@ -179,18 +180,18 @@ const DailySales = (props) => {
         // merge ago data records for the day
         const mergedAGOToLPOList = salesAGOData.map(({ids, ...data}) => {
             let res = lpoAGOData.filter(detail => data.pumpID === detail.pumpID);
-            let [{pumpID, lpoLitre, PMSRate, AGORate, DPKRate, ...newData}] = [{}];
+            let [{pumpID, lpoLitre, PMSRate, AGORate, DPKRate}] = [{pumpID:'', lpoLitre: 0, PMSRate: 0, AGORate: 0, DPKRate: 0}];
             if(res.length !== 0){
-                [{pumpID, lpoLitre, PMSRate, AGORate, DPKRate, ...newData}] = res;
+                [{pumpID, lpoLitre, PMSRate, AGORate, DPKRate}] = res;
             }
             return {pumpID, lpoLitre, PMSRate, AGORate, DPKRate, ...data}
         });
 
         const mergedAGOToLPOToRTList = mergedAGOToLPOList.map(({ids, ...data}) => {
             let res = rtAGOData.filter(detail => data.pumpID === detail.pumpID);
-            let [{pumpID, rtLitre, ...newData}] = [{}];
+            let [{pumpID, rtLitre}] = [{pumpID:'', rtLitre: 0}];
             if(res.length !== 0){
-                [{pumpID, rtLitre, ...newData}] = res;
+                [{pumpID, rtLitre}] = res;
             }
             return {pumpID, rtLitre, ...data}
         });
@@ -221,18 +222,18 @@ const DailySales = (props) => {
         // merge dpk data records for the day
         const mergedDPKToLPOList = salesDPKData.map(({ids, ...data}) => {
             let res = lpoDPKData.filter(detail => data.pumpID === detail.pumpID);
-            let [{pumpID, lpoLitre, PMSRate, AGORate, DPKRate, ...newData}] = [{}];
+            let [{pumpID, lpoLitre, PMSRate, AGORate, DPKRate}] = [{pumpID:'', lpoLitre: 0, PMSRate: 0, AGORate: 0, DPKRate: 0}];
             if(res.length !== 0){
-                [{pumpID, lpoLitre, PMSRate, AGORate, DPKRate, ...newData}] = res;
+                [{pumpID, lpoLitre, PMSRate, AGORate, DPKRate}] = res;
             }
             return {pumpID, lpoLitre, PMSRate, AGORate, DPKRate, ...data}
         });
 
         const mergedDPKToLPOToRTList = mergedDPKToLPOList.map(({ids, ...data}) => {
             let res = rtDPKData.filter(detail => data.pumpID === detail.pumpID);
-            let [{pumpID, rtLitre, ...newData}] = [{}];
+            let [{pumpID, rtLitre}] = [{pumpID:'', rtLitre: 0}];
             if(res.length !== 0){
-                [{pumpID, rtLitre, ...newData}] = res;
+                [{pumpID, rtLitre}] = res;
             }
             return {pumpID, rtLitre, ...data}
         });
@@ -312,8 +313,6 @@ const DailySales = (props) => {
                 today: rangeDate.today,
                 tomorrow: rangeDate.tomorrow,
             }
-
-            console.log(salesPayload, 'payloads')
 
             const salesRecord = {};
             let paymentsRecords = {};

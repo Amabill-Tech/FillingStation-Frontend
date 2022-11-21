@@ -3,8 +3,6 @@ import Modal from '@mui/material/Modal';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { ThreeDots } from  'react-loader-spinner';
-import avatar from '../../assets/avatar.png';
-import ComprehensiveReport from '../DailySales/ComprehensiveReport';
 
 
 const mediaMatch = window.matchMedia('(max-width: 1000px)');
@@ -177,6 +175,279 @@ const PMSDailySales = (props) => {
     )
 }
 
+const LPODailySales = () => {
+    return(
+        <div>
+            <div style={{width:'100%', textAlign:'left', marginBottom:'10px', color:'#06805B', fontSize:'12px', fontWeight:'900'}}>LPO</div>
+            <div style={mainSales}>
+                <div style={inner}>
+                    <div style={tableHeads}>
+                        <div style={col}>S/N</div>
+                        <div style={col}>Amount Name</div>
+                        <div style={col}>Products</div>
+                        <div style={col}>Truck No</div>
+                        <div style={col}>Litre (Qty)</div>
+                        <div style={col}>Rate</div>
+                        <div style={{...col, marginRight:'0px'}}>Amount</div>
+                    </div>
+
+                    <div style={tableHeads2}>
+                        <div style={col2}>1</div>
+                        <div style={col2}>Opening</div>
+                        <div style={col2}>Closing</div>
+                        <div style={col2}>Difference</div>
+                        <div style={col2}>LPO</div>
+                        <div style={col2}>Rate</div>
+                        <div style={{...col2, marginRight:'0px'}} >Amount</div>
+                    </div>
+
+                    <div style={tableHeads2}>
+                        <div style={col2}>1</div>
+                        <div style={col2}>Opening</div>
+                        <div style={col2}>Closing</div>
+                        <div style={col2}>Difference</div>
+                        <div style={col2}>LPO</div>
+                        <div style={col2}>Rate</div>
+                        <div style={{...col2, marginRight:'0px'}} >Amount</div>
+                    </div>
+
+                    <div style={tableHeads2}>
+                        <div style={col2}>1</div>
+                        <div style={col2}>Opening</div>
+                        <div style={col2}>Closing</div>
+                        <div style={col2}>Difference</div>
+                        <div style={col2}>LPO</div>
+                        <div style={col2}>Rate</div>
+                        <div style={{...col2, marginRight:'0px'}} >Amount</div>
+                    </div>
+
+                    <div style={tableHeads2}>
+                        <div style={{...col2, background: "transparent"}} ></div>
+                        <div style={{...col2, background: "transparent"}}></div>
+                        <div style={{...col2, background: "transparent"}}></div>
+                        <div style={{...col2, background: "transparent"}}></div>
+                        <div style={{...col2, background: "transparent"}}></div>
+                        <div style={col2}>Total</div>
+                        <div style={{...col2, marginRight:'0px'}}>435, 000</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+const ExpensesDailySales = () => {
+    return(
+        <div>
+            <div style={{width:'100%', textAlign:'left', marginBottom:'10px', color:'#06805B', fontSize:'12px', fontWeight:'900'}}>Expenses</div>
+            <div style={{...mainSales, width:'350px'}}>
+                <div style={inner}>
+                    <div style={tableHeads}>
+                        <div style={col}>S/N</div>
+                        <div style={col}>Expense Name</div>
+                        <div style={{...col, marginRight:'0px'}} >Amount</div>
+                    </div>
+
+                    <div style={tableHeads2}>
+                        <div style={col2}>1</div>
+                        <div style={col2}>Rate</div>
+                        <div style={{...col2, marginRight:'0px'}}>Amount</div>
+                    </div>
+
+                    <div style={tableHeads2}>
+                        <div style={col2}>2</div>
+                        <div style={col2}>Rate</div>
+                        <div style={{...col2, marginRight:'0px'}}>Amount</div>
+                    </div>
+
+                    <div style={tableHeads2}>
+                        <div style={col2}>3</div>
+                        <div style={col2}>Rate</div>
+                        <div style={{...col2, marginRight:'0px'}}>Amount</div>
+                    </div>
+
+                    <div style={tableHeads2}>
+                        <div style={{...col2, background: "transparent"}}></div>
+                        <div style={col2}>Total</div>
+                        <div style={{...col2, marginRight:'0px'}}>435, 000</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+const ExpensesSummary = () => {
+    return(
+        <div>
+            <div style={{width:'100%', textAlign:'left', marginBottom:'10px', color:'#06805B', fontSize:'12px', fontWeight:'900'}}></div>
+            <div style={{...mainSales, width:'350px'}}>
+                <div style={inner}>
+                    <div style={tableHeads}>
+                        <div style={{...col, width:'70%', display:'flex', justifyContent:'flex-start'}}>
+                            <span style={{marginLeft:'10px'}}>Total Amount of sales (NGN)</span>
+                        </div>
+                        <div style={{...col, marginRight:'0px', width:'30%', background:'#EDEDED', color:'#000'}}>Amount</div>
+                    </div>
+
+                    <div style={{...tableHeads, marginTop:'5px'}}>
+                        <div style={{...col, width:'70%', display:'flex', justifyContent:'flex-start'}}>
+                            <span style={{marginLeft:'10px'}}>Total Amount of Expenses (NGN)</span>
+                        </div>
+                        <div style={{...col, marginRight:'0px', width:'30%', background:'#EDEDED', color:'#000'}}>Amount</div>
+                    </div>
+
+                    <div style={{...tableHeads2, marginTop:'5px'}}>
+                        <div style={{...col, width:'70%', display:'flex', justifyContent:'flex-end'}}>
+                            <span style={{marginRight:'20px'}}>Total</span>
+                        </div>
+                        <div style={{...col2, marginRight:'0px', width:'30%'}}>Amount</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+
+const PaymentDailySales = () => {
+    return(
+        <div>
+            <div style={{width:'100%', textAlign:'left', marginBottom:'10px', color:'#06805B', fontSize:'12px', fontWeight:'900'}}>Payments</div>
+            <div style={{...mainSales, width:'350px'}}>
+                <div style={inner}>
+                    <div style={tableHeads}>
+                        <div style={{...col, marginRight:'5px', width:'50%', background:'#EDEDED', color:'#000'}}>Bank Name</div>
+                        <div style={{...col, width:'50%', display:'flex', justifyContent:'flex-start'}}>
+                            <span style={{marginLeft:'10px'}}>Wema Bank</span>
+                        </div>
+                    </div>
+
+                    <div style={{...tableHeads, marginTop:'5px'}}>
+                        <div style={{...col, marginRight:'5px', width:'50%', background:'#EDEDED', color:'#000'}}>Teller No</div>
+                        <div style={{...col, width:'50%', display:'flex', justifyContent:'flex-start'}}>
+                            <span style={{marginLeft:'10px'}}>892783876564</span>
+                        </div>
+                    </div>
+
+                    <div style={{...tableHeads, marginTop:'5px'}}>
+                        <div style={{...col, marginRight:'5px', width:'50%', background:'#EDEDED', color:'#000'}}>Teller</div>
+                        <div style={{...col, width:'50%', display:'flex', justifyContent:'flex-start'}}>
+                            <span style={{marginLeft:'10px'}}>25,000</span>
+                        </div>
+                    </div>
+
+                    <div style={{...tableHeads, marginTop:'5px'}}>
+                        <div style={{...col, marginRight:'5px', width:'50%', background:'#EDEDED', color:'#000'}}>POS</div>
+                        <div style={{...col, width:'50%', display:'flex', justifyContent:'flex-start'}}>
+                            <span style={{marginLeft:'10px'}}>250,000</span>
+                        </div>
+                    </div>
+
+                    <div style={{...tableHeads, marginTop:'5px'}}>
+                        <div style={{...col, marginRight:'5px', width:'50%', background:'#EDEDED', color:'#000'}}>Teller No</div>
+                        <div style={{...col, width:'50%', display:'flex', background:'#EDEDED', color:'#000', justifyContent:'flex-start'}}>
+                            <span style={{marginLeft:'10px'}}>892783876564</span>
+                        </div>
+                    </div>
+
+                    <div style={{...tableHeads, marginTop:'5px'}}>
+                        <div style={{...col, marginRight:'5px', width:'50%', background:'#EDEDED', color:'#000'}}>Teller No</div>
+                        <div style={{...col, width:'50%', display:'flex', background:'#EDEDED', color:'#000', justifyContent:'flex-start'}}>
+                            <span style={{marginLeft:'10px'}}>892783876564</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+const ProductDailySales = () => {
+    return(
+        <div>
+            <div style={{width:'100%', textAlign:'left', marginBottom:'10px', color:'#06805B', fontSize:'12px', fontWeight:'900'}}>
+                Product Balance Carried Forward
+            </div>
+            <div style={{...mainSales, width:'350px'}}>
+                <div style={inner}>
+                    <div style={tableHeads}>
+                        <div style={col}>Product Type</div>
+                        <div style={col}>Litre (Qty)</div>
+                        <div style={{...col, marginRight:'0px'}}>Confirmed by</div>
+                    </div>
+
+                    <div style={tableHeads2}>
+                        <div style={col2}>PMS</div>
+                        <div style={col2}>10,000</div>
+                        <div style={{...col2, marginRight:'0px'}}></div>
+                    </div>
+
+                    <div style={tableHeads2}>
+                        <div style={col2}>AGO</div>
+                        <div style={col2}>10,000</div>
+                        <div style={{...col2, marginRight:'0px'}}></div>
+                    </div>
+
+                    <div style={tableHeads2}>
+                        <div style={col2}>DPK</div>
+                        <div style={col2}>10,000</div>
+                        <div style={{...col2, marginRight:'0px'}}></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+const DippingDailySales = () => {
+    return(
+        <div style={{width:'100%'}}>
+            <div style={{width:'100%', textAlign:'left', marginBottom:'10px', color:'#06805B', fontSize:'12px', fontWeight:'900'}}>
+                Dipping
+            </div>
+            <div style={{...mainSales, width:'100%'}}>
+                <div style={inner}>
+                    <div style={tableHeads}>
+                        <div style={col}>Product Type</div>
+                        <div style={col} className='col'>PMS</div>
+                        <div style={col}>AGO</div>
+                        <div style={{...col, marginRight:'0px'}} >DPK</div>
+                    </div>
+                    
+                    <div style={tableHeads2}>
+                        <div style={col2}>Pump 1</div>
+                        <div style={col2}>10,000</div>
+                        <div style={col2}>12,000</div>
+                        <div style={{...col2, marginRight:'0px'}}>5,000</div>
+                    </div>
+
+                    <div style={tableHeads2}>
+                        <div style={col2}>Pump 2</div>
+                        <div style={col2}>10,000</div>
+                        <div style={col2}>12,000</div>
+                        <div style={{...col2, marginRight:'0px'}}>5,000</div>
+                    </div>
+
+                    <div style={tableHeads2}>
+                        <div style={col2}>Pump 3</div>
+                        <div style={col2}>10,000</div>
+                        <div style={col2}>12,000</div>
+                        <div style={{...col2, marginRight:'0px'}}>5,000</div>
+                    </div>
+
+                    <div style={tableHeads2}>
+                        <div style={col2}>Total</div>
+                        <div style={col2}>10,000</div>
+                        <div style={col2}>12,000</div>
+                        <div style={{...col2, marginRight:'0px'}}>5,000</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
 const ComprehensiveReports = (props) => {
     const printTable = useRef();
     const iframe = useRef();
@@ -214,6 +485,27 @@ const ComprehensiveReports = (props) => {
                             <PMSDailySales name={'PMS'} data={props.data.PMS} />
                             <PMSDailySales name={'PMS'} data={props.data.AGO} />
                             <PMSDailySales name={'PMS'} data={props.data.DPK} />
+
+                            <LPODailySales />
+                            <ExpensesDailySales />
+
+                            <div style={paym}>
+                                <div style={pleft}>
+                                    <ExpensesSummary />
+                                </div>
+                                <div style={pleft}>
+                                    <PaymentDailySales />
+                                </div>
+                            </div>
+
+                            <div style={paym2}>
+                                <div style={pleft}>
+                                    <ProductDailySales />
+                                </div>
+                                <div style={pleft}>
+                                    <DippingDailySales />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -259,6 +551,29 @@ const ComprehensiveReports = (props) => {
             </div>
         </Modal>
     )
+}
+
+const pleft = {
+    width: '50%',
+    height: 'auto'
+}
+
+const paym = {
+    width: '100%',
+    height: 'auto',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+}
+
+const paym2 = {
+    width: '100%',
+    height: 'auto',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
 }
 
 const mainSales = {
@@ -453,10 +768,14 @@ const tableContainer = {
 }
 
 const dats = {
+    width:'100%',
     marginTop:'20px',
     fontSize:'14px',
     fontWeight:'bold',
-    fontFamily:'Nunito-Regular'
+    fontFamily:'Nunito-Regular',
+    display:'flex',
+    flexDirection:'row',
+    justifyContent:'center'
 }
 
 export default ComprehensiveReports;
