@@ -32,7 +32,7 @@ import { useRef } from 'react';
 import DailySalesService from '../../services/DailySales';
 import LPOService from '../../services/lpo';
 import dailySalesReducer from '../../store/reducers/dailySales';
-import { passAllDailySales, passCummulative, passExpensesAndPayments, passIncomingOrder } from '../../store/actions/dailySales';
+import { dailySupplies, passAllDailySales, passCummulative, passExpensesAndPayments, passIncomingOrder } from '../../store/actions/dailySales';
 
 ChartJS.register(
     CategoryScale,
@@ -119,7 +119,7 @@ const DailySales = (props) => {
     const payments = useSelector(state => state.dailySalesReducer.payments);
     const dailyIncoming = useSelector(state => state.dailySalesReducer.dailyIncoming);
     const cummulative = useSelector(state => state.dailySalesReducer.cummulative);
-    console.log(dailySales, 'yeaaaahhhhh')
+    const dailySupplys = useSelector(state => state.dailySalesReducer.dailySupplies);
 
     const getMasterRows = ({sales, lpo, rtVolumes}) => {
 
@@ -377,7 +377,27 @@ const DailySales = (props) => {
             getAggregatePayment(paymentsRecords);
 
             await DailySalesService.getAllDailySupply(salesPayload).then((data) => {
-                // console.log(data, 'daily supply');
+                const supplies = data.supply.supply;
+                let totalPMS = 0;
+                let totalAGO = 0;
+                let totalDPK = 0;
+                for(let supply of supplies){
+                    if(supply.productType === "PMS"){
+                        totalPMS = totalPMS + Number(supply.quantity);
+                    }else if(supply.productType === "AGO"){
+                        totalAGO = totalAGO + Number(supply.quantity);
+                    }else if(supply.productType === "DPK"){
+                        totalDPK = totalDPK + Number(supply.quantity);
+                    }
+                }
+
+                const totals = {
+                    PMS: totalPMS,
+                    AGO: totalAGO,
+                    DPK: totalDPK
+                }
+
+                dispatch(dailySupplies(totals));
             });
 
             await DailySalesService.getAllDailyIncomingOrder(salesPayload).then((data) => {
@@ -758,7 +778,7 @@ const DailySales = (props) => {
                                 </div>
                                 <div className='right'>
                                     <div>Litre Qty</div>
-                                    <div>234, 825</div>
+                                    <div>{dailySupplys.hasOwnProperty("PMS")? dailySupplys.PMS: "0"}</div>
                                 </div>
                             </div>
                             <div className="cardss">
@@ -767,7 +787,7 @@ const DailySales = (props) => {
                                 </div>
                                 <div className='right'>
                                     <div>Litre Qty</div>
-                                    <div>234, 825</div>
+                                    <div>{dailySupplys.hasOwnProperty("AGO")? dailySupplys.AGO: "0"}</div>
                                 </div>
                             </div>
                             <div style={{marginRight:'0px'}} className="cardss">
@@ -776,7 +796,7 @@ const DailySales = (props) => {
                                 </div>
                                 <div className='right'>
                                     <div>Litre Qty</div>
-                                    <div>234, 825</div>
+                                    <div>{dailySupplys.hasOwnProperty("DPK")? dailySupplys.DPK: "0"}</div>
                                 </div>
                             </div>
                         </div>

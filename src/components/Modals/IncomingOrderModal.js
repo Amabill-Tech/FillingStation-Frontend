@@ -158,9 +158,9 @@ const IncomingOrderModal = (props) => {
                                         <MenuItem style={menu} value={0}>Select Product Order</MenuItem>
                                         {
                                             productOrder.map((item, index) => {
-                                                    return(
-                                                        <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.depot}</MenuItem>
-                                                    )
+                                                return(
+                                                    <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.depot}</MenuItem>
+                                                )
                                             })  
                                         }
                                     </Select>

@@ -92,16 +92,16 @@ const Supply = (props) => {
             let room = Number(tanks.tankCapacity) - Number(tanks.currentLevel);
             if(room === 0){
                 swal("Warning!", "This tank is full, please select another tank", "info");
-            }else if(incoming.quantity <= room){
-                setQuantity(incoming.quantity);
-                setShortage(Number(room) - Number(incoming.quantity));
+            }else if(incoming.currentLevel <= room){
+                setQuantity(incoming.currentLevel);
+                setShortage(Number(room) - Number(incoming.currentLevel));
                 setOverage("None");
                 setTruckNo(item.truckNo);
                 setWayBillNo(item.wayBillNo);
             }else{
                 setQuantity(Number(room));
                 setShortage("None");
-                setOverage(Number(incoming.quantity) - Number(room));
+                setOverage(Number(incoming.currentLevel) - Number(room));
                 setTruckNo(item.truckNo);
                 setWayBillNo(item.wayBillNo);
             }
@@ -116,16 +116,16 @@ const Supply = (props) => {
             let room = Number(item.tankCapacity) - Number(item.currentLevel);
             if(room === 0){
                 swal("Warning!", "This tank is full, please select another tank", "info");
-            }else if(incoming.quantity <= room){
-                setQuantity(incoming.quantity);
-                setShortage(Number(room) - Number(incoming.quantity));
+            }else if(incoming.currentLevel <= room){
+                setQuantity(incoming.currentLevel);
+                setShortage(Number(room) - Number(incoming.currentLevel));
                 setOverage("None");
                 setTruckNo(incoming.truckNo);
                 setWayBillNo(incoming.wayBillNo);
             }else{
                 setQuantity(Number(room));
                 setShortage("None");
-                setOverage(Number(incoming.quantity) - Number(room));
+                setOverage(Number(incoming.currentLevel) - Number(room));
                 setTruckNo(incoming.truckNo);
                 setWayBillNo(incoming.wayBillNo);
             }
@@ -182,6 +182,14 @@ const Supply = (props) => {
                 }).then(()=>{
                     props.refresh();
                 }).then(()=>{
+                    setTransportationName("");
+                    setTruckNo("");
+                    setWayBillNo("");
+                    setQuantity("");
+                    setDate("");
+                    setIncoming({});
+                    setTanks({});
+                    setDefault(10);
                     setLoading(false);
                 });
             });
