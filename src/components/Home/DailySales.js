@@ -339,6 +339,8 @@ const DailySales = (props) => {
                 tomorrow: rangeDate.tomorrow,
             }
 
+            console.log(salesPayload, 'sales')
+
             const salesRecord = {};
             let paymentsRecords = {};
 
