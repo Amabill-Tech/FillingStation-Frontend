@@ -319,105 +319,109 @@ const DailySales = (props) => {
         dispatch(passExpensesAndPayments(total));
     }
 
-    const getAllProductData = useCallback((rangeDate) => {
+    const getAndAnalyzeDailySales = async(data, rangeDate) => {
+        const payload = {
+            organisationID: data.organisation,
+            outletID: data._id
+        }
+
+        const salesPayload = {
+            organisationID: data.organisation,
+            outletID: data._id,
+            today: rangeDate.today,
+            tomorrow: rangeDate.tomorrow,
+        }
+
+        console.log(salesPayload, 'sales')
+
+        const salesRecord = {};
+        let paymentsRecords = {};
+
+        OutletService.getAllOutletTanks(payload).then(data => {
+            dispatch(getAllOutletTanks(data.stations));
+        });
+
+        await DailySalesService.getAllSales(salesPayload).then(data => {
+            salesRecord.sales = data.sales.sales;
+        });
+
+        await DailySalesService.getAllLPOSales(salesPayload).then((data) => {
+            salesRecord.lpo = data.lpo.lpo;
+        });
+
+        await DailySalesService.getAllRT(salesPayload).then((data) => {
+            salesRecord.rtVolumes = data.rtVolumes.rtVolumes;
+        });
+
+        getMasterRows(salesRecord);
+
+        await DailySalesService.getAllDailyExpenses(salesPayload).then((data) => {
+            paymentsRecords.expenses = data.expense.expense;
+        });
+
+        await DailySalesService.getAllDailyPayments(salesPayload).then((data) => {
+            paymentsRecords.bankPayment = data.payment.payment;
+            // console.log(data.payment.payment, 'bank payment')
+        });
+
+        await DailySalesService.getAllDailyPOSPayments(salesPayload).then((data) => {
+            paymentsRecords.posPayment = data.pospayment.pospayment;
+            // console.log(data.pospayment.pospayment, 'pos payment')
+        });
+
+        getAggregatePayment(paymentsRecords);
+
+        await DailySalesService.getAllDailySupply(salesPayload).then((data) => {
+            const supplies = data.supply.supply;
+            let totalPMS = 0;
+            let totalAGO = 0;
+            let totalDPK = 0;
+            for(let supply of supplies){
+                if(supply.productType === "PMS"){
+                    totalPMS = totalPMS + Number(supply.quantity);
+                }else if(supply.productType === "AGO"){
+                    totalAGO = totalAGO + Number(supply.quantity);
+                }else if(supply.productType === "DPK"){
+                    totalDPK = totalDPK + Number(supply.quantity);
+                }
+            }
+
+            const totals = {
+                PMS: totalPMS,
+                AGO: totalAGO,
+                DPK: totalDPK
+            }
+
+            dispatch(dailySupplies(totals));
+        });
+
+        await DailySalesService.getAllDailyIncomingOrder(salesPayload).then((data) => {
+            dispatch(passIncomingOrder(data.incoming.incoming));
+        });
+    }
+
+    const getAllProductData = useCallback(() => {
 
         OutletService.getAllOutletStations({organisation: user.userType === "superAdmin"? user._id : user.organisationID}).then(data => {
             dispatch(getAllStations(data.station));
             setCurrentStation(data.station[0]);
             setDefault(1);
             return data.station[0]
-        }).then(async(data)=>{
-            const payload = {
-                organisationID: data.organisation,
-                outletID: data._id
-            }
-
-            const salesPayload = {
-                organisationID: data.organisation,
-                outletID: data._id,
-                today: rangeDate.today,
-                tomorrow: rangeDate.tomorrow,
-            }
-
-            console.log(salesPayload, 'sales')
-
-            const salesRecord = {};
-            let paymentsRecords = {};
-
-            OutletService.getAllOutletTanks(payload).then(data => {
-                dispatch(getAllOutletTanks(data.stations));
-            });
-
-            await DailySalesService.getAllSales(salesPayload).then(data => {
-                salesRecord.sales = data.sales.sales;
-            });
-
-            await DailySalesService.getAllLPOSales(salesPayload).then((data) => {
-                salesRecord.lpo = data.lpo.lpo;
-            });
-
-            await DailySalesService.getAllRT(salesPayload).then((data) => {
-                salesRecord.rtVolumes = data.rtVolumes.rtVolumes;
-            });
-
-            getMasterRows(salesRecord);
-
-            await DailySalesService.getAllDailyExpenses(salesPayload).then((data) => {
-                paymentsRecords.expenses = data.expense.expense;
-            });
-
-            await DailySalesService.getAllDailyPayments(salesPayload).then((data) => {
-                paymentsRecords.bankPayment = data.payment.payment;
-                // console.log(data.payment.payment, 'bank payment')
-            });
-
-            await DailySalesService.getAllDailyPOSPayments(salesPayload).then((data) => {
-                paymentsRecords.posPayment = data.pospayment.pospayment;
-                // console.log(data.pospayment.pospayment, 'pos payment')
-            });
-
-            getAggregatePayment(paymentsRecords);
-
-            await DailySalesService.getAllDailySupply(salesPayload).then((data) => {
-                const supplies = data.supply.supply;
-                let totalPMS = 0;
-                let totalAGO = 0;
-                let totalDPK = 0;
-                for(let supply of supplies){
-                    if(supply.productType === "PMS"){
-                        totalPMS = totalPMS + Number(supply.quantity);
-                    }else if(supply.productType === "AGO"){
-                        totalAGO = totalAGO + Number(supply.quantity);
-                    }else if(supply.productType === "DPK"){
-                        totalDPK = totalDPK + Number(supply.quantity);
-                    }
-                }
-
-                const totals = {
-                    PMS: totalPMS,
-                    AGO: totalAGO,
-                    DPK: totalDPK
-                }
-
-                dispatch(dailySupplies(totals));
-            });
-
-            await DailySalesService.getAllDailyIncomingOrder(salesPayload).then((data) => {
-                dispatch(passIncomingOrder(data.incoming.incoming));
-            });
+        }).then((data)=>{
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
+            const day = now.getDate();
+            const formatWell = year + "-"+ month + "-" + day;
+            const getDataRange = getTodayAndTomorrow(formatWell);
+            setRangeDate(getDataRange);
+            getAndAnalyzeDailySales(data, rangeDate);
         });
 
     }, [dispatch, user.organisationID, rangeDate.today, rangeDate.tomorrow, user._id, user.userType]);
 
     useEffect(()=>{
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = now.getMonth() + 1;
-        const day = now.getDate();
-        const formatWell = year + "-"+ month + "-" + day;
-        const getDataRange = getTodayAndTomorrow(formatWell);
-        setRangeDate(getDataRange);
-        getAllProductData(getDataRange);
+        getAllProductData();
     },[getAllProductData])
 
     const getTodayAndTomorrow = (value) => {
@@ -534,7 +538,7 @@ const DailySales = (props) => {
         const cummulative = getCummulativeVolumePerProduct(PMSList, AGOList, DPKList);
         dispatch(passCummulative(cummulative));
         setCummulatives(cummulative);
-    }, [tankList]);
+    }, [tankList, dispatch]);
 
     useEffect(()=>{
         getProductTanks();
@@ -573,10 +577,13 @@ const DailySales = (props) => {
         dateHandle.current.showPicker();
     }
 
-    const updateDate = (e) => {
+    const updateDate = async(e) => {
         const date = e.target.value.split('-');
         const format = `${date[2]} ${months[date[1]]} ${date[0]}`;
-        setCurrentDate(format)
+        const getDataRange = getTodayAndTomorrow(e.target.value);
+        await setRangeDate(getDataRange);
+        await setCurrentDate(format);
+        getAndAnalyzeDailySales(currentStation ,getDataRange);
     }
 
     return(
