@@ -332,8 +332,6 @@ const DailySales = (props) => {
             tomorrow: rangeDate.tomorrow,
         }
 
-        console.log(salesPayload, 'sales')
-
         const salesRecord = {};
         let paymentsRecords = {};
 
@@ -400,7 +398,7 @@ const DailySales = (props) => {
         });
     }
 
-    const getAllProductData = useCallback(() => {
+    const getAllProductData = () => {
 
         OutletService.getAllOutletStations({organisation: user.userType === "superAdmin"? user._id : user.organisationID}).then(data => {
             dispatch(getAllStations(data.station));
@@ -418,11 +416,11 @@ const DailySales = (props) => {
             getAndAnalyzeDailySales(data, rangeDate);
         });
 
-    }, [dispatch, user.organisationID, rangeDate.today, rangeDate.tomorrow, user._id, user.userType]);
+    };
 
     useEffect(()=>{
         getAllProductData();
-    },[getAllProductData])
+    },[])
 
     const getTodayAndTomorrow = (value) => {
         const today = value;
@@ -776,6 +774,7 @@ const DailySales = (props) => {
                                         backgroundColor: '#06805B'
                                     }
                                 }}
+                                onClick={()=>{history.push("/home/supply")}}
                             >
                                 View in details
                             </Button>
@@ -826,6 +825,7 @@ const DailySales = (props) => {
                                             backgroundColor: '#06805B'
                                         }
                                     }}
+                                    onClick={()=>{history.push("/home/analysis/payments")}}
                                 >
                                     View in details
                                 </Button>
@@ -882,6 +882,7 @@ const DailySales = (props) => {
                                             backgroundColor: '#06805B'
                                         }
                                     }}
+                                    onClick={()=>{history.push("/home/record-sales/lpo")}}
                                 >
                                     View in details
                                 </Button>
@@ -920,6 +921,7 @@ const DailySales = (props) => {
                                         backgroundColor: '#06805B'
                                     }
                                 }}
+                                onClick={()=>{history.push("/home/inc-orders")}}
                             >
                                 View in details
                             </Button>
