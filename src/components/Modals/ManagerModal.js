@@ -7,17 +7,17 @@ import Modal from '@mui/material/Modal';
 import { ThreeDots } from  'react-loader-spinner';
 import swal from 'sweetalert';
 import '../../styles/lpo.scss';
-import axios from 'axios';
 import '../../styles/lpo.scss';
 import Radio from '@mui/material/Radio';
-import Camera from 'react-html5-camera-photo';
 import 'react-html5-camera-photo/build/css/index.css';
 import AdminUserService from '../../services/adminUsers';
+import { MenuItem, Select } from '@mui/material';
 
 const ManagerModal = (props) => {
     const [loading, setLoading] = useState(false);
     const [loading2, setLoading2] = useState(false);
     const user = useSelector(state => state.authReducer.user);
+    const allOutlets = useSelector(state => state.outletReducer.allOutlets);
 
     const [staffName, setStaffName] = useState('');
     const [sex, setSex] = useState('Male');
@@ -33,8 +33,8 @@ const ManagerModal = (props) => {
     const [jobTitle, setJobTitle] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    
-    
+    const [stationID, setStationID] = useState('');
+    const [defaultState, setDefault] = useState(0);
 
     const handleClose = () => {
         setLoading2(0);
@@ -92,6 +92,7 @@ const ManagerModal = (props) => {
         if(dateOfBirth === "") return swal("Warning!", "Date of birth field cannot be empty", "info");
         if(role === "") return swal("Warning!", "Role field cannot be empty", "info");
         if(jobTitle === "") return swal("Warning!", "Job title field cannot be empty", "info");
+        if(stationID === "") return swal("Warning!", "Station field cannot be empty", "info");
         if(password === "") return swal("Warning!", "Password field cannot be empty", "info");
         if(confirmPassword !== password) return swal("Warning!", "Confirm password field cannot be empty", "info");
 
@@ -111,6 +112,7 @@ const ManagerModal = (props) => {
             jobTitle: jobTitle,
             password: password,
             organisationID: user._id,
+            outletID: stationID
         }
 
         AdminUserService.createAdminUsers(payload).then((data) => {
@@ -205,6 +207,11 @@ const ManagerModal = (props) => {
         )
     }*/
 
+    const changeMenu = (index, item) => {
+        setDefault(index);
+        setStationID(item._id);
+    }
+
     return(
         <Modal
             open={props.open}
@@ -298,6 +305,32 @@ const ManagerModal = (props) => {
                                     type='text'
                                     onChange={e => setAddress(e.target.value)}
                                 />
+                            </div>
+
+                            <div style={{marginTop:'15px'}} className='inputs'>
+                                <div className='head-text2'>Select Station</div>
+                                <Select
+                                    labelId="demo-select-small"
+                                    id="demo-select-small"
+                                    value={defaultState}
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        border:'1px solid #777777',
+                                        fontSize:'12px',
+                                    }}
+                                >
+                                    <MenuItem style={menu} value={0}>Select Station</MenuItem>
+                                    {
+                                        allOutlets.map((item, index) => {
+                                            return(
+                                                <MenuItem key={index} onClick={()=>{changeMenu(index + 1, item)}} style={menu} value={index + 1}>{item.outletName}</MenuItem>
+                                            )
+                                        })
+                                    }
+                                </Select>
                             </div>
 
                             <div className='inputs'>

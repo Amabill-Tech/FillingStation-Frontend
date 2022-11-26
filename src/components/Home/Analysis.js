@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import '../../styles/payments.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import Button from '@mui/material/Button';
 import analysis2 from '../../assets/analysis2.png';
 import folder from '../../assets/folder.png';
 import folder2 from '../../assets/folder2.png';
@@ -28,20 +27,12 @@ const Analysis = (props) => {
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const dispatch = useDispatch();
     const history = useHistory();
-    const [prints, setPrints] = useState(false);
     const [currentStation, setCurrentStation] = useState({});
-    const [entries, setEntries] = useState(10);
-    const [skip, setSkip] = useState(0);
-    const [limit, setLimit] = useState(15);
-    const [total, setTotal] = useState(0);
     const [defaultState, setDefault] = useState(0);
     const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
-    const [open3, setOpen3] = useState(false);
     const [type, setType] = useState(false);
     const [mode, setMode] = useState("");
-
-    console.log(value, 'datesssss')
 
     const getAllOutletData = useCallback(() => {
 
@@ -60,7 +51,7 @@ const Analysis = (props) => {
 
         });
 
-    }, [dispatch, user._id, user.userType, user.organisationID, skip, limit]);
+    }, [dispatch, user._id, user.userType, user.organisationID]);
 
     useEffect(()=>{
         getAllOutletData();
@@ -93,10 +84,6 @@ const Analysis = (props) => {
         )
     }
 
-    const printReport = () => {
-
-    }
-
     const openCostPrice = (type) => {
         if(type === "cost" || type === "selling"){
             setOpen(true);
@@ -106,10 +93,6 @@ const Analysis = (props) => {
         }else if(type === "expenses"){
              history.push("/home/analysis/expenses");
         }
-    }
-
-    const selectDateRange = () => {
-        setOpen3(true);
     }
 
     return(
@@ -167,85 +150,6 @@ const Analysis = (props) => {
                             <DashboardImage type={"none"} right={'0px'} left={'0px'} image={analysis2} name={'Profits'} value={'NGN 231,925'} />
                         </div>
                     </div>
-
-                    <div className='search2'>
-                        <div className='butt2'>
-                            <Select
-                                labelId="demo-select-small"
-                                id="demo-select-small"
-                                value={10}
-                                sx={selectStyle2}
-                            >
-                                <MenuItem value={10}>Show entries</MenuItem>
-                                <MenuItem value={20}>Twenty</MenuItem>
-                                <MenuItem value={30}>Thirty</MenuItem>
-                            </Select>
-                        </div>
-                        <div style={{width: mediaMatch.matches? '100%': '190px'}} className='input-cont2'>
-                            <Button sx={{
-                                width: mediaMatch.matches? '100%': '100px', 
-                                height:'30px',  
-                                background: '#58A0DF',
-                                borderRadius: '3px',
-                                fontSize:'10px',
-                                display: mediaMatch.matches && 'none',
-                                marginTop: mediaMatch.matches? '10px': '0px',
-                                '&:hover': {
-                                    backgroundColor: '#58A0DF'
-                                }
-                                }}  variant="contained"> History
-                            </Button>
-                            <Button sx={{
-                                width: mediaMatch.matches? '100%': '80px', 
-                                height:'30px',  
-                                background: '#F36A4C',
-                                borderRadius: '3px',
-                                fontSize:'10px',
-                                display: mediaMatch.matches && 'none',
-                                marginTop: mediaMatch.matches? '10px': '0px',
-                                '&:hover': {
-                                    backgroundColor: '#F36A4C'
-                                }
-                                }}  
-                                onClick={printReport}
-                                variant="contained"> Print
-                            </Button>
-                        </div>
-                    </div>
-
-                    <div className='table-container'>
-                        <div className='table-head'>
-                            <div className='column'>S/N</div>
-                            <div className='column'>Date</div>
-                            <div className='column'>Cost Price (NGN)</div>
-                            <div className='column'>Selling Price (NGN)</div>
-                            <div className='column'>Margin (NGN)</div>
-                            <div className='column'>Expenses (NGN)</div>
-                            <div className='column'>Profit (NGN)</div>
-                        </div>
-
-                        <div className='row-container'>
-                            <div className='table-head2'>
-                                <div className='column'>01</div>
-                                <div className='column'>09 June, 2022</div>
-                                <div className='column'>Wema bank</div>
-                                <div className='column'>1524353625262</div>
-                                <div className='column'>150,000</div>
-                                <div className='column'>352,000</div>
-                                <div className='column'>352,000</div>
-                            </div>
-                            
-                        </div>
-                    </div>
-
-                    <div className='footer'>
-                        <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>Showing 1 to 11 of 38 entries</div>
-                        <div className='nav'>
-                            <button className='but'>Previous</button>
-                            <div className='num'>1</div>
-                            <button className='but2'>Next</button>
-                        </div>
-                    </div>
                 </div>
             }
 
@@ -277,8 +181,6 @@ const selectStyle2 = {
 const contain2 = {
     width:'100%',
 }
-
-const styles = { width: 260, display: 'block', marginBottom: 10 };
 
 const menu = {
     fontSize:'14px',

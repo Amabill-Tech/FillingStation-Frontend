@@ -55,6 +55,8 @@ import 'react-modern-drawer/dist/index.css';
 import { useDispatch, useSelector } from 'react-redux';
 import UserService from '../services/user';
 import { updateUser } from '../store/actions/auth';
+import StationTanks from '../components/Home/StationTanks';
+import StationPumps from '../components/Home/StationPumps';
 
 const HomeScreen = ({history}) => {
 
@@ -65,6 +67,8 @@ const HomeScreen = ({history}) => {
         return(
             {
                 '/home': 'Dashboard',
+                '/home/tank-list': '← Station Tanks',
+                '/home/pump-list': '← Station Pumps',
                 '/home/daily-sales': 'Daily Sales',
                 '/home/daily-sales/report': 'Daily Sales',
                 '/home/daily-sales/pms': 'Daily Sales',
@@ -172,6 +176,12 @@ const HomeScreen = ({history}) => {
         })
     }
 
+    const navigateBack = (name) => {
+        if(name === "← Station Tanks" || name === "← Station Pumps"){
+            history.goBack();
+        }
+    }
+
     return(
         <div className='home-container'>
             <div style={{background: user.sideBarMode}} className='side-bar'>
@@ -266,7 +276,9 @@ const HomeScreen = ({history}) => {
                 <div className='top-bar-menu'>
                     <div style={{color: user.isDark === '0'? '#054834': '#fff'}} className='left-lobe'>
                         {(activeRoute.split('/').length === 4 || activeRoute.split('/').length === 5 )&& <img onClick={goBackToPreviousPage} style={{width:'30px', height:'25px', marginRight:'10px'}} src={goBack} alt="icon"  />}
-                        {name}
+                        <span onClick={()=>{navigateBack(name)}}>
+                            {name}
+                        </span>
                     </div>
                     <div className='right-lobe'>
                         <div className='search-icon'>
@@ -296,7 +308,7 @@ const HomeScreen = ({history}) => {
                 </div>
                 <Switch>
                     <Route exact path='/home'>
-                        <Dashboard/>
+                        <Dashboard activeRoute={activeRoute}/>
                     </Route>
                     <Route path='/home/daily-sales'>
                         <DailySales activeRoute={activeRoute} history={history}/>
@@ -342,6 +354,12 @@ const HomeScreen = ({history}) => {
                     </Route>
                     <Route path='/home/settings'>
                         <Settings history={history}/>
+                    </Route>
+                    <Route path='/home/tank-list'>
+                        <StationTanks />
+                    </Route>
+                    <Route path='/home/pump-list'>
+                        <StationPumps />
                     </Route>
                 </Switch>
             </div>

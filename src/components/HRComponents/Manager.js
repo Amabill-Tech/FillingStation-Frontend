@@ -14,6 +14,8 @@ import { useSelector } from 'react-redux';
 import ManagerModal from '../Modals/ManagerModal';
 import AdminUserService from '../../services/adminUsers';
 import PrintUserRecords from '../Reports/UserRecords';
+import OutletService from '../../services/outletService';
+import { getAllStations } from '../../store/actions/outlet';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 
@@ -45,13 +47,17 @@ const Manager = (props) => {
         const payload = {
             skip: skip * limit,
             limit: limit,
-            organisation: user.organisationID
+            organisation: user._id
         }
         AdminUserService.allAdminUserRecords(payload).then(data => {
             setTotal(data.admin.count);
             dispatch(createAdminUser(data.admin.admin));
         });
-    }, [user.organisationID, limit, skip, dispatch]);
+
+        OutletService.getAllOutletStations({organisation: user._id}).then(data => {
+            dispatch(getAllStations(data.station));
+        });
+    }, [user._id, limit, skip, dispatch]);
 
     useEffect(()=>{
         getAllUserData();

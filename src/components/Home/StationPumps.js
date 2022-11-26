@@ -7,13 +7,13 @@ import { styled } from '@mui/material/styles';
 import me5 from '../../assets/me5.png';
 import "../../styles/stationTanks.scss";
 
-const StationTanks = () => {
+const StationPumps = () => {
 
     const [tabs, setTabs] = useState(0);
-    const [PMSTank, setPMSTank] = useState([]);
-    const [AGOTank, setAGOTank] = useState([]);
-    const [DPKTank, setDPKTank] = useState([]);
-    const [allTanks, setAllTanks] = useState([]);
+    const [PMSPump, setPMSPump] = useState([]);
+    const [AGOPump, setAGOPump] = useState([]);
+    const [DPKPump, setDPKPump] = useState([]);
+    const [allPumps, setAllPumps] = useState([]);
     const location = useLocation();
     const [defaultState] = useState(0);
     const dashboardData = useSelector(state => state.dashboardReducer.dashboardData);
@@ -37,20 +37,20 @@ const StationTanks = () => {
         const AGO = data.filter(item => item.productType === "AGO");
         const DPK = data.filter(item => item.productType === "DPK");
 
-        setPMSTank(PMS);
-        setAGOTank(AGO);
-        setDPKTank(DPK);
-        setAllTanks(data);
+        setPMSPump(PMS);
+        setAGOPump(AGO);
+        setDPKPump(DPK);
+        setAllPumps(data);
     }
 
     const CardItem = (props) => {
         return(
-            <div style={{height:"400px"}} className='item'>
+            <div className='item'>
                 <div className='inner'>
                         <div className='top'>
                             <div className='left'>
                                 <img style={{width:'40px', height:'40px'}} src={me5} alt="icon" />
-                                <div>{props.data.tankName}</div>
+                                <div>{props.data.pumpName}</div>
                             </div>
                             <div className='right'>
                                 <div>{props.data.activeState === '0'? 'Inactive': 'Active'}</div>
@@ -59,37 +59,7 @@ const StationTanks = () => {
                         </div>
 
                         <div className='out'>
-                            <div style={{width:'40%', textAlign:'left'}}>Dead Stock Level(Litres)</div>
-                            <OutlinedInput 
-                                placeholder="" 
-                                sx={{
-                                    width:'60%',
-                                    height:'35px', 
-                                    fontSize:'12px',
-                                    background:'#F2F1F1',
-                                    color:'#000'
-                                }} 
-                                value={props.data.deadStockLevel}
-                            />
-                        </div>
-
-                        <div className='out'>
-                            <div style={{width:'40%', textAlign:'left'}}>Tank Capacity (Litres)</div>
-                            <OutlinedInput 
-                                placeholder="" 
-                                sx={{
-                                    width:'60%',
-                                    height:'35px', 
-                                    fontSize:'12px',
-                                    background:'#F2F1F1',
-                                    color:'#000'
-                                }} 
-                                value={props.data.tankCapacity}
-                            />
-                        </div>
-
-                        <div className='out'>
-                            <div style={{width:'40%', textAlign:'left'}}>Tank ID</div>
+                            <div style={{width:'40%', textAlign:'left'}}>Pump ID</div>
                             <OutlinedInput 
                                 placeholder="" 
                                 sx={{
@@ -104,7 +74,7 @@ const StationTanks = () => {
                         </div>
 
                         <div className='out'>
-                            <div style={{width:'40%', textAlign:'left'}}>Current Stock Level (Litres)</div>
+                            <div style={{width:'40%', textAlign:'left'}}>Tank Connecting to pump</div>
                             <OutlinedInput 
                                 placeholder="" 
                                 sx={{
@@ -114,12 +84,12 @@ const StationTanks = () => {
                                     background:'#F2F1F1',
                                     color:'#000'
                                 }} 
-                                value={props.data.currentLevel}
+                                value={props.data.hostTankName}
                             />
                         </div>
 
                         <div className='out'>
-                            <div style={{width:'40%', textAlign:'left'}}>Calibration Date</div>
+                            <div style={{width:'40%', textAlign:'left'}}>Total Reading</div>
                             <OutlinedInput 
                                 placeholder="" 
                                 sx={{
@@ -128,23 +98,21 @@ const StationTanks = () => {
                                     fontSize:'12px',
                                     background:'#F2F1F1',
                                     color:'#000'
-                                }}
-                                value={props.data.calibrationDate} 
+                                }} 
+                                value={props.data.totalizerReading}
                             />
                         </div>
 
-                        <div style={{marginTop:'20px'}} className='delete'>
-                            <div></div>
+                        <div className='delete'>
                             <Button sx={{
-                                width:'70px', 
+                                width:'120px', 
                                 height:'30px',  
-                                background: '#ff6347 ',
+                                background: '#06805B',
                                 borderRadius: '3px',
                                 fontSize:'10px',
                                 color:'#fff',
-                                marginLeft:'10px',
                                 '&:hover': {
-                                    backgroundColor: '#ff6347 '
+                                    backgroundColor: '#06805B'
                                 }
                                 }} 
                                 disabled
@@ -160,9 +128,9 @@ const StationTanks = () => {
         return(
             <div className='space'>
                 {
-                    allTanks.length === 0?
+                    allPumps.length === 0?
                     <div style={place}>No records of tanks</div>:
-                    allTanks.map((item, index) => {
+                    allPumps.map((item, index) => {
                         return(
                             <CardItem key={index} data={item} />
                         )
@@ -176,9 +144,9 @@ const StationTanks = () => {
         return(
             <div className='space'>
                 {
-                    PMSTank.length === 0?
+                    PMSPump.length === 0?
                     <div style={place}>No records of tanks</div>:
-                    PMSTank.map((item, index) => {
+                    PMSPump.map((item, index) => {
                         return(
                             <CardItem key={index} data={item} />
                         )
@@ -192,9 +160,9 @@ const StationTanks = () => {
         return(
             <div className='space'>
                 {
-                    AGOTank.length === 0?
+                    AGOPump.length === 0?
                     <div style={place}>No records of tanks</div>:
-                    AGOTank.map((item, index) => {
+                    AGOPump.map((item, index) => {
                         return(
                             <CardItem key={index} data={item} />
                         )
@@ -208,9 +176,9 @@ const StationTanks = () => {
         return(
             <div className='space'>
                 {
-                    DPKTank.length === 0?
+                    DPKPump.length === 0?
                     <div style={place}>No records of tanks</div>:
-                    DPKTank.map((item, index) => {
+                    DPKPump.map((item, index) => {
                         return(
                             <CardItem key={index} data={item} />
                         )
@@ -434,4 +402,4 @@ const place = {
     color:'green'
 }
 
-export default StationTanks;
+export default StationPumps;

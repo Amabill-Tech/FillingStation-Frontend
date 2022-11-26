@@ -30,6 +30,8 @@ function App() {
         <Switch>
           <ProtectedRoute exact path='/home' component={HomeScreen}/>
           <Route path='/home/daily-sales' component={HomeScreen} />
+          <Route path='/home/tank-list' component={HomeScreen} />
+          <Route path='/home/pump-list' component={HomeScreen} />
           <Route path='/home/analysis/expenses' component={HomeScreen} />
           <Route path='/home/hr' component={HomeScreen} />
           <Route path='/home/inc-orders' component={HomeScreen} />

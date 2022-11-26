@@ -57,6 +57,7 @@ const Login = (props) => {
                                 background:'#076146', 
                                 borderRadius:'24px', 
                                 marginTop:'30px',
+                                textTransform:"capitalize",
                                 '&:hover': {
                                     backgroundColor: '#076146'
                                 }
