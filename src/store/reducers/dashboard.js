@@ -19,6 +19,19 @@ const initialState = {
         sales: {
             totalAmount: 0,
             totalVolume: 0,
+        },
+
+        supply:{
+            pmsSupply: 0,
+            agoSupply: 0,
+            dpkSupply: 0
+        },
+        totalExpenses: 0,
+        incoming: [],
+        payments: {
+            totalPayments: 0,
+            totalPosPayments: 0,
+            netToBank: 0
         }
     }
 }

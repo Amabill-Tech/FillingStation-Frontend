@@ -29,7 +29,7 @@ import { useState } from 'react';
 import {useHistory} from 'react-router-dom';
 import expense from '../../assets/expense.png';
 import DashboardService from '../../services/dashboard';
-import { addDashboard, dashboardRecordMore, dashboardRecords } from '../../store/actions/dashboard';
+import { addDashboard, dashboardRecordMore } from '../../store/actions/dashboard';
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 
 ChartJS.register(
@@ -201,7 +201,10 @@ const Dashboard = (props) => {
         history.push("/home/analysis/expenses");
     }
 
-    const collectAndEvaluateDashboard = (data) => {
+    const collectAndEvaluateDashboard = (data) => { 
+        /* ############################################################
+            Analyze total sales
+        ##############################################################*/
         let PMS = data.sales.filter(data => data.productType === "PMS");
         let AGO = data.sales.filter(data => data.productType === "AGO");
         let DPK = data.sales.filter(data => data.productType === "DPK");
@@ -229,10 +232,73 @@ const Dashboard = (props) => {
             dpkTotalLitre = dpkTotalLitre + Number(dpk.sales);
         }
 
+        /* ############################################################
+            Analyze total supply
+        ##############################################################*/
+
+        let PMSSupply = data.supply.filter(data => data.productType === "PMS");
+        let AGOSupply  = data.supply.filter(data => data.productType === "AGO");
+        let DPKSupply  = data.supply.filter(data => data.productType === "DPK");
+
+        let pmsSupply = 0;
+        let agoSupply = 0;
+        let dpkSupply = 0;
+
+        for(let sup of PMSSupply){
+            pmsSupply = pmsSupply + Number(sup.quantity);
+        }
+
+        for(let sup of AGOSupply){
+            agoSupply = agoSupply + Number(sup.quantity);
+        }
+
+        for(let sup of DPKSupply){
+            dpkSupply = dpkSupply + Number(sup.quantity);
+        }
+
+        /* ############################################################
+            Analyze total expenses
+        ##############################################################*/
+
+        let totalExpenses = 0;
+
+        for(let exp of data.expense){
+            totalExpenses = totalExpenses + Number(exp.expenseAmount);
+        }
+
+        /* ############################################################
+            Analyze total payments
+        ##############################################################*/
+
+        let totalPayments = 0;
+        let totalPosPayments = 0;
+
+        for(let pay of data.payment){
+            totalPayments = totalPayments + Number(pay.amountPaid);
+        }
+
+        for(let pay of data.posPayment){
+            totalPosPayments = totalPosPayments + Number(pay.amountPaid);
+        }
+
         const details = {
             sales:{
                 totalAmount: pmsTotalSales + agoTotalSales + dpkTotalSales,
                 totalVolume: pmsTotalLitre + agoTotalLitre + dpkTotalLitre
+            },
+
+            supply:{
+                pmsSupply: pmsSupply,
+                agoSupply: agoSupply,
+                dpkSupply: dpkSupply
+            },
+            totalExpenses: totalExpenses,
+            incoming: data.incoming,
+            payments: {
+                totalPayments: totalPayments,
+                totalPosPayments: totalPosPayments,
+                netToBank: (pmsTotalSales + agoTotalSales + dpkTotalSales) - totalExpenses,
+                outstanding: ((pmsTotalSales + agoTotalSales + dpkTotalSales) - totalExpenses) - totalPayments - totalPosPayments
             }
         }
 
@@ -259,7 +325,7 @@ const Dashboard = (props) => {
             endDate: formatTwo
         }
 
-        DashboardService.allSalesRecords(payload).then(data => {
+        DashboardService.allSalesRecords(payload).then(data => { console.log(data, "dddattt")
             const evaluatedDashboard = collectAndEvaluateDashboard(data);
             dispatch(dashboardRecordMore(evaluatedDashboard));
         });
@@ -436,7 +502,7 @@ const Dashboard = (props) => {
                                     </div>
                                     <div className='right'>
                                         <div>Litre Qty</div>
-                                        <div>234, 825</div>
+                                        <div>{dashboardRecords.supply.pmsSupply} Litres</div>
                                     </div>
                                 </div>
                                 <div className="cardss">
@@ -445,7 +511,7 @@ const Dashboard = (props) => {
                                     </div>
                                     <div className='right'>
                                         <div>Litre Qty</div>
-                                        <div>234, 825</div>
+                                        <div>{dashboardRecords.supply.agoSupply} Litres</div>
                                     </div>
                                 </div>
                                 <div style={{marginRight:'0px'}} className="cardss">
@@ -454,7 +520,7 @@ const Dashboard = (props) => {
                                     </div>
                                     <div className='right'>
                                         <div>Litre Qty</div>
-                                        <div>234, 825</div>
+                                        <div>{dashboardRecords.supply.dpkSupply} Litres</div>
                                     </div>
                                 </div>
                             </div>
@@ -466,15 +532,15 @@ const Dashboard = (props) => {
                                 <div className='inner-content'>
                                     <div className='conts'>
                                         <div className='row-count'>
-                                            <div style={{color:'green', fontSize:'14px', fontWeight:'600'}} className='item-count'>N 213,093</div>
+                                            <div style={{color:'green', fontSize:'14px', fontWeight:'600'}} className='item-count'>NGN {dashboardRecords.payments.netToBank}</div>
                                             <div style={{color:'#0872D4', fontSize:'14px', fontWeight:'600'}} className='item-count'>Teller</div>
-                                            <div style={{color:'#0872D4', fontSize:'14px', fontWeight:'600'}} className='item-count'>N 213,093</div>
-                                            <div style={{color:'red', fontSize:'14px', fontWeight:'600'}} className='item-count'>N 0,000</div>
+                                            <div style={{color:'#0872D4', fontSize:'14px', fontWeight:'600'}} className='item-count'>NGN {dashboardRecords.payments.totalPayments}</div>
+                                            <div style={{color:'red', fontSize:'14px', fontWeight:'600'}} className='item-count'>NGN {dashboardRecords.payments.totalPosPayments}</div>
                                         </div>
                                         <div className='row-count'>
                                             <div style={{color:'green', fontSize:'14px', fontWeight:'600'}} className='item-count'></div>
                                             <div style={{color:'#0872D4', fontSize:'12px', fontWeight:'600'}} className='item-count'>POS</div>
-                                            <div style={{color:'#0872D4', fontSize:'12px', fontWeight:'600'}} className='item-count'>N 213,093</div>
+                                            <div style={{color:'#0872D4', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {dashboardRecords.payments.outstanding}</div>
                                             <div style={{color:'red', fontSize:'14px', fontWeight:'600'}} className='item-count'></div>
                                         </div>
                                         <div style={{marginTop:'10px'}} className="arrows">
@@ -503,7 +569,7 @@ const Dashboard = (props) => {
                                     justifyContent:'flex-end',
                                     alignItems:'center',
                                     }} className='inner-content'>
-                                    <span style={{marginRight:'30px', fontSize:'14px', fontWeight:'900'}}>N 2000</span>
+                                    <span style={{marginRight:'30px', fontSize:'14px', fontWeight:'900'}}>NGN {dashboardRecords.totalExpenses}</span>
                                 </div>
                             </div>
                         </div>
@@ -615,41 +681,21 @@ const Dashboard = (props) => {
                                 <div className='table-text'>Quantity</div>
                             </div>
                             
-                            <div className='table-view2'>
-                                <div className='table-text'>Ammasco</div>
-                                <div className='table-text'>Date approved</div>
-                                <div className='table-text'>Abuja</div>
-                                <div className='table-text'>12-23-23</div>
-                                <div className='table-text'>245900</div>
-                            </div>
-                            <div className='table-view2'>
-                                <div className='table-text'>Ammasco</div>
-                                <div className='table-text'>Date approved</div>
-                                <div className='table-text'>Abuja</div>
-                                <div className='table-text'>12-23-23</div>
-                                <div className='table-text'>245900</div>
-                            </div>
-                            <div className='table-view2'>
-                                <div className='table-text'>Ammasco</div>
-                                <div className='table-text'>Date approved</div>
-                                <div className='table-text'>Abuja</div>
-                                <div className='table-text'>12-23-23</div>
-                                <div className='table-text'>245900</div>
-                            </div>
-                            <div className='table-view2'>
-                                <div className='table-text'>Ammasco</div>
-                                <div className='table-text'>Date approved</div>
-                                <div className='table-text'>Abuja</div>
-                                <div className='table-text'>12-23-23</div>
-                                <div className='table-text'>245900</div>
-                            </div>
-                            <div className='table-view2'>
-                                <div className='table-text'>Ammasco</div>
-                                <div className='table-text'>Date approved</div>
-                                <div className='table-text'>Abuja</div>
-                                <div className='table-text'>12-23-23</div>
-                                <div className='table-text'>245900</div>
-                            </div>
+                            {
+                                dashboardRecords.incoming.length === 0?
+                                <div style={place}>No incoming data</div>:
+                                dashboardRecords.incoming.map((data, index) => {
+                                    return(
+                                        <div key={index} className='table-view2'>
+                                            <div className='table-text'>{data.outletName}</div>
+                                            <div className='table-text'>{data.createdAt}</div>
+                                            <div className='table-text'>{data.depotStation}</div>
+                                            <div className='table-text'>{data.product}</div>
+                                            <div className='table-text'>{data.quantity}</div>
+                                        </div>
+                                    )
+                                })
+                            }
                         </div>
                     </div>
                 </div>     
@@ -658,15 +704,11 @@ const Dashboard = (props) => {
     )
 }
 
-const selectStyle = {
-    width:'100%', 
-    height:'35px', 
-    borderRadius:'5px',
-    background: 'linear-gradient(264.74deg, #0A6147 -18.7%, rgba(10, 97, 71, 0.88) 54.22%)',
-    color:'#fff',
-    fontFamily: 'Nunito-Regular',
-    fontSize:'14px',
-    outline:'none'
+const place = {
+    fontSize:'12px',
+    fontWeight:'bold',
+    marginTop:'10px',
+    color:'green'
 }
 
 const selectStyle2 = {
