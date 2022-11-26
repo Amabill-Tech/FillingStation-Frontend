@@ -1,5 +1,6 @@
 import { 
-    DASHBOARD
+    DASHBOARD,
+    DASHBOARD_RECORDS
 } from '../types'
 
 const initialState = {
@@ -14,6 +15,12 @@ const initialState = {
             inActivePumps: {count:0, list:[]}
         },
     },
+    dashboardRecords: {
+        sales: {
+            totalAmount: 0,
+            totalVolume: 0,
+        }
+    }
 }
 
 const dashboardReducer = (state = initialState, action) => {
@@ -26,6 +33,13 @@ const dashboardReducer = (state = initialState, action) => {
             return {
                 ...state,
                 dashboardData: payload
+            }
+        }
+
+        case DASHBOARD_RECORDS: {
+            return{
+                ...state,
+                dashboardRecords: payload
             }
         }
 

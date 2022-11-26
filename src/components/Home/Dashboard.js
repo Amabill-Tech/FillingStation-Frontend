@@ -27,10 +27,10 @@ import OutletService from '../../services/outletService';
 import { getAllStations } from '../../store/actions/outlet';
 import { useState } from 'react';
 import {useHistory} from 'react-router-dom';
-import swal from 'sweetalert';
 import expense from '../../assets/expense.png';
 import DashboardService from '../../services/dashboard';
-import { addDashboard } from '../../store/actions/dashboard';
+import { addDashboard, dashboardRecordMore, dashboardRecords } from '../../store/actions/dashboard';
+import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 
 ChartJS.register(
     CategoryScale,
@@ -123,7 +123,7 @@ const DashboardImage = (props) => {
                         <img style={{width:'60px', height:'60px'}} src={props.image} alt="icon" />
                     </div>
                     <div className='top-text'>
-                        <div style={{fontSize:'14px', fontFamily:'Nunito-Regular'}}>{props.name}</div>
+                        <div style={{fontSize:'14px', fontWeight:'bold', fontFamily:'Nunito-Regular'}}>{props.name}</div>
                         <div style={{fontSize:'16px', fontWeight:'bold', marginRight:'10px', fontFamily:'Nunito-Regular'}}>{props.value}</div>
                     </div>
                 </div>
@@ -142,9 +142,31 @@ const Dashboard = (props) => {
     const user = useSelector(state => state.authReducer.user);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const dashboardData = useSelector(state => state.dashboardReducer.dashboardData);
+    const dashboardRecords = useSelector(state => state.dashboardReducer.dashboardRecords);
     const [defaultState, setDefault] = useState(0);
     const [currentStation, setCurrentStation] = useState(null);
-    console.log(dashboardData, "from redux")
+    const [value, setValue] = useState([new Date(), new Date()]);
+    console.log(dashboardRecords, "from redux")
+
+    const collectAndAnalyseData = (data) => {
+        let activeTank = data.station.tanks.filter(data => data.activeState === "1");
+        let inActiveTank = data.station.tanks.filter(data => data.activeState === "0");
+        let activePump = data.station.pumps.filter(data => data.activeState === "1");
+        let inActivePump = data.station.pumps.filter(data => data.activeState === "0");
+
+        const payload = {
+            count: data.count,
+            tanks: {
+                activeTank: {count: activeTank.length, list: activeTank},
+                inActiveTank: {count: inActiveTank.length, list: inActiveTank}
+            },
+            pumps: {
+                activePumps: {count: activePump.length, list: activePump},
+                inActivePumps: {count: inActivePump.length, list: inActivePump}
+            }
+        }
+        dispatch(addDashboard(payload));
+    }
 
     const getAllStationData = useCallback(() => {
         const payload = {
@@ -157,23 +179,7 @@ const Dashboard = (props) => {
             return data.station[0];
         }).then(data => {
             DashboardService.allAttendanceRecords({id: data.organisation, outletID: data._id}).then(data => {
-                let activeTank = data.station.tanks.filter(data => data.activeState === "1");
-                let inActiveTank = data.station.tanks.filter(data => data.activeState === "0");
-                let activePump = data.station.pumps.filter(data => data.activeState === "1");
-                let inActivePump = data.station.pumps.filter(data => data.activeState === "0");
-
-                const payload = {
-                    count: data.count,
-                    tanks: {
-                        activeTank: {count: activeTank.length, list: activeTank},
-                        inActiveTank: {count: inActiveTank.length, list: inActiveTank}
-                    },
-                    pumps: {
-                        activePumps: {count: activePump.length, list: activePump},
-                        inActivePumps: {count: inActivePump.length, list: inActivePump}
-                    }
-                }
-                dispatch(addDashboard(payload));
+                collectAndAnalyseData(data);
             });
         })
     }, [user._id, dispatch]);
@@ -195,23 +201,79 @@ const Dashboard = (props) => {
         history.push("/home/analysis/expenses");
     }
 
+    const collectAndEvaluateDashboard = (data) => {
+        let PMS = data.sales.filter(data => data.productType === "PMS");
+        let AGO = data.sales.filter(data => data.productType === "AGO");
+        let DPK = data.sales.filter(data => data.productType === "DPK");
+
+        let pmsTotalSales = 0;
+        let agoTotalSales = 0;
+        let dpkTotalSales = 0;
+
+        let pmsTotalLitre = 0;
+        let agoTotalLitre = 0;
+        let dpkTotalLitre = 0;
+
+        for(let pms of PMS){
+            pmsTotalSales = pmsTotalSales + Number(pms.sales)*Number(pms.PMSSellingPrice);
+            pmsTotalLitre = pmsTotalLitre + Number(pms.sales);
+        }
+
+        for(let ago of AGO){
+            agoTotalSales = agoTotalSales + Number(ago.sales)*Number(ago.AGOSellingPrice);
+            agoTotalLitre = agoTotalLitre + Number(ago.sales);
+        }
+
+        for(let dpk of DPK){
+            dpkTotalSales = dpkTotalSales + Number(dpk.sales)*Number(dpk.DPKSellingPrice);
+            dpkTotalLitre = dpkTotalLitre + Number(dpk.sales);
+        }
+
+        const details = {
+            sales:{
+                totalAmount: pmsTotalSales + agoTotalSales + dpkTotalSales,
+                totalVolume: pmsTotalLitre + agoTotalLitre + dpkTotalLitre
+            }
+        }
+
+        return details;
+    }
+
+    const onChange = (data) => {
+        const rangeOne = new Date(data[0]);
+        const rangeOneYear = rangeOne.getFullYear();
+        const rangeOneMonth = rangeOne.getMonth() + 1;
+        const rangeOneDay = rangeOne.getDate();
+        const formatOne = rangeOneYear+"-"+rangeOneMonth+"-"+rangeOneDay;
+
+        const rangeTwo = new Date(data[1]);
+        const rangeTwoYear = rangeTwo.getFullYear();
+        const rangeTwoMonth = rangeTwo.getMonth() + 1;
+        const rangeTwoDay = rangeTwo.getDate();
+        const formatTwo = rangeTwoYear+"-"+rangeTwoMonth+"-"+rangeTwoDay;
+
+        const payload = {
+            organisation: currentStation.organisation,
+            outletID: currentStation._id,
+            startDate: formatOne,
+            endDate: formatTwo
+        }
+
+        DashboardService.allSalesRecords(payload).then(data => {
+            const evaluatedDashboard = collectAndEvaluateDashboard(data);
+            dispatch(dashboardRecordMore(evaluatedDashboard));
+        });
+        setValue(data);
+    }
+
     return(
         <>
             { props.activeRoute.split('/').length === 2 &&
-                <div className='dashboardContainer'>
+                <div style={{marginTop:'5px'}} className='dashboardContainer'>
                     <div className='left-dash'>
-                        <div className='selectItem'>
-                            <div className='first-select'>
-                                <Select
-                                    labelId="demo-select-small"
-                                    id="demo-select-small"
-                                    value={10}
-                                    sx={selectStyle}
-                                >
-                                    <MenuItem value={10}>07 August, 2022</MenuItem>
-                                    <MenuItem value={20}>Twenty</MenuItem>
-                                    <MenuItem value={30}>Thirty</MenuItem>
-                                </Select>
+                        <div style={{width:'auto'}} className='selectItem'>
+                            <div style={{width:'280px', marginRight:'10px'}} className='first-select'>
+                                <DateRangePicker style={{background:'red'}} onChange={onChange} value={value} />
                             </div>
                             <div className='second-select'>
                                 <Select
@@ -231,7 +293,7 @@ const Dashboard = (props) => {
                                 </Select>
                             </div>
                         </div>
-                        <div className='dashImages'>
+                        <div style={{marginTop:'0px'}} className='dashImages'>
                             <DashboardImage screen={"employee"} image={me1} name={'Current staff'} value={dashboardData?.count}/>
                             <div data-aos="flip-left" className='first-image'>
                                 <div className='inner-first-image'>
@@ -241,9 +303,9 @@ const Dashboard = (props) => {
                                         </div>
                                         <div className='top-text'>
                                             <div style={{ width:'100%', fontSize:'14px', textAlign:'right', fontFamily:'Nunito-Regular'}}>
-                                                <div style={{marginTop:'5px'}}>Liter: <span style={{fontWeight:'bold', fontSize:'14px'}}>197,822.00</span> LTR</div>
-                                                <div style={{marginTop:'10px'}}>
-                                                    Total Sales: <span style={{fontWeight:'bold'}}>N 183,000</span>
+                                                <div style={{marginTop:'5px', fontWeight:'bold', fontSize:'14px'}}>Liter: <span style={{fontWeight:'bold', fontSize:'14px'}}>{dashboardRecords.sales.totalVolume}</span> LTR</div>
+                                                <div style={{marginTop:'10px', fontWeight:'bold', fontSize:'14px'}}>
+                                                    Total Sales: <span style={{fontWeight:'bold'}}>NGN {dashboardRecords.sales.totalAmount}</span>
                                                 </div>
                                             </div>
                                         </div>

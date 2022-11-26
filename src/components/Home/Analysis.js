@@ -18,8 +18,6 @@ import Payments from './Payments';
 import Expenses from './Expenses';
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 
-const mediaMatch = window.matchMedia('(max-width: 530px)');
-
 const Analysis = (props) => {
 
     const [value, onChange] = useState([new Date(), new Date()]);
