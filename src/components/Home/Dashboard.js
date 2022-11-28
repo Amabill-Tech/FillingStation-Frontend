@@ -9,17 +9,6 @@ import me5 from '../../assets/me5.png';
 import me6 from '../../assets/me6.png';
 import Button from '@mui/material/Button';
 import slideMenu from '../../assets/slideMenu.png';
-import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
-} from 'chart.js';
-import { Line } from 'react-chartjs-2';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useCallback } from 'react';
@@ -31,55 +20,7 @@ import expense from '../../assets/expense.png';
 import DashboardService from '../../services/dashboard';
 import { addDashboard, dashboardRecordMore } from '../../store/actions/dashboard';
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
-
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend
-);
-
-const labels = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-];
-
-const data = {
-    labels: labels,
-    datasets: [
-        {
-            label: 'AGO',
-            borderColor: '#399A19',
-            data: [0, 10, 5, 2, 20, 30, 45],
-        },
-        {
-            label: 'PMS',
-            borderColor: '#FFA010',
-            data: [40, 10,20, 26, 20, 10, 45],
-        },
-        {
-            label: 'DPK',
-            borderColor: '#000',
-            data: [20, 40,10, 20, 30, 5, 18],
-        }
-    ]
-};
-
-const options = {
-    plugins: {
-        legend: {
-            display: false,
-        }
-    },
-    maintainAspectRatio: false,
-}
+import DashboardGraph from '../common/DashboardGraph';
 
 const DashboardImage = (props) => {
 
@@ -382,69 +323,8 @@ const Dashboard = (props) => {
                                 </div>
                             </div>
                         </div>
-                        <div className='dash-records'>
-                            <div className='padding-container'>
-                                <div className='week'>
-                                    <div className='butts'>
-                                        <Button sx={{
-                                            width:'50px', 
-                                            height:'30px',  
-                                            background: '#06805B',
-                                            fontSize:'10px',
-                                            borderRadius:'0px',
-                                            '&:hover': {
-                                                backgroundColor: '#06805B'
-                                            }
-                                            }}  variant="contained"> Week
-                                        </Button>
-                                        <Button sx={{
-                                            width:'50px', 
-                                            height:'30px',  
-                                            background: '#C1CABE',
-                                            fontSize:'10px',
-                                            color:'#000',
-                                            borderRadius:'0px',
-                                            '&:hover': {
-                                                backgroundColor: '#C1CABE'
-                                            }
-                                            }}  variant="contained"> Month
-                                        </Button>
-                                        <Button sx={{
-                                            width:'50px', 
-                                            height:'30px',  
-                                            background: '#C1CABE',
-                                            fontSize:'10px',
-                                            color:'#000',
-                                            borderRadius:'0px',
-                                            '&:hover': {
-                                                backgroundColor: '#C1CABE'
-                                            }
-                                            }}  variant="contained"> Year
-                                        </Button>
-                                    </div>
-                                    <div className='dates'>
-
-                                    </div>
-                                </div>
-                                <div className='type'>
-                                    <div className='single-type'>
-                                        <div className='color'></div>
-                                        <div className='name'>PMS</div>
-                                    </div>
-                                    <div style={{marginLeft:'10px'}} className='single-type'>
-                                        <div style={{background:'#FFA010'}} className='color'></div>
-                                        <div className='name'>AGO</div>
-                                    </div>
-                                    <div style={{marginLeft:'10px'}} className='single-type'>
-                                        <div style={{background:'#35393E'}} className='color'></div>
-                                        <div className='name'>DPK</div>
-                                    </div>
-                                </div>
-                                <div className='graph'>
-                                    <Line options={options} data={data} />
-                                </div>
-                            </div>
-                        </div>
+                        <div style={{marginTop:'40px', fontWeight:'bold', fontSize:'18px', fontFamily:'Nunito-Regular', color: user.isDark === '0'? '#000': '#fff'}}>Total Sales</div>
+                        <DashboardGraph />
                     </div>
                     <div className='right-dash'>
                         <div className='asset'>
