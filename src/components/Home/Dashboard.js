@@ -324,7 +324,7 @@ const Dashboard = (props) => {
                             </div>
                         </div>
                         <div style={{marginTop:'40px', fontWeight:'bold', fontSize:'18px', fontFamily:'Nunito-Regular', color: user.isDark === '0'? '#000': '#fff'}}>Total Sales</div>
-                        <DashboardGraph />
+                        <DashboardGraph station={currentStation} />
                     </div>
                     <div className='right-dash'>
                         <div className='asset'>

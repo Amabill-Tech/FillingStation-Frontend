@@ -30,8 +30,6 @@ import ComprehensiveReport from '../DailySales/ComprehensiveReport';
 import ListAllTanks from '../Outlet/TankList';
 import { useRef } from 'react';
 import DailySalesService from '../../services/DailySales';
-import LPOService from '../../services/lpo';
-import dailySalesReducer from '../../store/reducers/dailySales';
 import { dailySupplies, passAllDailySales, passCummulative, passExpensesAndPayments, passIncomingOrder } from '../../store/actions/dailySales';
 
 ChartJS.register(

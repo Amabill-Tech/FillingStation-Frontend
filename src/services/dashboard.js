@@ -23,6 +23,17 @@ const DashboardService = {
             throw err
         })
     },
+
+    getWeeklyDataFromApi: (data) => {
+        return APIs.post('/dashboard/dashboard-weekly', data)
+        .then(({ data }) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        })
+    },
 }
 
 export default DashboardService;
