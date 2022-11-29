@@ -34,6 +34,17 @@ const DashboardService = {
             throw err
         })
     },
+
+    getMonthlyDataFromApi: (data) => {
+        return APIs.post('/dashboard/dashboard-monthly', data)
+        .then(({ data }) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        })
+    },
 }
 
 export default DashboardService;
