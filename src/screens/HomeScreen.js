@@ -56,7 +56,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import UserService from '../services/user';
 import { updateUser } from '../store/actions/auth';
 import StationTanks from '../components/Home/StationTanks';
-import StationPumps from '../components/Home/StationPumps';
+import StationPumps from '../components/Home/StationPumps'; 
+import config from '../constants';
 
 const HomeScreen = ({history}) => {
 
@@ -120,7 +121,7 @@ const HomeScreen = ({history}) => {
     })
 
     const setNames = (name) => {
-        setName(name)
+        setName(name);
     }
 
     useEffect(()=>{
@@ -186,7 +187,7 @@ const HomeScreen = ({history}) => {
         <div className='home-container'>
             <div style={{background: user.sideBarMode}} className='side-bar'>
                 <div className='inner-side-bar'>
-                    <img className='home-logo' src={homeLogo} alt="icon" />
+                    <img className='home-logo' src={user.image === "null"? homeLogo: config.BASE_URL+user.image} alt="icon" />
                     <SideItems marginT={"0px"} link={'/home'} name={"Dashboard"} icon={dashboard} icon2={dashboard2} />
                     <SideItems marginT={"45px"} link={'/home/daily-sales'} name={"Daily Sales"} icon={dailySales2} icon2={dailySales} />
                     <SideItems marginT={"90px"} link={'/home/outlets'} name={"My Stations"} icon={outlet2} icon2={outlet} />
@@ -209,7 +210,7 @@ const HomeScreen = ({history}) => {
             >
                 <div style={{background: user.sideBarMode, display:'flex', width:'100%', flexDirection:'row', justifyContent:'flex-end'}} className='side-bar'>
                     <div style={{width:'90%'}} className='inner-side-bar'>
-                        <img className='home-logo' src={homeLogo} alt="icon" />
+                        <img className='home-logo' src={user.image === "null"? homeLogo: config.BASE_URL+user.image} alt="icon" />
                         <SideItems marginT={"0px"} link={'/home'} name={"Dashboard"} icon={dashboard} icon2={dashboard2} />
                         <SideItems marginT={"45px"} link={'/home/daily-sales'} name={"Daily Sales"} icon={dailySales2} icon2={dailySales} />
                         <SideItems marginT={"90px"} link={'/home/outlets'} name={"My Stations"} icon={outlet2} icon2={outlet} />

@@ -1,0 +1,309 @@
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend,
+} from 'chart.js';
+import { useCallback } from 'react';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import { Bar } from 'react-chartjs-2';
+import DailySalesService from '../../services/DailySales';
+
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend
+);
+
+const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+export const monthlyData = {
+    labels,
+    datasets: [
+      {
+        label: 'Dataset 1',
+        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        backgroundColor: '#06805B',
+      },
+      {
+        label: 'Dataset 2',
+        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        backgroundColor: '#108CFF',
+      },
+    ],
+};
+
+
+const options = {
+    plugins: {
+        legend: {
+            display: false,
+        }
+    },
+    maintainAspectRatio: false,
+    scales: {
+        x: {
+            grid: {
+                display: false,
+            }
+        },
+        y: {
+            grid: {
+                display: false,
+            }
+        }
+    }
+}
+
+const getMonthlyTotals = (exp, expenses) => {
+    const dates = exp.createdAt.split('-');
+    switch(dates[1]){
+        case "1":{
+            let currentValue = expenses[0];
+            currentValue = currentValue + Number(exp.expenseAmount);
+            expenses[0] = currentValue;
+            break;
+        }
+
+        case "2":{
+            let currentValue = expenses[1];
+            currentValue = currentValue + Number(exp.expenseAmount);
+            expenses[1] = currentValue;
+            break;
+        }
+
+        case "3":{
+            let currentValue = expenses[2];
+            currentValue = currentValue + Number(exp.expenseAmount);
+            expenses[2] = currentValue;
+            break;
+        }
+
+        case "4":{
+            let currentValue = expenses[3];
+            currentValue = currentValue + Number(exp.expenseAmount);
+            expenses[3] = currentValue;
+            break;
+        }
+
+        case "5":{
+            let currentValue = expenses[4];
+            currentValue = currentValue + Number(exp.expenseAmount);
+            expenses[4] = currentValue;
+            break;
+        }
+
+        case "6":{
+            let currentValue = expenses[5];
+            currentValue = currentValue + Number(exp.expenseAmount);
+            expenses[5] = currentValue;
+            break;
+        }
+
+        case "7":{
+            let currentValue = expenses[6];
+            currentValue = currentValue + Number(exp.expenseAmount);
+            expenses[6] = currentValue;
+            break;
+        }
+
+        case "8":{
+            let currentValue = expenses[7];
+            currentValue = currentValue + Number(exp.expenseAmount);
+            expenses[7] = currentValue;
+            break;
+        }
+
+        case "9":{
+            let currentValue = expenses[8];
+            currentValue = currentValue + Number(exp.expenseAmount);
+            expenses[8] = currentValue;
+            break;
+        }
+
+        case "10":{
+            let currentValue = expenses[9];
+            currentValue = currentValue + Number(exp.expenseAmount);
+            expenses[9] = currentValue;
+            break;
+        }
+
+        case "11":{
+            let currentValue = expenses[10];
+            currentValue = currentValue + Number(exp.expenseAmount);
+            expenses[10] = currentValue;
+            break;
+        }
+
+        case "12":{
+            let currentValue = expenses[11];
+            currentValue = currentValue + Number(exp.expenseAmount);
+            expenses[11] = currentValue;
+            break;
+        }
+        default: {}
+    }
+}
+
+const getMonthlyPayTotals = (exp, payments) => {
+    const dates = exp.createdAt.split('-');
+    switch(dates[1]){
+        case "1":{
+            let currentValue = payments[0];
+            currentValue = currentValue + Number(exp.amountPaid);
+            payments[0] = currentValue;
+            break;
+        }
+
+        case "2":{
+            let currentValue = payments[1];
+            currentValue = currentValue + Number(exp.amountPaid);
+            payments[1] = currentValue;
+            break;
+        }
+
+        case "3":{
+            let currentValue = payments[2];
+            currentValue = currentValue + Number(exp.amountPaid);
+            payments[2] = currentValue;
+            break;
+        }
+
+        case "4":{
+            let currentValue = payments[3];
+            currentValue = currentValue + Number(exp.amountPaid);
+            payments[3] = currentValue;
+            break;
+        }
+
+        case "5":{
+            let currentValue = payments[4];
+            currentValue = currentValue + Number(exp.amountPaid);
+            payments[4] = currentValue;
+            break;
+        }
+
+        case "6":{
+            let currentValue = payments[5];
+            currentValue = currentValue + Number(exp.amountPaid);
+            payments[5] = currentValue;
+            break;
+        }
+
+        case "7":{
+            let currentValue = payments[6];
+            currentValue = currentValue + Number(exp.amountPaid);
+            payments[6] = currentValue;
+            break;
+        }
+
+        case "8":{
+            let currentValue = payments[7];
+            currentValue = currentValue + Number(exp.amountPaid);
+            payments[7] = currentValue;
+            break;
+        }
+
+        case "9":{
+            let currentValue = payments[8];
+            currentValue = currentValue + Number(exp.amountPaid);
+            payments[8] = currentValue;
+            break;
+        }
+
+        case "10":{
+            let currentValue = payments[9];
+            currentValue = currentValue + Number(exp.amountPaid);
+            payments[9] = currentValue;
+            break;
+        }
+
+        case "11":{
+            let currentValue = payments[10];
+            currentValue = currentValue + Number(exp.amountPaid);
+            payments[10] = currentValue;
+            break;
+        }
+
+        case "12":{
+            let currentValue = payments[11];
+            currentValue = currentValue + Number(exp.amountPaid);
+            payments[11] = currentValue;
+            break;
+        }
+        default: {}
+    }
+}
+
+const BarChartGraph = (props) => {
+
+    const [monthlyDataSet, setMonthlyDataSet] = useState(monthlyData);
+
+    const analyseMonthlyData = (expense, payment) => {
+        const expenses = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        const payments = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+        for(let exp of expense){
+            getMonthlyTotals(exp, expenses);
+        }
+
+        for(let exp of payment){
+            getMonthlyPayTotals(exp, payments);
+        }
+
+        const monthlyData = {
+            labels,
+            datasets: [
+              {
+                label: 'Expenses',
+                data: expenses,
+                backgroundColor: '#06805B',
+              },
+              {
+                label: 'Payments',
+                data: payments,
+                backgroundColor: '#108CFF',
+              },
+            ],
+        };
+
+        setMonthlyDataSet(monthlyData);
+    }
+
+    const getAllMonthlyRecords = useCallback(() => {
+        const payload = {
+            organisationID: props.station.organisation,
+            outletID: props.station._id,
+        }
+
+        DailySalesService.getAllMonthlyReports(payload).then(data => {
+            const payments = data.expense.payment.concat(data.expense.posPayment);
+            const expense = data.expense.expense;
+
+             analyseMonthlyData(expense, payments);
+            console.log(payments, "bar records")
+            console.log(expense, 'exp')
+        });
+    },[props.station._id, props.station.organisation])
+
+    useEffect(()=>{
+        getAllMonthlyRecords()
+    }, [getAllMonthlyRecords]);
+
+    return(
+        <div className='bar-chart'>
+            <div className='bar'>
+                <Bar options={options} data={monthlyDataSet} />
+            </div>
+        </div>
+    )
+}
+
+export default BarChartGraph;

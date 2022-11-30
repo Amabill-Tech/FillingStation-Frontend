@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import '../../styles/settings.scss';
 import rightArrow from '../../assets/rightArrow.png';
 import dark from '../../assets/dark.png';
@@ -8,8 +8,6 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Radio from '@mui/material/Radio';
 import Button from '@mui/material/Button';
-import Switch from '@mui/material/Switch';
-import { styled } from '@mui/material/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout, updateUser } from '../../store/actions/auth';
 import swal from 'sweetalert';
@@ -17,6 +15,8 @@ import OutletService from '../../services/outletService';
 import { getAllStations, oneStation } from '../../store/actions/outlet';
 import { ThreeDots } from 'react-loader-spinner';
 import UserService from '../../services/user';
+import axios from 'axios';
+import config from '../../constants';
 
 const OutletInfo = (props) => {
     const oneStation = useSelector(state => state.outletReducer.oneStation);
@@ -365,6 +365,54 @@ const Appearances = () => {
 }
 
 const Logo = () => {
+    const logos = useRef();
+    const [saveFile, setSaveFile] = useState(null);
+    const [loadingSpinner, setLoaadingSpinner] = useState(false);
+    const dispatch = useDispatch();
+    const user = useSelector(state => state.authReducer.user);
+
+    const browseGallery = () => {
+        logos.current.click();
+    }
+
+    const fileInputHandler = (e) => {
+        let file = e.target.files[0];
+        console.log(file)
+        setSaveFile(file);
+    }
+
+    const updateLogo = () => {
+        if(saveFile === null){
+            swal("Warning!", "Please select a file to upload!", "info");
+        }else{
+            if(saveFile.type.split('/')[0] === "image"){
+                setLoaadingSpinner(true);
+                const formData = new FormData();
+                formData.append("file", saveFile);
+                formData.append("id", user._id);
+                const httpConfig = {
+                    headers: {
+                        "content-type": "multipart/form-data",
+                        "Authorization": "Bearer "+ localStorage.getItem('token'),
+                    }
+                };
+                const url = config.BASE_URL+"/360-station/api/uploadLogoFile";
+                axios.post(url, formData, httpConfig).then((data) => {
+                    swal("Success!", "Logo updated successfully!", "success");
+                }).then(()=>{
+                    UserService.getOneUser({id: user._id}).then(data => {
+                        localStorage.setItem("user", JSON.stringify(data.user));
+                        dispatch(updateUser(data.user));
+                    }).then(()=>{
+                        setLoaadingSpinner(false);
+                    });
+                });
+            }else{
+                swal("Warning!", "Only image files are supported!", "info");
+            }
+        }
+    }
+
     return(
         <div className='appearance'>
             <div className='app'>
@@ -398,31 +446,11 @@ const Logo = () => {
                                 backgroundColor: '#06805B'
                             }
                         }}
+                        onClick={browseGallery}
                     >
                         Browse
                     </Button>
-
-                    <div style={{
-                        fontSize:'14px',
-                        fontFamily:'Nunito-Regular',
-                        display:'flex',
-                        flexDirection:'row',
-                        justifyContent:'flex-start',
-                        marginTop:'20px',
-                        fontWeight:'bold'
-                    }}>
-                        Branding Alias
-                    </div>
-
-                    <OutlinedInput 
-                        sx={{
-                            width:'100%',
-                            height: '35px', 
-                            marginTop:'10px', 
-                            background:'#EEF2F1', 
-                            border:'1px solid #777777'
-                        }} placeholder="" 
-                    />
+                    <span>{saveFile && saveFile.name}</span>
 
                     <Button 
                         variant="contained" 
@@ -437,9 +465,23 @@ const Logo = () => {
                                 backgroundColor: '#054834'
                             }
                         }}
+                        onClick={updateLogo}
                     >
                         Save
                     </Button>
+                    <input onChange={fileInputHandler} ref={logos} type="file" style={{visibility:'hidden'}} />
+                    {loadingSpinner &&
+                        <ThreeDots 
+                            height="60" 
+                            width="50" 
+                            radius="9"
+                            color="#076146" 
+                            ariaLabel="three-dots-loading"
+                            wrapperStyle={{}}
+                            wrapperClassName=""
+                            visible={true}
+                        />
+                    }
                 </div>
             </div>
         </div>
@@ -471,6 +513,8 @@ const Password = () => {
                 localStorage.setItem("user", JSON.stringify(data.user))
                 dispatch(updateUser(data.user));
                 setLoadingSpinner(false);
+                setPassword("");
+                setConfirmPassword("");
                 swal("Success!", "Password reset successfully!", "info");
             })
         })
@@ -493,6 +537,7 @@ const Password = () => {
                             border:'1px solid #777777'
                         }} 
                         type="password"
+                        value={password}
                         onChange={e => setPassword(e.target.value)}
                         placeholder="" 
                     />
@@ -509,6 +554,7 @@ const Password = () => {
                             border:'1px solid #777777'
                         }} 
                         type="password"
+                        value={confirmPassword}
                         onChange={e => setConfirmPassword(e.target.value)}
                         placeholder="" 
                     />
@@ -551,57 +597,6 @@ const Password = () => {
     )
 }
 
-const IOSSwitch = styled((props) => (
-    <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
-  ))(({ theme }) => ({
-    width: 42,
-    height: 26,
-    padding: 0,
-    '& .MuiSwitch-switchBase': {
-      padding: 0,
-      margin: 2,
-      transitionDuration: '300ms',
-      '&.Mui-checked': {
-        transform: 'translateX(16px)',
-        color: '#fff',
-        '& + .MuiSwitch-track': {
-          backgroundColor: theme.palette.mode === 'dark' ? '#2ECA45' : '#65C466',
-          opacity: 1,
-          border: 0,
-        },
-        '&.Mui-disabled + .MuiSwitch-track': {
-          opacity: 0.5,
-        },
-      },
-      '&.Mui-focusVisible .MuiSwitch-thumb': {
-        color: '#33cf4d',
-        border: '6px solid #fff',
-      },
-      '&.Mui-disabled .MuiSwitch-thumb': {
-        color:
-          theme.palette.mode === 'light'
-            ? theme.palette.grey[100]
-            : theme.palette.grey[600],
-      },
-      '&.Mui-disabled + .MuiSwitch-track': {
-        opacity: theme.palette.mode === 'light' ? 0.7 : 0.3,
-      },
-    },
-    '& .MuiSwitch-thumb': {
-      boxSizing: 'border-box',
-      width: 22,
-      height: 22,
-    },
-    '& .MuiSwitch-track': {
-      borderRadius: 26 / 2,
-      backgroundColor: theme.palette.mode === 'light' ? '#E9E9EA' : '#39393D',
-      opacity: 1,
-      transition: theme.transitions.create(['background-color'], {
-        duration: 500,
-      }),
-    },
-}));
-
 const Email = () => {
     const [email, setEmail] = useState("");
     const user = useSelector(state => state.authReducer.user);
@@ -626,6 +621,7 @@ const Email = () => {
                 localStorage.setItem("user", JSON.stringify(data.user))
                 dispatch(updateUser(data.user));
                 setLoadingSpinner(false);
+                setEmail("");
                 swal("Success!", "Email reset successfully!", "info");
             })
         })
@@ -649,6 +645,7 @@ const Email = () => {
                             border:'1px solid #777777'
                         }} 
                         type="email"
+                        value={email}
                         onChange={e => setEmail(e.target.value)}
                         placeholder="" 
                     />
@@ -918,19 +915,6 @@ const Settings = (props) => {
             </div>
         </div>
     )
-}
-
-const emailSwith = {
-    marginTop:'30px',
-    display:'flex',
-    flexDirection:'row',
-    alignItems:'center'
-}
-
-const email = {
-    fontSize:'12px',
-    fontFamily:'Nunito-Regular',
-    marginLeft:'10px'
 }
 
 const menu = {

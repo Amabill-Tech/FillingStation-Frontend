@@ -6,16 +6,6 @@ import me5 from '../../assets/me5.png';
 import calendar from '../../assets/calendar.png';
 import slideMenu from '../../assets/slideMenu.png';
 import Button from '@mui/material/Button';
-import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend,
-} from 'chart.js';
-import { Bar } from 'react-chartjs-2';
 import PMSTank from '../Outlet/PMSTank';
 import AGOTank from '../Outlet/AGOTank';
 import DPKTank from '../Outlet/DPKTank';
@@ -31,55 +21,7 @@ import ListAllTanks from '../Outlet/TankList';
 import { useRef } from 'react';
 import DailySalesService from '../../services/DailySales';
 import { dailySupplies, passAllDailySales, passCummulative, passExpensesAndPayments, passIncomingOrder } from '../../store/actions/dailySales';
-
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend
-);
-
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-
-export const data = {
-    labels,
-    datasets: [
-      {
-        label: 'Dataset 1',
-        data: [40, 10, 5, 2, 20, 30, 35],
-        backgroundColor: '#06805B',
-      },
-      {
-        label: 'Dataset 2',
-        data: [30, 10, 5, 2, 20, 30, 45],
-        backgroundColor: '#108CFF',
-      },
-    ],
-};
-
-
-const options = {
-    plugins: {
-        legend: {
-            display: false,
-        }
-    },
-    maintainAspectRatio: false,
-    scales: {
-        x: {
-            grid: {
-                display: false,
-            }
-        },
-        y: {
-            grid: {
-                display: false,
-            }
-        }
-    }
-}
+import BarChartGraph from '../common/BarChartGraph';
 
 const months = {
     '01' : 'Jan',
@@ -751,11 +693,7 @@ const DailySales = (props) => {
                             </div>
                         </div>
                         <div style={{color: user.isDark === '0'? '#000': '#fff', marginTop:'30px'}} className="tank-text">Expenses And Payments</div>
-                        <div className='bar-chart'>
-                            <div className='bar'>
-                                <Bar options={options} data={data} />
-                            </div>
-                        </div>
+                        <BarChartGraph station={currentStation} />
 
                         <div style={{marginTop:'30px'}} className='asset'>
                             <div style={{color: user.isDark === '0'? '#000': '#fff'}}>Supply</div>

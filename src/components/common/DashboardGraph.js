@@ -13,6 +13,8 @@ import {
     Legend,
 } from 'chart.js';
 import { useRef, useState } from "react";
+import { useEffect } from "react";
+import { useCallback } from "react";
 
 ChartJS.register(
     CategoryScale,
@@ -50,6 +52,10 @@ const weekLabels = [
 ];
 
 const annualLabels = [
+    '2017',
+    '2018',
+    '2019',
+    '2020',
     '2021',
     '2022',
     '2023',
@@ -107,17 +113,17 @@ const annualData = {
         {
             label: 'AGO',
             borderColor: '#399A19',
-            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         },
         {
             label: 'PMS',
             borderColor: '#FFA010',
-            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         },
         {
             label: 'DPK',
             borderColor: '#000',
-            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         }
     ]
 };
@@ -152,108 +158,183 @@ const options = {
             min: 0
         }
     }
-    // scales: {
-    //     x: {
-    //         ticks:{
-    //             beginAtZero: true,
-    //             max: 1,
-    //             min: 0
-    //         }
-    //     },
-    //     y: {
-    //         ticks:{
-    //             beginAtZero: true,
-    //             max: 1,
-    //             min: 0
-    //         }
-    //     }
-    // }
 }
 
-const getMonthlyTotals = (day, dataListPMS) => {
+const getMonthlyTotals = (day, dataList) => {
     const dates = day.createdAt.split('-');
     switch(dates[1]){
         case "1":{
-            let currentValue = dataListPMS[0];
+            let currentValue = dataList[0];
             currentValue = currentValue + Number(day.sales);
-            dataListPMS[0] = currentValue;
+            dataList[0] = currentValue;
             break;
         }
 
         case "2":{
-            let currentValue = dataListPMS[1];
+            let currentValue = dataList[1];
             currentValue = currentValue + Number(day.sales);
-            dataListPMS[1] = currentValue;
+            dataList[1] = currentValue;
             break;
         }
 
         case "3":{
-            let currentValue = dataListPMS[2];
+            let currentValue = dataList[2];
             currentValue = currentValue + Number(day.sales);
-            dataListPMS[2] = currentValue;
+            dataList[2] = currentValue;
             break;
         }
 
         case "4":{
-            let currentValue = dataListPMS[3];
+            let currentValue = dataList[3];
             currentValue = currentValue + Number(day.sales);
-            dataListPMS[3] = currentValue;
+            dataList[3] = currentValue;
             break;
         }
 
         case "5":{
-            let currentValue = dataListPMS[4];
+            let currentValue = dataList[4];
             currentValue = currentValue + Number(day.sales);
-            dataListPMS[4] = currentValue;
+            dataList[4] = currentValue;
             break;
         }
 
         case "6":{
-            let currentValue = dataListPMS[5];
+            let currentValue = dataList[5];
             currentValue = currentValue + Number(day.sales);
-            dataListPMS[5] = currentValue;
+            dataList[5] = currentValue;
             break;
         }
 
         case "7":{
-            let currentValue = dataListPMS[6];
+            let currentValue = dataList[6];
             currentValue = currentValue + Number(day.sales);
-            dataListPMS[6] = currentValue;
+            dataList[6] = currentValue;
             break;
         }
 
         case "8":{
-            let currentValue = dataListPMS[7];
+            let currentValue = dataList[7];
             currentValue = currentValue + Number(day.sales);
-            dataListPMS[7] = currentValue;
+            dataList[7] = currentValue;
             break;
         }
 
         case "9":{
-            let currentValue = dataListPMS[8];
+            let currentValue = dataList[8];
             currentValue = currentValue + Number(day.sales);
-            dataListPMS[8] = currentValue;
+            dataList[8] = currentValue;
             break;
         }
 
         case "10":{
-            let currentValue = dataListPMS[9];
+            let currentValue = dataList[9];
             currentValue = currentValue + Number(day.sales);
-            dataListPMS[9] = currentValue;
+            dataList[9] = currentValue;
             break;
         }
 
         case "11":{
-            let currentValue = dataListPMS[10];
+            let currentValue = dataList[10];
             currentValue = currentValue + Number(day.sales);
-            dataListPMS[10] = currentValue;
+            dataList[10] = currentValue;
             break;
         }
 
         case "12":{
-            let currentValue = dataListPMS[11];
+            let currentValue = dataList[11];
             currentValue = currentValue + Number(day.sales);
-            dataListPMS[11] = currentValue;
+            dataList[11] = currentValue;
+            break;
+        }
+        default: {}
+    }
+}
+
+const getAnnualTotals = (day, dataList, years) => {
+    const dates = day.createdAt.split('-');
+    
+    switch(dates[0].toString()){
+        case years[0]:{
+            let currentValue = dataList[0];
+            currentValue = currentValue + Number(day.sales);
+            dataList[0] = currentValue;
+            break;
+        }
+
+        case years[1].toString():{
+            let currentValue = dataList[1];
+            currentValue = currentValue + Number(day.sales);
+            dataList[1] = currentValue;
+            break;
+        }
+
+        case years[2].toString():{
+            let currentValue = dataList[2];
+            currentValue = currentValue + Number(day.sales);
+            dataList[2] = currentValue;
+            break;
+        }
+
+        case years[3].toString():{
+            let currentValue = dataList[3];
+            currentValue = currentValue + Number(day.sales);
+            dataList[3] = currentValue;
+            break;
+        }
+
+        case years[4].toString():{
+            let currentValue = dataList[4];
+            currentValue = currentValue + Number(day.sales);
+            dataList[4] = currentValue;
+            break;
+        }
+
+        case years[5].toString():{
+            let currentValue = dataList[5];
+            currentValue = currentValue + Number(day.sales);
+            dataList[5] = currentValue;
+            break;
+        }
+
+        case years[6].toString():{
+            let currentValue = dataList[6];
+            currentValue = currentValue + Number(day.sales);
+            dataList[6] = currentValue;
+            break;
+        }
+
+        case years[7].toString():{
+            let currentValue = dataList[7];
+            currentValue = currentValue + Number(day.sales);
+            dataList[7] = currentValue;
+            break;
+        }
+
+        case years[8].toString():{
+            let currentValue = dataList[8];
+            currentValue = currentValue + Number(day.sales);
+            dataList[8] = currentValue;
+            break;
+        }
+
+        case years[9].toString():{
+            let currentValue = dataList[9];
+            currentValue = currentValue + Number(day.sales);
+            dataList[9] = currentValue;
+            break;
+        }
+
+        case years[10].toString():{
+            let currentValue = dataList[10];
+            currentValue = currentValue + Number(day.sales);
+            dataList[10] = currentValue;
+            break;
+        }
+
+        case years[11].toString():{
+            let currentValue = dataList[11];
+            currentValue = currentValue + Number(day.sales);
+            dataList[11] = currentValue;
             break;
         }
         default: {}
@@ -268,21 +349,25 @@ const DashboardGraph = (props) => {
 
     const [weeklyDataSet, setWeeklyDataSet] = useState(weeklyData);
     const [monthlyDataSet, setMonthlyDataSet] = useState(monthlyData);
+    const [annualDataSet, setAnnualDataSet] = useState(annualData);
 
     const [currentDate, setCurrentDate] = useState(date2);
     const [currentSelection, setCurrentSelection] = useState(0);
+    const [changeDate, setChangeDate] = useState("");
     const dateHandle = useRef();
 
     const updateDate = async(e) => {
         const date = e.target.value.split('-');
         const format = `${date[2]} ${months[date[1]]} ${date[0]}`;
+        setChangeDate(e.target.value);
+        setCurrentDate(format);
     }
 
     const dateHandleInputDate = () => {
         dateHandle.current.showPicker();
     }
 
-    function getUpcomingSunday() {
+    function getUpcomingSunday() {console.log(changeDate, "first dates")
         const date = new Date();
         const today = date.getDate();
         const currentDay = date.getDay();
@@ -292,7 +377,7 @@ const DashboardGraph = (props) => {
         return `${format[2]}-${format[0]}-${format[1]}`
     }
 
-    function getLastSunday() {
+    function getLastSunday() {console.log(changeDate, "dates")
         const date = new Date();
         const today = date.getDate();
         const currentDay = date.getDay();
@@ -309,6 +394,20 @@ const DashboardGraph = (props) => {
         const format1 = firstDay.split('/');
         const format2 = lastDay.split('/');
         return {firstDay: `${format1[2]}-${format1[0]}-${format1[1]}`, lastDay: `${format2[2]}-${format2[0]}-${format2[1]}`};
+    }
+
+    function getYearRange(){
+        const currentYear = new Date().getFullYear();
+        const firstDay = new Date(currentYear, 0, 1).toLocaleDateString();
+        const lastDay = new Date(currentYear, 11, 31).toLocaleDateString();
+        const year = firstDay.split('/')[2];
+        const lowerRange =  Number(year) - 5;
+        const upperRange = Number(year) + 5;
+
+        const firstRange = `${lowerRange}-${firstDay.split("/")[0]}-${firstDay.split("/")[1]}`;
+        const secondRange = `${upperRange}-${lastDay.split("/")[0]}-${lastDay.split("/")[1]}`;
+
+        return {firstRange: firstRange, secondRange: secondRange};
     }
 
     const analyseWeeklyData = (data) => {
@@ -380,12 +479,12 @@ const DashboardGraph = (props) => {
                 {
                     label: 'AGO',
                     borderColor: '#399A19',
-                    data: dataListPMS,
+                    data: dataListAGO,
                 },
                 {
                     label: 'PMS',
                     borderColor: '#FFA010',
-                    data: dataListAGO,
+                    data: dataListPMS,
                 },
                 {
                     label: 'DPK',
@@ -398,22 +497,68 @@ const DashboardGraph = (props) => {
         setMonthlyDataSet(monthlyData);
     }
 
-    const getAllCurrentWeekData = () => {
+    const analyseAnnualData = (data, range) => {
+        const dataListPMS = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        const dataListAGO = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        const dataListDPK = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+        const years = [];
+        for(let i = Number(range.firstRange.split("-")[0]); i <= Number(range.secondRange.split("-")[0]); i++){
+            years.push(i);
+        }
+
+        for(let day of data.sales){
+            if(day.productType === "PMS"){
+                getAnnualTotals(day, dataListPMS, years);
+
+            }else if(day.productType === "AGO"){
+                getAnnualTotals(day, dataListAGO, years);
+
+            }else if(day.productType === "DPK"){
+                getAnnualTotals(day, dataListDPK, years);
+            }
+        }
+
+        const annualData = {
+            labels: years,
+            datasets: [
+                {
+                    label: 'AGO',
+                    borderColor: '#399A19',
+                    data: dataListAGO,
+                },
+                {
+                    label: 'PMS',
+                    borderColor: '#FFA010',
+                    data: dataListPMS,
+                },
+                {
+                    label: 'DPK',
+                    borderColor: '#000',
+                    data: dataListDPK,
+                }
+            ]
+        };
+
+        setAnnualDataSet(annualData);
+    }
+
+    const getAllCurrentWeekData = useCallback(() => {
         const firstDayOfTheWeek = getLastSunday();
         const lastDayOfTheWeek = getUpcomingSunday();
 
         const payload = {
-            organisation: props.station.organisation,
-            outletID: props.station._id,
+            organisation: props?.station?.organisation,
+            outletID: props?.station?._id,
             startRange: firstDayOfTheWeek,
             endRange: lastDayOfTheWeek
         }
+        console.log(payload, "week")
 
         DashboardService.getWeeklyDataFromApi(payload).then(data => {
-            // console.log(data, "weekly from api");
             analyseWeeklyData(data);
         })
-    }
+    }, [props?.station?._id, props?.station?.organisation]);
 
     const getAllMonthlyData = () => {
         const dateRange = getFirstAndLastDayOfTheYear();
@@ -426,9 +571,23 @@ const DashboardGraph = (props) => {
         }
 
         DashboardService.getMonthlyDataFromApi(payload).then(data => {
-            // console.log(data, "monthly data from api")
             analyseMonthlyData(data);
         });
+    }
+
+    const getAllAnnualData = () => {
+        const dateRange = getYearRange();
+        
+        const payload = {
+            organisation: props.station.organisation,
+            outletID: props.station._id,
+            startRange: dateRange.firstRange,
+            endRange: dateRange.secondRange
+        }
+
+        DashboardService.getAnnualDataFromApi(payload).then(data => {
+            analyseAnnualData(data, dateRange);
+        })
     }
 
     const switchGraphTab = (data) => {
@@ -447,11 +606,16 @@ const DashboardGraph = (props) => {
 
             case "year":{
                 setCurrentSelection(2);
+                getAllAnnualData();
                 break;
             }
             default:{}
         }
     }
+
+    useEffect(()=>{
+        getAllCurrentWeekData();
+    }, [getAllCurrentWeekData]);
 
     return(
         <div style={{marginTop:'10px'}} className='dash-records'>
@@ -505,7 +669,7 @@ const DashboardGraph = (props) => {
                 </div>
                 <div className='graph'>
                     <Line options={options} data={
-                        currentSelection === 0? weeklyDataSet: currentSelection === 1? monthlyDataSet: currentSelection? annualData: []
+                        currentSelection === 0? weeklyDataSet: currentSelection === 1? monthlyDataSet: currentSelection? annualDataSet: []
                     } />
                 </div>
             </div>
