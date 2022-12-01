@@ -357,18 +357,29 @@ const DashboardGraph = (props) => {
     const dateHandle = useRef();
 
     const updateDate = async(e) => {
-        const date = e.target.value.split('-');
-        const format = `${date[2]} ${months[date[1]]} ${date[0]}`;
-        setChangeDate(e.target.value);
-        setCurrentDate(format);
+        // const date = e.target.value.split('-');
+        // const format = `${date[2]} ${months[date[1]]} ${date[0]}`;
+        // setChangeDate(e.target.value);
+        // setCurrentDate(format);
+
+        const firstDayOfTheWeek = getLastSunday(e.target.value);
+        const lastDayOfTheWeek = getUpcomingSunday(e.target.value);
+
+        const payload = {
+            organisation: props?.station?.organisation,
+            outletID: props?.station?._id,
+            startRange: firstDayOfTheWeek,
+            endRange: lastDayOfTheWeek
+        }
+        console.log(payload, "week")
+
+        DashboardService.getWeeklyDataFromApi(payload).then(data => {console.log(data, "ldukgyfjsdh")
+            analyseWeeklyData(data);
+        })
     }
 
-    const dateHandleInputDate = () => {
-        dateHandle.current.showPicker();
-    }
-
-    function getUpcomingSunday() {console.log(changeDate, "first dates")
-        const date = new Date();
+    function getUpcomingSunday(data) {
+        const date = new Date(data);
         const today = date.getDate();
         const currentDay = date.getDay();
         const newDate = date.setDate(today - currentDay + 7);
@@ -377,8 +388,8 @@ const DashboardGraph = (props) => {
         return `${format[2]}-${format[0]}-${format[1]}`
     }
 
-    function getLastSunday() {console.log(changeDate, "dates")
-        const date = new Date();
+    function getLastSunday(data) {
+        const date = new Date(data);
         const today = date.getDate();
         const currentDay = date.getDay();
         const newDate = date.setDate(today - (currentDay || 7));
@@ -544,8 +555,9 @@ const DashboardGraph = (props) => {
     }
 
     const getAllCurrentWeekData = useCallback(() => {
-        const firstDayOfTheWeek = getLastSunday();
-        const lastDayOfTheWeek = getUpcomingSunday();
+        const gate = new Date();
+        const firstDayOfTheWeek = getLastSunday(gate);
+        const lastDayOfTheWeek = getUpcomingSunday(gate);
 
         const payload = {
             organisation: props?.station?.organisation,
@@ -628,10 +640,10 @@ const DashboardGraph = (props) => {
                     </div>
                     <div className='dates'>
                         <div style={{width:'100%', display:'flex', flexDirection:'row', justifyContent:'flex-end'}}>
-                            <input onChange={updateDate} ref={dateHandle} style={{position:"absolute", marginTop:'10px', visibility:'hidden'}} type="date" />
-                            <Button 
-                                variant="contained" 
-                                sx={{
+                            <input 
+                                onChange={updateDate} 
+                                ref={dateHandle} 
+                                style={{
                                     width:'140px',
                                     height:'30px',
                                     background:'#06805B',
@@ -641,15 +653,17 @@ const DashboardGraph = (props) => {
                                     display:'flex',
                                     flexDirection:'row',
                                     alignItems:'center',
+                                    color:'#fff',
+                                    border:'none',
+                                    boxShadow:'0px 0px 5px 5px #ccc',
+                                    outline:'none',
+                                    paddingLeft:'6px',
                                     '&:hover': {
-                                        backgroundColor: '#06805B'
+                                        backgroundColor: '#06805B',
+                                        opacity:'0.9'
                                     }
-                                }}
-                                onClick={dateHandleInputDate}
-                            >
-                                <div style={{marginRight:'10px'}}>{currentDate}</div>
-                                <img style={{width:'20px', height:'20px'}} src={calendar} alt="icon"/>
-                            </Button>
+                                }} 
+                                type="date" />
                         </div>
                     </div>
                 </div>

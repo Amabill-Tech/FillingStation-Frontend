@@ -14,6 +14,8 @@ import {
     SEARCH_STATION,
     SELECTED_PUMPS,
     DESELECTED_PUMPS,
+    LOGOUT,
+    ADMIN_OUTLET
 } from '../types'
 
 const initialState = {
@@ -27,7 +29,8 @@ const initialState = {
     pumpList: [],
     oneTank: {},
     oneStation: {},
-    searchStation:[]
+    searchStation:[],
+    adminOutlet: {},
 }
 
 const outletReducer = (state = initialState, action) => {
@@ -129,6 +132,20 @@ const outletReducer = (state = initialState, action) => {
             return {
                 ...state,
                 oneStation: payload
+            }
+        }
+
+        case ADMIN_OUTLET:{
+            return{
+                ...state,
+                adminOutlet: payload,
+            }
+        }
+
+        case LOGOUT:{
+            return {
+                ...state,
+                oneStation: {}
             }
         }
 

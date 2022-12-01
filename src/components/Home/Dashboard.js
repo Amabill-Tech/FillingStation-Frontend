@@ -13,7 +13,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useCallback } from 'react';
 import OutletService from '../../services/outletService';
-import { getAllStations } from '../../store/actions/outlet';
+import { adminOutlet, getAllStations } from '../../store/actions/outlet';
 import { useState } from 'react';
 import {useHistory} from 'react-router-dom';
 import expense from '../../assets/expense.png';
@@ -82,6 +82,7 @@ const Dashboard = (props) => {
     const history  = useHistory();
     const user = useSelector(state => state.authReducer.user);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const dashboardData = useSelector(state => state.dashboardReducer.dashboardData);
     const dashboardRecords = useSelector(state => state.dashboardReducer.dashboardRecords);
     const [defaultState, setDefault] = useState(0);
@@ -113,17 +114,31 @@ const Dashboard = (props) => {
         const payload = {
             organisation: user._id
         }
-        OutletService.getAllOutletStations(payload).then(data => {
-            dispatch(getAllStations(data.station));
-            setDefault(1);
-            setCurrentStation(data.station[0]);
-            return data.station[0];
-        }).then(data => {
-            DashboardService.allAttendanceRecords({id: data.organisation, outletID: data._id}).then(data => {
-                collectAndAnalyseData(data);
+
+        if(user.userType === "superAdmin"){
+            OutletService.getAllOutletStations(payload).then(data => {
+                dispatch(getAllStations(data.station));
+                setDefault(1);
+                setCurrentStation(data.station[0]);
+                return data.station[0];
+            }).then(data => {
+                DashboardService.allAttendanceRecords({id: data.organisation, outletID: data._id}).then(data => {
+                    collectAndAnalyseData(data);
+                });
             });
-        })
-    }, [user._id, dispatch]);
+        }else{
+            OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
+                dispatch(adminOutlet(data.station));
+                setCurrentStation(data.station);
+                return data.station;
+            }).then(data => {
+                DashboardService.allAttendanceRecords({id: data.organisation, outletID: data._id}).then(data => {
+                    collectAndAnalyseData(data);
+                });
+            });
+        }
+        
+    }, [user._id, user.userType, user.outletID, dispatch]);
 
     useEffect(()=>{
         getAllStationData();
@@ -283,21 +298,34 @@ const Dashboard = (props) => {
                                 <DateRangePicker style={{background:'red'}} onChange={onChange} value={value} />
                             </div>
                             <div className='second-select'>
-                                <Select
-                                    labelId="demo-select-small"
-                                    id="demo-select-small"
-                                    value={defaultState}
-                                    sx={selectStyle2}
-                                >
-                                    <MenuItem style={menu} value={0}>Select Station</MenuItem>
-                                    {
-                                        allOutlets.map((item, index) => {
-                                            return(
-                                                <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.city}</MenuItem>
-                                            )
-                                        })  
-                                    }
-                                </Select>
+                                {oneStationData.hasOwnProperty("outletName") ||
+                                    <Select
+                                        labelId="demo-select-small"
+                                        id="demo-select-small"
+                                        value={defaultState}
+                                        sx={selectStyle2}
+                                    >
+                                        <MenuItem style={menu} value={0}>Select Station</MenuItem>
+                                        {
+                                            allOutlets.map((item, index) => {
+                                                return(
+                                                    <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.city}</MenuItem>
+                                                )
+                                            })  
+                                        }
+                                    </Select>
+                                }
+                                {oneStationData.hasOwnProperty("outletName") &&
+                                    <Select
+                                        labelId="demo-select-small"
+                                        id="demo-select-small"
+                                        value={0}
+                                        sx={selectStyle2}
+                                        disabled
+                                    >
+                                        <MenuItem style={menu} value={0}>{oneStationData.hasOwnProperty("outletName")?oneStationData.outletName+", "+oneStationData.city: "No station created"}</MenuItem>
+                                    </Select>
+                                }
                             </div>
                         </div>
                         <div style={{marginTop:'0px'}} className='dashImages'>

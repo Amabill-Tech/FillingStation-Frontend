@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logout, updateUser } from '../../store/actions/auth';
 import swal from 'sweetalert';
 import OutletService from '../../services/outletService';
-import { getAllStations, oneStation } from '../../store/actions/outlet';
+import { adminOutlet, getAllStations, oneStation } from '../../store/actions/outlet';
 import { ThreeDots } from 'react-loader-spinner';
 import UserService from '../../services/user';
 import axios from 'axios';
@@ -791,6 +791,7 @@ const Settings = (props) => {
     const dispatch = useDispatch();
     const user = useSelector(state => state.authReducer.user);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
 
     const logouts = () => {
         swal({
@@ -809,12 +810,25 @@ const Settings = (props) => {
     }
 
     const getStationData = useCallback(() => {
-        OutletService.getAllOutletStations({organisation: user.userType === "superAdmin"? user._id : user.organisationID}).then(data => {
-            dispatch(getAllStations(data.station));
-            dispatch(oneStation(data.station[0]));
-            if(data.station.length === 0){setDefault(0)}else{setDefault(1);}
-        });
-    }, [user.organisationID, user._id, user.userType, dispatch]);
+        const payload = {
+            organisation: user._id
+        }
+
+        if(user.userType === "superAdmin"){
+            OutletService.getAllOutletStations(payload).then(data => {
+                dispatch(getAllStations(data.station));
+                dispatch(oneStation(data.station[0]));
+                if(data.station.length === 0){setDefault(0)}else{setDefault(1);}
+                return data.station[0];
+            });
+        }else{
+            OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
+                dispatch(adminOutlet(data.station));
+                dispatch(oneStation(data.station));
+                return data.station;
+            });
+        }
+    }, [user._id, user.userType, user.outletID, dispatch]);
 
     useEffect(()=>{
         getStationData();
@@ -888,21 +902,36 @@ const Settings = (props) => {
                 <div className='rightSettings'>
                     <div className='inner'>
                         <div style={contain}>
-                            <Select
-                                labelId="demo-select-small"
-                                id="demo-select-small"
-                                value={defaultState}
-                                sx={selectStyle2}
-                            >
-                                <MenuItem style={menu} value={0}>Select Station</MenuItem>
-                                {
-                                    allOutlets.map((item, index) => {
-                                        return(
-                                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index+1}>{item.outletName+ ', ' +item.city}</MenuItem>
-                                        )
-                                    })  
+                            <div className='second-select'>
+                                {oneStationData.hasOwnProperty("outletName") ||
+                                    <Select
+                                        labelId="demo-select-small"
+                                        id="demo-select-small"
+                                        value={defaultState}
+                                        sx={selectStyle2}
+                                    >
+                                        <MenuItem style={menu} value={0}>Select Station</MenuItem>
+                                        {
+                                            allOutlets.map((item, index) => {
+                                                return(
+                                                    <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.city}</MenuItem>
+                                                )
+                                            })  
+                                        }
+                                    </Select>
                                 }
-                            </Select>
+                                {oneStationData.hasOwnProperty("outletName") &&
+                                    <Select
+                                        labelId="demo-select-small"
+                                        id="demo-select-small"
+                                        value={0}
+                                        sx={selectStyle2}
+                                        disabled
+                                    >
+                                        <MenuItem style={menu} value={0}>{oneStationData.hasOwnProperty("outletName")?oneStationData.outletName+", "+oneStationData.city: "No station created"}</MenuItem>
+                                    </Select>
+                                }
+                            </div>
                         </div>
                         { nav === 0 && <OutletInfo refresh={getStationData} />}
                         { nav === 1 && <Appearances />}
@@ -919,7 +948,7 @@ const Settings = (props) => {
 
 const menu = {
     fontSize:'14px',
-    fontFamily:'Nunito-Regular'
+    fontFamily:'Nunito-Regular',
 }
 
 const active = {
@@ -949,7 +978,7 @@ const selectStyle2 = {
     fontFamily: 'Nunito-Regular',
     fontSize:'14px',
     outline:'none',
-    marginBottom: '10px'
+    marginBottom: '10px',
 }
 
 const contain = {

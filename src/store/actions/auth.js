@@ -4,8 +4,8 @@ import { LOGIN, LOGOUT, SPINNER, REMOVE_SPINNER, UPDATE_USER_DATA } from '../typ
 export const login = (params, history) => dispatch => {
     return AuthService.login(params)
     .then(data => {
-        dispatch({ type: LOGIN, payload: data })
-        history.push('/home');
+        dispatch({ type: LOGIN, payload: data });
+        if(data.user.userType === "admin" || data.user.userType === "superAdmin") history.push('/home');
     })
     .catch(err => {
             

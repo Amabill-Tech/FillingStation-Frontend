@@ -9,7 +9,7 @@ import SupplyService from '../../services/supplyService';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import OutletService from '../../services/outletService';
-import { getAllStations } from '../../store/actions/outlet';
+import { adminOutlet, getAllStations } from '../../store/actions/outlet';
 import { OutlinedInput } from '@mui/material';
 import PrintSupplyRecords from '../Reports/SupplyRecords';
 
@@ -22,6 +22,7 @@ const Supply = () => {
     const [defaultState, setDefault] = useState(0);
     const user = useSelector(state => state.authReducer.user);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const supply = useSelector(state => state.supplyReducer.supply);
     const [prints, setPrints] = useState(false);
     const [currentStation, setCurrentStation] = useState({});
@@ -36,25 +37,50 @@ const Supply = () => {
 
     const getAllSupplyData = useCallback(() => {
 
-        OutletService.getAllOutletStations({organisation: user.userType === "superAdmin"? user._id : user.organisationID}).then(data => {
-            dispatch(getAllStations(data.station));
-            setCurrentStation(data.station[0]);
-            return data.station[0]
-        }).then((data)=>{
-            const payload = {
-                skip: skip * limit,
-                limit: limit,
-                outletID: data._id, 
-                organisationID: data.organisation
-            }
+        const payload = {
+            organisation: user._id
+        }
 
-            SupplyService.getAllSupply(payload).then((data) => {
-                setTotal(data.count);
-                dispatch(createSupply(data.supply));
+        if(user.userType === "superAdmin"){
+            OutletService.getAllOutletStations(payload).then(data => {
+                dispatch(getAllStations(data.station));
+                setDefault(1);
+                setCurrentStation(data.station[0]);
+                return data.station[0];
+            }).then((data)=>{
+                const payload = {
+                    skip: skip * limit,
+                    limit: limit,
+                    outletID: data._id, 
+                    organisationID: data.organisation
+                }
+    
+                SupplyService.getAllSupply(payload).then((data) => {
+                    setTotal(data.count);
+                    dispatch(createSupply(data.supply));
+                });
             });
-        });
+        }else{
+            OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
+                dispatch(adminOutlet(data.station));
+                setCurrentStation(data.station);
+                return data.station;
+            }).then((data)=>{
+                const payload = {
+                    skip: skip * limit,
+                    limit: limit,
+                    outletID: data._id, 
+                    organisationID: data.organisation
+                }
+    
+                SupplyService.getAllSupply(payload).then((data) => {
+                    setTotal(data.count);
+                    dispatch(createSupply(data.supply));
+                });
+            });
+        }
 
-    }, [dispatch, user._id, user.userType, user.organisationID, skip, limit]);
+    }, [user._id, user.userType, user.outletID, dispatch, skip, limit]);
 
     useEffect(()=>{
         getAllSupplyData();
@@ -143,20 +169,34 @@ const Supply = () => {
                 <div className='search'>
                     <div className='input-cont'>
                         <div className='second-select'>
-                            <Select
-                                labelId="demo-select-small"
-                                id="demo-select-small"
-                                value={defaultState}
-                                sx={selectStyle2}
-                            >
-                                {
-                                   allOutlets.map((item, index) => {
-                                        return(
-                                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index, item)}} value={index}>{item.outletName+ ', ' +item.city}</MenuItem>
-                                        )
-                                   })  
-                                }
-                            </Select>
+                            {oneStationData.hasOwnProperty("outletName") ||
+                                <Select
+                                    labelId="demo-select-small"
+                                    id="demo-select-small"
+                                    value={defaultState}
+                                    sx={selectStyle2}
+                                >
+                                    <MenuItem style={menu} value={0}>Select Station</MenuItem>
+                                    {
+                                        allOutlets.map((item, index) => {
+                                            return(
+                                                <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.city}</MenuItem>
+                                            )
+                                        })  
+                                    }
+                                </Select>
+                            }
+                            {oneStationData.hasOwnProperty("outletName") &&
+                                <Select
+                                    labelId="demo-select-small"
+                                    id="demo-select-small"
+                                    value={0}
+                                    sx={selectStyle2}
+                                    disabled
+                                >
+                                    <MenuItem style={menu} value={0}>{oneStationData.hasOwnProperty("outletName")?oneStationData.outletName+", "+oneStationData.city: "No station created"}</MenuItem>
+                                </Select>
+                            }
                         </div>
                         <div className='second-select'>
                                 <OutlinedInput 

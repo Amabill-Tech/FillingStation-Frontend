@@ -6,7 +6,7 @@ import Button from '@mui/material/Button';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import PaymentModal from '../Modals/PaymentModal';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllStations } from '../../store/actions/outlet';
+import { adminOutlet, getAllStations } from '../../store/actions/outlet';
 import OutletService from '../../services/outletService';
 import PaymentService from '../../services/paymentService';
 import { createPayment, searchPayment } from '../../store/actions/payment';
@@ -23,6 +23,7 @@ const Regulatory = () => {
     const dispatch = useDispatch();
     const user = useSelector(state => state.authReducer.user);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const payment = useSelector(state => state.paymentReducer.payment);
     const [currentStation, setCurrentStation] = useState({});
     const [entries, setEntries] = useState(10);
@@ -38,23 +39,48 @@ const Regulatory = () => {
     }
 
     const getTankData = useCallback(() => {
-        OutletService.getAllOutletStations({organisation: user.userType === "superAdmin"? user._id : user.organisationID}).then(data => {
-            dispatch(getAllStations(data.station));
-            setCurrentStation(data.station[0]);
-            return data.station[0]
-        }).then((data)=>{
-            const payload = {
-                skip: skip * limit,
-                limit: limit,
-                outletID: data._id, 
-                organisationID: data.organisation
-            }
-            PaymentService.getAllPayment(payload).then((data) => {
-                setTotal(data.count);
-                dispatch(createPayment(data.pay));
+
+        const payload = {
+            organisation: user._id
+        }
+
+        if(user.userType === "superAdmin"){
+            OutletService.getAllOutletStations(payload).then(data => {
+                dispatch(getAllStations(data.station));
+                setDefault(1);
+                setCurrentStation(data.station[0]);
+                return data.station[0];
+            }).then((data)=>{
+                const payload = {
+                    skip: skip * limit,
+                    limit: limit,
+                    outletID: data._id, 
+                    organisationID: data.organisation
+                }
+                PaymentService.getAllPayment(payload).then((data) => {
+                    setTotal(data.count);
+                    dispatch(createPayment(data.pay));
+                });
             });
-        });
-    }, [user.organisationID, user._id, user.userType, skip, limit, dispatch]);
+        }else{
+            OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
+                dispatch(adminOutlet(data.station));
+                setCurrentStation(data.station);
+                return data.station;
+            }).then((data)=>{
+                const payload = {
+                    skip: skip * limit,
+                    limit: limit,
+                    outletID: data._id, 
+                    organisationID: data.organisation
+                }
+                PaymentService.getAllPayment(payload).then((data) => {
+                    setTotal(data.count);
+                    dispatch(createPayment(data.pay));
+                });
+            });
+        }
+    }, [user._id, user.userType, user.outletID, dispatch, skip, limit]);
 
     useEffect(()=>{
         getTankData();
@@ -147,20 +173,34 @@ const Regulatory = () => {
                 <div className='search'>
                     <div className='input-cont'>
                         <div className='second-select'>
-                            <Select
-                                labelId="demo-select-small"
-                                id="demo-select-small"
-                                value={defaultState}
-                                sx={selectStyle2}
-                            >
-                                {
-                                   allOutlets.map((item, index) => {
-                                        return(
-                                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index, item)}} value={index}>{item.outletName+ ', ' +item.city}</MenuItem>
-                                        )
-                                   })  
-                                }
-                            </Select>
+                            {oneStationData.hasOwnProperty("outletName") ||
+                                <Select
+                                    labelId="demo-select-small"
+                                    id="demo-select-small"
+                                    value={defaultState}
+                                    sx={selectStyle2}
+                                >
+                                    <MenuItem style={menu} value={0}>Select Station</MenuItem>
+                                    {
+                                        allOutlets.map((item, index) => {
+                                            return(
+                                                <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.city}</MenuItem>
+                                            )
+                                        })  
+                                    }
+                                </Select>
+                            }
+                            {oneStationData.hasOwnProperty("outletName") &&
+                                <Select
+                                    labelId="demo-select-small"
+                                    id="demo-select-small"
+                                    value={0}
+                                    sx={selectStyle2}
+                                    disabled
+                                >
+                                    <MenuItem style={menu} value={0}>{oneStationData.hasOwnProperty("outletName")?oneStationData.outletName+", "+oneStationData.city: "No station created"}</MenuItem>
+                                </Select>
+                            }
                         </div>
                         <div className='second-select'>
                                 <OutlinedInput 

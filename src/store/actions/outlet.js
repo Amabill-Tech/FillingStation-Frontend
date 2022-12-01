@@ -15,6 +15,7 @@ import {
     SEARCH_STATION,
     SELECTED_PUMPS,
     DESELECTED_PUMPS,
+    ADMIN_OUTLET
 } from '../types';
 
 export const createFillingStation = (params) => dispatch => {
@@ -93,6 +94,10 @@ export const getOneTank = (params) => dispatch => {
 
 export const oneStation = (params) => dispatch => {
     dispatch({type: ONE_STATION, payload: params});
+}
+
+export const adminOutlet = (params) => dispatch => {
+    dispatch({type: ADMIN_OUTLET, payload: params});
 }
 
 export const searchStations = (params) => dispatch => {

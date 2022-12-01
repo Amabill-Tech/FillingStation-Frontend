@@ -33,57 +33,57 @@ const Login = (props) => {
 
     return(
         <div className='login-form-container'>
-                    <div className='inner-form-container'>
-                        <img className='logo' src={logo} alt="icon" />
-                        <div className='login-text'>Login</div>
-                        <form className='main-form'>
-                            <input 
-                                className='input-field' 
-                                type={'email'} 
-                                placeholder="Email"  
-                                onChange = {e => setEmail(e.target.value)}
-                            />
-                            <input 
-                                style={{marginTop:'25px'}} 
-                                className='input-field' 
-                                type={'password'} 
-                                placeholder="Password" 
-                                onChange = {e => setPassword(e.target.value)}
-                            />
-                            <div className='forget-password'>Forgot password</div>
-                            <Button sx={{
-                                width:'100%', 
-                                height:'35px', 
-                                background:'#076146', 
-                                borderRadius:'24px', 
-                                marginTop:'30px',
-                                textTransform:"capitalize",
-                                '&:hover': {
-                                    backgroundColor: '#076146'
-                                }
-                            }}  variant="contained"
-                                onClick={handleLogin}>Login</Button>
-                        </form>
+            <div className='inner-form-container'>
+                <img className='logo' src={logo} alt="icon" />
+                <div className='login-text'>Login</div>
+                <form className='main-form'>
+                    <input 
+                        className='input-field' 
+                        type={'email'} 
+                        placeholder="Email"  
+                        onChange = {e => setEmail(e.target.value)}
+                    />
+                    <input 
+                        style={{marginTop:'25px'}} 
+                        className='input-field' 
+                        type={'password'} 
+                        placeholder="Password" 
+                        onChange = {e => setPassword(e.target.value)}
+                    />
+                    <div className='forget-password'>Forgot password</div>
+                    <Button sx={{
+                        width:'100%', 
+                        height:'35px', 
+                        background:'#076146', 
+                        borderRadius:'24px', 
+                        marginTop:'30px',
+                        textTransform:"capitalize",
+                        '&:hover': {
+                            backgroundColor: '#076146'
+                        }
+                    }}  variant="contained"
+                        onClick={handleLogin}>Login</Button>
+                </form>
 
-                        <div style={{height:'35px', alignItems:'center'}} className='reg'>
-                            <div>
-                                {loadingSpinner &&
-                                    <ThreeDots 
-                                        height="60" 
-                                        width="50" 
-                                        radius="9"
-                                        color="#076146" 
-                                        ariaLabel="three-dots-loading"
-                                        wrapperStyle={{}}
-                                        wrapperClassName=""
-                                        visible={true}
-                                    />
-                                }
-                            </div>
-                            <div onClick={switchToRegister} className='register'>Register</div>
-                        </div>
+                <div style={{height:'35px', alignItems:'center'}} className='reg'>
+                    <div>
+                        {loadingSpinner &&
+                            <ThreeDots 
+                                height="60" 
+                                width="50" 
+                                radius="9"
+                                color="#076146" 
+                                ariaLabel="three-dots-loading"
+                                wrapperStyle={{}}
+                                wrapperClassName=""
+                                visible={true}
+                            />
+                        }
                     </div>
+                    <div onClick={switchToRegister} className='register'>Register</div>
                 </div>
+            </div>
+        </div>
     )
 }
 

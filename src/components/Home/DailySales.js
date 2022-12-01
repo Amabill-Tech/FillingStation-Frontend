@@ -11,7 +11,7 @@ import AGOTank from '../Outlet/AGOTank';
 import DPKTank from '../Outlet/DPKTank';
 import { useDispatch, useSelector } from 'react-redux';
 import OutletService from '../../services/outletService';
-import { getAllOutletTanks, getAllStations } from '../../store/actions/outlet';
+import { adminOutlet, getAllOutletTanks, getAllStations } from '../../store/actions/outlet';
 import { Route, Switch, useHistory } from 'react-router-dom';
 import PMSDailySales from '../DailySales/PMSDailySales';
 import AGODailySales from '../DailySales/AGODailySales';
@@ -41,7 +41,7 @@ const months = {
 const DailySales = (props) => {
     const date = new Date();
     const toString = date.toDateString();
-    const [name, month, day, year] = toString.split(' ');
+    const [month, day, year] = toString.split(' ');
     const date2 = `${day} ${month} ${year}`;
 
     const user = useSelector(state => state.authReducer.user);
@@ -49,6 +49,7 @@ const DailySales = (props) => {
     const history = useHistory();
     const tankList = useSelector(state => state.outletReducer.tankList);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [defaultState, setDefault] = useState(0);
     const [cummulatives, setCummulatives] = useState({});
     const [currentStation, setCurrentStation] = useState({});
@@ -338,29 +339,49 @@ const DailySales = (props) => {
         });
     }
 
-    const getAllProductData = () => {
+    const getAllProductData = useCallback(() => {
 
-        OutletService.getAllOutletStations({organisation: user.userType === "superAdmin"? user._id : user.organisationID}).then(data => {
-            dispatch(getAllStations(data.station));
-            setCurrentStation(data.station[0]);
-            setDefault(1);
-            return data.station[0]
-        }).then((data)=>{
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = now.getMonth() + 1;
-            const day = now.getDate();
-            const formatWell = year + "-"+ month + "-" + day;
-            const getDataRange = getTodayAndTomorrow(formatWell);
-            setRangeDate(getDataRange);
-            getAndAnalyzeDailySales(data, rangeDate);
-        });
+        const payload = {
+            organisation: user._id
+        }
 
-    };
+        if(user.userType === "superAdmin"){
+            OutletService.getAllOutletStations(payload).then(data => {
+                dispatch(getAllStations(data.station));
+                setDefault(1);
+                setCurrentStation(data.station[0]);
+                return data.station[0];
+            }).then((data)=>{
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = now.getMonth() + 1;
+                const day = now.getDate();
+                const formatWell = year + "-"+ month + "-" + day;
+                const getDataRange = getTodayAndTomorrow(formatWell);
+                setRangeDate(getDataRange);
+                getAndAnalyzeDailySales(data, rangeDate);
+            });
+        }else{
+            OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
+                dispatch(adminOutlet(data.station));
+                setCurrentStation(data.station);
+                return data.station;
+            }).then((data)=>{
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = now.getMonth() + 1;
+                const day = now.getDate();
+                const formatWell = year + "-"+ month + "-" + day;
+                const getDataRange = getTodayAndTomorrow(formatWell);
+                setRangeDate(getDataRange);
+                getAndAnalyzeDailySales(data, rangeDate);
+            });
+        }
+    }, [dispatch]);
 
     useEffect(()=>{
         getAllProductData();
-    },[])
+    },[getAllProductData])
 
     const getTodayAndTomorrow = (value) => {
         const today = value;
@@ -486,6 +507,15 @@ const DailySales = (props) => {
         setDefault(index);
         setCurrentStation(item);
 
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth() + 1;
+        const day = now.getDate();
+        const formatWell = year + "-"+ month + "-" + day;
+        const getDataRange = getTodayAndTomorrow(formatWell);
+        setRangeDate(getDataRange);
+        getAndAnalyzeDailySales(item, rangeDate);
+
         const payload = {
             organisationID: item.organisation,
             outletID: item._id
@@ -529,22 +559,37 @@ const DailySales = (props) => {
             { props.activeRoute.split('/').length === 3 &&
                 <>
                     <div className='daily-left'>
-                        <div>
-                            <Select
-                                labelId="demo-select-small"
-                                id="demo-select-small"
-                                value={defaultState}
-                                sx={selectStyle2}
-                            >
-                                <MenuItem style={menu} value={0}>Select Station</MenuItem>
-                                {
-                                    allOutlets.map((item, index) => {
-                                        return(
-                                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.city}</MenuItem>
-                                        )
-                                    })  
+                        <div style={{display:'flex', flexDirection:'row'}}>
+                            <div>
+                                {oneStationData.hasOwnProperty("outletName") ||
+                                    <Select
+                                        labelId="demo-select-small"
+                                        id="demo-select-small"
+                                        value={defaultState}
+                                        sx={selectStyle2}
+                                    >
+                                        <MenuItem style={menu} value={0}>Select Station</MenuItem>
+                                        {
+                                            allOutlets.map((item, index) => {
+                                                return(
+                                                    <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.city}</MenuItem>
+                                                )
+                                            })  
+                                        }
+                                    </Select>
                                 }
-                            </Select>
+                                {oneStationData.hasOwnProperty("outletName") &&
+                                    <Select
+                                        labelId="demo-select-small"
+                                        id="demo-select-small"
+                                        value={0}
+                                        sx={selectStyle2}
+                                        disabled
+                                    >
+                                        <MenuItem style={menu} value={0}>{oneStationData.hasOwnProperty("outletName")?oneStationData.outletName+", "+oneStationData.city: "No station created"}</MenuItem>
+                                    </Select>
+                                }
+                            </div>
                             <Button 
                                 variant="contained" 
                                 sx={{

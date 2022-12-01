@@ -8,7 +8,7 @@ import Expenses from '../RecordSales/Expenses';
 import Payments from '../RecordSales/Payment';
 import OutletService from '../../services/outletService';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllOutletTanks, getAllPumps, getAllStations, oneStation } from '../../store/actions/outlet';
+import { getAllOutletTanks, getAllPumps, getAllStations, oneStation, adminOutlet } from '../../store/actions/outlet';
 import Dipping from '../RecordSales/Dipping';
 import { MenuItem, Select } from '@mui/material';
 import { useCallback } from 'react';
@@ -23,7 +23,7 @@ import ReturnToTank from '../RecordSales/ReturnToTank';
 const RecordSales = (props) => {
     const dispatch = useDispatch();
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
-    const oneOutletStation = useSelector(state => state.outletReducer.oneStation);
+    const oneAdminOutlet = useSelector(state => state.outletReducer.adminOutlet);
     const user = useSelector(state => state.authReducer.user);
     const [defaultState, setDefault] = useState(0);
 
@@ -46,65 +46,67 @@ const RecordSales = (props) => {
     }
 
     const getAllStationData = useCallback(() => {
-        OutletService.getAllOutletStations({organisation: user.userType === "superAdmin"? user._id : user.organisationID}).then(data => {
-            dispatch(getAllStations(data.station));
-            dispatch(oneStation(data.station[0]));
-            setDefault(1);
-            return data.station[0]
-        }).then((data)=>{
-            const payload = {
-                outletID: data._id, 
-                organisationID: data.organisation
-            }
-            
-            OutletService.getAllStationPumps(payload).then(data => {
-                dispatch(getAllPumps(data));
+        if(user.userType === "superAdmin"){
+            OutletService.getAllOutletStations({organisation: user._id}).then(data => {
+                dispatch(getAllStations(data.station));
+                dispatch(oneStation(data.station[0]));
+                setDefault(1);
+                return data.station[0]
+            }).then((data)=>{
+                const payload = {
+                    outletID: data._id, 
+                    organisationID: data.organisation
+                }
+                
+                OutletService.getAllStationPumps(payload).then(data => {
+                    dispatch(getAllPumps(data));
+                });
+    
+                OutletService.getAllOutletTanks(payload).then(data => {
+                    dispatch(dispatch(getAllOutletTanks(data.stations)))
+                });
+    
+                LPOService.getAllLPO(payload).then((data) => {
+                    dispatch(createLPO(data.lpo.lpo));
+                });
+    
+                SupplyService.getAllPendingSupply(payload).then(data => {
+                    dispatch(pendingSupply(data.supply));
+                });
+            })
+        }else{
+            OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
+                dispatch(adminOutlet(data.station));
+                dispatch(oneStation(data.station));
+                return data.station;
+            }).then(data => {
+                const payload = {
+                    outletID: data._id, 
+                    organisationID: data.organisation
+                }
+                
+                OutletService.getAllStationPumps(payload).then(data => {
+                    dispatch(getAllPumps(data));
+                });
+    
+                OutletService.getAllOutletTanks(payload).then(data => {
+                    dispatch(dispatch(getAllOutletTanks(data.stations)))
+                });
+    
+                LPOService.getAllLPO(payload).then((data) => {
+                    dispatch(createLPO(data.lpo.lpo));
+                });
+    
+                SupplyService.getAllPendingSupply(payload).then(data => {
+                    dispatch(pendingSupply(data.supply));
+                });
             });
-
-            OutletService.getAllOutletTanks(payload).then(data => {
-                dispatch(dispatch(getAllOutletTanks(data.stations)))
-            });
-
-            LPOService.getAllLPO(payload).then((data) => {
-                dispatch(createLPO(data.lpo.lpo));
-            });
-
-            SupplyService.getAllPendingSupply(payload).then(data => {
-                dispatch(pendingSupply(data.supply));
-            });
-        })
-    }, [dispatch, user._id, user.userType, user.organisationID]);
+        }
+        
+    }, [user.userType, user._id, user.outletID, dispatch]);
 
     const refresh = () => {
-        OutletService.getAllOutletStations({organisation: user.userType === "superAdmin"? user._id : user.organisationID}).then(data => {
-            dispatch(getAllStations(data.station));
-        }).then(()=>{
-
-            const payload = {
-                outletID: oneOutletStation._id, 
-                organisationID: oneOutletStation.organisation
-            }
-
-            OutletService.getOneOutletStation(payload).then((data) => {
-                dispatch(oneStation(data.station));
-            });
-
-            OutletService.getAllOutletTanks(payload).then(data => {
-                dispatch(dispatch(getAllOutletTanks(data.stations)))
-            })
-            
-            OutletService.getAllStationPumps(payload).then(data => {
-                dispatch(getAllPumps(data));
-            });
-
-            LPOService.getAllLPO(payload).then((data) => {
-                dispatch(createLPO(data.lpo.lpo));
-            });
-
-            SupplyService.getAllPendingSupply(payload).then(data => {
-                dispatch(pendingSupply(data.supply));
-            });
-        })
+        getAllStationData();
     }
 
     useEffect(()=>{
@@ -113,7 +115,8 @@ const RecordSales = (props) => {
 
     const changeMenu = (index, item ) => {
         setDefault(index);
-        dispatch(oneStation(item));
+        dispatch(oneAdminOutlet(item));
+        dispatch(oneStation(item.station[0]));
 
         const payload = {
             outletID: item._id, 
@@ -136,21 +139,36 @@ const RecordSales = (props) => {
     return(
         <div className='salesContainer2'>
             <div className='inner'>
-                <Select
-                    labelId="demo-select-small"
-                    id="demo-select-small"
-                    value={defaultState}
-                    sx={selectStyle2}
-                >
-                    <MenuItem style={menu} value={0}>Select station</MenuItem>
-                    {
-                        allOutlets.map((item, index) => {
-                            return(
-                                <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName +', '+ item.city}</MenuItem>
-                            )
-                        })  
+                <div className='second-select'>
+                    {oneAdminOutlet.hasOwnProperty("outletName") ||
+                        <Select
+                            labelId="demo-select-small"
+                            id="demo-select-small"
+                            value={defaultState}
+                            sx={selectStyle2}
+                        >
+                            <MenuItem style={menu} value={0}>Select Station</MenuItem>
+                            {
+                                allOutlets.map((item, index) => {
+                                    return(
+                                        <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.city}</MenuItem>
+                                    )
+                                })  
+                            }
+                        </Select>
                     }
-                </Select>
+                    {oneAdminOutlet.hasOwnProperty("outletName") &&
+                        <Select
+                            labelId="demo-select-small"
+                            id="demo-select-small"
+                            value={0}
+                            sx={selectStyle2}
+                            disabled
+                        >
+                            <MenuItem style={menu} value={0}>{oneAdminOutlet.hasOwnProperty("outletName")?oneAdminOutlet.outletName+", "+oneAdminOutlet.city: "No station created"}</MenuItem>
+                        </Select>
+                    }
+                </div>
                 <div className='leftContainer'>
                     <div className='tabContainer'>
                         <div className='butContain'>

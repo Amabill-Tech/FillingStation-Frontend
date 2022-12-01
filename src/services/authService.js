@@ -1,6 +1,7 @@
 import APIs from './api';
 import store from '../store';
 import { removeSpinner } from '../store/actions/auth';
+import OutletService from '../services/outletService';
 import swal from 'sweetalert';
 
 const AuthService = {

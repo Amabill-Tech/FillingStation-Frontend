@@ -8,7 +8,7 @@ import AtendanceService from '../../services/attendance';
 import { useDispatch, useSelector } from 'react-redux';
 import { createAttendance } from '../../store/actions/attendance';
 import OutletService from '../../services/outletService';
-import { getAllStations } from '../../store/actions/outlet';
+import { adminOutlet, getAllStations } from '../../store/actions/outlet';
 import { OutlinedInput } from '@mui/material';
 import AdminUserService from '../../services/adminUsers';
 import { storeStaffUsers } from '../../store/actions/staffUsers';
@@ -26,6 +26,7 @@ const Attendance = () => {
     const user = useSelector(state => state.authReducer.user);
     const attendanceData = useSelector(state => state.attendanceReducer.attendance);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [total, setTotal] = useState(0);
     const [skip, setSkip] = useState(0);
     const [limit, setLimit] = useState(15);
@@ -69,12 +70,32 @@ const Attendance = () => {
                 });
             })
         }else{
-            /*OutletService.getAllOutletStations({organisation: user._id}).then(data => {
-                dispatch(getAllStations(data.station));
-            });*/
+            OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
+                dispatch(adminOutlet(data.station));
+                // setCurrentStation(data.station);
+                return data.station;
+            }).then((data)=>{
+                setCurrentMenu(data);
+                const payload = {
+                    skip: skip * limit,
+                    limit: limit,
+                    today: getDataRange.today,
+                    tomorrow: getDataRange.tomorrow,
+                    outletID: data._id,
+                    organisationID: data.organisation,
+                }
+                AdminUserService.allStaffUserRecords(payload).then(data => {
+                    dispatch(storeStaffUsers(data.staff.staff));
+                }).then(()=>{
+                    AtendanceService.allAttendanceRecords(payload).then(data => {
+                        setTotal(data.attendance.count)
+                        dispatch(createAttendance(data.attendance.attendance));
+                    });
+                });
+            })
         }
         
-    }, [user.organisationID, user.userType, user._id, limit, skip, dispatch]);
+    }, [user.userType, user._id, user.organisationID, user.outletID, dispatch, skip, limit]);
 
     useEffect(()=>{
         const now = new Date();
@@ -253,20 +274,34 @@ const Attendance = () => {
                 <div className='search'>
                     <div className='input-cont'>
                         <div className='second-select'>
-                            <Select
-                                labelId="demo-select-small"
-                                id="demo-select-small"
-                                value={defaultState}
-                                sx={selectStyle2}
-                            >
-                                {
-                                   allOutlets.map((item, index) => {
-                                        return(
-                                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index, item)}} value={index}>{item.outletName}</MenuItem>
-                                        )
-                                   })  
-                                }
-                            </Select>
+                            {oneStationData.hasOwnProperty("outletName") ||
+                                <Select
+                                    labelId="demo-select-small"
+                                    id="demo-select-small"
+                                    value={defaultState}
+                                    sx={selectStyle2}
+                                >
+                                    <MenuItem style={menu} value={0}>Select Station</MenuItem>
+                                    {
+                                        allOutlets.map((item, index) => {
+                                            return(
+                                                <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.city}</MenuItem>
+                                            )
+                                        })  
+                                    }
+                                </Select>
+                            }
+                            {oneStationData.hasOwnProperty("outletName") &&
+                                <Select
+                                    labelId="demo-select-small"
+                                    id="demo-select-small"
+                                    value={0}
+                                    sx={selectStyle2}
+                                    disabled
+                                >
+                                    <MenuItem style={menu} value={0}>{oneStationData.hasOwnProperty("outletName")?oneStationData.outletName+", "+oneStationData.city: "No station created"}</MenuItem>
+                                </Select>
+                            }
                         </div>
                         <div className='second-select'>
                                 <OutlinedInput 
