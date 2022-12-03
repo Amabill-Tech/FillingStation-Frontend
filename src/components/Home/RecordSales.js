@@ -115,8 +115,7 @@ const RecordSales = (props) => {
 
     const changeMenu = (index, item ) => {
         setDefault(index);
-        dispatch(oneAdminOutlet(item));
-        dispatch(oneStation(item.station[0]));
+        dispatch(oneStation(item));
 
         const payload = {
             outletID: item._id, 

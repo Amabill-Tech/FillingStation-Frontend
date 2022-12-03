@@ -3,7 +3,9 @@ import {
     EXPENSES_AND_PAYMENTS,
     DAILY_INCOMING_ORDER,
     CUMMULATIVES,
-    DAILY_SALES_SUPPLY
+    DAILY_SALES_SUPPLY,
+    LPO_RECORDS,
+    PAYMENTS_RECORDS
 } from '../types'
 
 const initialState = {
@@ -11,7 +13,13 @@ const initialState = {
     payments: {},
     dailyIncoming:[],
     cummulative: {},
-    dailySupplies: {}
+    dailySupplies: {},
+    lpoRecords: [],
+    paymentRecords: {
+        bankPayment: [],
+        posPayment: [],
+        expenses: []
+    },
 }
 
 const dailySalesReducer = (state = initialState, action) => {
@@ -52,6 +60,20 @@ const dailySalesReducer = (state = initialState, action) => {
             return {
                 ...state,
                 dailySupplies: payload
+            }
+        }
+
+        case LPO_RECORDS:{
+            return{
+                ...state,
+                lpoRecords: payload
+            }
+        }
+
+        case PAYMENTS_RECORDS:{
+            return{
+                ...state,
+                paymentRecords: payload
             }
         }
 

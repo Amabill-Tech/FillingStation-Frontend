@@ -1,5 +1,6 @@
 import { Button } from '@mui/material';
 import React from 'react';
+import { useEffect } from 'react';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import '../../styles/report.scss';
@@ -118,7 +119,7 @@ const PMSDailySales = (props) => {
         <div className='main-sales'>
             <div className='inner'>
                 <div className='table-heads'>
-                    <div className='col'>{props.name}</div>
+                    <div className='col'>{props?.name}</div>
                     <div className='col'>Opening</div>
                     <div className='col'>Closing</div>
                     <div className='col'>Difference</div>
@@ -129,9 +130,9 @@ const PMSDailySales = (props) => {
                 </div>
 
                 {
-                    props.data.rows.length === 0?
+                    props?.data?.rows?.length === 0?
                     <div style={dats}> No Data </div>:
-                    props.data.rows.map(data => {
+                    props?.data?.rows?.map(data => {
                         return(
                             <div className='table-heads2'>
                                 <div className='col'>{data.pumpName}</div>
@@ -156,16 +157,16 @@ const PMSDailySales = (props) => {
                 }
 
                 {
-                    props.data.rows.length === 0 ||
+                    props?.data?.rows?.length === 0 ||
                     <div className='table-heads2'>
                         <div style={{background: "transparent"}} className='col'></div>
                         <div style={{background: "transparent"}} className='col'></div>
                         <div className='col'>Total</div>
-                        <div className='col'>{props.data.total.totalDifference}</div>
-                        <div className='col'>{props.data.total.totalLpo}</div>
+                        <div className='col'>{props?.data?.total?.totalDifference}</div>
+                        <div className='col'>{props?.data?.total?.totalLpo}</div>
                         <div className='col'></div>
-                        <div className='col'>{props.data.total.totalrt}</div>
-                        <div style={{marginRight:'0px'}} className='col'>{props.data.total.amount}</div>
+                        <div className='col'>{props?.data?.total?.totalrt}</div>
+                        <div style={{marginRight:'0px'}} className='col'>{props?.data?.total?.amount}</div>
                     </div>
                 }
             </div>
@@ -173,7 +174,22 @@ const PMSDailySales = (props) => {
     )
 }
 
-const LPODailySales = () => {
+const LPODailySales = (props) => {
+
+    const getTotal = () => {
+        let total = 0;
+        for(let lpo of props?.data){
+            if(lpo.productType === "PMS"){
+                total = total + Number(lpo.PMSRate)*Number(lpo.lpoLitre)
+            }else if(lpo.productType === "AGO"){
+                total = total + Number(lpo.AGORate)*Number(lpo.lpoLitre)
+            }else if(lpo.productType === "DPK"){
+                total = total + Number(lpo.DPKRate)*Number(lpo.lpoLitre)
+            }
+        }
+        return total;
+    }
+
     return(
         <div>
             <div style={{width:'100%', textAlign:'left', marginBottom:'10px', color:'#06805B', fontSize:'12px', fontWeight:'900'}}>LPO</div>
@@ -181,7 +197,7 @@ const LPODailySales = () => {
                 <div className='inner'>
                     <div className='table-heads'>
                         <div className='col'>S/N</div>
-                        <div className='col'>Amount Name</div>
+                        <div className='col'>Account Name</div>
                         <div className='col'>Products</div>
                         <div className='col'>Truck No</div>
                         <div className='col'>Litre (Qty)</div>
@@ -189,35 +205,27 @@ const LPODailySales = () => {
                         <div style={{marginRight:'0px'}} className='col'>Amount</div>
                     </div>
 
-                    <div className='table-heads2'>
-                        <div className='col'>1</div>
-                        <div className='col'>Opening</div>
-                        <div className='col'>Closing</div>
-                        <div className='col'>Difference</div>
-                        <div className='col'>LPO</div>
-                        <div className='col'>Rate</div>
-                        <div style={{marginRight:'0px'}} className='col'>Amount</div>
-                    </div>
-
-                    <div className='table-heads2'>
-                        <div className='col'>2</div>
-                        <div className='col'>Opening</div>
-                        <div className='col'>Closing</div>
-                        <div className='col'>Difference</div>
-                        <div className='col'>LPO</div>
-                        <div className='col'>Rate</div>
-                        <div style={{marginRight:'0px'}} className='col'>Amount</div>
-                    </div>
-
-                    <div className='table-heads2'>
-                        <div className='col'>3</div>
-                        <div className='col'>Opening</div>
-                        <div className='col'>Closing</div>
-                        <div className='col'>Difference</div>
-                        <div className='col'>LPO</div>
-                        <div className='col'>Rate</div>
-                        <div style={{marginRight:'0px'}} className='col'>Amount</div>
-                    </div>
+                    {
+                        props?.data?.length === 0?
+                        <div style={dats}> No Data </div>:
+                        props?.data?.map((data, index) => {
+                            return(
+                                <div key={index} className='table-heads2'>
+                                    <div className='col'>{index + 1}</div>
+                                    <div className='col'>{data.accountName}</div>
+                                    <div className='col'>{data.productType}</div>
+                                    <div className='col'>{data.truckNo}</div>
+                                    <div className='col'>{data.lpoLitre}</div>
+                                    <div className='col'>{
+                                        data.productType === "PMS"? data.PMSRate: data.productType === "AGO"? data.AGORate: data.DPKRate
+                                    }</div>
+                                    <div style={{marginRight:'0px'}} className='col'>{
+                                        data.productType === "PMS"? Number(data.PMSRate)*Number(data.lpoLitre): data.productType === "AGO"? Number(data.AGORate)*Number(data.lpoLitre): Number(data.DPKRate)*Number(data.lpoLitre)
+                                    }</div>
+                                </div>
+                            )
+                        })
+                    }
 
                     <div className='table-heads2'>
                         <div style={{background: "transparent"}} className='col'></div>
@@ -226,7 +234,11 @@ const LPODailySales = () => {
                         <div style={{background: "transparent"}} className='col'></div>
                         <div style={{background: "transparent"}} className='col'></div>
                         <div className='col'>Total</div>
-                        <div style={{marginRight:'0px'}} className='col'>435, 000</div>
+                        <div style={{marginRight:'0px'}} className='col'>
+                            {
+                                getTotal()
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
@@ -234,7 +246,16 @@ const LPODailySales = () => {
     )
 }
 
-const ExpensesDailySales = () => {
+const ExpensesDailySales = (props) => {
+
+    const totalExpenses = () => {
+        let total = 0;
+        for(let exp of props?.data){
+            total = total + Number(exp.expenseAmount);
+        }
+        return total;
+    }
+
     return(
         <div>
             <div style={{width:'100%', textAlign:'left', marginBottom:'10px', color:'#06805B', fontSize:'12px', fontWeight:'900'}}>Expenses</div>
@@ -246,28 +267,24 @@ const ExpensesDailySales = () => {
                         <div style={{marginRight:'0px'}} className='col'>Amount</div>
                     </div>
 
-                    <div className='table-heads2'>
-                        <div className='col'>1</div>
-                        <div className='col'>Rate</div>
-                        <div style={{marginRight:'0px'}} className='col'>Amount</div>
-                    </div>
-
-                    <div className='table-heads2'>
-                        <div className='col'>2</div>
-                        <div className='col'>Rate</div>
-                        <div style={{marginRight:'0px'}} className='col'>Amount</div>
-                    </div>
-
-                    <div className='table-heads2'>
-                        <div className='col'>3</div>
-                        <div className='col'>Rate</div>
-                        <div style={{marginRight:'0px'}} className='col'>Amount</div>
-                    </div>
+                    {
+                        props?.data?.length === 0?
+                        <div style={dats}> No Data </div>:
+                        props?.data?.map((data, index) => {
+                            return(
+                                <div key={index} className='table-heads2'>
+                                    <div className='col'>{index+1}</div>
+                                    <div className='col'>{data.expenseName}</div>
+                                    <div style={{marginRight:'0px'}} className='col'>{data.expenseAmount}</div>
+                                </div>
+                            )
+                        })
+                    }
 
                     <div className='table-heads2'>
                         <div style={{background: "transparent"}} className='col'></div>
                         <div className='col'>Total</div>
-                        <div style={{marginRight:'0px'}} className='col'>435, 000</div>
+                        <div style={{marginRight:'0px'}} className='col'>{totalExpenses}</div>
                     </div>
                 </div>
             </div>
@@ -275,7 +292,20 @@ const ExpensesDailySales = () => {
     )
 }
 
-const ExpensesSummary = () => {
+const ExpensesSummary = ({expenses, sales}) => {
+
+    const totalExpenses = () => {
+        let total = 0;
+        for(let exp of expenses){
+            total = total + Number(exp.expenseAmount);
+        }
+        return total;
+    }
+
+    const getTotalSales = () => {
+        return sales?.AGO?.total?.amount + sales?.PMS?.total?.amount + sales?.DPK?.total?.amount;
+    }
+
     return(
         <div>
             <div style={{width:'100%', textAlign:'left', marginBottom:'10px', color:'#06805B', fontSize:'12px', fontWeight:'900'}}></div>
@@ -285,28 +315,21 @@ const ExpensesSummary = () => {
                         <div style={{width:'70%', display:'flex', justifyContent:'flex-start'}} className='col'>
                             <span style={{marginLeft:'10px'}}>Total Amount of sales (NGN)</span>
                         </div>
-                        <div style={{marginRight:'0px', width:'30%', background:'#EDEDED', color:'#000'}} className='col'>Amount</div>
+                        <div style={{marginRight:'0px', width:'30%', background:'#EDEDED', color:'#000'}} className='col'>{getTotalSales()}</div>
                     </div>
 
                     <div style={{marginTop:'5px'}} className='table-heads'>
                         <div style={{width:'70%', display:'flex', justifyContent:'flex-start'}} className='col'>
                             <span style={{marginLeft:'10px'}}>Total Amount of Expenses (NGN)</span>
                         </div>
-                        <div style={{marginRight:'0px', width:'30%', background:'#EDEDED', color:'#000'}} className='col'>Amount</div>
-                    </div>
-
-                    <div style={{marginTop:'5px'}} className='table-heads'>
-                        <div style={{width:'70%', display:'flex', justifyContent:'flex-start'}} className='col'>
-                            <span style={{marginLeft:'10px'}}>Total Amount of I.O.N (NGN)</span>
-                        </div>
-                        <div style={{marginRight:'0px', width:'30%', background:'#EDEDED', color:'#000'}} className='col'>Amount</div>
+                        <div style={{marginRight:'0px', width:'30%', background:'#EDEDED', color:'#000'}} className='col'>{totalExpenses()}</div>
                     </div>
 
                     <div style={{marginTop:'5px'}} className='table-heads2'>
                         <div style={{width:'70%', display:'flex', justifyContent:'flex-end'}} className='col'>
                             <span style={{marginRight:'20px'}}>Total</span>
                         </div>
-                        <div style={{marginRight:'0px', width:'30%'}} className='col'>Amount</div>
+                        <div style={{marginRight:'0px', width:'30%'}} className='col'>{getTotalSales() - totalExpenses()}</div>
                     </div>
                 </div>
             </div>
@@ -314,7 +337,32 @@ const ExpensesSummary = () => {
     )
 }
 
-const PaymentDailySales = () => {
+const PaymentDailySales = (props) => {
+
+    const bankPayments = () => {
+        let total = 0;
+        if(props?.data?.bankPayment?.length === 0){
+            return 0;
+        }else{
+            for(let pay of props?.data?.bankPayment){
+                total = total + Number(pay.amountPaid);
+            }
+        }
+        return total;
+    }
+
+    const posPayments = () => {
+        let total = 0;
+        if(props?.data?.posPayment?.length === 0){
+            return 0;
+        }else{
+            for(let pay of props?.data?.posPayment){
+                total = total + Number(pay.amountPaid);
+            }
+        }
+        return total;
+    }
+
     return(
         <div>
             <div style={{width:'100%', textAlign:'left', marginBottom:'10px', color:'#06805B', fontSize:'12px', fontWeight:'900'}}>Payments</div>
@@ -337,28 +385,21 @@ const PaymentDailySales = () => {
                     <div style={{marginTop:'5px'}} className='table-heads'>
                         <div style={{marginRight:'5px', width:'50%', background:'#EDEDED', color:'#000'}} className='col'>Teller</div>
                         <div style={{width:'50%', display:'flex', justifyContent:'flex-start'}} className='col'>
-                            <span style={{marginLeft:'10px'}}>25,000</span>
+                            <span style={{marginLeft:'10px'}}>{bankPayments()}</span>
                         </div>
                     </div>
 
                     <div style={{marginTop:'5px'}} className='table-heads'>
                         <div style={{marginRight:'5px', width:'50%', background:'#EDEDED', color:'#000'}} className='col'>POS</div>
                         <div style={{width:'50%', display:'flex', justifyContent:'flex-start'}} className='col'>
-                            <span style={{marginLeft:'10px'}}>250,000</span>
+                            <span style={{marginLeft:'10px'}}>{posPayments()}</span>
                         </div>
                     </div>
 
                     <div style={{marginTop:'5px'}} className='table-heads'>
-                        <div style={{marginRight:'5px', width:'50%', background:'#EDEDED', color:'#000'}} className='col'>Teller No</div>
+                        <div style={{marginRight:'5px', width:'50%', background:'#EDEDED', color:'#000'}} className='col'>Total</div>
                         <div style={{width:'50%', display:'flex', background:'#EDEDED', color:'#000', justifyContent:'flex-start'}} className='col'>
-                            <span style={{marginLeft:'10px'}}>892783876564</span>
-                        </div>
-                    </div>
-
-                    <div style={{marginTop:'5px'}} className='table-heads'>
-                        <div style={{marginRight:'5px', width:'50%', background:'#EDEDED', color:'#000'}} className='col'>Teller No</div>
-                        <div style={{width:'50%', display:'flex', background:'#EDEDED', color:'#000', justifyContent:'flex-start'}} className='col'>
-                            <span style={{marginLeft:'10px'}}>892783876564</span>
+                            <span style={{marginLeft:'10px'}}>{bankPayments() + posPayments()}</span>
                         </div>
                     </div>
                 </div>
@@ -452,9 +493,16 @@ const DippingDailySales = () => {
     )
 }
 
-const ComprehensiveReport = () => {
+const ComprehensiveReport = (props) => {
+
+    useEffect(()=>{
+        props.refresh();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const dailySales = useSelector(state => state.dailySalesReducer.dailySales);
+    const lpoRecords = useSelector(state => state.dailySalesReducer.lpoRecords);
+    const paymentRecords = useSelector(state => state.dailySalesReducer.paymentRecords);
     const [prints, setPrints] = useState(false);
 
     const printReport = () => {
@@ -515,15 +563,15 @@ const ComprehensiveReport = () => {
                         <PMSDailySales name={'PMS'} data={dailySales.PMS} />
                         <PMSDailySales name={'AGO'} data={dailySales.AGO} />
                         <PMSDailySales name={'DPK'} data={dailySales.DPK} />
-                        <LPODailySales />
-                        <ExpensesDailySales />
+                        <LPODailySales data={lpoRecords} />
+                        <ExpensesDailySales data = {paymentRecords.expenses} />
 
                         <div className='paym'>
                             <div className='pleft'>
-                                <ExpensesSummary />
+                                <ExpensesSummary expenses={paymentRecords.expenses} sales={dailySales} />
                             </div>
                             <div className='pleft'>
-                                <PaymentDailySales />
+                                <PaymentDailySales data={paymentRecords} />
                             </div>
                         </div>
 

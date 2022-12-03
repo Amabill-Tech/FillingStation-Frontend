@@ -20,7 +20,7 @@ import ComprehensiveReport from '../DailySales/ComprehensiveReport';
 import ListAllTanks from '../Outlet/TankList';
 import { useRef } from 'react';
 import DailySalesService from '../../services/DailySales';
-import { dailySupplies, passAllDailySales, passCummulative, passExpensesAndPayments, passIncomingOrder } from '../../store/actions/dailySales';
+import { dailySupplies, lpoRecords, passAllDailySales, passCummulative, passExpensesAndPayments, passIncomingOrder, paymentRecords } from '../../store/actions/dailySales';
 import BarChartGraph from '../common/BarChartGraph';
 
 const months = {
@@ -55,7 +55,6 @@ const DailySales = (props) => {
     const [currentStation, setCurrentStation] = useState({});
     const dateHandle = useRef();
     const [currentDate, setCurrentDate] = useState(date2);
-    const [rangeDate, setRangeDate] = useState({});
     const dailySales = useSelector(state => state.dailySalesReducer.dailySales);
     const payments = useSelector(state => state.dailySalesReducer.payments);
     const dailyIncoming = useSelector(state => state.dailySalesReducer.dailyIncoming);
@@ -260,82 +259,63 @@ const DailySales = (props) => {
         dispatch(passExpensesAndPayments(total));
     }
 
-    const getAndAnalyzeDailySales = async(data, rangeDate) => {
-        const payload = {
-            organisationID: data.organisation,
-            outletID: data._id
+    const SupplyDataSummary = (supplies) => {
+        let totalPMS = 0;
+        let totalAGO = 0;
+        let totalDPK = 0;
+        for(let supply of supplies){
+            if(supply.productType === "PMS"){
+                totalPMS = totalPMS + Number(supply.quantity);
+            }else if(supply.productType === "AGO"){
+                totalAGO = totalAGO + Number(supply.quantity);
+            }else if(supply.productType === "DPK"){
+                totalDPK = totalDPK + Number(supply.quantity);
+            }
         }
+
+        const totals = {
+            PMS: totalPMS,
+            AGO: totalAGO,
+            DPK: totalDPK
+        }
+
+        return totals
+    }
+
+    const getAndAnalyzeDailySales = async(data, onLoad, selectedDate) => {
 
         const salesPayload = {
             organisationID: data.organisation,
             outletID: data._id,
-            today: rangeDate.today,
-            tomorrow: rangeDate.tomorrow,
+            onLoad: onLoad,
+            selectedDate: selectedDate
         }
 
-        const salesRecord = {};
-        let paymentsRecords = {};
+        DailySalesService.getDailySalesDataAndAnalyze(salesPayload).then(data => {
 
-        OutletService.getAllOutletTanks(payload).then(data => {
-            dispatch(getAllOutletTanks(data.stations));
-        });
-
-        await DailySalesService.getAllSales(salesPayload).then(data => {
-            salesRecord.sales = data.sales.sales;
-        });
-
-        await DailySalesService.getAllLPOSales(salesPayload).then((data) => {
-            salesRecord.lpo = data.lpo.lpo;
-        });
-
-        await DailySalesService.getAllRT(salesPayload).then((data) => {
-            salesRecord.rtVolumes = data.rtVolumes.rtVolumes;
-        });
-
-        getMasterRows(salesRecord);
-
-        await DailySalesService.getAllDailyExpenses(salesPayload).then((data) => {
-            paymentsRecords.expenses = data.expense.expense;
-        });
-
-        await DailySalesService.getAllDailyPayments(salesPayload).then((data) => {
-            paymentsRecords.bankPayment = data.payment.payment;
-            // console.log(data.payment.payment, 'bank payment')
-        });
-
-        await DailySalesService.getAllDailyPOSPayments(salesPayload).then((data) => {
-            paymentsRecords.posPayment = data.pospayment.pospayment;
-            // console.log(data.pospayment.pospayment, 'pos payment')
-        });
-
-        getAggregatePayment(paymentsRecords);
-
-        await DailySalesService.getAllDailySupply(salesPayload).then((data) => {
-            const supplies = data.supply.supply;
-            let totalPMS = 0;
-            let totalAGO = 0;
-            let totalDPK = 0;
-            for(let supply of supplies){
-                if(supply.productType === "PMS"){
-                    totalPMS = totalPMS + Number(supply.quantity);
-                }else if(supply.productType === "AGO"){
-                    totalAGO = totalAGO + Number(supply.quantity);
-                }else if(supply.productType === "DPK"){
-                    totalDPK = totalDPK + Number(supply.quantity);
-                }
+            const salesDataRecord = {
+                sales: data.dailyRecords.sales,
+                lpo: data.dailyRecords.lpo,
+                rtVolumes: data.dailyRecords.rtVolumes,
             }
 
-            const totals = {
-                PMS: totalPMS,
-                AGO: totalAGO,
-                DPK: totalDPK
+            const paymentsRecords = {
+                expenses: data.dailyRecords.expenses,
+                bankPayment: data.dailyRecords.payments,
+                posPayment: data.dailyRecords.pospayment,
             }
 
-            dispatch(dailySupplies(totals));
-        });
+            const supplyRecords = SupplyDataSummary(data.dailyRecords.supply);
 
-        await DailySalesService.getAllDailyIncomingOrder(salesPayload).then((data) => {
-            dispatch(passIncomingOrder(data.incoming.incoming));
+            dispatch(paymentRecords(paymentsRecords));
+            getAggregatePayment(paymentsRecords);
+
+            dispatch(lpoRecords(data.dailyRecords.lpo));
+            getMasterRows(salesDataRecord);
+
+            dispatch(getAllOutletTanks(data.dailyRecords.tanks));
+            dispatch(dailySupplies(supplyRecords));
+            dispatch(passIncomingOrder(data.dailyRecords.incoming));
         });
     }
 
@@ -351,93 +331,24 @@ const DailySales = (props) => {
                 setDefault(1);
                 setCurrentStation(data.station[0]);
                 return data.station[0];
-            }).then((data)=>{
-                const now = new Date();
-                const year = now.getFullYear();
-                const month = now.getMonth() + 1;
-                const day = now.getDate();
-                const formatWell = year + "-"+ month + "-" + day;
-                const getDataRange = getTodayAndTomorrow(formatWell);
-                setRangeDate(getDataRange);
-                getAndAnalyzeDailySales(data, rangeDate);
+            }).then(async(data)=>{
+                getAndAnalyzeDailySales(data, true, "");
             });
         }else{
             OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
                 dispatch(adminOutlet(data.station));
                 setCurrentStation(data.station);
                 return data.station;
-            }).then((data)=>{
-                const now = new Date();
-                const year = now.getFullYear();
-                const month = now.getMonth() + 1;
-                const day = now.getDate();
-                const formatWell = year + "-"+ month + "-" + day;
-                const getDataRange = getTodayAndTomorrow(formatWell);
-                setRangeDate(getDataRange);
-                getAndAnalyzeDailySales(data, rangeDate);
+            }).then(async(data)=>{
+                getAndAnalyzeDailySales(data, true, "");
             });
         }
-    }, [dispatch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dispatch, user._id, user.outletID, user.userType]);
 
     useEffect(()=>{
         getAllProductData();
-    },[getAllProductData])
-
-    const getTodayAndTomorrow = (value) => {
-        const today = value;
-        let tomorrow;
-        const [year, month, day] = today.split('-');
-
-        switch(month){
-            case "02":{
-                if(day === "28"){
-                    let newMonth = String(Number(month) + 1);
-                    tomorrow = `${year}-${newMonth.length === 1? `0${newMonth}`: newMonth}-01`;
-                }else{
-                    let newDay = String(Number(day) + 1);
-                    tomorrow = `${year}-${month}-${newDay.length === 1? `0${newDay}`: newDay}`;
-                }
-                break
-            }
-
-            case "01":
-            case "03":
-            case "05":
-            case "07":
-            case "08":
-            case "10":
-            case "12":{
-                if(day === "31"){
-                    let newMonth = String(Number(month) + 1);
-                    tomorrow = `${year}-${newMonth.length === 1? `0${newMonth}`: newMonth}-01`;
-                }else{
-                    let newDay = String(Number(day) + 1);
-                    tomorrow = `${year}-${month}-${newDay.length === 1? `0${newDay}`: newDay}`;
-                }
-                break
-            }
-
-            case "04":
-            case "06":
-            case "09":
-            case "11":{
-                if(day === "30"){
-                    let newDay = String(Number(day) + 1);
-                    tomorrow = `${year}-${month}-${newDay.length === 1? `0${newDay}`: newDay}`;
-                }else{
-                    let newDay = String(Number(day) + 1);
-                    tomorrow = `${year}-${month}-${newDay.length === 1? `0${newDay}`: newDay}`;
-                }
-                break
-            }
-
-            default:{
-                tomorrow = today;
-            }
-        }
-
-        return {today, tomorrow}
-    }
+    },[getAllProductData]);
 
     const getCummulativeVolumePerProduct = (pms, ago, dpk) => {
         let totalPMS = 0;
@@ -507,14 +418,7 @@ const DailySales = (props) => {
         setDefault(index);
         setCurrentStation(item);
 
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = now.getMonth() + 1;
-        const day = now.getDate();
-        const formatWell = year + "-"+ month + "-" + day;
-        const getDataRange = getTodayAndTomorrow(formatWell);
-        setRangeDate(getDataRange);
-        getAndAnalyzeDailySales(item, rangeDate);
+        getAndAnalyzeDailySales(item, true, "");
 
         const payload = {
             organisationID: item.organisation,
@@ -545,13 +449,11 @@ const DailySales = (props) => {
         dateHandle.current.showPicker();
     }
 
-    const updateDate = async(e) => {
+    const updateDate = (e) => {
         const date = e.target.value.split('-');
         const format = `${date[2]} ${months[date[1]]} ${date[0]}`;
-        const getDataRange = getTodayAndTomorrow(e.target.value);
-        await setRangeDate(getDataRange);
-        await setCurrentDate(format);
-        getAndAnalyzeDailySales(currentStation ,getDataRange);
+        setCurrentDate(format);
+        getAndAnalyzeDailySales(currentStation, false, e.target.value);
     }
 
     return(
@@ -949,7 +851,7 @@ const DailySales = (props) => {
                             <DPKDailySales/>
                         </Route>
                         <Route path='/home/daily-sales/report'>
-                            <ComprehensiveReport/>
+                            <ComprehensiveReport refresh = {getAllProductData}/>
                         </Route>
                         <Route path='/home/outlets/list'>
                             <ListAllTanks refresh={getAllProductData}/>

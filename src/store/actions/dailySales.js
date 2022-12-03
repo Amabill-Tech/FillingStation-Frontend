@@ -3,7 +3,9 @@ import {
     EXPENSES_AND_PAYMENTS,
     DAILY_INCOMING_ORDER,
     CUMMULATIVES,
-    DAILY_SALES_SUPPLY
+    DAILY_SALES_SUPPLY,
+    LPO_RECORDS,
+    PAYMENTS_RECORDS
 } from '../types';
 
 export const passAllDailySales = (params) => dispatch => {
@@ -24,4 +26,12 @@ export const passCummulative = (params) => dispatch => {
 
 export const dailySupplies = (params) => dispatch => {
     dispatch({ type: DAILY_SALES_SUPPLY, payload: params});
+}
+
+export const lpoRecords = (params) => dispatch => {
+    dispatch({ type: LPO_RECORDS, payload: params});
+}
+
+export const paymentRecords = (params) => dispatch => {
+    dispatch({type: PAYMENTS_RECORDS, payload: params})
 }

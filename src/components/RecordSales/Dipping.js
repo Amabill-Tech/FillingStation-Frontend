@@ -63,7 +63,7 @@ const Dipping = (props) => {
         <div className='pumpContainer'>
             {open && <PumpUpdate open={open} close={setOpen} currentStation={oneOutletStation} current={currentPump} />}
             
-            <div className='pmscont'>PMS</div>
+            <div style={{marginLeft:'20px'}} className='pmscont'>PMS</div>
 
             <div className='pumping'>
                 {
@@ -71,7 +71,7 @@ const Dipping = (props) => {
                     <div style={created}>No PMS tank created</div>:
                     PMSPumps.map((item, index) => {
                         return(
-                            <div style={{justifyContent:'flex-start'}} key={index} className='item'>
+                            <div style={{justifyContent:'flex-start', marginLeft:'20px', marginRight:'0px'}} key={index} className='item'>
                                 <img style={{width:'80px', height:'65px', marginTop:'15px'}} src={me4}  alt="icon"/>
                                 <div style={{marginTop:'0px'}} className='pop'>{item.tankName}</div>
                                 <div style={{marginTop:'0px', color:'green'}} className='pop'>{`Tank capacity: ${item.tankCapacity}`}</div>
@@ -99,7 +99,7 @@ const Dipping = (props) => {
                 }
             </div>
 
-            <div style={{color:'#FFA010'}} className='pmscont'>AGO</div>
+            <div style={{color:'#FFA010', marginLeft:'20px'}} className='pmscont'>AGO</div>
 
             <div className='pumping'>
                 {
@@ -107,7 +107,7 @@ const Dipping = (props) => {
                     <div style={created}>No AGO tank created</div>:
                     AGOPumps.map((item, index) => {
                         return(
-                            <div style={{justifyContent:'flex-start'}} key={index} className='item'>
+                            <div style={{justifyContent:'flex-start', marginLeft:'20px', marginRight:'0px'}} key={index} className='item'>
                                 <img style={{width:'80px', height:'65px', marginTop:'15px'}} src={me4}  alt="icon"/>
                                 <div style={{marginTop:'0px'}} className='pop'>{item.tankName}</div>
                                 <div style={{marginTop:'0px', color:'green'}} className='pop'>{`Tank capacity: ${item.tankCapacity}`}</div>
@@ -135,7 +135,7 @@ const Dipping = (props) => {
                 }
             </div>
 
-            <div className='pmscont'>DPK</div>
+            <div style={{marginLeft:'20px'}} className='pmscont'>DPK</div>
 
             <div className='pumping'>
                 {
@@ -143,7 +143,7 @@ const Dipping = (props) => {
                     <div style={created}>No DPK tank created</div>:
                     DPKPumps.map((item, index) => {
                         return(
-                            <div style={{justifyContent:'flex-start'}} key={index} className='item'>
+                            <div style={{justifyContent:'flex-start', marginLeft:'20px', marginRight:'0px'}} key={index} className='item'>
                                 <img style={{width:'80px', height:'65px', marginTop:'15px'}} src={me4}  alt="icon"/>
                                 <div style={{marginTop:'0px'}} className='pop'>{item.tankName}</div>
                                 <div style={{marginTop:'0px', color:'green'}} className='pop'>{`Tank capacity: ${item.tankCapacity}`}</div>
