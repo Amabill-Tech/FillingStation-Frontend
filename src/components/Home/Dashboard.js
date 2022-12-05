@@ -138,6 +138,7 @@ const Dashboard = (props) => {
             });
         }
         
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user._id, user.userType, user.outletID, dispatch]);
 
     useEffect(()=>{

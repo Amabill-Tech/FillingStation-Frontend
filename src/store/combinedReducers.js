@@ -16,6 +16,7 @@ import expenseReducer from './reducers/expense';
 import recordPaymentReducer from './reducers/recordPayments';
 import dailySalesReducer from './reducers/dailySales';
 import dashboardReducer from './reducers/dashboard';
+import analysisReducer from './reducers/analysis';
 
 export default combineReducers({
     authReducer,
@@ -34,5 +35,6 @@ export default combineReducers({
     expenseReducer,
     recordPaymentReducer,
     dailySalesReducer,
-    dashboardReducer
+    dashboardReducer,
+    analysisReducer
 })

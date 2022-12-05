@@ -6,6 +6,8 @@ import OutletService from '../../services/outletService';
 import { useDispatch, useSelector } from 'react-redux';
 import PumpUpdate from '../Modals/PumpUpdate';
 import { getOneTank } from '../../store/actions/outlet';
+import swal from 'sweetalert';
+import DailySalesService from '../../services/DailySales';
 
 const Dipping = (props) => {
 
@@ -16,6 +18,7 @@ const Dipping = (props) => {
     const [PMSPumps, setPMSPumps] = useState([]);
     const [AGOPumps, setAGOPumps] = useState([]);
     const [DPKPumps, setDPKPumps] = useState([]);
+    const [dipping, setDipping] = useState("");
     const oneOutletStation = useSelector(state => state.outletReducer.oneStation);
 
     const getAllPumps = useCallback(() => {
@@ -46,16 +49,34 @@ const Dipping = (props) => {
         })
     }
 
-    const dippingValue = (e, item) => {
+    const dippingValue = (item) => {
+        if(dipping === "") return swal("Warning!", "Please update dipping field!", "info");
+
         const payload = {
             id: item._id,
-            dipping: e.target.value
+            dipping: dipping,
+        }
+
+        const Dipping = {
+            tankID: item._id,
+            productType: item.productType,
+            currentLevel: item.currentLevel,
+            tankName: item.tankName,
+            outletID : item.outletID,
+            organizationID: item.organisationID,
         }
 
         OutletService.updateTank(payload).then((data) => {
             return data;
         }).then(()=>{
-            props.refresh();
+
+            DailySalesService.createDipping(Dipping).then(data => {
+                swal("Success!", "Dipping value updated successfully!", "success");
+                console.log(data)
+            }).then(()=>{
+                setDipping("");
+                props.refresh();
+            });
         });
     }
 
@@ -71,7 +92,7 @@ const Dipping = (props) => {
                     <div style={created}>No PMS tank created</div>:
                     PMSPumps.map((item, index) => {
                         return(
-                            <div style={{justifyContent:'flex-start', marginLeft:'20px', marginRight:'0px'}} key={index} className='item'>
+                            <div style={{justifyContent:'flex-start', height:'260px', marginLeft:'20px', marginRight:'0px'}} key={index} className='item'>
                                 <img style={{width:'80px', height:'65px', marginTop:'15px'}} src={me4}  alt="icon"/>
                                 <div style={{marginTop:'0px'}} className='pop'>{item.tankName}</div>
                                 <div style={{marginTop:'0px', color:'green'}} className='pop'>{`Tank capacity: ${item.tankCapacity}`}</div>
@@ -84,15 +105,14 @@ const Dipping = (props) => {
                                     fontSize:'12px',
                                     marginTop:'10px',
                                     textTransform: 'capitalize',
-                                    display:'none',
                                     '&:hover': {
                                         backgroundColor: '#06805B'
                                     }
                                     }}  
-                                    onClick={()=>{openSalesModal(item)}}
+                                    onClick={()=>{dippingValue(item)}}
                                     variant="contained"> Record Sales
                                 </Button>
-                                <input onChange={(e)=>{dippingValue(e, item)}} defaultValue={item.dipping} style={imps} type="text" />
+                                <input onChange={(e)=>setDipping(e.target.value)} defaultValue={item.dipping} style={imps} type="text" />
                             </div>
                         )
                     })
@@ -107,7 +127,7 @@ const Dipping = (props) => {
                     <div style={created}>No AGO tank created</div>:
                     AGOPumps.map((item, index) => {
                         return(
-                            <div style={{justifyContent:'flex-start', marginLeft:'20px', marginRight:'0px'}} key={index} className='item'>
+                            <div style={{justifyContent:'flex-start', height:'260px', marginLeft:'20px', marginRight:'0px'}} key={index} className='item'>
                                 <img style={{width:'80px', height:'65px', marginTop:'15px'}} src={me4}  alt="icon"/>
                                 <div style={{marginTop:'0px'}} className='pop'>{item.tankName}</div>
                                 <div style={{marginTop:'0px', color:'green'}} className='pop'>{`Tank capacity: ${item.tankCapacity}`}</div>
@@ -120,15 +140,14 @@ const Dipping = (props) => {
                                     fontSize:'12px',
                                     marginTop:'10px',
                                     textTransform: 'capitalize',
-                                    display:'none',
                                     '&:hover': {
                                         backgroundColor: '#06805B'
                                     }
                                     }}  
-                                    onClick={()=>{openSalesModal(item)}}
+                                    onClick={()=>{dippingValue(item)}}
                                     variant="contained"> Record Sales
                                 </Button>
-                                <input onChange={(e)=>{dippingValue(e, item)}} defaultValue={item.dipping} style={imps} type="text" />
+                                <input onChange={(e)=>setDipping(e.target.value)} defaultValue={item.dipping} style={imps} type="text" />
                             </div>
                         )
                     })
@@ -143,7 +162,7 @@ const Dipping = (props) => {
                     <div style={created}>No DPK tank created</div>:
                     DPKPumps.map((item, index) => {
                         return(
-                            <div style={{justifyContent:'flex-start', marginLeft:'20px', marginRight:'0px'}} key={index} className='item'>
+                            <div style={{justifyContent:'flex-start', height:'260px', marginLeft:'20px', marginRight:'0px'}} key={index} className='item'>
                                 <img style={{width:'80px', height:'65px', marginTop:'15px'}} src={me4}  alt="icon"/>
                                 <div style={{marginTop:'0px'}} className='pop'>{item.tankName}</div>
                                 <div style={{marginTop:'0px', color:'green'}} className='pop'>{`Tank capacity: ${item.tankCapacity}`}</div>
@@ -156,15 +175,14 @@ const Dipping = (props) => {
                                     fontSize:'12px',
                                     marginTop:'10px',
                                     textTransform: 'capitalize',
-                                    display:'none',
                                     '&:hover': {
                                         backgroundColor: '#06805B'
                                     }
                                     }}  
-                                    onClick={()=>{openSalesModal(item)}}
+                                    onClick={()=>{dippingValue(item)}}
                                     variant="contained"> Record Sales
                                 </Button>
-                                <input onChange={(e)=>{dippingValue(e, item)}} defaultValue={item.dipping} style={imps} type="text" />
+                                <input onChange={(e)=>setDipping(e.target.value)} defaultValue={item.dipping} style={imps} type="text" />
                             </div>
                         )
                     })

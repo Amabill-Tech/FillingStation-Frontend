@@ -25,8 +25,6 @@ const Pumps = (props) => {
     const [loading, setLoading] = useState(false);
     const [trigger, setTrigger] = useState(false);
 
-    console.log(oneOutletStation, "zzzzzzzzzzzzzzzzzzzzzzz")
-
     const getOneOutletTank = async(payload) => {
         let res = await OutletService.getOneTank(payload)
         return res;

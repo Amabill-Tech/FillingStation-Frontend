@@ -5,7 +5,8 @@ import {
     CUMMULATIVES,
     DAILY_SALES_SUPPLY,
     LPO_RECORDS,
-    PAYMENTS_RECORDS
+    PAYMENTS_RECORDS,
+    BULK_REPORTS
 } from '../types';
 
 export const passAllDailySales = (params) => dispatch => {
@@ -34,4 +35,8 @@ export const lpoRecords = (params) => dispatch => {
 
 export const paymentRecords = (params) => dispatch => {
     dispatch({type: PAYMENTS_RECORDS, payload: params})
+}
+
+export const bulkReports = (params) => dispatch => {
+    dispatch({type: BULK_REPORTS, payload: params})
 }

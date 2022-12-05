@@ -20,7 +20,7 @@ import ComprehensiveReport from '../DailySales/ComprehensiveReport';
 import ListAllTanks from '../Outlet/TankList';
 import { useRef } from 'react';
 import DailySalesService from '../../services/DailySales';
-import { dailySupplies, lpoRecords, passAllDailySales, passCummulative, passExpensesAndPayments, passIncomingOrder, paymentRecords } from '../../store/actions/dailySales';
+import { bulkReports, dailySupplies, lpoRecords, passAllDailySales, passCummulative, passExpensesAndPayments, passIncomingOrder, paymentRecords } from '../../store/actions/dailySales';
 import BarChartGraph from '../common/BarChartGraph';
 
 const months = {
@@ -309,6 +309,7 @@ const DailySales = (props) => {
 
             dispatch(paymentRecords(paymentsRecords));
             getAggregatePayment(paymentsRecords);
+            dispatch(bulkReports(data.dailyRecords));
 
             dispatch(lpoRecords(data.dailyRecords.lpo));
             getMasterRows(salesDataRecord);

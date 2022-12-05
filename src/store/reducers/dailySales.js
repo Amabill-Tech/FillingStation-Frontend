@@ -5,7 +5,8 @@ import {
     CUMMULATIVES,
     DAILY_SALES_SUPPLY,
     LPO_RECORDS,
-    PAYMENTS_RECORDS
+    PAYMENTS_RECORDS,
+    BULK_REPORTS
 } from '../types'
 
 const initialState = {
@@ -20,6 +21,7 @@ const initialState = {
         posPayment: [],
         expenses: []
     },
+    bulkReports: {}
 }
 
 const dailySalesReducer = (state = initialState, action) => {
@@ -74,6 +76,13 @@ const dailySalesReducer = (state = initialState, action) => {
             return{
                 ...state,
                 paymentRecords: payload
+            }
+        }
+
+        case BULK_REPORTS: {
+            return{
+                ...state,
+                bulkReports: payload
             }
         }
 

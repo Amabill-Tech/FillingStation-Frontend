@@ -17,16 +17,20 @@ import { Route, Switch, useHistory } from 'react-router-dom';
 import Payments from './Payments';
 import Expenses from './Expenses';
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
+import AnalysisService from '../../services/analysis';
+import { setAnalysisData } from '../../store/actions/analysis';
 
 const Analysis = (props) => {
 
-    const [value, onChange] = useState([new Date(), new Date()]);
+    const [range, setRange] = useState([new Date(), new Date()]);
     const user = useSelector(state => state.authReducer.user);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
+    const analysisData = useSelector(state => state.analysisReducer.analysisData);
+
     const dispatch = useDispatch();
     const history = useHistory();
-    const [currentStation, setCurrentStation] = useState({});
+    const [currentStation, setCurrentStation] = useState({PMSCost: 0, PMSPrice: 0 });
     const [defaultState, setDefault] = useState(0);
     const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
@@ -44,12 +48,32 @@ const Analysis = (props) => {
                 setDefault(1);
                 setCurrentStation(data.station[0]);
                 return data.station[0];
+            }).then(data => {
+                const payload = {
+                    organisationID: data.organisation,
+                    outletID: data._id,
+                    onLoad: true,
+                }
+
+                AnalysisService.allRecords(payload).then(data => {
+                    dispatch(setAnalysisData(data.analysisData));
+                });
             });
         }else{
             OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
                 dispatch(adminOutlet(data.station));
                 setCurrentStation(data.station);
                 return data.station;
+            }).then(data => {
+                const payload = {
+                    organisationID: data.organisation,
+                    outletID: data._id,
+                    onLoad: true,
+                }
+
+                AnalysisService.allRecords(payload).then(data => {
+                    dispatch(setAnalysisData(data.analysisData));
+                });
             });
         }
 
@@ -62,6 +86,16 @@ const Analysis = (props) => {
     const changeMenu = (index, item ) => {
         setDefault(index);
         setCurrentStation(item);
+
+        const payload = {
+            organisationID: item.organisation,
+            outletID: item._id,
+            onLoad: true,
+        }
+
+        AnalysisService.allRecords(payload).then(data => {
+            dispatch(setAnalysisData(data.analysisData));
+        });
     }
 
     const DashboardImage = (props) => {
@@ -95,6 +129,107 @@ const Analysis = (props) => {
         }else if(type === "expenses"){
              history.push("/home/analysis/expenses");
         }
+    }
+
+    const getDateFromRange = (data) => {
+        const rangeOne = new Date(data[0]);
+        const rangeOneYear = rangeOne.getFullYear();
+        const rangeOneMonth = rangeOne.getMonth() + 1;
+        const rangeOneDay = rangeOne.getDate();
+        const formatOne = String(rangeOneDay).length === 1? rangeOneYear+"-"+rangeOneMonth+"-0"+rangeOneDay: rangeOneYear+"-"+rangeOneMonth+"-"+rangeOneDay;
+
+        const rangeTwo = new Date(data[1]);
+        const rangeTwoYear = rangeTwo.getFullYear();
+        const rangeTwoMonth = rangeTwo.getMonth() + 1;
+        const rangeTwoDay = rangeTwo.getDate();
+        const formatTwo = String(rangeTwoDay).length === 1? rangeTwoYear+"-"+rangeTwoMonth+"-0"+rangeTwoDay : rangeTwoYear+"-"+rangeTwoMonth+"-"+rangeTwoDay;
+    
+        const payload = {
+            organisationID: currentStation.organisation,
+            outletID: currentStation._id,
+            startDate: formatOne,
+            endDate: formatTwo
+        }
+
+        setRange([formatOne, formatTwo]);
+
+        AnalysisService.getAnalysisData(payload).then(data => {
+            dispatch(setAnalysisData(data.analysisData));
+        });
+    }
+
+    const calculateExpenses = () => {
+        if(analysisData.expenses.length === 0){
+            return 0;
+        }
+
+        let expenseSum = 0;
+        for(let exp of analysisData.expenses){
+            expenseSum = expenseSum + Number(exp.expenseAmount);
+        }
+        return expenseSum;
+    }
+
+    const calculatePayment = () => {
+        if(analysisData.payments.length === 0 || analysisData.pospayment.length === 0){
+            return 0;
+        }
+
+        let paymentSum = 0;
+        for(let pay of analysisData.payments){
+            paymentSum = paymentSum + Number(pay.amountPaid);
+        }
+
+        for(let pos of analysisData.pospayment){
+            paymentSum = paymentSum + Number(pos.amountPaid);
+        }
+        return paymentSum;
+    }
+
+    const calculateTotalSales = () => {
+        if(analysisData.sales.length === 0){
+            return 0;
+        }
+
+        let sales = 0;
+        for(let sale of analysisData.sales){
+            sales = sales + sale.productType === "PMS"? Number(sale.sales)*Number(sale.PMSSellingPrice): sale.productType === "AGO"? Number(sale.sales)*Number(sale.AGOSellingPrice): Number(sale.sales)*Number(sale.DPKSellingPrice);
+        }
+
+        let lpo = 0;
+        for(let sale of analysisData.lpo){
+            lpo = lpo + sale.productType === "PMS"? Number(sale.lpoLitre)*Number(sale.PMSRate): sale.productType === "AGO"? Number(sale.lpoLitre)*Number(sale.AGORate): Number(sale.lpoLitre)*Number(sale.DPKRate);
+        }
+
+        let rtPrice = 0;
+        for(let sale of analysisData.rtVolumes){
+            rtPrice = rtPrice + sale.productType === "PMS"? Number(sale.rtLitre)*Number(sale.PMSPrice): sale.productType === "AGO"? Number(sale.rtLitre)*Number(sale.AGOPrice): Number(sale.rtLitre)*Number(sale.DPKPrice);
+        }
+
+        return sales + lpo - rtPrice;
+    }
+
+    const calculateTotalCost = () => {
+        if(analysisData.sales.length === 0){
+            return 0;
+        }
+
+        let cost = 0;
+        for(let sale of analysisData.sales){
+            cost = cost + sale.productType === "PMS"? Number(sale.sales)*Number(sale.PMSCostPrice): sale.productType === "AGO"? Number(sale.sales)*Number(sale.AGOCostPrice): Number(sale.sales)*Number(sale.DPKCostPrice);
+        }
+
+        let lpo = 0;
+        for(let sale of analysisData.lpo){
+            lpo = lpo + sale.productType === "PMS"? Number(sale.lpoLitre)*Number(sale.PMSCost): sale.productType === "AGO"? Number(sale.lpoLitre)*Number(sale.AGOCost): Number(sale.lpoLitre)*Number(sale.DPKCost);
+        }
+
+        let rtPrice = 0;
+        for(let sale of analysisData.rtVolumes){
+            rtPrice = rtPrice + sale.productType === "PMS"? Number(sale.rtLitre)*Number(sale.PMSCost): sale.productType === "AGO"? Number(sale.rtLitre)*Number(sale.AGOCost): Number(sale.rtLitre)*Number(sale.DPKCost);
+        }
+
+        return cost + lpo - rtPrice;
     }
 
     return(
@@ -152,17 +287,17 @@ const Analysis = (props) => {
                             </div>
                         </div>
                         <div style={{justifyContent:'flex-end'}} className='butt'>
-                            <DateRangePicker onChange={onChange} value={value} />
+                            <DateRangePicker onChange={getDateFromRange} value={range} />
                         </div>
                     </div>
 
                     <div style={contain2}>
                         <div className='imgContainer'>
-                            <DashboardImage type={"cost"} right={'10px'} left={'0px'} image={naira} name={'Cost Price'} value={'NGN 231,925'} />
-                            <DashboardImage type={"selling"} right={'10px'} left={'0px'} image={hand} name={'Selling Price'} value={'NGN 231,925'} />
-                            <DashboardImage type={"expenses"} right={'10px'} left={'0px'} image={folder} name={'Expenses'} value={'NGN 231,925'} />
-                            <DashboardImage type={"payments"} right={'10px'} left={'0px'} image={folder2} name={'Payments'} value={'NGN 231,925'} />
-                            <DashboardImage type={"none"} right={'0px'} left={'0px'} image={analysis2} name={'Profits'} value={'NGN 231,925'} />
+                            <DashboardImage type={"cost"} right={'10px'} left={'0px'} image={naira} name={'Cost Price'} value={`NGN ${currentStation?.PMSCost}`} />
+                            <DashboardImage type={"selling"} right={'10px'} left={'0px'} image={hand} name={'Selling Price'} value={`NGN ${currentStation?.PMSPrice}`} />
+                            <DashboardImage type={"expenses"} right={'10px'} left={'0px'} image={folder} name={'Expenses'} value={`NGN ${calculateExpenses()}`} />
+                            <DashboardImage type={"payments"} right={'10px'} left={'0px'} image={folder2} name={'Payments'} value={`NGN ${calculatePayment()}`} />
+                            <DashboardImage type={"none"} right={'0px'} left={'0px'} image={analysis2} name={'Profits'} value={`NGN ${calculateTotalSales() - calculateTotalCost() - calculateExpenses()}`} />
                         </div>
                     </div>
                 </div>

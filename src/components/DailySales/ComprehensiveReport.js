@@ -445,7 +445,32 @@ const ProductDailySales = () => {
     )
 }
 
-const DippingDailySales = () => {
+const DippingDailySales = (props) => {
+
+    const PMSTanks = props.data.filter(data => data.productType === "PMS");
+    const AGOTanks = props.data.filter(data => data.productType === "AGO");
+    const DPKTanks = props.data.filter(data => data.productType === "DPK");
+
+    const totalDippings = () => {
+        let pms = 0;
+        let ago = 0;
+        let dpk = 0;
+
+        for(let pm of PMSTanks){
+            pms = pms + Number(pm.currentLevel);
+        }
+
+        for(let pm of AGOTanks){
+            ago = ago + Number(pm.currentLevel);
+        }
+
+        for(let pm of DPKTanks){
+            dpk = dpk + Number(pm.currentLevel);
+        }
+
+        return [pms, ago, dpk];
+    }
+
     return(
         <div style={{width:'100%'}}>
             <div style={{width:'100%', textAlign:'left', marginBottom:'10px', color:'#06805B', fontSize:'12px', fontWeight:'900'}}>
@@ -459,33 +484,27 @@ const DippingDailySales = () => {
                         <div className='col'>AGO</div>
                         <div style={{marginRight:'0px'}} className='col'>DPK</div>
                     </div>
-                    
-                    <div className='table-heads2'>
-                        <div className='col'>Pump 1</div>
-                        <div className='col'>10,000</div>
-                        <div className='col'>12,000</div>
-                        <div style={{marginRight:'0px'}} className='col'>5,000</div>
-                    </div>
 
-                    <div className='table-heads2'>
-                        <div className='col'>Pump 2</div>
-                        <div className='col'>10,000</div>
-                        <div className='col'>12,000</div>
-                        <div style={{marginRight:'0px'}} className='col'>5,000</div>
-                    </div>
-
-                    <div className='table-heads2'>
-                        <div className='col'>Pump 3</div>
-                        <div className='col'>10,000</div>
-                        <div className='col'>12,000</div>
-                        <div style={{marginRight:'0px'}} className='col'>5,000</div>
-                    </div>
+                    {
+                        props.data.length === 0?
+                        <div style={dats}> No Data </div>:
+                        props.data.map((data, index) => {
+                            return(
+                                <div key={index} className='table-heads2'>
+                                    <div className='col'>{data.tankName}</div>
+                                    <div className='col'>{data.productType === "PMS"? data.currentLevel: 0}</div>
+                                    <div className='col'>{data.productType === "AGO"? data.currentLevel: 0}</div>
+                                    <div style={{marginRight:'0px'}} className='col'>{data.productType === "DPK"? data.currentLevel: 0}</div>
+                                </div>
+                            )
+                        })
+                    }
 
                     <div className='table-heads2'>
                         <div className='col'>Total</div>
-                        <div className='col'>10,000</div>
-                        <div className='col'>12,000</div>
-                        <div style={{marginRight:'0px'}} className='col'>5,000</div>
+                        <div className='col'>{totalDippings()[0]}</div>
+                        <div className='col'>{totalDippings()[1]}</div>
+                        <div style={{marginRight:'0px'}} className='col'>{totalDippings()[2]}</div>
                     </div>
                 </div>
             </div>
@@ -503,6 +522,7 @@ const ComprehensiveReport = (props) => {
     const dailySales = useSelector(state => state.dailySalesReducer.dailySales);
     const lpoRecords = useSelector(state => state.dailySalesReducer.lpoRecords);
     const paymentRecords = useSelector(state => state.dailySalesReducer.paymentRecords);
+    const bulkReports = useSelector(state => state.dailySalesReducer.bulkReports);
     const [prints, setPrints] = useState(false);
 
     const printReport = () => {
@@ -580,7 +600,7 @@ const ComprehensiveReport = (props) => {
                                 <ProductDailySales />
                             </div>
                             <div className='pright'>
-                                <DippingDailySales />
+                                <DippingDailySales data={bulkReports.dipping} />
                             </div>
                         </div>
                     </div>
