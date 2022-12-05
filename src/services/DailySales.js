@@ -112,6 +112,17 @@ const DailySalesService = {
         });
     },
 
+    getYesterdayRecords: (data) => {
+        return APIs.post('/daily-sales/getYesterdayRecords', data)
+        .then(({data}) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        });
+    },
+
     createRT: (data) => {
         return APIs.post('/return-to-tank/create', data)
         .then(({data}) => {

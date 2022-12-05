@@ -1,12 +1,36 @@
 import { Button } from '@mui/material';
 import React from 'react';
 import { useEffect } from 'react';
+import { useCallback } from 'react';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
+import DailySalesService from '../../services/DailySales';
 import '../../styles/report.scss';
 import ComprehensiveReports from '../Reports/ConprehensiveReports';
 
-const LeftTableView = () => {
+const LeftTableView = (props) => {
+
+    const getBalance = () => {
+        const PMS = props?.data?.filter(data => data.productType === "PMS") || [];
+        const AGO = props?.data?.filter(data => data.productType === "AGO") || [];
+        const DPK = props?.data?.filter(data => data.productType === "DPK") || [];
+
+        PMS?.sort(function(a, b){
+            return Number(a.currentLevel) - Number(b.currentLevel);
+        });
+
+        AGO?.sort(function(a, b){
+            return Number(a.currentLevel) - Number(b.currentLevel);
+        });
+
+        DPK?.sort(function(a, b){
+            return Number(a.currentLevel) - Number(b.currentLevel);
+        });
+
+        const balances = {pms: typeof PMS[0] === "undefined"? 0: PMS[0].currentLevel, ago: typeof AGO[0] === "undefined"? 0: AGO[0].currentLevel,  dpk:typeof AGO[0] === "undefined"? 0: AGO[0].currentLevel};
+        
+        return balances;
+    }
 
     return(
         <div className='column-head1'>
@@ -21,24 +45,56 @@ const LeftTableView = () => {
 
                 <div className='rows'>
                     <div style={{color:'#06805B', fontSize:'11px'}} className='cell'>PMS</div>
-                    <div style={{marginRight:'0px', fontSize:'11px'}} className='cell'>4,234.00</div>
+                    <div style={{marginRight:'0px', fontSize:'11px'}} className='cell'>{getBalance()?.pms}</div>
                 </div>
 
                 <div className='rows'>
                     <div style={{color:'#06805B', fontSize:'11px'}} className='cell'>AGO</div>
-                    <div style={{marginRight:'0px', fontSize:'11px'}} className='cell'>4,234.00</div>
+                    <div style={{marginRight:'0px', fontSize:'11px'}} className='cell'>{getBalance()?.ago}</div>
                 </div>
 
                 <div className='rows'>
                     <div style={{color:'#06805B', fontSize:'11px'}} className='cell'>DPK</div>
-                    <div style={{marginRight:'0px', fontSize:'11px'}} className='cell'>4,234.00</div>
+                    <div style={{marginRight:'0px', fontSize:'11px'}} className='cell'>{getBalance()?.dpk}</div>
                 </div>
             </div>
         </div>
     )
 }
 
-const MiddleTableView = () => {
+const MiddleTableView = (props) => {
+    const getSupply = () => {
+        const PMS = props?.data?.filter(data => data.productType === "PMS") || [];
+        const AGO = props?.data?.filter(data => data.productType === "AGO") || [];
+        const DPK = props?.data?.filter(data => data.productType === "DPK") || [];
+
+        let totalPMS = 0;
+        let totalAGO = 0;
+        let totalDPK = 0;
+
+        let PMSShort = 0;
+        let AGOShort = 0;
+        let DPKShort = 0;
+
+        for(let dm of PMS){
+            totalPMS = totalPMS + Number(dm.quantity);
+            PMSShort = PMSShort + Number(dm.shortage);
+        }
+
+        for(let dm of AGO){
+            totalAGO = totalAGO + Number(dm.quantity);
+            AGOShort = AGOShort + Number(dm.shortage);
+        }
+
+        for(let dm of DPK){
+            totalDPK = totalDPK + Number(dm.quantity);
+            DPKShort = DPKShort + Number(dm.shortage);
+        }
+
+        const total = [totalPMS, PMSShort, totalAGO, AGOShort, totalDPK, DPKShort]
+        
+        return total;
+    }
     return(
         <div className='column-head2'>
             <div className='header2'>
@@ -47,41 +103,60 @@ const MiddleTableView = () => {
             <div className='row-cont'>
                 <div className='rows'>
                     <div className='cell'>Product Type</div>
-                    <div className='cell'>Truck No</div>
                     <div className='cell'>Litre Qty</div>
-                    <div className='cell'>Transportation</div>
                     <div style={{marginRight:'0px'}} className='cell'>Shortage</div>
                 </div>
 
                 <div className='rows'>
                     <div style={{color:'#06805B', fontSize:'11px'}} className='cell'>PMS</div>
-                    <div style={{fontSize:'11px'}} className='cell'>Truck No</div>
-                    <div style={{fontSize:'11px'}} className='cell'>Litre Qty</div>
-                    <div style={{ fontSize:'11px'}} className='cell'></div>
-                    <div style={{marginRight:'0px', fontSize:'11px'}} className='cell'>Shortage</div>
+                    <div style={{fontSize:'11px'}} className='cell'>{getSupply()[0]}</div>
+                    <div style={{marginRight:'0px', fontSize:'11px'}} className='cell'>{getSupply()[1]}</div>
                 </div>
 
                 <div className='rows'>
                     <div style={{color:'#06805B', fontSize:'11px'}} className='cell'>AGO</div>
-                    <div style={{fontSize:'11px'}} className='cell'>Truck No</div>
-                    <div style={{fontSize:'11px'}} className='cell'>Litre Qty</div>
-                    <div style={{fontSize:'11px'}} className='cell'></div>
-                    <div style={{marginRight:'0px', fontSize:'11px'}} className='cell'>Shortage</div>
+                    <div style={{fontSize:'11px'}} className='cell'>{getSupply()[2]}</div>
+                    <div style={{marginRight:'0px', fontSize:'11px'}} className='cell'>{getSupply()[3]}</div>
                 </div>
 
                 <div className='rows'>
                     <div style={{color:'#06805B', fontSize:'11px'}} className='cell'>DPK</div>
-                    <div style={{fontSize:'11px'}} className='cell'>Truck No</div>
-                    <div style={{fontSize:'11px'}} className='cell'>Litre Qty</div>
-                    <div style={{fontSize:'11px'}} className='cell'></div>
-                    <div style={{marginRight:'0px', fontSize:'11px'}} className='cell'>Shortage</div>
+                    <div style={{fontSize:'11px'}} className='cell'>{getSupply()[4]}</div>
+                    <div style={{marginRight:'0px', fontSize:'11px'}} className='cell'>{getSupply()[5]}</div>
                 </div>
             </div>
         </div>
     )
 }
 
-const RightTableView = () => {
+const RightTableView = (props) => {
+
+    const yesterday = () => {
+        const PMS = props?.data?.filter(data => data.productType === "PMS") || [];
+        const AGO = props?.data?.filter(data => data.productType === "AGO") || [];
+        const DPK = props?.data?.filter(data => data.productType === "DPK") || [];
+
+        let totalPMS = 0;
+        let totalAGO = 0;
+        let totalDPK = 0;
+
+        for(let pm of PMS){
+            totalPMS = totalPMS + Number(pm.currentLevel);
+        }
+
+        for(let pm of AGO){
+            totalAGO = totalAGO + Number(pm.currentLevel);
+        }
+
+        for(let pm of DPK){
+            totalDPK = totalDPK + Number(pm.currentLevel);
+        }
+
+        const total = {pms: totalPMS, ago: totalAGO, dpk: totalDPK};
+
+        return total;
+    }
+
     return(
         <div style={{marginRight:'0px', marginLeft:'5px'}} className='column-head1'>
             <div className='header1'>
@@ -96,17 +171,17 @@ const RightTableView = () => {
 
                     <div className='rows'>
                         <div style={{color:'#06805B', fontSize:'11px'}} className='cell'>PMS</div>
-                        <div style={{marginRight:'0px', fontSize:'11px'}} className='cell'>4,234.00</div>
+                        <div style={{marginRight:'0px', fontSize:'11px'}} className='cell'>{yesterday()?.pms}</div>
                     </div>
 
                     <div className='rows'>
                         <div style={{color:'#06805B', fontSize:'11px'}} className='cell'>AGO</div>
-                        <div style={{marginRight:'0px', fontSize:'11px'}} className='cell'>4,234.00</div>
+                        <div style={{marginRight:'0px', fontSize:'11px'}} className='cell'>{yesterday()?.ago}</div>
                     </div>
 
                     <div className='rows'>
                         <div style={{color:'#06805B', fontSize:'11px'}} className='cell'>DPK</div>
-                        <div style={{marginRight:'0px', fontSize:'11px'}} className='cell'>4,234.00</div>
+                        <div style={{marginRight:'0px', fontSize:'11px'}} className='cell'>{yesterday()?.dpk}</div>
                     </div>
                 </div>
             </div>
@@ -408,7 +483,30 @@ const PaymentDailySales = (props) => {
     )
 }
 
-const ProductDailySales = () => {
+const ProductDailySales = (props) => {
+
+    const getBalance = () => {
+        const PMS = props?.data?.filter(data => data.productType === "PMS");
+        const AGO = props?.data?.filter(data => data.productType === "AGO");
+        const DPK = props?.data?.filter(data => data.productType === "DPK");
+
+        PMS?.sort(function(a, b){
+            return Number(a.currentLevel) - Number(b.currentLevel);
+        });
+
+        AGO?.sort(function(a, b){
+            return Number(a.currentLevel) - Number(b.currentLevel);
+        });
+
+        DPK?.sort(function(a, b){
+            return Number(a.currentLevel) - Number(b.currentLevel);
+        });
+
+        const balances = {pms: PMS?.length === 0? 0: PMS[0], ago: AGO?.length === 0? 0: AGO[0],  dpk: DPK?.length === 0? 0: DPK[0]};
+
+        return balances;
+    }
+
     return(
         <div>
             <div style={{width:'100%', textAlign:'left', marginBottom:'10px', color:'#06805B', fontSize:'12px', fontWeight:'900'}}>
@@ -419,25 +517,25 @@ const ProductDailySales = () => {
                     <div className='table-heads'>
                         <div className='col'>Product Type</div>
                         <div className='col'>Litre (Qty)</div>
-                        <div style={{marginRight:'0px'}} className='col'>Confirmed by</div>
+                        {/* <div style={{marginRight:'0px'}} className='col'>Confirmed by</div> */}
                     </div>
 
                     <div className='table-heads2'>
                         <div className='col'>PMS</div>
-                        <div className='col'>10,000</div>
-                        <div style={{marginRight:'0px'}} className='col'></div>
+                        <div className='col'>{getBalance().pms === 0? 0: getBalance().pms.currentLevel}</div>
+                        {/* <div style={{marginRight:'0px'}} className='col'></div> */}
                     </div>
 
                     <div className='table-heads2'>
                         <div className='col'>AGO</div>
-                        <div className='col'>10,000</div>
-                        <div style={{marginRight:'0px'}} className='col'></div>
+                        <div className='col'>{getBalance().ago === 0? 0: getBalance().ago.currentLevel}</div>
+                        {/* <div style={{marginRight:'0px'}} className='col'></div> */}
                     </div>
 
                     <div className='table-heads2'>
                         <div className='col'>DPK</div>
-                        <div className='col'>10,000</div>
-                        <div style={{marginRight:'0px'}} className='col'></div>
+                        <div className='col'>{getBalance().dpk === 0? 0: getBalance().dpk.currentLevel}</div>
+                        {/* <div style={{marginRight:'0px'}} className='col'></div> */}
                     </div>
                 </div>
             </div>
@@ -447,9 +545,9 @@ const ProductDailySales = () => {
 
 const DippingDailySales = (props) => {
 
-    const PMSTanks = props.data.filter(data => data.productType === "PMS");
-    const AGOTanks = props.data.filter(data => data.productType === "AGO");
-    const DPKTanks = props.data.filter(data => data.productType === "DPK");
+    const PMSTanks = props?.data?.filter(data => data.productType === "PMS");
+    const AGOTanks = props?.data?.filter(data => data.productType === "AGO");
+    const DPKTanks = props?.data?.filter(data => data.productType === "DPK");
 
     const totalDippings = () => {
         let pms = 0;
@@ -524,16 +622,34 @@ const ComprehensiveReport = (props) => {
     const paymentRecords = useSelector(state => state.dailySalesReducer.paymentRecords);
     const bulkReports = useSelector(state => state.dailySalesReducer.bulkReports);
     const [prints, setPrints] = useState(false);
+    const [forwardBalance, setForwardBalance] = useState({});
+    console.log(bulkReports, "bulk report")
 
     const printReport = () => {
         setPrints(true);
     }
 
+    const getYesterdayReport = useCallback(() => {
+        const payload = {
+            organisationID: props.station.organisation,
+            outletID: props.station._id,
+            onLoad: true
+        }
+
+        DailySalesService.getYesterdayRecords(payload).then(data => {
+            setForwardBalance(data);
+        }) 
+    }, [props.station._id, props.station.organisation])
+
+    useEffect(()=>{
+        getYesterdayReport();
+    }, [getYesterdayReport])
+
     return(
         <div className='reportContainer'>
             { prints && <ComprehensiveReports data={dailySales} open={prints} close={setPrints}/>}
             <div className='controls'>
-                <Button 
+                {/* <Button 
                     variant="contained" 
                     sx={{
                         width:'120px',
@@ -550,7 +666,7 @@ const ComprehensiveReport = (props) => {
                     // onClick={()=>{openDailySales("report")}}
                 >
                     Date Range
-                </Button>
+                </Button> */}
                 <Button 
                     variant="contained" 
                     sx={{
@@ -575,9 +691,9 @@ const ComprehensiveReport = (props) => {
                 <div className='left'>
                     <div className='inner-main'>
                         <div style={{marginBottom:'30px'}} className='table-cont'>
-                            <LeftTableView />
-                            <MiddleTableView />
-                            <RightTableView />
+                            <LeftTableView data={forwardBalance?.sales} />
+                            <MiddleTableView data={forwardBalance?.supply} />
+                            <RightTableView data={forwardBalance?.dipping} />
                         </div>
 
                         <PMSDailySales name={'PMS'} data={dailySales.PMS} />
@@ -597,10 +713,10 @@ const ComprehensiveReport = (props) => {
 
                         <div className='paym2'>
                             <div className='pleft'>
-                                <ProductDailySales />
+                                <ProductDailySales data={bulkReports?.sales} />
                             </div>
                             <div className='pright'>
-                                <DippingDailySales data={bulkReports.dipping} />
+                                <DippingDailySales data={bulkReports?.dipping} />
                             </div>
                         </div>
                     </div>

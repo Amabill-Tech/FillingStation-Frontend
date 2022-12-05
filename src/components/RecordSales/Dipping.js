@@ -76,7 +76,6 @@ const Dipping = (props) => {
                 console.log(data)
             }).then(()=>{
                 setDipping("");
-                props.refresh();
             });
         });
     }

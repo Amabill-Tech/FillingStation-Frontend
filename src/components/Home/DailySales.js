@@ -852,7 +852,7 @@ const DailySales = (props) => {
                             <DPKDailySales/>
                         </Route>
                         <Route path='/home/daily-sales/report'>
-                            <ComprehensiveReport refresh = {getAllProductData}/>
+                            <ComprehensiveReport refresh = {getAllProductData} station={currentStation}/>
                         </Route>
                         <Route path='/home/outlets/list'>
                             <ListAllTanks refresh={getAllProductData}/>
