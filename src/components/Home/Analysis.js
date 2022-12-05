@@ -206,7 +206,9 @@ const Analysis = (props) => {
             rtPrice = rtPrice + sale.productType === "PMS"? Number(sale.rtLitre)*Number(sale.PMSPrice): sale.productType === "AGO"? Number(sale.rtLitre)*Number(sale.AGOPrice): Number(sale.rtLitre)*Number(sale.DPKPrice);
         }
 
-        return sales + lpo - rtPrice;
+        const total = sales + lpo - rtPrice;
+
+        return total;
     }
 
     const calculateTotalCost = () => {
@@ -229,7 +231,9 @@ const Analysis = (props) => {
             rtPrice = rtPrice + sale.productType === "PMS"? Number(sale.rtLitre)*Number(sale.PMSCost): sale.productType === "AGO"? Number(sale.rtLitre)*Number(sale.AGOCost): Number(sale.rtLitre)*Number(sale.DPKCost);
         }
 
-        return cost + lpo - rtPrice;
+        const total = cost + lpo - rtPrice;
+
+        return total;
     }
 
     return(

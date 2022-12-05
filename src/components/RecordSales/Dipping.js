@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import '../../styles/pump.scss';
 import me4 from '../../assets/me4.png';
-import { Button } from '@mui/material';
+import { Button, Radio } from '@mui/material';
 import OutletService from '../../services/outletService';
 import { useDispatch, useSelector } from 'react-redux';
 import PumpUpdate from '../Modals/PumpUpdate';
-import { getOneTank } from '../../store/actions/outlet';
+import { filterTanksRecordSales, getOneTank } from '../../store/actions/outlet';
 import swal from 'sweetalert';
 import DailySalesService from '../../services/DailySales';
 
@@ -13,27 +13,28 @@ const Dipping = (props) => {
 
     const [currentPump, setCurrentPump] = useState({});
     const dispatch = useDispatch();
-    const tankList = useSelector(state => state.outletReducer.tankList);
+    const mainTankList = useSelector(state => state.outletReducer.mainTankList);
     const [open, setOpen] = useState(false);
     const [PMSPumps, setPMSPumps] = useState([]);
     const [AGOPumps, setAGOPumps] = useState([]);
     const [DPKPumps, setDPKPumps] = useState([]);
     const [dipping, setDipping] = useState("");
     const oneOutletStation = useSelector(state => state.outletReducer.oneStation);
+    const [productType, setProductType] = useState("PMS");
 
-    const getAllPumps = useCallback(() => {
-        const PMS = tankList.filter(data => data.productType === "PMS");
-        const AGO = tankList.filter(data => data.productType === "AGO");
-        const DPK = tankList.filter(data => data.productType === "DPK");
+    // const getAllPumps = useCallback(() => {
+    //     const PMS = mainTankList.filter(data => data.productType === "PMS");
+    //     const AGO = mainTankList.filter(data => data.productType === "AGO");
+    //     const DPK = mainTankList.filter(data => data.productType === "DPK");
 
-        setPMSPumps(PMS);
-        setAGOPumps(AGO);
-        setDPKPumps(DPK);
-    }, [tankList])
+    //     setPMSPumps(PMS);
+    //     setAGOPumps(AGO);
+    //     setDPKPumps(DPK);
+    // }, [tankList])
 
-    useEffect(()=>{
-        getAllPumps();
-    }, [getAllPumps])
+    // useEffect(()=>{
+    //     getAllPumps();
+    // }, [getAllPumps])
 
     const openSalesModal = (item) => {
         setOpen(true);
@@ -80,87 +81,73 @@ const Dipping = (props) => {
         });
     }
 
+    const onRadioClick = (data) => {
+        if(data === "PMS"){
+            setProductType('PMS');
+            dispatch(filterTanksRecordSales("PMS"));
+        }
+        
+        if(data === "AGO"){
+            setProductType('AGO');
+            dispatch(filterTanksRecordSales("AGO"));
+        }
+
+        if(data === "DPK"){
+            setProductType('DPK');
+            dispatch(filterTanksRecordSales("DPK"));
+        }
+    }
+
     return(
         <div className='pumpContainer'>
             {open && <PumpUpdate open={open} close={setOpen} currentStation={oneOutletStation} current={currentPump} />}
+
+            <div style={rad} className='radio'>
+                <div className='rad-item'>
+                    <Radio {...props}
+                        sx={{
+                            '&, &.Mui-checked': {
+                            color: '#054834',
+                            },
+                        }} 
+                        onClick={()=>onRadioClick("PMS")} 
+                        checked={productType === 'PMS'? true: false} 
+                    />
+                    <div className='head-text2' style={{marginRight:'5px', fontSize:'12px'}}>PMS</div>
+                </div>
+                <div className='rad-item'>
+                    <Radio {...props}
+                        sx={{
+                            '&, &.Mui-checked': {
+                            color: '#054834',
+                            },
+                        }}
+                        onClick={()=>onRadioClick("AGO")} 
+                        checked={productType === 'AGO'? true: false} 
+                    />
+                    <div className='head-text2' style={{marginRight:'5px', fontSize:'12px'}}>AGO</div>
+                </div>
+                <div className='rad-item'>
+                    <Radio {...props}
+                        sx={{
+                            '&, &.Mui-checked': {
+                            color: '#054834',
+                            },
+                        }} 
+                        onClick={()=>onRadioClick("DPK")} 
+                        checked={productType === 'DPK'? true: false} 
+                    />
+                    <div className='head-text2' style={{marginRight:'5px', fontSize:'12px'}}>DPK</div>
+                </div>
+            </div>
             
-            <div style={{marginLeft:'20px'}} className='pmscont'>PMS</div>
+            <div style={{marginLeft:'20px'}} className='pmscont'>{productType}</div>
 
             <div className='pumping'>
                 {
-                    PMSPumps.length === 0?
+                    mainTankList.length === 0?
                     <div style={created}>No PMS tank created</div>:
-                    PMSPumps.map((item, index) => {
-                        return(
-                            <div style={{justifyContent:'flex-start', height:'260px', marginLeft:'20px', marginRight:'0px'}} key={index} className='item'>
-                                <img style={{width:'80px', height:'65px', marginTop:'15px'}} src={me4}  alt="icon"/>
-                                <div style={{marginTop:'0px'}} className='pop'>{item.tankName}</div>
-                                <div style={{marginTop:'0px', color:'green'}} className='pop'>{`Tank capacity: ${item.tankCapacity}`}</div>
-                                <div style={{marginTop:'10px'}} className='label'>Dipping (Litres)</div>
-                                <Button sx={{
-                                    width:'140px', 
-                                    height:'30px',  
-                                    background: '#06805B',
-                                    borderRadius: '3px',
-                                    fontSize:'12px',
-                                    marginTop:'10px',
-                                    textTransform: 'capitalize',
-                                    '&:hover': {
-                                        backgroundColor: '#06805B'
-                                    }
-                                    }}  
-                                    onClick={()=>{dippingValue(item)}}
-                                    variant="contained"> Record Sales
-                                </Button>
-                                <input onChange={(e)=>setDipping(e.target.value)} defaultValue={item.dipping} style={imps} type="text" />
-                            </div>
-                        )
-                    })
-                }
-            </div>
-
-            <div style={{color:'#FFA010', marginLeft:'20px'}} className='pmscont'>AGO</div>
-
-            <div className='pumping'>
-                {
-                    AGOPumps.length === 0?
-                    <div style={created}>No AGO tank created</div>:
-                    AGOPumps.map((item, index) => {
-                        return(
-                            <div style={{justifyContent:'flex-start', height:'260px', marginLeft:'20px', marginRight:'0px'}} key={index} className='item'>
-                                <img style={{width:'80px', height:'65px', marginTop:'15px'}} src={me4}  alt="icon"/>
-                                <div style={{marginTop:'0px'}} className='pop'>{item.tankName}</div>
-                                <div style={{marginTop:'0px', color:'green'}} className='pop'>{`Tank capacity: ${item.tankCapacity}`}</div>
-                                <div style={{marginTop:'10px'}} className='label'>Dipping (Litres)</div>
-                                <Button sx={{
-                                    width:'140px', 
-                                    height:'30px',  
-                                    background: '#06805B',
-                                    borderRadius: '3px',
-                                    fontSize:'12px',
-                                    marginTop:'10px',
-                                    textTransform: 'capitalize',
-                                    '&:hover': {
-                                        backgroundColor: '#06805B'
-                                    }
-                                    }}  
-                                    onClick={()=>{dippingValue(item)}}
-                                    variant="contained"> Record Sales
-                                </Button>
-                                <input onChange={(e)=>setDipping(e.target.value)} defaultValue={item.dipping} style={imps} type="text" />
-                            </div>
-                        )
-                    })
-                }
-            </div>
-
-            <div style={{marginLeft:'20px'}} className='pmscont'>DPK</div>
-
-            <div className='pumping'>
-                {
-                    DPKPumps.length === 0?
-                    <div style={created}>No DPK tank created</div>:
-                    DPKPumps.map((item, index) => {
+                    mainTankList.map((item, index) => {
                         return(
                             <div style={{justifyContent:'flex-start', height:'260px', marginLeft:'20px', marginRight:'0px'}} key={index} className='item'>
                                 <img style={{width:'80px', height:'65px', marginTop:'15px'}} src={me4}  alt="icon"/>
@@ -190,6 +177,13 @@ const Dipping = (props) => {
             </div>
         </div>
     )
+}
+
+
+const rad = {
+    display: 'flex',
+    flexDirection:'row',
+    justifyContent:'center'
 }
 
 const created = {

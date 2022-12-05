@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import cross from '../../assets/cross.png';
-import { Button, MenuItem, Select } from '@mui/material';
+import { Button, MenuItem, Radio, Select } from '@mui/material';
 import photo from '../../assets/photo.png';
 import upload from '../../assets/upload.png';
 import OutletService from '../../services/outletService';
@@ -10,7 +10,7 @@ import swal from 'sweetalert';
 import axios from 'axios';
 import config from '../../constants';
 import ReactCamera from '../Modals/ReactCamera';
-import { getOneTank } from '../../store/actions/outlet';
+import { filterPumpsRecordSales, getOneTank } from '../../store/actions/outlet';
 import { ThreeDots } from 'react-loader-spinner';
 import hr8 from '../../assets/hr8.png';
 
@@ -20,7 +20,7 @@ const LPO = (props) => {
     const oneOutletStation = useSelector(state => state.outletReducer.oneStation);
     const [currentPump, setCurrentPump] = useState({});
     const [defaultState2, setDefault2] = useState(0);
-    const pumpList = useSelector(state => state.outletReducer.pumpList);
+    const mainPumpList = useSelector(state => state.outletReducer.mainPumpList);
     const lpos = useSelector(state => state.lpoReducer.lpo);
     const oneTank = useSelector(state => state.outletReducer.oneTank);
     const [open, setOpen] = useState(false);
@@ -28,6 +28,7 @@ const LPO = (props) => {
     const camera = useRef();
     const gallery = useRef();
     const [listOfLpos, setListOfLpos] = useState([]);
+    const [productType, setProductType] = useState("PMS");
 
     const [accountName, setAccountName] = useState({});
     const [product, setProduct] = useState('');
@@ -293,23 +294,81 @@ const LPO = (props) => {
         setListOfLpos(newList);
     }
 
+    const onRadioClick = (data) => {
+        setSelected(null);
+        if(data === "PMS"){
+            setProductType('PMS');
+            dispatch(filterPumpsRecordSales("PMS"));
+        }
+        
+        if(data === "AGO"){
+            setProductType('AGO');
+            dispatch(filterPumpsRecordSales("AGO"));
+        }
+
+        if(data === "DPK"){
+            setProductType('DPK');
+            dispatch(filterPumpsRecordSales("DPK"));
+        }
+    }
+
     return(
         <div style={{height:'auto', flexDirection:'column', alignItems:'center'}} className='pumpContainer'>
             <ReactCamera open={open} close={setOpen} setDataUri={setCam} />
+
+            <div style={rad} className='radio'>
+                <div className='rad-item'>
+                    <Radio {...props}
+                        sx={{
+                            '&, &.Mui-checked': {
+                            color: '#054834',
+                            },
+                        }} 
+                        onClick={()=>onRadioClick("PMS")} 
+                        checked={productType === 'PMS'? true: false} 
+                    />
+                    <div className='head-text2' style={{marginRight:'5px', fontSize:'12px'}}>PMS</div>
+                </div>
+                <div className='rad-item'>
+                    <Radio {...props}
+                        sx={{
+                            '&, &.Mui-checked': {
+                            color: '#054834',
+                            },
+                        }}
+                        onClick={()=>onRadioClick("AGO")} 
+                        checked={productType === 'AGO'? true: false} 
+                    />
+                    <div className='head-text2' style={{marginRight:'5px', fontSize:'12px'}}>AGO</div>
+                </div>
+                <div className='rad-item'>
+                    <Radio {...props}
+                        sx={{
+                            '&, &.Mui-checked': {
+                            color: '#054834',
+                            },
+                        }} 
+                        onClick={()=>onRadioClick("DPK")} 
+                        checked={productType === 'DPK'? true: false} 
+                    />
+                    <div className='head-text2' style={{marginRight:'5px', fontSize:'12px'}}>DPK</div>
+                </div>
+            </div>
+
             <div>Select Pump that gives out lpo for the day</div>
 
             <div style={{marginLeft:'10px'}}>
                 <div style={{marginTop:'10px', width:'auto'}} className='pump-list'>
                     {
-                        pumpList.length === 0?
+                        mainPumpList.length === 0?
                         <div style={{...box, width:'170px'}}>
                             <div style={{marginRight:'10px'}}>No pump Created</div>
                             <img style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
                         </div>:
-                        pumpList.map((data, index) => {
+                        mainPumpList.map((data, index) => {
                             return(
                                 <div key={index} onClick={()=>{selectedPump(index, data)}}>
-                                    {index === selected?
+                                    {(index === selected && productType === "PMS") || (index === selected && productType === "AGO") || (index === selected && productType === "DPK")?
                                         <div className='box'>
                                             <p style={{marginRight:'10px'}}>{data.pumpName}</p>
                                             <img style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
@@ -486,6 +545,12 @@ const LPO = (props) => {
             </div>
         </div>
     )
+}
+
+const rad = {
+    display: 'flex',
+    flexDirection:'row',
+    justifyContent:'center'
 }
 
 const selectStyle2 = {

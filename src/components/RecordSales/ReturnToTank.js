@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import '../../styles/pump.scss';
 import pump1 from '../../assets/pump1.png';
 import cross from '../../assets/cross.png';
-import { Button } from '@mui/material';
+import { Button, Radio } from '@mui/material';
 import OutletService from '../../services/outletService';
 import { useDispatch, useSelector } from 'react-redux';
-import { deselectPumps, getAllPumps, selectPumps } from '../../store/actions/outlet';
+import { deselectPumps, filterPumpsRecordSales, getAllPumps, selectPumps } from '../../store/actions/outlet';
 import PumpUpdate from '../Modals/PumpUpdate';
 import swal from 'sweetalert';
 import { ThreeDots } from 'react-loader-spinner';
@@ -16,13 +16,14 @@ const ReturnToTank = (props) => {
     const [currentPump, setCurrentPump] = useState({});
     const [selected, setSelected] = useState(null);
     const dispatch = useDispatch();
-    const pumpList = useSelector(state => state.outletReducer.pumpList);
+    const mainPumpList = useSelector(state => state.outletReducer.mainPumpList);
     const tankList = useSelector(state => state.outletReducer.tankList);
     const [open, setOpen] = useState(false);
     const oneOutletStation = useSelector(state => state.outletReducer.oneStation);
     const [activePumps, setActivePumps] = useState([]);
     const [loading, setLoading] = useState(false);
     const [trigger, setTrigger] = useState(false);
+    const [productType, setProductType] = useState("PMS");
 
     const getOneOutletTank = async(payload) => {
         let res = await OutletService.getOneTank(payload)
@@ -163,18 +164,75 @@ const ReturnToTank = (props) => {
         setActivePumps(list);
     }
 
+    const onRadioClick = (data) => {
+        if(data === "PMS"){
+            setProductType('PMS');
+            dispatch(filterPumpsRecordSales("PMS"));
+        }
+        
+        if(data === "AGO"){
+            setProductType('AGO');
+            dispatch(filterPumpsRecordSales("AGO"));
+        }
+
+        if(data === "DPK"){
+            setProductType('DPK');
+            dispatch(filterPumpsRecordSales("DPK"));
+        }
+    }
+
     return(
         <div style={{flexDirection:'column', alignItems:'center'}} className='pumpContainer'>
             {open && <PumpUpdate open={open} close={setOpen} currentStation={oneOutletStation} current={currentPump} refresh={props.refresh} />}
+            
+            <div style={rad} className='radio'>
+                <div className='rad-item'>
+                    <Radio {...props}
+                        sx={{
+                            '&, &.Mui-checked': {
+                            color: '#054834',
+                            },
+                        }} 
+                        onClick={()=>onRadioClick("PMS")} 
+                        checked={productType === 'PMS'? true: false} 
+                    />
+                    <div className='head-text2' style={{marginRight:'5px', fontSize:'12px'}}>PMS</div>
+                </div>
+                <div className='rad-item'>
+                    <Radio {...props}
+                        sx={{
+                            '&, &.Mui-checked': {
+                            color: '#054834',
+                            },
+                        }}
+                        onClick={()=>onRadioClick("AGO")} 
+                        checked={productType === 'AGO'? true: false} 
+                    />
+                    <div className='head-text2' style={{marginRight:'5px', fontSize:'12px'}}>AGO</div>
+                </div>
+                <div className='rad-item'>
+                    <Radio {...props}
+                        sx={{
+                            '&, &.Mui-checked': {
+                            color: '#054834',
+                            },
+                        }} 
+                        onClick={()=>onRadioClick("DPK")} 
+                        checked={productType === 'DPK'? true: false} 
+                    />
+                    <div className='head-text2' style={{marginRight:'5px', fontSize:'12px'}}>DPK</div>
+                </div>
+            </div>
+
             <div>Select Pump used for the day</div>
             <div style={{flexDirection:'row', justifyContent:'center'}} className='pump-list'>
                 {
-                    pumpList.length === 0?
+                    mainPumpList.length === 0?
                     <div style={{...box, width:'170px'}}>
                         <div style={{marginRight:'10px'}}>No pump Created</div>
                         <img style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
                     </div>:
-                    pumpList.map((data, index) => {
+                    mainPumpList.map((data, index) => {
                         return(
                             <div key={index} onClick={e => pumpItem(e, index, data)}>
                                 {data.identity === index &&
@@ -197,9 +255,9 @@ const ReturnToTank = (props) => {
 
             <div style={{width:'100%', marginTop:'20px', justifyContent:'center'}} className='pumping'>
                 {
-                    pumpList.length === 0?
+                    mainPumpList.length === 0?
                     <div>Please click to select a pump</div>:
-                    pumpList.map((item, index) => {
+                    mainPumpList.map((item, index) => {
                         return(
                             <div style={{height:'230px'}} key={index} className='item'>
                                 <img style={{width:'55px', height:'60px', marginTop:'10px'}} src={pump1}  alt="icon"/>
@@ -251,6 +309,13 @@ const ReturnToTank = (props) => {
             </div>
         </div>
     )
+}
+
+
+const rad = {
+    display: 'flex',
+    flexDirection:'row',
+    justifyContent:'center'
 }
 
 const imps = {

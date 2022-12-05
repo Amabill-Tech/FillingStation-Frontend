@@ -15,7 +15,9 @@ import {
     SELECTED_PUMPS,
     DESELECTED_PUMPS,
     LOGOUT,
-    ADMIN_OUTLET
+    ADMIN_OUTLET,
+    FILTER_PUMPS_RECORD,
+    FILTER_TANKS_RECORD
 } from '../types'
 
 const initialState = {
@@ -27,6 +29,8 @@ const initialState = {
     tankList: [],
     searchData: [],
     pumpList: [],
+    mainPumpList: [],
+    mainTankList: [],
     oneTank: {},
     oneStation: {},
     searchStation:[],
@@ -93,6 +97,7 @@ const outletReducer = (state = initialState, action) => {
             return {
                 ...state,
                 tankList: payload,
+                mainTankList: payload.filter(data => data.productType === "PMS"),
                 searchData: payload
             }
         }
@@ -107,7 +112,24 @@ const outletReducer = (state = initialState, action) => {
             
             return {
                 ...state,
-                pumpList: load
+                pumpList: load,
+                mainPumpList: load.filter(data => data.productType === "PMS"),
+            }
+        }
+
+        case FILTER_PUMPS_RECORD : {
+            const newLoad = payload === "PMS"? state.pumpList.filter(data => data.productType === "PMS"): payload === "AGO"? state.pumpList.filter(data => data.productType === "AGO"): state.pumpList.filter(data => data.productType === "DPK");
+            return {
+                ...state,
+                mainPumpList: newLoad
+            }
+        }
+
+        case FILTER_TANKS_RECORD : {
+            const newLoad = payload === "PMS"? state.tankList.filter(data => data.productType === "PMS"): payload === "AGO"? state.tankList.filter(data => data.productType === "AGO"): state.tankList.filter(data => data.productType === "DPK");
+            return {
+                ...state,
+                mainTankList: newLoad
             }
         }
 
@@ -160,7 +182,7 @@ const outletReducer = (state = initialState, action) => {
         }
 
         case SELECTED_PUMPS: {
-            const list = [...state.pumpList]
+            const list = [...state.mainPumpList]
             const item = {...payload};
             const index = list.indexOf(payload);
             item['identity'] = index;
@@ -169,12 +191,12 @@ const outletReducer = (state = initialState, action) => {
 
             return {
                 ...state,
-                pumpList: list
+                mainPumpList: list
             }
         }
 
         case DESELECTED_PUMPS: {
-            const list = [...state.pumpList]
+            const list = [...state.mainPumpList]
             const item = {...payload};
             const index = list.indexOf(payload);
             item['identity'] = null;
@@ -183,7 +205,7 @@ const outletReducer = (state = initialState, action) => {
 
             return {
                 ...state,
-                pumpList: list,
+                mainPumpList: list,
             }
         }
 
