@@ -385,7 +385,7 @@ const DashboardGraph = (props) => {
         const newDate = date.setDate(today - currentDay + 7);
         const mainDate = new Date(newDate).toLocaleDateString();
         const format = mainDate.split('/');
-        return `${format[2]}-${format[0]}-${format[1]}`
+        return format[1].length === 1? `${format[2]}-${format[0]}-0${format[1]}`: `${format[2]}-${format[0]}-${format[1]}`
     }
 
     function getLastSunday(data) {
@@ -395,7 +395,7 @@ const DashboardGraph = (props) => {
         const newDate = date.setDate(today - (currentDay || 7));
         const mainDate = new Date(newDate).toLocaleDateString();
         const format = mainDate.split('/');
-        return `${format[2]}-${format[0]}-${format[1]}`
+        return format[1].length === 1? `${format[2]}-${format[0]}-0${format[1]}`: `${format[2]}-${format[0]}-${format[1]}`
     }
 
     function getFirstAndLastDayOfTheYear(){
@@ -449,12 +449,12 @@ const DashboardGraph = (props) => {
             datasets: [
                 {
                     label: 'AGO',
-                    borderColor: '#399A19',
+                    borderColor: '#FFA010',
                     data: dataListAGO,
                 },
                 {
                     label: 'PMS',
-                    borderColor: '#FFA010',
+                    borderColor: '#399A19',
                     data: dataListPMS,
                 },
                 {
@@ -489,12 +489,12 @@ const DashboardGraph = (props) => {
             datasets: [
                 {
                     label: 'AGO',
-                    borderColor: '#399A19',
+                    borderColor: '#FFA010',
                     data: dataListAGO,
                 },
                 {
                     label: 'PMS',
-                    borderColor: '#FFA010',
+                    borderColor: '#399A19',
                     data: dataListPMS,
                 },
                 {
@@ -535,12 +535,12 @@ const DashboardGraph = (props) => {
             datasets: [
                 {
                     label: 'AGO',
-                    borderColor: '#399A19',
+                    borderColor: '#FFA010',
                     data: dataListAGO,
                 },
                 {
                     label: 'PMS',
-                    borderColor: '#FFA010',
+                    borderColor: '#399A19',
                     data: dataListPMS,
                 },
                 {

@@ -267,13 +267,13 @@ const Dashboard = (props) => {
         const rangeOneYear = rangeOne.getFullYear();
         const rangeOneMonth = rangeOne.getMonth() + 1;
         const rangeOneDay = rangeOne.getDate();
-        const formatOne = rangeOneYear+"-"+rangeOneMonth+"-"+rangeOneDay;
+        const formatOne = String(rangeOneDay).length === 1? rangeOneYear+"-"+rangeOneMonth+"-0"+rangeOneDay: rangeOneYear+"-"+rangeOneMonth+"-"+rangeOneDay;
 
         const rangeTwo = new Date(data[1]);
         const rangeTwoYear = rangeTwo.getFullYear();
         const rangeTwoMonth = rangeTwo.getMonth() + 1;
         const rangeTwoDay = rangeTwo.getDate();
-        const formatTwo = rangeTwoYear+"-"+rangeTwoMonth+"-"+rangeTwoDay;
+        const formatTwo = String(rangeTwoDay).length === 1? rangeTwoYear+"-"+rangeTwoMonth+"-0"+rangeTwoDay : rangeTwoYear+"-"+rangeTwoMonth+"-"+rangeTwoDay;
 
         const payload = {
             organisation: currentStation.organisation,
