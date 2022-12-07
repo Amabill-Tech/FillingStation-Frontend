@@ -5,7 +5,7 @@ import swal from 'sweetalert';
 import config from '../constants';
 
 const APIs = axios.create({
-    baseURL: config.BASE_URL + '/360-station/api',
+    baseURL: `${config.BASE_URL}/360-station/api`,
     headers: {
         'Accept': 'application/json',
         'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
