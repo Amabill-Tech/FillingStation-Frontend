@@ -20,6 +20,7 @@ import { useState } from 'react';
 import PumpUpdateComponent from '../DailyRecordSales/PumpUpdateComponent';
 import LPOComponent from '../DailyRecordSales/LPOComponent';
 import ExpenseComponents from '../DailyRecordSales/ExpenseComponents';
+import PaymentsComponents from '../DailyRecordSales/PaymentComponents';
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -110,7 +111,7 @@ const steps = ['Supply', 'Pump Update', 'Return to Tank', 'LPO', 'Expenses', 'Pa
 
 const DailyRecordSales = () => {
 
-    const [page, setPage] = useState(3);
+    const [page, setPage] = useState(4);
 
     return (
         <div className='salesRecordStyle'>
@@ -129,6 +130,7 @@ const DailyRecordSales = () => {
                 {page === 1 && <PumpUpdateComponent />}
                 {page === 2 && <LPOComponent />}
                 {page === 3 && <ExpenseComponents /> }
+                {page === 4 && <PaymentsComponents /> }
             </div>
 
             <div className="navs">
