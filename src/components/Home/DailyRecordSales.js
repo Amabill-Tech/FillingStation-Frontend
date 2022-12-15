@@ -23,6 +23,47 @@ import ExpenseComponents from '../DailyRecordSales/ExpenseComponents';
 import PaymentsComponents from '../DailyRecordSales/PaymentComponents';
 import ReturnToTankComponent from '../DailyRecordSales/ReturnToTankComponent';
 import DippingComponents from '../DailyRecordSales/DippingComponents';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { passRecordSales } from '../../store/actions/dailySales';
+import { useSelector } from 'react-redux';
+
+function DoublyLinkedListNode(data){
+    this.data = data;
+    this.next = null;
+    this.prev = null;
+}
+
+function DoublyLinkedList(){
+    this.head = null;
+    this.size = 0;
+    this.page = 1;
+    this.correctAnswers = [];
+
+    this.isEmpty = function(){
+        return this.size === 0;
+    }
+
+    this.addNode = function(value){
+        if(this.head === null){
+            this.head = new DoublyLinkedListNode(value);
+        }else{
+            var temp = new DoublyLinkedListNode(value);
+            temp.next = this.head;
+            this.head.prev = temp;
+            this.head = temp;
+        }
+        this.size++;
+    }
+
+    this.nextPage = function(){
+        this.head = this.head.next
+    }
+
+    this.previousPage = function(){
+        this.head = this.head.prev
+    }
+}
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -114,11 +155,42 @@ const steps = ['Supply', 'Pump Update', 'Return to Tank', 'LPO', 'Expenses', 'Pa
 const DailyRecordSales = () => {
 
     const [page, setPage] = useState(6);
+    const dispatch = useDispatch();
+    const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
+    console.log(linkedData, "hello datas")
+
+    useEffect(()=>{
+        const list = new DoublyLinkedList();
+        for(let i=0; i < 7; i++){
+            list.addNode(i);
+        }
+        dispatch(passRecordSales(list));
+    },[dispatch]);
+
+    const nextQuestion = () => {
+        let newList = {...linkedData}
+        if(newList.head.next !== null){
+            newList.nextPage();
+            newList.page++;
+            dispatch(passRecordSales(newList));
+            // console.log(newList, 'next')
+        }
+    }
+
+    const prevQuestion = () => {
+        let newList = {...linkedData}
+        if(newList.head.prev !== null){
+            newList.previousPage();
+            newList.page--;
+            dispatch(passRecordSales(newList));
+            // console.log(newList, 'prev')
+        }
+    }
 
     return (
         <div className='salesRecordStyle'>
             <Stack sx={{ width: '100%', marginTop:'20px' }} spacing={4}>
-                <Stepper alternativeLabel activeStep={6} connector={<ColorlibConnector />}>
+                <Stepper alternativeLabel activeStep={linkedData.page - 1} connector={<ColorlibConnector />}>
                     {steps.map((label) => (
                     <Step key={label}>
                         <StepLabel StepIconComponent={ColorlibStepIcon}>{label}</StepLabel>
@@ -128,13 +200,13 @@ const DailyRecordSales = () => {
             </Stack>
 
             <div className='form-body'>
-                {page === 0 && <SupplyComponent />}
-                {page === 1 && <PumpUpdateComponent />}
-                {page === 2 && <ReturnToTankComponent />}
-                {page === 3 && <LPOComponent />}
-                {page === 4 && <ExpenseComponents /> }
-                {page === 5 && <PaymentsComponents /> }
-                {page === 6 && <DippingComponents /> }
+                {linkedData.page === 1 && <SupplyComponent />}
+                {linkedData.page === 2 && <PumpUpdateComponent />}
+                {linkedData.page === 3 && <ReturnToTankComponent />}
+                {linkedData.page === 4 && <LPOComponent />}
+                {linkedData.page === 5 && <ExpenseComponents /> }
+                {linkedData.page === 6 && <PaymentsComponents /> }
+                {linkedData.page === 7 && <DippingComponents /> }
             </div>
 
             <div className="navs">
@@ -151,7 +223,7 @@ const DailyRecordSales = () => {
                             backgroundColor: '#054834'
                         }
                     }}
-                    // onClick={()=>{openDailySales("report")}}
+                    onClick={prevQuestion}
                 >
                     Previous
                 </Button>
@@ -169,7 +241,7 @@ const DailyRecordSales = () => {
                             backgroundColor: '#054834'
                         }
                     }}
-                    // onClick={()=>{openDailySales("report")}}
+                    onClick={nextQuestion}
                 >
                     Save & Proceed
                 </Button>
