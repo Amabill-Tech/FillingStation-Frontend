@@ -291,7 +291,7 @@ const BarChartGraph = (props) => {
             console.log(payments, "bar records")
             console.log(expense, 'exp')
         });
-    },[props.station._id, props.station.organisation])
+    },[props.station?._id, props.station?.organisation])
 
     useEffect(()=>{
         getAllMonthlyRecords()

@@ -122,7 +122,7 @@ const Dashboard = (props) => {
                 setCurrentStation(data.station[0]);
                 return data.station[0];
             }).then(data => {
-                DashboardService.allAttendanceRecords({id: data.organisation, outletID: data._id}).then(data => {
+                DashboardService.allAttendanceRecords({id: data?.organisation, outletID: data?._id}).then(data => {
                     collectAndAnalyseData(data);
                 });
             });

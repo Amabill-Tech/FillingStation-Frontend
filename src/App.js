@@ -42,13 +42,13 @@ function App() {
           <Route path='/home/outlets/sales/list' component={HomeScreen} />
           <Route path='/home/analysis/payments' component={HomeScreen} />
           <Route path='/home/product-orders' component={HomeScreen} />
-          <Route path='/home/record-sales' component={HomeScreen} />
-          <Route path='/home/record-sales/lpo' component={HomeScreen} />
-          <Route path='/home/record-sales/expenses' component={HomeScreen} />
-          <Route path='/home/record-sales/payment' component={HomeScreen} />
-          <Route path='/home/record-sales/dipping' component={HomeScreen} />
-          <Route path='/home/record-sales/pump' component={HomeScreen} />
-          <Route path='/home/record-sales/rt' component={HomeScreen} />
+          <Route path='/home/daily-record-sales' component={HomeScreen} />
+          <Route path='/home/daily-record-sales/lpo' component={HomeScreen} />
+          <Route path='/home/daily-record-sales/expenses' component={HomeScreen} />
+          <Route path='/home/daily-record-sales/payment' component={HomeScreen} />
+          <Route path='/home/daily-record-sales/dipping' component={HomeScreen} />
+          <Route path='/home/daily-record-sales/pump' component={HomeScreen} />
+          <Route path='/home/daily-record-sales/rt' component={HomeScreen} />
           <Route path='/home/regulatory' component={HomeScreen} />
           <Route path='/home/analysis' component={HomeScreen} />
           <Route path='/home/lpo' component={HomeScreen} />

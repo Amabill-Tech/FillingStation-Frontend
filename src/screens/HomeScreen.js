@@ -58,6 +58,7 @@ import { updateUser } from '../store/actions/auth';
 import StationTanks from '../components/Home/StationTanks';
 import StationPumps from '../components/Home/StationPumps'; 
 import config from '../constants';
+import DailyRecordSales from '../components/Home/DailyRecordSales';
 
 const HomeScreen = ({history}) => {
 
@@ -82,12 +83,12 @@ const HomeScreen = ({history}) => {
                 '/home/outlets/pumps': 'Outlet Pumps',
                 '/home/outlets/sales': 'Outlet Sales',
                 '/home/outlets/list': 'Tank Stock Levels',
-                '/home/record-sales/pump': 'Record Sales (End Of the Day)',
-                '/home/record-sales/lpo': 'LPO',
-                '/home/record-sales/expenses': 'Expenses',
-                '/home/record-sales/payment': 'Payment',
-                '/home/record-sales/': 'Supply',
-                '/home/record-sales/rt': 'Return To Tank',
+                '/home/daily-record-sales/pump': 'Record Sales (End Of the Day)',
+                '/home/daily-record-sales/lpo': 'LPO',
+                '/home/daily-record-sales/expenses': 'Expenses',
+                '/home/daily-record-sales/payment': 'Payment',
+                '/home/daily-record-sales/': 'Supply',
+                '/home/daily-record-sales/rt': 'Return To Tank',
                 '/home/analysis': 'Analysis',
                 '/home/lpo': 'LPO',
                 '/home/lpo/list': 'LPO',
@@ -187,11 +188,11 @@ const HomeScreen = ({history}) => {
         <div className='home-container'>
             <div style={{background: user.sideBarMode}} className='side-bar'>
                 <div className='inner-side-bar'>
-                    <img className='home-logo' src={user.image === "null"? homeLogo: config.BASE_URL+user.image} alt="icon" />
+                    <img className='home-logo' src={user.image === null? homeLogo: config.BASE_URL+user.image} alt="icon" />
                     <SideItems marginT={"0px"} link={'/home'} name={"Dashboard"} icon={dashboard} icon2={dashboard2} />
                     <SideItems marginT={"45px"} link={'/home/daily-sales'} name={"Daily Sales"} icon={dailySales2} icon2={dailySales} />
                     <SideItems marginT={"90px"} link={'/home/outlets'} name={"My Stations"} icon={outlet2} icon2={outlet} />
-                    <SideItems marginT={"135px"} link={'/home/record-sales'} name={"Record Sales"} icon={recordSales2} icon2={recordSales} />
+                    <SideItems marginT={"135px"} link={'/home/daily-record-sales'} name={"Record Sales"} icon={recordSales2} icon2={recordSales} />
                     <SideItems marginT={"180px"} link={'/home/analysis'} name={"Analysis"} icon={analysis} icon2={analysis} />
                     <SideItems marginT={"225px"} link={'/home/lpo'} name={"LPO"} icon={lpo} icon2={lpo} />
                     <SideItems marginT={"270px"} link={'/home/product-orders'} name={"Product Orders"} icon={productOrders2} icon2={productOrders} />
@@ -210,11 +211,11 @@ const HomeScreen = ({history}) => {
             >
                 <div style={{background: user.sideBarMode, display:'flex', width:'100%', flexDirection:'row', justifyContent:'flex-end'}} className='side-bar'>
                     <div style={{width:'90%'}} className='inner-side-bar'>
-                        <img className='home-logo' src={user.image === "null"? homeLogo: config.BASE_URL+user.image} alt="icon" />
+                        <img className='home-logo' src={user.image === null? homeLogo: config.BASE_URL+user.image} alt="icon" />
                         <SideItems marginT={"0px"} link={'/home'} name={"Dashboard"} icon={dashboard} icon2={dashboard2} />
                         <SideItems marginT={"45px"} link={'/home/daily-sales'} name={"Daily Sales"} icon={dailySales2} icon2={dailySales} />
                         <SideItems marginT={"90px"} link={'/home/outlets'} name={"My Stations"} icon={outlet2} icon2={outlet} />
-                        <SideItems marginT={"135px"} link={'/home/record-sales'} name={"Record Sales"} icon={recordSales2} icon2={recordSales} />
+                        <SideItems marginT={"135px"} link={'/home/daily-record-sales'} name={"Record Sales"} icon={recordSales2} icon2={recordSales} />
                         <SideItems marginT={"180px"} link={'/home/analysis'} name={"Analysis"} icon={analysis} icon2={analysis} />
                         <SideItems marginT={"225px"} link={'/home/lpo'} name={"LPO"} icon={lpo} icon2={lpo} />
                         <SideItems marginT={"270px"} link={'/home/product-orders'} name={"Product Orders"} icon={productOrders2} icon2={productOrders} />
@@ -344,8 +345,8 @@ const HomeScreen = ({history}) => {
                     <Route path='/home/supply'>
                         <Supply/>
                     </Route>
-                    <Route path='/home/record-sales'>
-                        <RecordSales history={history}/>
+                    <Route path='/home/daily-record-sales'>
+                        <DailyRecordSales history={history}/>
                     </Route>
                     <Route path='/home/regulatory'>
                         <Regulatory/>
