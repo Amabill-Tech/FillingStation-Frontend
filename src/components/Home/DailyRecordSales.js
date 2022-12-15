@@ -21,6 +21,8 @@ import PumpUpdateComponent from '../DailyRecordSales/PumpUpdateComponent';
 import LPOComponent from '../DailyRecordSales/LPOComponent';
 import ExpenseComponents from '../DailyRecordSales/ExpenseComponents';
 import PaymentsComponents from '../DailyRecordSales/PaymentComponents';
+import ReturnToTankComponent from '../DailyRecordSales/ReturnToTankComponent';
+import DippingComponents from '../DailyRecordSales/DippingComponents';
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -111,7 +113,7 @@ const steps = ['Supply', 'Pump Update', 'Return to Tank', 'LPO', 'Expenses', 'Pa
 
 const DailyRecordSales = () => {
 
-    const [page, setPage] = useState(4);
+    const [page, setPage] = useState(6);
 
     return (
         <div className='salesRecordStyle'>
@@ -128,9 +130,11 @@ const DailyRecordSales = () => {
             <div className='form-body'>
                 {page === 0 && <SupplyComponent />}
                 {page === 1 && <PumpUpdateComponent />}
-                {page === 2 && <LPOComponent />}
-                {page === 3 && <ExpenseComponents /> }
-                {page === 4 && <PaymentsComponents /> }
+                {page === 2 && <ReturnToTankComponent />}
+                {page === 3 && <LPOComponent />}
+                {page === 4 && <ExpenseComponents /> }
+                {page === 5 && <PaymentsComponents /> }
+                {page === 6 && <DippingComponents /> }
             </div>
 
             <div className="navs">
