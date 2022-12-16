@@ -168,6 +168,99 @@
                     }
                 }
             }
+
+            .pump-list{
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+        
+                .box{
+                    width: auto;
+                    padding-left: 10px;
+                    padding-right: 10px;
+                    height: 35px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    background-color: #06805B;
+                    border-radius: 30px;
+                    color: #fff;
+                    font-family: 'Nunito-Regular';
+                    margin-right: 10px;
+                    margin-top: 10px;
+                }
+        
+                .box2{
+                    width: auto;
+                    padding-left: 10px;
+                    padding-right: 10px;
+                    height: 35px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    background-color: #fff;
+                    border-radius: 30px;
+                    color: #000;
+                    font-family: 'Nunito-Regular';
+                    margin-right: 10px;
+                    margin-top: 10px;
+                    border: 1px solid #8D8D8D;
+                }
+            }
+
+            .pumping{
+                width: 88%;
+                margin-top: 10px;
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+        
+                .item{
+                    width: 200px;
+                    height: 220px;
+                    background: #F0F0F0;
+                    border: 0.860396px solid #054834;
+                    box-shadow: 0px 3.44158px 3.44158px rgba(0, 0, 0, 0.25);
+                    border-radius: 2.58119px;
+                    margin-top: 10px;
+                    margin-right: 20px;
+                    margin-bottom: 10px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+        
+                    .pop{
+                        margin-top: 10px;
+                        font-family: 'Nunito-Regular';
+                        font-size: 14px;
+                    }
+        
+                    .label{
+                        width: 85%;
+                        text-align: left;
+                        margin-top: 20px;
+                        font-family: 'Nunito-Regular';
+                        font-style: normal;
+                        font-weight: 100;
+                        font-size: 12px;
+                        line-height: 21px;
+                        color: #000000;
+                    }
+        
+                    .textInput{
+                        width: 85%;
+                        height: 30px;
+                        background: #F5F5F5;
+                        border: 0.860396px solid #585656;
+                        border-radius: 2.8752px;
+                        margin-top: 5px;
+                        outline: none;
+                        padding-left: 10px;
+                    }
+                }
+            }
         }
     }
     

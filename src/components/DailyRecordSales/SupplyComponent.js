@@ -137,9 +137,9 @@ const SupplyComponent = () => {
 
                 <div className="tanks">
                     {
-                        selected.map(data => {
+                        selected.map((data, index) => {
                             return(
-                                <div className="items">
+                                <div key={index} className="items">
                                     <span>{data.label}</span>
                                     <input className="tank-input" type={'text'} />
                                 </div>

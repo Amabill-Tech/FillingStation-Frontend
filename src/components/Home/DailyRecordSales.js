@@ -30,7 +30,7 @@ import OutletService from '../../services/outletService';
 import { dailyRecordAdminStation, dailyRecordAllStations } from '../../store/actions/dailyRecordSales';
 import IncomingService from '../../services/IncomingService';
 import { createIncomingOrder } from '../../store/actions/incomingOrder';
-import { getAllOutletTanks } from '../../store/actions/outlet';
+import { getAllOutletTanks, getAllPumps } from '../../store/actions/outlet';
 
 function DoublyLinkedListNode(data){
     this.data = data;
@@ -187,6 +187,10 @@ const DailyRecordSales = () => {
         
                 IncomingService.getAllIncoming(payload).then((data) => {
                     dispatch(createIncomingOrder(data.incoming.incoming));
+                });
+
+                OutletService.getAllStationPumps(payload).then(data => {
+                    dispatch(getAllPumps(data));
                 });
 
                 OutletService.getAllOutletTanks(payload).then(data => {
