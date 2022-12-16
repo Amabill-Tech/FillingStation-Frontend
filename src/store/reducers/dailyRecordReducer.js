@@ -4,8 +4,8 @@ import {
 } from '../types';
 
 const initialState = {
-    allAdminStations: [],
-    singleAdminStation: [],
+    allAdminStations: [{}],
+    singleAdminStation: {},
 }
 
 const dailyRecordReducer = (state = initialState, action) => {

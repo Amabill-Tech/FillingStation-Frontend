@@ -28,6 +28,9 @@ import { passRecordSales } from '../../store/actions/dailySales';
 import { useSelector } from 'react-redux';
 import OutletService from '../../services/outletService';
 import { dailyRecordAdminStation, dailyRecordAllStations } from '../../store/actions/dailyRecordSales';
+import IncomingService from '../../services/IncomingService';
+import { createIncomingOrder } from '../../store/actions/incomingOrder';
+import { getAllOutletTanks } from '../../store/actions/outlet';
 
 function DoublyLinkedListNode(data){
     this.data = data;
@@ -175,10 +178,44 @@ const DailyRecordSales = () => {
     
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(dailyRecordAllStations(data.station));
+                return data.station[0];
+            }).then((data)=>{
+                const payload = {
+                    outletID: data?._id, 
+                    organisationID: data?.organisation
+                }
+        
+                IncomingService.getAllIncoming(payload).then((data) => {
+                    dispatch(createIncomingOrder(data.incoming.incoming));
+                });
+
+                OutletService.getAllOutletTanks(payload).then(data => {
+                    const outletTanks = data.stations.map(data => {
+                        const newData = {...data, label: data.tankName, value: data._id};
+                        return newData;
+                    });
+                    dispatch(getAllOutletTanks(outletTanks));
+                });
             });
         }else{
             OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
                 dispatch(dailyRecordAdminStation(data.station));
+                return data.station;
+            }).then((data)=>{
+                const payload = {
+                    outletID: data?._id, 
+                    organisationID: data?.organisation
+                }
+        
+                IncomingService.getAllIncoming(payload).then((data) => {
+                    dispatch(createIncomingOrder(data.incoming.incoming));
+                });
+
+                OutletService.getAllOutletTanks(payload).then(data => {
+                    const outletTanks = data.stations.map(data => data.label = data.tankName);
+                    console.log(outletTanks, 'tankssssssssssssss')
+                    // dispatch(getAllOutletTanks(outletTanks));
+                });
             });
         }
     },[dispatch, user._id, user.outletID, user.userType]);

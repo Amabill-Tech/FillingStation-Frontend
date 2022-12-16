@@ -30,11 +30,13 @@ const IncomingOrderModal = (props) => {
     const [productOrderID, setProductOrderID] = useState('');
     const [truckNo, setTruckNo] = useState('');
     const [wayBillNo, setWayBillNo] = useState('');
+    const [transporter, setTransporter] = useState('');
     const [val, setVal] = useState(1);
 
     const handleClose = () => props.close(false);
 
     const submit = () => {
+        if(transporter === "") return swal("Warning!", "Transporter cannot be empty", "info");
         if(depotStation === "") return swal("Warning!", "Depot station field cannot be empty", "info");
         if(destination === "") return swal("Warning!", "Destination field cannot be empty", "info");
         if(product === "") return swal("Warning!", "Product field cannot be empty", "info");
@@ -42,7 +44,7 @@ const IncomingOrderModal = (props) => {
         if(dateCreated === "") return swal("Warning!", "Date created field cannot be empty", "info");
         if(productOrderID === "") return swal("Warning!", "Product order ID field cannot be empty", "info");
         if(truckNo === "") return swal("Warning!", "Truck No cannot be empty", "info");
-        if(wayBillNo === "") return swal("Warning!", "WWybill No cannot be empty", "info");
+        if(wayBillNo === "") return swal("Warning!", "Wybill No cannot be empty", "info");
 
         setLoading(true);
 
@@ -54,6 +56,7 @@ const IncomingOrderModal = (props) => {
             dateCreated: dateCreated,
             productOrderID: productOrderID,
             truckNo: truckNo,
+            transporter: transporter,
             wayBillNo: wayBillNo,
             outletName: props.station.outletName,
             outletID: props.station._id,
@@ -166,6 +169,23 @@ const IncomingOrderModal = (props) => {
                                     </Select>
                                 </div>
                             }
+
+                            <div className='inputs'>
+                                <div className='head-text2'>Transporter</div>
+                                <OutlinedInput 
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        border:'1px solid #777777',
+                                        fontSize:'12px',
+                                    }} placeholder="" 
+                                    value={transporter}
+                                    type='text'
+                                    onChange={e => setTransporter(e.target.value)}
+                                />
+                            </div>
 
                             <div className='inputs'>
                                 <div className='head-text2'>Depot station</div>

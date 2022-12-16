@@ -76,7 +76,7 @@ const TankUpdate = () => {
                 })
             });
         }
-    }, [ user.organisationID, skip, limit, dispatch]);
+    }, [user._id, user.userType, user.outletID, dispatch, skip, limit]);
 
     useEffect(()=>{
         getTankData();
@@ -87,15 +87,13 @@ const TankUpdate = () => {
         setCurrentStation(item);
 
         const payload = {
-            skip: skip * limit,
-            limit: limit,
             outletID: item._id, 
             organisationID: item.organisation
         }
         OutletService.getAllOutletTanks(payload).then(data => {
             setTotal(data.count);
             dispatch(getAllOutletTanks(data.stations));
-        })
+        });
     }
 
     const searchTable = (value) => {
