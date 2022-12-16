@@ -1,11 +1,41 @@
 import { Button } from "@mui/material"
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import photo from '../../assets/photo.png';
 import upload from '../../assets/upload.png';
+import IncomingService from "../../services/IncomingService";
+import OutletService from "../../services/outletService";
+import { createIncomingOrder } from "../../store/actions/incomingOrder";
+import { getAllOutletTanks } from "../../store/actions/outlet";
 
 const PaymentsComponents = (props) => {
 
     const [selected, setSelected] = useState(false);
+    const user = useSelector(state => state.authReducer.user);
+    const dispatch = useDispatch();
+    const allAdminStations = useSelector(state => state.dailyRecordReducer.allAdminStations);
+    const singleAdminStation = useSelector(state => state.dailyRecordReducer.singleAdminStation);
+
+    const selectedStation = (e) => {
+        const value = e.target.options[e.target.options.selectedIndex].value;
+
+        const payload = {
+            outletID: JSON.parse(value)?._id, 
+            organisationID: JSON.parse(value)?.organisation
+        }
+
+        IncomingService.getAllIncoming(payload).then((data) => {
+            dispatch(createIncomingOrder(data.incoming.incoming));
+        });
+
+        OutletService.getAllOutletTanks(payload).then(data => {
+            const outletTanks = data.stations.map(data => {
+                const newData = {...data, label: data.tankName, value: data._id};
+                return newData;
+            });
+            dispatch(getAllOutletTanks(outletTanks));
+        });
+    }
 
     const switchPay = (data) => {
         if(data === "bank") setSelected(false);
@@ -35,8 +65,30 @@ const PaymentsComponents = (props) => {
                         </Button>
                     </div>
 
+                    <div className='single-form'>
+                        <div className='input-d'>
+                            <span>Select Station</span>
+                            {user.userType === "superAdmin" &&
+                                <select onChange={selectedStation} className='text-field'>
+                                    {
+                                        allAdminStations.map((data, index) => {
+                                            return(
+                                                <option value={JSON.stringify(data)} key={index}>{data.outletName}</option>
+                                            )
+                                        })
+                                    }
+                                </select>
+                            }
+                            {user.userType === "superAdmin" ||
+                                <select onChange={selectedStation} className='text-field'>
+                                    <option value={JSON.stringify(singleAdminStation)}>{singleAdminStation?.outletName}</option>
+                                </select>
+                            }
+                        </div>
+                    </div>
+
                     {selected ||
-                        <div className='double-form'>
+                        <div style={{marginTop:'20px'}} className='double-form'>
                             <div className='input-d'>
                                 <span>Bank Name</span>
                                 <input className='text-field' type={'text'} />
@@ -50,7 +102,7 @@ const PaymentsComponents = (props) => {
                     }
 
                     {selected &&
-                        <div className='double-form'>
+                        <div style={{marginTop:'20px'}} className='double-form'>
                             <div className='input-d'>
                                 <span>Pos Name</span>
                                 <input className='text-field' type={'text'} />

@@ -22,7 +22,6 @@ const SupplyComponent = () => {
     const [waybillNo, setWaybillNo] = useState('');
     const [productSupply, setProductSupply] = useState('');
     const [quantityLoaded, setQuantityLoaded] = useState('');
-    const [quantityDischarge, setQuantityDischarge] = useState('');
 
     // console.log(linkedData, "supply sales");
     // console.log(allAdminStations, "allAdminStations");

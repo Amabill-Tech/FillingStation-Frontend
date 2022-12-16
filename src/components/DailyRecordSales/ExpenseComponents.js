@@ -1,38 +1,38 @@
-import { Button, Radio } from "@mui/material"
-import { useState } from "react";
+import { Button } from "@mui/material";
 import photo from '../../assets/photo.png';
 import upload from '../../assets/upload.png';
-import cross from '../../assets/cross.png';
-import { MultiSelect } from "react-multi-select-component";
+import { useDispatch, useSelector } from "react-redux";
+import IncomingService from "../../services/IncomingService";
+import { createIncomingOrder } from "../../store/actions/incomingOrder";
+import { getAllOutletTanks } from "../../store/actions/outlet";
+import OutletService from "../../services/outletService";
 
 const ExpenseComponents = (props) => {
 
-    const [productType, setProductType] = useState("PMS");
-    const [selected, setSelected] = useState([]);
-    const mainPumpList = []
+    const user = useSelector(state => state.authReducer.user);
+    const dispatch = useDispatch();
+    const allAdminStations = useSelector(state => state.dailyRecordReducer.allAdminStations);
+    const singleAdminStation = useSelector(state => state.dailyRecordReducer.singleAdminStation);
 
-    const options = [
-        {label: "Grapes", value:"grapes"},
-        {label: "Mango", value:"mango"},
-        {label: "Strawberry", value:"strawberry", disabled: true},
-    ]
+    const selectedStation = (e) => {
+        const value = e.target.options[e.target.options.selectedIndex].value;
 
-    const onRadioClick = (data) => {
-        
-    }
+        const payload = {
+            outletID: JSON.parse(value)?._id, 
+            organisationID: JSON.parse(value)?.organisation
+        }
 
-    const pumpItem = (e, index, item) => {
-        e.preventDefault();
+        IncomingService.getAllIncoming(payload).then((data) => {
+            dispatch(createIncomingOrder(data.incoming.incoming));
+        });
 
-    
-    }
-
-    const deselect = (item) => {
-        
-    }
-
-    const setTotalizer = (e, item) => {
-        
+        OutletService.getAllOutletTanks(payload).then(data => {
+            const outletTanks = data.stations.map(data => {
+                const newData = {...data, label: data.tankName, value: data._id};
+                return newData;
+            });
+            dispatch(getAllOutletTanks(outletTanks));
+        });
     }
 
     return(
@@ -40,6 +40,28 @@ const ExpenseComponents = (props) => {
 
             <div className='inner-body'>
                 <div className='left'>
+
+                    <div className='single-form'>
+                        <div className='input-d'>
+                            <span>Select Station</span>
+                            {user.userType === "superAdmin" &&
+                                <select onChange={selectedStation} className='text-field'>
+                                    {
+                                        allAdminStations.map((data, index) => {
+                                            return(
+                                                <option value={JSON.stringify(data)} key={index}>{data.outletName}</option>
+                                            )
+                                        })
+                                    }
+                                </select>
+                            }
+                            {user.userType === "superAdmin" ||
+                                <select onChange={selectedStation} className='text-field'>
+                                    <option value={JSON.stringify(singleAdminStation)}>{singleAdminStation?.outletName}</option>
+                                </select>
+                            }
+                        </div>
+                    </div>
 
                     <div className='single-form'>
                         <div className='input-d'>

@@ -215,6 +215,10 @@ const DailyRecordSales = () => {
                     dispatch(createIncomingOrder(data.incoming.incoming));
                 });
 
+                OutletService.getAllStationPumps(payload).then(data => {
+                    dispatch(getAllPumps(data));
+                });
+
                 OutletService.getAllOutletTanks(payload).then(data => {
                     const outletTanks = data.stations.map(data => data.label = data.tankName);
                     console.log(outletTanks, 'tankssssssssssssss')
