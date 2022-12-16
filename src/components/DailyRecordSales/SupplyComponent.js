@@ -4,11 +4,12 @@ import { MultiSelect } from "react-multi-select-component";
 const SupplyComponent = () => {
 
     const [selected, setSelected] = useState([]);
+    console.log(selected, "selected")
 
     const options = [
-        {label: "Grapes", value:"grapes"},
-        {label: "Mango", value:"mango"},
-        {label: "Strawberry", value:"strawberry", disabled: true},
+        {label: "Tank 1", value:"grapes"},
+        {label: "Tank 2", value:"mango"},
+        {label: "Tank 3", value:"strawberry"},
     ]
 
     return(
@@ -66,6 +67,19 @@ const SupplyComponent = () => {
                             className="multiple"
                         />
                     </div>
+                </div>
+
+                <div className="tanks">
+                    {
+                        selected.map(data => {
+                            return(
+                                <div className="items">
+                                    <span>{data.label}</span>
+                                    <input className="tank-input" type={'text'} />
+                                </div>
+                            )
+                        })
+                    }
                 </div>
 
                 <div style={{marginTop:'20px'}} className='double-form'>

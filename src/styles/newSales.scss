@@ -29,6 +29,36 @@
                 width: 54%;
                 height: 100%;
 
+                .tanks{
+                    width: 100%;
+                    margin-top: 20px;
+                    display: grid;
+                    column-gap: 10px;
+                    row-gap: 10px;
+                    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                    flex-wrap: wrap;
+
+                    .items{
+                        height: 60px;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: flex-start;
+                        font-size: 12px;
+                        font-family: 'Nunito-Regular';
+
+                        .tank-input{
+                            width: 100%;
+                            height: 30px;
+                            margin-top: 5px;
+                            background: rgba(255, 255, 255, 0.6);
+                            border: 0.860542px solid #606060;
+                            box-shadow: 0px 1.83356px 2.75034px rgba(0, 0, 0, 0.25);
+                            outline: none;
+                            padding-left: 5px;
+                        }
+                    }
+                }
+
                 .butts{
                     margin-top: 10px;
                     margin-bottom: 30px;
