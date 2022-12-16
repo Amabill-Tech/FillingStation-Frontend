@@ -3,40 +3,81 @@ import { useState } from "react";
 import photo from '../../assets/photo.png';
 import upload from '../../assets/upload.png';
 import cross from '../../assets/cross.png';
-import { MultiSelect } from "react-multi-select-component";
+import { useDispatch, useSelector } from "react-redux";
+import IncomingService from "../../services/IncomingService";
+import { createIncomingOrder } from "../../store/actions/incomingOrder";
+import OutletService from "../../services/outletService";
+import { getAllOutletTanks } from "../../store/actions/outlet";
 
 const LPOComponent = (props) => {
 
     const [productType, setProductType] = useState("PMS");
-    const [selected, setSelected] = useState([]);
-    const mainPumpList = []
+    const dispatch = useDispatch();
+    const user = useSelector(state => state.authReducer.user);
+    const allAdminStations = useSelector(state => state.dailyRecordReducer.allAdminStations);
+    const singleAdminStation = useSelector(state => state.dailyRecordReducer.singleAdminStation);
+    const pumpList = useSelector(state => state.outletReducer.pumpList);
 
-    const options = [
-        {label: "Grapes", value:"grapes"},
-        {label: "Mango", value:"mango"},
-        {label: "Strawberry", value:"strawberry", disabled: true},
-    ]
+    const getPMSPump = () => {
+        const pms = pumpList.filter(data => data.productType === "PMS");
+        return pms;
+    }
+
+    const getAGOPump = () => {
+        const ago = pumpList.filter(data => data.productType === "AGO");
+        return ago;
+    }
+
+    const getDPKPump = () => {
+        const dpk = pumpList.filter(data => data.productType === "DPK");
+        return dpk;
+    }
+
+    const [pms, setPMS] = useState(getPMSPump());
+    const [ago, setAGO] = useState(getAGOPump());
+    const [dpk, setDPK] = useState(getDPKPump());
 
     const onRadioClick = (data) => {
+        if(data === "PMS"){
+            setProductType('PMS');
+        }
         
+        if(data === "AGO"){
+            setProductType('AGO');
+        }
+
+        if(data === "DPK"){
+            setProductType('DPK');
+        }
     }
 
     const pumpItem = (e, index, item) => {
         e.preventDefault();
-
-    
     }
 
-    const deselect = (item) => {
-        
-    }
+    const selectedStation = (e) => {
+        const value = e.target.options[e.target.options.selectedIndex].value;
 
-    const setTotalizer = (e, item) => {
-        
+        const payload = {
+            outletID: JSON.parse(value)?._id, 
+            organisationID: JSON.parse(value)?.organisation
+        }
+
+        IncomingService.getAllIncoming(payload).then((data) => {
+            dispatch(createIncomingOrder(data.incoming.incoming));
+        });
+
+        OutletService.getAllOutletTanks(payload).then(data => {
+            const outletTanks = data.stations.map(data => {
+                const newData = {...data, label: data.tankName, value: data._id};
+                return newData;
+            });
+            dispatch(getAllOutletTanks(outletTanks));
+        });
     }
 
     return(
-        <div style={{width:'98%', display:'flex', flexDirection: 'column', alignItems:'center'}}>
+        <div className="inner-body" style={{width:'98%', display:'flex', flexDirection: 'column', alignItems:'center'}}>
 
             <div style={rad} className='radio'>
                 <div className='rad-item'>
@@ -80,24 +121,62 @@ const LPOComponent = (props) => {
             <div style={{marginTop:'10px', marginBottom:'10px'}}>Select Pump used for the day</div>
             <div style={{flexDirection:'row', justifyContent:'center'}} className='pump-list'>
                 {
-                    mainPumpList.length === 0?
+                    pumpList.length === 0?
                     <div style={{...box, width:'170px'}}>
                         <div style={{marginRight:'10px'}}>No pump Created</div>
                         <img style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
                     </div>:
-                    mainPumpList.map((data, index) => {
+                    productType === "PMS"?
+                    pms.map((data, index) => {
                         return(
                             <div key={index} onClick={e => pumpItem(e, index, data)}>
                                 {data.identity === index &&
                                     <div className='box'>
                                         <p style={{marginRight:'10px'}}>{data.pumpName}</p>
-                                        <img onClick={()=>{deselect(data)}} style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
+                                        <img style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
                                     </div>
                                 }
                                 {data.identity !== index &&
                                     <div className='box2'>
                                         <p style={{marginRight:'10px'}}>{data.pumpName}</p>
-                                        <img onClick={()=>{deselect(data)}} style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
+                                        <img style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
+                                    </div>
+                                }
+                            </div>
+                        )
+                    }):
+                    productType === "AGO"?
+                    ago.map((data, index) => {
+                        return(
+                            <div key={index} onClick={e => pumpItem(e, index, data)}>
+                                {data.identity === index &&
+                                    <div className='box'>
+                                        <p style={{marginRight:'10px'}}>{data.pumpName}</p>
+                                        <img style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
+                                    </div>
+                                }
+                                {data.identity !== index &&
+                                    <div className='box2'>
+                                        <p style={{marginRight:'10px'}}>{data.pumpName}</p>
+                                        <img style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
+                                    </div>
+                                }
+                            </div>
+                        )
+                    }):
+                    dpk.map((data, index) => {
+                        return(
+                            <div key={index} onClick={e => pumpItem(e, index, data)}>
+                                {data.identity === index &&
+                                    <div className='box'>
+                                        <p style={{marginRight:'10px'}}>{data.pumpName}</p>
+                                        <img style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
+                                    </div>
+                                }
+                                {data.identity !== index &&
+                                    <div className='box2'>
+                                        <p style={{marginRight:'10px'}}>{data.pumpName}</p>
+                                        <img style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
                                     </div>
                                 }
                             </div>
@@ -108,6 +187,28 @@ const LPOComponent = (props) => {
 
             <div className='inner-body'>
                 <div className='left'>
+
+                    <div className='single-form'>
+                        <div className='input-d'>
+                            <span>Select Station</span>
+                            {user.userType === "superAdmin" &&
+                                <select onChange={selectedStation} className='text-field'>
+                                    {
+                                        allAdminStations.map((data, index) => {
+                                            return(
+                                                <option value={JSON.stringify(data)} key={index}>{data.outletName}</option>
+                                            )
+                                        })
+                                    }
+                                </select>
+                            }
+                            {user.userType === "superAdmin" ||
+                                <select onChange={selectedStation} className='text-field'>
+                                    <option value={JSON.stringify(singleAdminStation)}>{singleAdminStation?.outletName}</option>
+                                </select>
+                            }
+                        </div>
+                    </div>
 
                     <div className='single-form'>
                         <div className='input-d'>
