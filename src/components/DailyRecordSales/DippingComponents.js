@@ -42,7 +42,7 @@ const DippingComponents = (props) => {
     }
 
     return(
-        <div style={{flexDirection: 'column', alignItems:'center'}} className='inner-body'>
+        <div style={{flexDirection: 'column', alignItems:'flex-start'}} className='inner-body'>
 
             <div style={rad} className='radio'>
                 <div className='rad-item'>
