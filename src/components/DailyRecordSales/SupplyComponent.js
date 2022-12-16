@@ -1,10 +1,20 @@
+import { useEffect } from "react";
+import { useCallback } from "react";
 import { useState } from "react";
 import { MultiSelect } from "react-multi-select-component";
+import { useSelector } from "react-redux";
 
 const SupplyComponent = () => {
 
     const [selected, setSelected] = useState([]);
-    console.log(selected, "selected")
+    const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
+    const user = useSelector(state => state.authReducer.user);
+    const allAdminStations = useSelector(state => state.dailyRecordReducer.allAdminStations);
+    const singleAdminStation = useSelector(state => state.dailyRecordReducer.singleAdminStation);
+    console.log(linkedData, "supply sales");
+    console.log(allAdminStations, "allAdminStations");
+    console.log(singleAdminStation, "singleAdminStation");
+    // console.log(selected, "selected")
 
     const options = [
         {label: "Tank 1", value:"grapes"},
@@ -12,10 +22,48 @@ const SupplyComponent = () => {
         {label: "Tank 3", value:"strawberry"},
     ]
 
+    const getAllSupplyDetails = useCallback(() => {
+        // const payload = {
+        //     outletID: data._id, 
+        //     organisationID: data.organisation
+        // }
+
+        // IncomingService.getAllIncoming(payload).then((data) => {
+        //     setTotal(data.incoming.count);
+        //     dispatch(createIncomingOrder(data.incoming.incoming));
+        // });
+    }, [])
+
+    useEffect(()=> {
+        getAllSupplyDetails()
+    }, [getAllSupplyDetails]);
+
     return(
         <div className='inner-body'>
             <div className='left'>
-                <div className='double-form'>
+                <div className='single-form'>
+                    <div className='input-d'>
+                        <span>Select Station</span>
+                        {user.userType === "superAdmin" &&
+                            <select className='text-field'>
+                                {
+                                    allAdminStations.map((data, index) => {
+                                        return(
+                                            <option value={data} key={index}>{data.outletName}</option>
+                                        )
+                                    })
+                                }
+                            </select>
+                        }
+                        {user.userType === "superAdmin" ||
+                            <select className='text-field'>
+                                <option value={singleAdminStation}>{singleAdminStation?.outletName}</option>
+                            </select>
+                        }
+                    </div>
+                </div>
+
+                <div style={{marginTop:'20px'}} className='double-form'>
                     <div className='input-d'>
                         <span>Incoming Order ID</span>
                         <input className='text-field' type={'text'} />

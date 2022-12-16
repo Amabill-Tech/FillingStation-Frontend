@@ -176,14 +176,16 @@ const ProductOrderModal = (props) => {
 
                             <div className='inputs'>
                                 <div className='head-text2'>Quantity (litre)</div>
-                                <OutlinedInput 
-                                    sx={{
+                                <input 
+                                    style={{
                                         width:'100%',
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
                                         border:'1px solid #777777',
                                         fontSize:'12px',
+                                        outline: 'none',
+                                        paddingLeft:'10px',
                                     }} placeholder="" 
                                     type='number'
                                     onChange={e => setQuantity(e.target.value)}

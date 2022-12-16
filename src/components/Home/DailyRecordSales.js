@@ -16,7 +16,6 @@ import AddCardIcon from '@mui/icons-material/AddCard';
 import '../../styles/newSales.scss';
 import { Button } from '@mui/material';
 import SupplyComponent from '../DailyRecordSales/SupplyComponent';
-import { useState } from 'react';
 import PumpUpdateComponent from '../DailyRecordSales/PumpUpdateComponent';
 import LPOComponent from '../DailyRecordSales/LPOComponent';
 import ExpenseComponents from '../DailyRecordSales/ExpenseComponents';
@@ -27,6 +26,8 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { passRecordSales } from '../../store/actions/dailySales';
 import { useSelector } from 'react-redux';
+import OutletService from '../../services/outletService';
+import { dailyRecordAdminStation, dailyRecordAllStations } from '../../store/actions/dailyRecordSales';
 
 function DoublyLinkedListNode(data){
     this.data = data;
@@ -154,18 +155,33 @@ const steps = ['Supply', 'Pump Update', 'Return to Tank', 'LPO', 'Expenses', 'Pa
 
 const DailyRecordSales = () => {
 
-    const [page, setPage] = useState(6);
     const dispatch = useDispatch();
+    const user = useSelector(state => state.authReducer.user);
     const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
-    console.log(linkedData, "hello datas")
 
     useEffect(()=>{
         const list = new DoublyLinkedList();
-        for(let i=0; i < 7; i++){
-            list.addNode(i);
+        for(let i=7; i > 0 ; i--){
+            list.addNode({
+                currentPage: i
+            });
         }
         dispatch(passRecordSales(list));
-    },[dispatch]);
+
+        if(user.userType === "superAdmin"){
+            const payload = {
+                organisation: user._id
+            }
+    
+            OutletService.getAllOutletStations(payload).then(data => {
+                dispatch(dailyRecordAllStations(data.station));
+            });
+        }else{
+            OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
+                dispatch(dailyRecordAdminStation(data.station));
+            });
+        }
+    },[dispatch, user._id, user.outletID, user.userType]);
 
     const nextQuestion = () => {
         let newList = {...linkedData}
