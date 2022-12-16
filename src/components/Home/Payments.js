@@ -52,7 +52,9 @@ const Payments = (props) => {
         OutletService.getAllOutletStations({organisation: user.userType === "superAdmin"? user._id : user.organisationID}).then(data => {
             dispatch(getAllStations(data.station));
             setCurrentStation(data.station[0]);
-            setDefault(1);
+            if(data.station.length !== 0){
+                setDefault(1);
+            }
             return data.station[0]
         }).then((data)=>{
             const payload = {

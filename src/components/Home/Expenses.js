@@ -152,10 +152,11 @@ const Expenses = () => {
                                 value={defaultState}
                                 sx={selectStyle2}
                             >
+                                <MenuItem style={menu} value={0}>Select Station</MenuItem>
                                 {
                                    allOutlets.map((item, index) => {
                                         return(
-                                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index, item)}} value={index}>{item.outletName+ ', ' +item.city}</MenuItem>
+                                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.city}</MenuItem>
                                         )
                                    })  
                                 }

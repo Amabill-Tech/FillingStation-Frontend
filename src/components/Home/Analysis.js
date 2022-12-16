@@ -45,7 +45,9 @@ const Analysis = (props) => {
         if(user.userType === "superAdmin"){
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
-                setDefault(1);
+                if(data.station.length !== 0){
+                    setDefault(1);
+                }
                 setCurrentStation(data.station[0]);
                 return data.station[0];
             }).then(data => {

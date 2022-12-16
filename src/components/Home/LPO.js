@@ -52,7 +52,9 @@ const LPO = (props) => {
         if(user.userType === "superAdmin"){
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
-                setDefault(1);
+                if(data.station.length !== 0){
+                    setDefault(1);
+                }
                 setCurrentStation(data.station[0]);
                 return data.station[0];
             }).then((data)=>{
@@ -87,7 +89,7 @@ const LPO = (props) => {
                 })
             });
         }
-    }, [dispatch, user.organisationID, user._id, user.userType, skip, limit]);
+    }, [user._id, user.userType, user.outletID, dispatch, skip, limit]);
 
     useEffect(()=>{
         getAllLPOData();
