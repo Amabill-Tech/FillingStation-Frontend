@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { MultiSelect } from "react-multi-select-component";
 import { useDispatch, useSelector } from "react-redux";
+import swal from "sweetalert";
 import IncomingService from "../../services/IncomingService";
 import OutletService from "../../services/outletService";
 import { createIncomingOrder } from "../../store/actions/incomingOrder";
@@ -57,12 +58,23 @@ const SupplyComponent = () => {
         });
     }
 
+
+    const incomingTanks = (e, data) => {
+        const room = Number(data.tankCapacity) - Number(data.currentLevel);
+        const addedQuantity = Number(e.target.value);
+        if(addedQuantity > room){
+            swal("Warning!", `This tank doesn't have the capacity, can only accommodate ${room} litres extra. `, "info");
+        }else{
+
+        }
+    }
+
     return(
         <div className='inner-body'>
             <div className='left'>
                 <div className='single-form'>
                     <div className='input-d'>
-                        <span>Select Station</span>
+                        <span style={{color:'green'}}>Select Station</span>
                         {user.userType === "superAdmin" &&
                             <select onChange={selectedStation} className='text-field'>
                                 {
@@ -84,7 +96,7 @@ const SupplyComponent = () => {
 
                 <div style={{marginTop:'20px'}} className='double-form'>
                     <div className='input-d'>
-                        <span>Incoming Order ID</span>
+                        <span style={{color:'green'}}>Incoming Order ID</span>
                         <select onChange={selectedIncomingOrder} className='text-field'>
                             <option>Select Incoming Order ID</option>
                             {
@@ -98,33 +110,33 @@ const SupplyComponent = () => {
                     </div>
 
                     <div className='input-d'>
-                        <span>Transporter</span>
+                        <span style={{color:'green'}}>Transporter</span>
                         <input disabled value={transporter} onChange={e => setTransporter(e.target.value)} className='text-field' type={'text'} />
                     </div>
                 </div>
 
                 <div className='single-form'>
                     <div className='input-d'>
-                        <span>Waybill No</span>
+                        <span style={{color:'green'}}>Waybill No</span>
                         <input disabled value={waybillNo} onChange={e => setWaybillNo(e.target.value)} className='text-field' type={'text'} />
                     </div>
                 </div>
 
                 <div style={{marginTop:'20px'}} className='double-form'>
                     <div className='input-d'>
-                        <span>Product Supply</span>
+                        <span style={{color:'green'}}>Product Supply</span>
                         <input disabled value={productSupply} onChange={e => setProductSupply(e.target.value)} className='text-field' type={'text'} />
                     </div>
 
                     <div className='input-d'>
-                        <span>Quantity Loaded</span>
+                        <span style={{color:'green'}}>Quantity Loaded</span>
                         <input disabled value={quantityLoaded} onChange={e => setQuantityLoaded(e.target.value)} className='text-field' type={'text'} />
                     </div>
                 </div>
 
                 <div className='single-form'>
                     <div className='input-d'>
-                        <span>Select tanks</span>
+                        <span style={{color:'green'}}>Select tanks</span>
                         <MultiSelect
                             options={tankList}
                             value = {selected}
@@ -139,8 +151,12 @@ const SupplyComponent = () => {
                         selected.map((data, index) => {
                             return(
                                 <div key={index} className="items">
-                                    <span>{data.label}</span>
-                                    <input className="tank-input" type={'text'} />
+                                    <span>{data.label}<span style={label}>(capacity: {data.tankCapacity})</span></span>
+                                    <input 
+                                        onChange={(e)=>{incomingTanks(e, data)}} 
+                                        className="tank-input" type={'number'} 
+                                        placeholder={`Current level: ${data.currentLevel}`}
+                                    />
                                 </div>
                             )
                         })
@@ -149,12 +165,12 @@ const SupplyComponent = () => {
 
                 <div style={{marginTop:'20px'}} className='double-form'>
                     <div className='input-d'>
-                        <span>Shortage</span>
+                        <span style={{color:'green'}}>Shortage</span>
                         <input className='text-field' type={'text'} />
                     </div>
 
                     <div className='input-d'>
-                        <span>Overage</span>
+                        <span style={{color:'green'}}>Overage</span>
                         <input className='text-field' type={'text'} />
                     </div>
                 </div>
@@ -171,6 +187,13 @@ const SupplyComponent = () => {
             </div>
         </div>
     )
+}
+
+const label = {
+    fontSize: '12px',
+    marginLeft: '5px',
+    fontWeight: '500',
+    color: 'red'
 }
 
 export default SupplyComponent;
