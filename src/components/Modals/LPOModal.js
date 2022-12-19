@@ -9,6 +9,7 @@ import swal from 'sweetalert';
 import '../../styles/lpo.scss';
 import Radio from '@mui/material/Radio';
 import LPOService from '../../services/lpo';
+import { Input } from '@mui/icons-material';
 
 const LPOModal = (props) => {
     const [productType, setProductType] = useState('Weekly');
@@ -84,14 +85,16 @@ const LPOModal = (props) => {
                        <div className='middleDiv' style={inner}>
                             <div className='inputs'>
                                 <div className='head-text2'>Company Name</div>
-                                <OutlinedInput 
-                                    sx={{
+                                <input 
+                                    style={{
                                         width:'100%',
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
                                         border:'1px solid #777777',
                                         fontSize:'12px',
+                                        outline:'none',
+                                        paddingLeft:'5px',
                                     }} placeholder="" 
                                     onChange={e => setCompanyName(e.target.value)}
                                 />
@@ -99,14 +102,16 @@ const LPOModal = (props) => {
 
                             <div className='inputs'>
                                 <div className='head-text2'>Address</div>
-                                <OutlinedInput 
-                                    sx={{
+                                <input 
+                                    style={{
                                         width:'100%',
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
                                         border:'1px solid #777777',
                                         fontSize:'12px',
+                                        outline:'none',
+                                        paddingLeft:'5px',
                                     }} placeholder="" 
                                     onChange={e => setAddress(e.target.value)}
                                 />
@@ -114,14 +119,16 @@ const LPOModal = (props) => {
 
                             <div className='inputs'>
                                 <div className='head-text2'>Person of Contact</div>
-                                <OutlinedInput 
-                                    sx={{
+                                <input 
+                                    style={{
                                         width:'100%',
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
                                         border:'1px solid #777777',
                                         fontSize:'12px',
+                                        outline:'none',
+                                        paddingLeft:'5px',
                                     }} placeholder="" 
                                     onChange={e => setPersonOfContact(e.target.value)}
                                 />
@@ -129,46 +136,52 @@ const LPOModal = (props) => {
 
                             <div className='inputs'>
                                 <div className='head-text2'>Contact phone</div>
-                                <OutlinedInput 
-                                    sx={{
+                                <input 
+                                    style={{
                                         width:'100%',
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
                                         border:'1px solid #777777',
                                         fontSize:'12px',
+                                        outline:'none',
+                                        paddingLeft:'5px',
                                     }} placeholder="" 
-                                    type="number"
+                                    type="text"
                                     onChange={e => setContactPhone(e.target.value)}
                                 />
                             </div>
 
                             <div className='inputs'>
                                 <div className='head-text2'>PMS Limit (Litres)</div>
-                                <OutlinedInput 
-                                    sx={{
+                                <input 
+                                    style={{
                                         width:'100%',
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
                                         border:'1px solid #777777',
                                         fontSize:'12px',
+                                        outline:'none',
+                                        paddingLeft:'5px',
                                     }} placeholder="" 
-                                    type='number'
+                                    type="number"
                                     onChange={e => setPMS(e.target.value)}
                                 />
                             </div>
 
                             <div className='inputs'>
                                 <div className='head-text2'>AGO Limit (Litres)</div>
-                                <OutlinedInput 
-                                    sx={{
+                                <input 
+                                    style={{
                                         width:'100%',
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
                                         border:'1px solid #777777',
                                         fontSize:'12px',
+                                        outline:'none',
+                                        paddingLeft:'5px',
                                     }} placeholder="" 
                                     type='number'
                                     onChange={e => setAGO(e.target.value)}
@@ -177,14 +190,16 @@ const LPOModal = (props) => {
 
                             <div className='inputs'>
                                 <div className='head-text2'>DPK Limit (Litres)</div>
-                                <OutlinedInput 
-                                    sx={{
+                                <input 
+                                    style={{
                                         width:'100%',
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
                                         border:'1px solid #777777',
                                         fontSize:'12px',
+                                        outline:'none',
+                                        paddingLeft:'5px',
                                     }} placeholder="" 
                                     type='number'
                                     onChange={e => setDPK(e.target.value)}
@@ -193,46 +208,52 @@ const LPOModal = (props) => {
 
                             <div className='inputs'>
                                 <div className='head-text2'>PMS Rate (amount)</div>
-                                <OutlinedInput 
-                                    sx={{
+                                <input 
+                                    style={{
                                         width:'100%',
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
                                         border:'1px solid #777777',
                                         fontSize:'12px',
+                                        outline:'none',
+                                        paddingLeft:'5px',
                                     }} placeholder="" 
-                                    type='number'
+                                    type="number"
                                     onChange={e => setPMSRate(e.target.value)}
                                 />
                             </div>
 
                             <div className='inputs'>
-                                <div className='head-text2'>AGO Rate (amount)</div>
-                                <OutlinedInput 
-                                    sx={{
+                                <div className='head-text2'>AGO Rate(amount)</div>
+                                <input 
+                                    style={{
                                         width:'100%',
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
                                         border:'1px solid #777777',
                                         fontSize:'12px',
+                                        outline:'none',
+                                        paddingLeft:'5px',
                                     }} placeholder="" 
-                                    type='number'
+                                    type="number"
                                     onChange={e => setAGORate(e.target.value)}
                                 />
                             </div>
 
                             <div className='inputs'>
                                 <div className='head-text2'>DPK Rate (amount)</div>
-                                <OutlinedInput 
-                                    sx={{
+                                <input 
+                                    style={{
                                         width:'100%',
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
                                         border:'1px solid #777777',
                                         fontSize:'12px',
+                                        outline:'none',
+                                        paddingLeft:'5px',
                                     }} placeholder="" 
                                     type='number'
                                     onChange={e => setDPKRate(e.target.value)}

@@ -107,6 +107,8 @@ const outletReducer = (state = initialState, action) => {
                 let craze = {...data};
                 craze['identity'] = null;
                 craze['closingMeter'] = "0";
+                craze['newTotalizer'] = "0";
+                craze['RTlitre'] = "0";
                 return craze;
             })
             

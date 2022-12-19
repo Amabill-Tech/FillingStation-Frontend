@@ -123,7 +123,7 @@ const ProductOrderModal = (props) => {
                             </div>
 
                             <div className='inputs'>
-                                <div className='head-text2'>Depot (Company Ordering from)</div>
+                                <div className='head-text2'>Company (Product seller)</div>
                                 <OutlinedInput 
                                     sx={{
                                         width:'100%',
@@ -153,7 +153,7 @@ const ProductOrderModal = (props) => {
                             </div>
 
                             <div style={{marginTop:'15px'}} className='inputs'>
-                                <div className='head-text2'>Product</div>
+                                <div className='head-text2'>Product type</div>
                                 <Select
                                     labelId="demo-select-small"
                                     id="demo-select-small"

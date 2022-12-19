@@ -31,6 +31,8 @@ import { dailyRecordAdminStation, dailyRecordAllStations } from '../../store/act
 import IncomingService from '../../services/IncomingService';
 import { createIncomingOrder } from '../../store/actions/incomingOrder';
 import { getAllOutletTanks, getAllPumps } from '../../store/actions/outlet';
+import LPOService from '../../services/lpo';
+import { createLPO } from '../../store/actions/lpo';
 
 function DoublyLinkedListNode(data){
     this.data = data;
@@ -166,7 +168,8 @@ const DailyRecordSales = () => {
         const list = new DoublyLinkedList();
         for(let i=7; i > 0 ; i--){
             list.addNode({
-                currentPage: i
+                currentPage: i,
+                payload: [],
             });
         }
         dispatch(passRecordSales(list));
@@ -200,6 +203,10 @@ const DailyRecordSales = () => {
                     });
                     dispatch(getAllOutletTanks(outletTanks));
                 });
+
+                LPOService.getAllLPO(payload).then((data) => {
+                    dispatch(createLPO(data.lpo.lpo));
+                });
             });
         }else{
             OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
@@ -220,9 +227,15 @@ const DailyRecordSales = () => {
                 });
 
                 OutletService.getAllOutletTanks(payload).then(data => {
-                    const outletTanks = data.stations.map(data => data.label = data.tankName);
-                    console.log(outletTanks, 'tankssssssssssssss')
-                    // dispatch(getAllOutletTanks(outletTanks));
+                    const outletTanks = data.stations.map(data => {
+                        const newData = {...data, label: data.tankName, value: data._id};
+                        return newData;
+                    });
+                    dispatch(getAllOutletTanks(outletTanks));
+                });
+
+                LPOService.getAllLPO(payload).then((data) => {
+                    dispatch(createLPO(data.lpo.lpo));
                 });
             });
         }

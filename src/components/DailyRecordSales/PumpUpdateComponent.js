@@ -2,26 +2,45 @@ import { Radio } from "@mui/material"
 import { useState } from "react";
 import pump1 from '../../assets/pump1.png';
 import cross from '../../assets/cross.png';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import IncomingService from "../../services/IncomingService";
+import { createIncomingOrder } from "../../store/actions/incomingOrder";
+import OutletService from "../../services/outletService";
+import { getAllOutletTanks } from "../../store/actions/outlet";
+import swal from "sweetalert";
+import { passRecordSales } from "../../store/actions/dailySales";
 
 const PumpUpdateComponent = (props) => {
 
     const [productType, setProductType] = useState("PMS");
+    const [selected, setSelected] = useState([]);
+    const dispatch = useDispatch();
+    const user = useSelector(state => state.authReducer.user);
     const pumpList = useSelector(state => state.outletReducer.pumpList);
+    const tankList = useSelector(state => state.outletReducer.tankList);
+    const allAdminStations = useSelector(state => state.dailyRecordReducer.allAdminStations);
+    const singleAdminStation = useSelector(state => state.dailyRecordReducer.singleAdminStation);
+    const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
 
     const getPMSPump = () => {
-        const pms = pumpList.filter(data => data.productType === "PMS");
-        return pms;
+        const newList = [...pumpList];
+        const pms = newList.filter(data => data.productType === "PMS");
+        const pmsCopy = pms.map(data => Object.assign({}, data));
+        return pmsCopy;
     }
 
     const getAGOPump = () => {
-        const ago = pumpList.filter(data => data.productType === "AGO");
-        return ago;
+        const newList = [...pumpList];
+        const ago = newList.filter(data => data.productType === "AGO");
+        const agoCopy = ago.map(data => Object.assign({}, data));
+        return agoCopy;
     }
 
     const getDPKPump = () => {
-        const dpk = pumpList.filter(data => data.productType === "DPK");
-        return dpk;
+        const newList = [...pumpList];
+        const dpk = newList.filter(data => data.productType === "DPK");
+        const dpkCopy = dpk.map(data => Object.assign({}, data));
+        return dpkCopy;
     }
 
     const [pms, setPMS] = useState(getPMSPump());
@@ -44,16 +63,114 @@ const PumpUpdateComponent = (props) => {
 
     const pumpItem = (e, index, item) => {
         e.preventDefault();
+        setSelected(prev => [...prev, item]);
 
-    
+        if(productType === "PMS"){
+            const newPms = [...pms];
+            const findID = newPms.findIndex(data => data._id === item._id);
+            newPms[findID].identity = index;
+            setPMS(newPms);
+        }else if(productType === "AGO"){
+            const newAgo = [...ago];
+            const findID = newAgo.findIndex(data => data._id === item._id);
+            newAgo[findID].identity = index;
+            setAGO(newAgo);
+        }else{
+            const newDpk = [...dpk];
+            const findID = newDpk.findIndex(data => data._id === item._id);
+            newDpk[findID].identity = index;
+            setDPK(newDpk);
+        }
     }
 
-    const deselect = (item) => {
+    const deselect = (payload) => {
+        if(productType === "PMS"){
+            const list = [...pms];
+            const index = list.indexOf(payload);
+            list[index] = {...payload, identity: null}
+            setPMS(list);
+
+            const deleted = selected.filter(data => data._id !== payload._id);
+            setSelected(deleted);
+        }else if(productType === "AGO"){
+            const list = [...ago];
+            const index = list.indexOf(payload);
+            list[index] = {...payload, identity: null}
+            setAGO(list);
+
+            const deleted = selected.filter(data => data._id !== payload._id);
+            setSelected(deleted);
+        }else{
+            const list = [...dpk];
+            const index = list.indexOf(payload);
+            list[index] = {...payload, identity: null}
+            setDPK(list);
+
+            const deleted = selected.filter(data => data._id !== payload._id);
+            setSelected(deleted);
+        }
         
+    }
+
+    const updateTotalizer = (e, totalizerDiff, item) => {
+        if(productType === "PMS"){
+            const newPms = [...pms];
+            const findID = newPms.findIndex(data => data._id === item._id);
+            newPms[findID].sales = String(totalizerDiff);
+            newPms[findID].newTotalizer = e;
+            setPMS(newPms);
+
+            const newList = {...linkedData};
+            newList.head.data.payload = selected;
+            dispatch(passRecordSales(newList));
+        }else if(productType === "AGO"){
+            const newAgo = [...ago];
+            const findID = newAgo.findIndex(data => data._id === item._id);
+            newAgo[findID].sales = String(totalizerDiff);
+            newAgo[findID].newTotalizer = e;
+            setAGO(newAgo);
+
+            const newList = {...linkedData};
+            newList.head.data.payload = selected;
+            dispatch(passRecordSales(newList));
+        }else{
+            const newDpk = [...dpk];
+            const findID = newDpk.findIndex(data => data._id === item._id);
+            newDpk[findID].sales = String(totalizerDiff);
+            newDpk[findID].newTotalizer = e;
+            setDPK(newDpk);
+
+            const newList = {...linkedData};
+            newList.head.data.payload = selected;
+            dispatch(passRecordSales(newList));
+        }
     }
 
     const setTotalizer = (e, item) => {
-        
+
+        const currentTank = tankList.filter(data => data._id === item.hostTank)[0];
+        const totalizerDiff = Number(e.target.value) - Number(item.totalizerReading);
+        const quantity = Number(currentTank.currentLevel) - Number(currentTank.deadStockLevel);
+
+        if(selected.length === 0){
+            updateTotalizer("0", "0", item);
+            swal("Warning!", "Please select a pump", "info");
+
+        }else if(item.identity === null){
+
+            updateTotalizer("0", "0", item);
+            swal("Warning!", "Please select a pump", "info");
+        }else{
+
+            if(totalizerDiff > quantity){
+                updateTotalizer("0", "0", item);
+                swal("Warning!", "Reading exceeded tank level", "info");
+            }else{
+                updateTotalizer(e.target.value, totalizerDiff, item);
+            }
+        }
+
+        console.log(selected, "ssssssssssssssssssssss")
     }
 
     return(
@@ -109,16 +226,16 @@ const PumpUpdateComponent = (props) => {
                     productType === "PMS"?
                     pms.map((data, index) => {
                         return(
-                            <div key={index} onClick={e => pumpItem(e, index, data)}>
+                            <div key={index}>
                                 {data.identity === index &&
                                     <div className='box'>
-                                        <p style={{marginRight:'10px'}}>{data.pumpName}</p>
+                                        <p onClick={e => pumpItem(e, index, data)} style={{marginRight:'10px'}}>{data.pumpName}</p>
                                         <img onClick={()=>{deselect(data)}} style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
                                     </div>
                                 }
                                 {data.identity !== index &&
                                     <div className='box2'>
-                                        <p style={{marginRight:'10px'}}>{data.pumpName}</p>
+                                        <p onClick={e => pumpItem(e, index, data)} style={{marginRight:'10px'}}>{data.pumpName}</p>
                                         <img onClick={()=>{deselect(data)}} style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
                                     </div>
                                 }
@@ -128,16 +245,16 @@ const PumpUpdateComponent = (props) => {
                     productType === "AGO"?
                     ago.map((data, index) => {
                         return(
-                            <div key={index} onClick={e => pumpItem(e, index, data)}>
+                            <div key={index} >
                                 {data.identity === index &&
                                     <div className='box'>
-                                        <p style={{marginRight:'10px'}}>{data.pumpName}</p>
+                                        <p onClick={e => pumpItem(e, index, data)} style={{marginRight:'10px'}}>{data.pumpName}</p>
                                         <img onClick={()=>{deselect(data)}} style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
                                     </div>
                                 }
                                 {data.identity !== index &&
                                     <div className='box2'>
-                                        <p style={{marginRight:'10px'}}>{data.pumpName}</p>
+                                        <p onClick={e => pumpItem(e, index, data)} style={{marginRight:'10px'}}>{data.pumpName}</p>
                                         <img onClick={()=>{deselect(data)}} style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
                                     </div>
                                 }
@@ -146,16 +263,16 @@ const PumpUpdateComponent = (props) => {
                     }):
                     dpk.map((data, index) => {
                         return(
-                            <div key={index} onClick={e => pumpItem(e, index, data)}>
+                            <div key={index} >
                                 {data.identity === index &&
                                     <div className='box'>
-                                        <p style={{marginRight:'10px'}}>{data.pumpName}</p>
+                                        <p onClick={e => pumpItem(e, index, data)} style={{marginRight:'10px'}}>{data.pumpName}</p>
                                         <img onClick={()=>{deselect(data)}} style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
                                     </div>
                                 }
                                 {data.identity !== index &&
                                     <div className='box2'>
-                                        <p style={{marginRight:'10px'}}>{data.pumpName}</p>
+                                        <p onClick={e => pumpItem(e, index, data)} style={{marginRight:'10px'}}>{data.pumpName}</p>
                                         <img onClick={()=>{deselect(data)}} style={{width:'20px', height:'20px'}} src={cross}  alt="icon"/>
                                     </div>
                                 }
@@ -183,9 +300,9 @@ const PumpUpdateComponent = (props) => {
                                     <div style={{marginTop:'10px'}} className='label'>Closing meter (Litres)</div>
                                     <input 
                                         onChange={e => setTotalizer(e, item)} 
-                                        defaultValue={item.closingMeter} 
-                                        style={{...imps, border: (Number(item.totalizerReading) > Number(item.closingMeter)) && item.closingMeter !== '0'? '1px solid red': '1px solid black'}} 
-                                        type="text" 
+                                        style={{...imps, border: (Number(item.totalizerReading) > Number(item.newTotalizer)) && item.newTotalizer !== '0'? '1px solid red': '1px solid black'}} 
+                                        type="number" 
+                                        value={item.newTotalizer}
                                     />
                                 </div>
                             </div>
@@ -205,9 +322,9 @@ const PumpUpdateComponent = (props) => {
                                     <div style={{marginTop:'10px'}} className='label'>Closing meter (Litres)</div>
                                     <input 
                                         onChange={e => setTotalizer(e, item)} 
-                                        defaultValue={item.closingMeter} 
-                                        style={{...imps, border: (Number(item.totalizerReading) > Number(item.closingMeter)) && item.closingMeter !== '0'? '1px solid red': '1px solid black'}} 
-                                        type="text" 
+                                        value={item.newTotalizer}
+                                        style={{...imps, border: (Number(item.totalizerReading) > Number(item.newTotalizer)) && item.newTotalizer !== '0'? '1px solid red': '1px solid black'}} 
+                                        type="number" 
                                     />
                                 </div>
                             </div>
@@ -226,9 +343,9 @@ const PumpUpdateComponent = (props) => {
                                     <div style={{marginTop:'10px'}} className='label'>Closing meter (Litres)</div>
                                     <input 
                                         onChange={e => setTotalizer(e, item)} 
-                                        defaultValue={item.closingMeter} 
-                                        style={{...imps, border: (Number(item.totalizerReading) > Number(item.closingMeter)) && item.closingMeter !== '0'? '1px solid red': '1px solid black'}} 
-                                        type="text" 
+                                        value={item.newTotalizer}
+                                        style={{...imps, border: (Number(item.totalizerReading) > Number(item.newTotalizer)) && item.newTotalizer !== '0'? '1px solid red': '1px solid black'}} 
+                                        type="number" 
                                     />
                                 </div>
                             </div>
@@ -267,6 +384,18 @@ const imps = {
     outline:'none',
     border:'1px solid #000',
     paddingLeft:'10px'
+}
+
+const station = {
+    width:'130px',
+    height:'30px',
+    marginTop:'10px',
+    outline:'none',
+    borderRadius:'20px',
+    color:'#000',
+    border: '3px solid #143d59',
+    paddingLeft:'5px',
+    background: 'transparent'
 }
 
 export default PumpUpdateComponent;

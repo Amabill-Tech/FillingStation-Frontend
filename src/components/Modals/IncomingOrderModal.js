@@ -171,6 +171,23 @@ const IncomingOrderModal = (props) => {
                             }
 
                             <div className='inputs'>
+                                <div className='head-text2'>Loading Depot</div>
+                                <OutlinedInput 
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        border:'1px solid #777777',
+                                        fontSize:'12px',
+                                    }} placeholder="" 
+                                    value={depotStation}
+                                    type='text'
+                                    onChange={e => setDepotStation(e.target.value)}
+                                />
+                            </div>
+
+                            <div className='inputs'>
                                 <div className='head-text2'>Transporter</div>
                                 <OutlinedInput 
                                     sx={{
@@ -184,23 +201,6 @@ const IncomingOrderModal = (props) => {
                                     value={transporter}
                                     type='text'
                                     onChange={e => setTransporter(e.target.value)}
-                                />
-                            </div>
-
-                            <div className='inputs'>
-                                <div className='head-text2'>Depot station</div>
-                                <OutlinedInput 
-                                    sx={{
-                                        width:'100%',
-                                        height: '35px', 
-                                        marginTop:'5px', 
-                                        background:'#EEF2F1', 
-                                        border:'1px solid #777777',
-                                        fontSize:'12px',
-                                    }} placeholder="" 
-                                    value={depotStation}
-                                    type='text'
-                                    onChange={e => setDepotStation(e.target.value)}
                                 />
                             </div>
 
