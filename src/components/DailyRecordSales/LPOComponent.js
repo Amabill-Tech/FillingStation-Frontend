@@ -13,6 +13,12 @@ import { useRef } from "react";
 import AddIcon from '@mui/icons-material/Add';
 import hr8 from '../../assets/hr8.png';
 import swal from 'sweetalert';
+import axios from "axios";
+import config from '../../constants';
+import { passRecordSales } from "../../store/actions/dailySales";
+import LPOService from "../../services/lpo";
+import { createLPO } from "../../store/actions/lpo";
+import { useEffect } from "react";
 
 const LPOComponent = (props) => {
 
@@ -23,19 +29,22 @@ const LPOComponent = (props) => {
     const allAdminStations = useSelector(state => state.dailyRecordReducer.allAdminStations);
     const singleAdminStation = useSelector(state => state.dailyRecordReducer.singleAdminStation);
     const pumpList = useSelector(state => state.outletReducer.pumpList);
+    const tankList = useSelector(state => state.outletReducer.tankList);
     const lpos = useSelector(state => state.lpoReducer.lpo);
-    const [selectedPMS, setSelectedPMS] = useState();
-    const [selectedAGO, setSelectedAGO] = useState();
-    const [selectedDPK, setSelectedDPK] = useState();
+    const [selectedPMS, setSelectedPMS] = useState(null);
+    const [selectedAGO, setSelectedAGO] = useState(null);
+    const [selectedDPK, setSelectedDPK] = useState(null);
+    console.log(linkedData, "link")
 
     // selections
     const [open, setOpen] = useState(false);
 
     // payload records
     const [cam, setCam] = useState(null);
-    const [gall, setGall] = useState("");
-    const [productType, setProductType] = useState("PMS");
+    const [gall, setGall] = useState(null);
+    const [productType, setProductType] = useState(null);
     const [dispenseLpo, setDispensedLPO] = useState(null);
+    const [dispensedPump, setDispensedPump] = useState(null);
     const [currentStation, setCurrentStation] = useState(null);
     const [truckNo, setTruckNo] = useState("");
     const [quantity, setQuantity] = useState("");
@@ -58,9 +67,9 @@ const LPOComponent = (props) => {
         return newDpk;
     }
 
-    const [pms, setPMS] = useState(getPMSPump());
-    const [ago, setAGO] = useState(getAGOPump());
-    const [dpk, setDPK] = useState(getDPKPump());
+    const [pms] = useState(getPMSPump());
+    const [ago] = useState(getAGOPump());
+    const [dpk] = useState(getDPKPump());
 
     const onRadioClick = (data) => {
         if(data === "PMS"){
@@ -76,16 +85,26 @@ const LPOComponent = (props) => {
         }
     }
 
+    useEffect(()=>{
+        setProductType("PMS");
+    },[])
+
     const pumpItem = (e, index, item) => {
         e.preventDefault();
-        setDispensedLPO(item);
+        setDispensedPump(item);
 
         if(productType === "PMS"){
             setSelectedPMS(index);
+            setSelectedAGO(null);
+            setSelectedDPK(null);
         }else if(productType === "AGO"){
-            setSelectedAGO(index)
+            setSelectedPMS(null);
+            setSelectedAGO(index);
+            setSelectedDPK(null);
         }else{
-            setSelectedDPK(index)
+            setSelectedPMS(null);
+            setSelectedAGO(null);
+            setSelectedDPK(index);
         }
     }
 
@@ -119,6 +138,10 @@ const LPOComponent = (props) => {
             });
             dispatch(getAllOutletTanks(outletTanks));
         });
+
+        LPOService.getAllLPO(payload).then((data) => {
+            dispatch(createLPO(data.lpo.lpo));
+        });
     }
 
     const selectLPOAccount = (e) => {
@@ -136,38 +159,66 @@ const LPOComponent = (props) => {
 
     const pickFromGallery = (e) => {
         let file = e.target.files[0];
-        setGall(file);
+
+        const formData = new FormData();
+        formData.append("file", file);
+        const httpConfig = {
+            headers: {
+                "content-type": "multipart/form-data",
+                "Authorization": "Bearer "+ localStorage.getItem('token'),
+            }
+        };
+        const url = `${config.BASE_URL}/360-station/api/upload`;
+        axios.post(url, formData, httpConfig).then((data) => {
+            setGall(data.data.path);
+        });
     }
 
     const addDetailsToList = () => {
+        if(currentStation === null) return swal("Warning!", "please select station", "info");
         if(dispenseLpo === null) return swal("Warning!", "Please select lpo account", "info");
-        if(currentStation === "") return swal("Warning!", "please select station", "info");
+        if(dispensedPump === null) return swal("Warning!", "Please select lpo pump", "info");
         if(truckNo === "") return swal("Warning!", "Truck no field cannot be empty", "info");
         if(quantity === "") return swal("Warning!", "Quantity field cannot be empty", "info");
         if(productType === "") return swal("Warning!", "Product type field cannot be empty", "info");
-        if(typeof(gall.name) === "undefined") return swal("Warning!", "Please select a file", "info");
-        if(typeof(cam) !== "string") return swal("Warning!", "Please select a file", "info");
+        if(typeof(gall) === "object" && typeof(cam) === "object") return swal("Warning!", "Please select a file", "info");
 
-        // const payload = {
-        //     accountName: req.body.accountName,
-        //     productType: req.body.productType,
-        //     truckNo: req.body.truckNo,
-        //     lpoLitre: req.body.lpoLitre,
-        //     attachApproval: `/uploads/${uniqueGallName}`,
-        //     lpoID: req.body.lpoID,
-        //     PMSRate: req.body.PMSRate,
-        //     AGORate: req.body.AGORate,
-        //     DPKRate: req.body.DPKRate,
-        //     PMSCost: req.body.PMSCost,
-        //     AGOCost: req.body.AGOCost,
-        //     DPKCost: req.body.DPKCost,
-        //     outletID: req.body.outletID,
-        //     organizationID: req.body.organizationID,
-        // }
+        const tank = tankList.filter(data => data._id === dispensedPump.hostTank)[0];
+
+        const payload = {
+            accountName: dispenseLpo.companyName,
+            productType: productType,
+            truckNo: truckNo,
+            lpoLitre: quantity,
+            camera: cam,
+            gallery: gall,
+            lpoID: dispenseLpo._id,
+            pumpID: dispensedPump._id,
+            tank: tank,
+            PMSRate: currentStation.PMSPrice,
+            AGORate: currentStation.PMSPrice,
+            DPKRate: currentStation.PMSPrice,
+            PMSCost: currentStation.PMSCost,
+            AGOCost: currentStation.AGOCost,
+            DPKCost: currentStation.DPKCost,
+            outletID: currentStation._id,
+            organizationID: currentStation.organisation,
+        }
+
+        const newList = {...linkedData};
+        newList.head.data.payload.push(payload);
+        dispatch(passRecordSales(newList));
+
+        setGall(null);
+        setCam(null);
+        setTruckNo("");
+        setQuantity("");
     }
 
-    const deleteFromList = () => {
-        
+    const deleteFromList = (index) => {
+        const newList = {...linkedData};
+        newList.head.data.payload.pop(index);
+        dispatch(passRecordSales(newList));
     }
 
     return(
@@ -332,19 +383,14 @@ const LPOComponent = (props) => {
                     <div className='single-form'>
                         <div className='input-d'>
                             <span style={{color:'green'}}>Truck No</span>
-                            <input onChange={e => setTruckNo(e.target.value)} className='text-field' type={'text'} />
+                            <input value={truckNo} onChange={e => setTruckNo(e.target.value)} className='text-field' type={'text'} />
                         </div>
                     </div>
 
-                    <div style={{marginTop:'20px'}} className='double-form'>
+                    <div style={{marginTop:'20px'}} className='single-form'>
                         <div className='input-d'>
                             <span style={{color:'green'}}>Quantity (Litres)</span>
-                            <input onChange={e => setQuantity(e.target.value)} className='text-field' type={'text'} />
-                        </div>
-
-                        <div className='input-d'>
-                            <span style={{color:'green'}}>Amount</span>
-                            <input disabled className='text-field' type={'text'} />
+                            <input value={quantity} onChange={e => setQuantity(e.target.value)} className='text-field' type={'text'} />
                         </div>
                     </div>
 
@@ -387,7 +433,7 @@ const LPOComponent = (props) => {
                                 }}
                             >
                                 <img style={{width:'22px', height:'18px', marginRight:'10px'}} src={upload} alt="icon" />
-                                <div>{typeof(gall) === "string"? "Upload":<span>File uploaded</span>}</div>
+                                <div>{typeof(gall) === "string"? "File uploaded":<span>Upload</span>}</div>
                             </Button>
                         </div>
                     </div>

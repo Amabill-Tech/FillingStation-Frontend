@@ -33,6 +33,11 @@ import { createIncomingOrder } from '../../store/actions/incomingOrder';
 import { getAllOutletTanks, getAllPumps } from '../../store/actions/outlet';
 import LPOService from '../../services/lpo';
 import { createLPO } from '../../store/actions/lpo';
+import swal from "sweetalert";
+import RecordSalesService from '../../services/DailyRecordSales';
+import Backdrop from '@mui/material/Backdrop';
+import { BallTriangle } from 'react-loader-spinner';
+import { useState } from 'react';
 
 function DoublyLinkedListNode(data){
     this.data = data;
@@ -163,8 +168,10 @@ const DailyRecordSales = () => {
     const dispatch = useDispatch();
     const user = useSelector(state => state.authReducer.user);
     const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
+    const [open, setOpen] = useState(false);
 
     useEffect(()=>{
+
         const list = new DoublyLinkedList();
         for(let i=7; i > 0 ; i--){
             list.addNode({
@@ -172,6 +179,7 @@ const DailyRecordSales = () => {
                 payload: [],
             });
         }
+        
         dispatch(passRecordSales(list));
 
         if(user.userType === "superAdmin"){
@@ -261,8 +269,59 @@ const DailyRecordSales = () => {
         }
     }
 
+    const finishAndSubmit = () => {
+
+        let payload = {
+            7: linkedData.head.data.payload,
+        }
+
+        let dataLoad = {...linkedData.head}
+        while(true){
+            dataLoad = dataLoad.prev;
+            payload[dataLoad.data.currentPage] = dataLoad.data.payload;
+
+            if(dataLoad.prev === null){
+                break;
+            }
+        }
+
+        swal({
+            title: "Alert!",
+            text: "Are you sure you want to submit?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+                setOpen(true);
+                RecordSalesService.saveRecordSales(payload).then(data => {
+                    swal("Success!", "Daily sales recorded successfully!", "success");
+                }).then(()=>{
+                    setOpen(false);
+                })
+            }
+        });
+    }
+
     return (
         <div className='salesRecordStyle'>
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={open}
+                // onClick={handleClose}
+            >
+                <BallTriangle
+                    height={100}
+                    width={100}
+                    radius={5}
+                    color="#fff"
+                    ariaLabel="ball-triangle-loading"
+                    wrapperClass={{}}
+                    wrapperStyle=""
+                    visible={true}
+                />
+            </Backdrop>
             <Stack sx={{ width: '100%', marginTop:'20px' }} spacing={4}>
                 <Stepper alternativeLabel activeStep={linkedData.page - 1} connector={<ColorlibConnector />}>
                     {steps.map((label) => (
@@ -284,41 +343,67 @@ const DailyRecordSales = () => {
             </div>
 
             <div className="navs">
-                <Button 
-                    variant="contained" 
-                    sx={{
-                        width:'100px',
-                        height:'30px',
-                        background:'#054834',
-                        fontSize:'13px',
-                        borderRadius:'5px',
-                        textTransform:'capitalize',
-                        '&:hover': {
-                            backgroundColor: '#054834'
-                        }
-                    }}
-                    onClick={prevQuestion}
-                >
-                    Previous
-                </Button>
+                <div>
+                    {linkedData.head?.prev !== null &&
+                        <Button 
+                            variant="contained" 
+                            sx={{
+                                width:'100px',
+                                height:'30px',
+                                background:'#054834',
+                                fontSize:'13px',
+                                borderRadius:'5px',
+                                textTransform:'capitalize',
+                                '&:hover': {
+                                    backgroundColor: '#054834'
+                                }
+                            }}
+                            onClick={prevQuestion}
+                        >
+                            Previous
+                        </Button>
+                    }
+                </div>
                 
-                <Button 
-                    variant="contained" 
-                    sx={{
-                        width:'140px',
-                        height:'30px',
-                        background:'#054834',
-                        fontSize:'13px',
-                        borderRadius:'5px',
-                        textTransform:'capitalize',
-                        '&:hover': {
-                            backgroundColor: '#054834'
-                        }
-                    }}
-                    onClick={nextQuestion}
-                >
-                    Save & Proceed
-                </Button>
+                {linkedData.head?.next === null ||
+                    <Button 
+                        variant="contained" 
+                        sx={{
+                            width:'140px',
+                            height:'30px',
+                            background:'#054834',
+                            fontSize:'13px',
+                            borderRadius:'5px',
+                            textTransform:'capitalize',
+                            '&:hover': {
+                                backgroundColor: '#054834'
+                            }
+                        }}
+                        onClick={nextQuestion}
+                    >
+                        Save & Proceed
+                    </Button>
+                }
+
+                {linkedData.head?.next === null &&
+                    <Button 
+                        variant="contained" 
+                        sx={{
+                            width:'140px',
+                            height:'30px',
+                            background:'#054834',
+                            fontSize:'13px',
+                            borderRadius:'5px',
+                            textTransform:'capitalize',
+                            '&:hover': {
+                                backgroundColor: '#054834'
+                            }
+                        }}
+                        onClick={finishAndSubmit}
+                    >
+                        Finish
+                    </Button>
+                }
             </div>
         </div>
     );

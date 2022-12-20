@@ -23,9 +23,7 @@ const initialState = {
         expenses: []
     },
     bulkReports: {},
-    linkedData:{
-        page: 1
-    }
+    linkedData: { page: 1 },
 }
 
 const dailySalesReducer = (state = initialState, action) => {

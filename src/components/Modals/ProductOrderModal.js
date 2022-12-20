@@ -11,6 +11,7 @@ import '../../styles/lpo.scss';
 import ProductService from '../../services/productService';
 import axios from 'axios';
 import { MenuItem, Select } from '@mui/material';
+import config from '../../constants';
 
 const ProductOrderModal = (props) => {
     const [loading, setLoading] = useState(false);
@@ -77,7 +78,7 @@ const ProductOrderModal = (props) => {
                 "Authorization": "Bearer "+ localStorage.getItem('token'),
             }
         };
-        const url = "http://66.29.128.83:8005/360-station/api/upload";
+        const url = `${config.BASE_URL}/360-station/api/upload`;
         axios.post(url, formData, config).then((data) => {
             setUpload(data.data.path);
         }).then(()=>{

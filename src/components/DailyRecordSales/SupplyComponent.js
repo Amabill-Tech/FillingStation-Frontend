@@ -98,7 +98,7 @@ const SupplyComponent = () => {
                 transportationName: transporter,
                 wayBillNo: waybillNo,
                 truckNo: truckNo,
-                quantity: discharged,
+                quantity: String(discharged),
                 outletName: user.userType === "superAdmin"? JSON.parse(outletName).outletName: singleAdminStation.outletName,
                 productType: productSupply,
                 shortage: "None",

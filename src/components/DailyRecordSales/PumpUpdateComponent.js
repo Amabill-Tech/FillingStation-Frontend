@@ -1,26 +1,28 @@
-import { Radio } from "@mui/material"
+import { Button, Radio } from "@mui/material"
 import { useState } from "react";
 import pump1 from '../../assets/pump1.png';
 import cross from '../../assets/cross.png';
 import { useDispatch, useSelector } from "react-redux";
+import swal from "sweetalert";
+import { passRecordSales } from "../../store/actions/dailySales";
 import IncomingService from "../../services/IncomingService";
 import { createIncomingOrder } from "../../store/actions/incomingOrder";
 import OutletService from "../../services/outletService";
 import { getAllOutletTanks } from "../../store/actions/outlet";
-import swal from "sweetalert";
-import { passRecordSales } from "../../store/actions/dailySales";
 
 const PumpUpdateComponent = (props) => {
 
     const [productType, setProductType] = useState("PMS");
+    const [currentStation, setCurrentStation] = useState(null);
     const [selected, setSelected] = useState([]);
+    const [selectedTanks, setSelectedTanks] = useState([]);
     const dispatch = useDispatch();
     const user = useSelector(state => state.authReducer.user);
     const pumpList = useSelector(state => state.outletReducer.pumpList);
     const tankList = useSelector(state => state.outletReducer.tankList);
+    const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
     const allAdminStations = useSelector(state => state.dailyRecordReducer.allAdminStations);
     const singleAdminStation = useSelector(state => state.dailyRecordReducer.singleAdminStation);
-    const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
 
     const getPMSPump = () => {
         const newList = [...pumpList];
@@ -63,7 +65,27 @@ const PumpUpdateComponent = (props) => {
 
     const pumpItem = (e, index, item) => {
         e.preventDefault();
-        setSelected(prev => [...prev, item]);
+        const tank = tankList.filter(data => data._id === item.hostTank)[0];
+
+        const findID = selected.findIndex(data => data._id === item._id);
+        if(findID === -1){
+            setSelected(prev => [...prev, item]);
+
+        }else{
+            const newList = [...selected]
+            newList[findID] = {...item};
+            setSelected(newList);
+        }
+
+        const tankID = selectedTanks.findIndex(data => data._id === tank._id);
+        if(tankID === -1){
+            setSelectedTanks(prev => [...prev, tank]);
+
+        }else{
+            const newList = [...selectedTanks]
+            newList[tankID] = {...tank};
+            setSelectedTanks(newList);
+        }
 
         if(productType === "PMS"){
             const newPms = [...pms];
@@ -91,7 +113,10 @@ const PumpUpdateComponent = (props) => {
             setPMS(list);
 
             const deleted = selected.filter(data => data._id !== payload._id);
+            const removeTank = selectedTanks.filter(data => data._id !== payload.hostTank);
+
             setSelected(deleted);
+            setSelectedTanks(removeTank);
         }else if(productType === "AGO"){
             const list = [...ago];
             const index = list.indexOf(payload);
@@ -99,7 +124,10 @@ const PumpUpdateComponent = (props) => {
             setAGO(list);
 
             const deleted = selected.filter(data => data._id !== payload._id);
+            const removeTank = selectedTanks.filter(data => data._id !== payload.hostTank);
+
             setSelected(deleted);
+            setSelectedTanks(removeTank);
         }else{
             const list = [...dpk];
             const index = list.indexOf(payload);
@@ -107,43 +135,67 @@ const PumpUpdateComponent = (props) => {
             setDPK(list);
 
             const deleted = selected.filter(data => data._id !== payload._id);
+            const removeTank = selectedTanks.filter(data => data._id !== payload.hostTank);
+
             setSelected(deleted);
+            setSelectedTanks(removeTank);
         }
         
     }
 
     const updateTotalizer = (e, totalizerDiff, item) => {
+        
         if(productType === "PMS"){
             const newPms = [...pms];
             const findID = newPms.findIndex(data => data._id === item._id);
-            newPms[findID].sales = String(totalizerDiff);
+            newPms[findID].sales = totalizerDiff;
             newPms[findID].newTotalizer = e;
             setPMS(newPms);
 
-            const newList = {...linkedData};
-            newList.head.data.payload = selected;
-            dispatch(passRecordSales(newList));
+            // const newList = {...linkedData};
+            // newList.head.data.payload = selected;
+            // dispatch(passRecordSales(newList));
         }else if(productType === "AGO"){
             const newAgo = [...ago];
             const findID = newAgo.findIndex(data => data._id === item._id);
-            newAgo[findID].sales = String(totalizerDiff);
+            newAgo[findID].sales = totalizerDiff;
             newAgo[findID].newTotalizer = e;
             setAGO(newAgo);
 
-            const newList = {...linkedData};
-            newList.head.data.payload = selected;
-            dispatch(passRecordSales(newList));
+            // const newList = {...linkedData};
+            // newList.head.data.payload = selected;
+            // dispatch(passRecordSales(newList));
         }else{
             const newDpk = [...dpk];
             const findID = newDpk.findIndex(data => data._id === item._id);
-            newDpk[findID].sales = String(totalizerDiff);
+            newDpk[findID].sales = totalizerDiff;
             newDpk[findID].newTotalizer = e;
             setDPK(newDpk);
 
-            const newList = {...linkedData};
-            newList.head.data.payload = selected;
-            dispatch(passRecordSales(newList));
+            // const newList = {...linkedData};
+            // newList.head.data.payload = selected;
+            // dispatch(passRecordSales(newList));
         }
+
+        // update tank payload
+        const newTankList = [...selectedTanks];
+        const tankID = newTankList.findIndex(data => data._id === item.hostTank);
+        newTankList[tankID] = {
+            ...newTankList[tankID], 
+            pumps: selected.filter(data => data.hostTank === newTankList[tankID]._id),
+        }
+        if(user.userType === "superAdmin"){
+            newTankList[tankID] = {
+                ...newTankList[tankID], 
+                outlet: currentStation
+            }
+        }else{
+            newTankList[tankID] = {
+                ...newTankList[tankID], 
+                outlet: singleAdminStation
+            }
+        }
+        setSelectedTanks(newTankList);
     }
 
     const setTotalizer = (e, item) => {
@@ -152,16 +204,17 @@ const PumpUpdateComponent = (props) => {
         const totalizerDiff = Number(e.target.value) - Number(item.totalizerReading);
         const quantity = Number(currentTank.currentLevel) - Number(currentTank.deadStockLevel);
 
-        if(selected.length === 0){
-            updateTotalizer("0", "0", item);
-            swal("Warning!", "Please select a pump", "info");
-
+        if(currentStation === null){
+            swal("Warning!", "Please select a station", "info");
         }else if(item.identity === null){
 
             updateTotalizer("0", "0", item);
             swal("Warning!", "Please select a pump", "info");
-        }else{
+        }else if(selected.length === 0){
+            updateTotalizer("0", "0", item);
+            swal("Warning!", "Please select a pump", "info");
 
+        }else{
             if(totalizerDiff > quantity){
                 updateTotalizer("0", "0", item);
                 swal("Warning!", "Reading exceeded tank level", "info");
@@ -169,8 +222,46 @@ const PumpUpdateComponent = (props) => {
                 updateTotalizer(e.target.value, totalizerDiff, item);
             }
         }
+    }
 
-        console.log(selected, "ssssssssssssssssssssss")
+    const selectedStation = (e) => {
+        const value = e.target.options[e.target.options.selectedIndex].value;
+        setCurrentStation(JSON.parse(value))
+
+        const payload = {
+            outletID: JSON.parse(value)?._id, 
+            organisationID: JSON.parse(value)?.organisation
+        }
+
+        IncomingService.getAllIncoming(payload).then((data) => {
+            dispatch(createIncomingOrder(data.incoming.incoming));
+        });
+
+        OutletService.getAllOutletTanks(payload).then(data => {
+            const outletTanks = data.stations.map(data => {
+                const newData = {...data, label: data.tankName, value: data._id};
+                return newData;
+            });
+            dispatch(getAllOutletTanks(outletTanks));
+        });
+    }
+
+    const savePumpUpdate = () => {
+        let totalSales = 0;
+        for(let tank of selectedTanks){
+            for(let pump of tank.pumps){
+                totalSales = totalSales + Number(pump.newTotalizer) - Number(pump.totalizerReading);
+            }
+            const newTankList = [...selectedTanks];
+            const findID = selectedTanks.findIndex(data => data._id === tank._id);
+            newTankList[findID].sales = totalSales;
+            setSelectedTanks(newTankList);
+            totalSales = 0
+        }
+
+        const newList = {...linkedData};
+        newList.head.data.payload = selectedTanks;
+        dispatch(passRecordSales(newList));
     }
 
     return(
@@ -213,6 +304,26 @@ const PumpUpdateComponent = (props) => {
                     />
                     <div className='head-text2' style={{marginRight:'5px', fontSize:'12px'}}>DPK</div>
                 </div>
+            </div>
+
+            <div>
+                {user.userType === "superAdmin" &&
+                    <select onChange={selectedStation} className='text-field'>
+                        <option>Select a station</option>
+                        {
+                            allAdminStations.map((data, index) => {
+                                return(
+                                    <option value={JSON.stringify(data)} key={index}>{data.outletName}</option>
+                                )
+                            })
+                        }
+                    </select>
+                }
+                {user.userType === "superAdmin" ||
+                    <select onChange={selectedStation} className='text-field'>
+                        <option value={JSON.stringify(singleAdminStation)}>{singleAdminStation?.outletName}</option>
+                    </select>
+                }
             </div>
             
             <div style={{marginTop:'10px', marginBottom:'10px'}}>Select Pump used for the day</div>
@@ -353,6 +464,26 @@ const PumpUpdateComponent = (props) => {
                     })
                 }
             </div>
+
+            <div style={add}>
+                <Button sx={{
+                    width:'80px', 
+                    height:'30px',  
+                    background: '#427BBE',
+                    borderRadius: '3px',
+                    fontSize:'11px',
+                    '&:hover': {
+                        backgroundColor: '#427BBE'
+                    }
+                    }}  
+                    onClick={savePumpUpdate}
+                    variant="contained"> 
+                    save
+                </Button>
+                {linkedData.head.data.payload.length !== 0 &&
+                    <span style={{fontWeight:'600', color:'green', marginLeft:'10px'}}>Done !!</span>
+                }
+            </div>
         </div>
     )
 }
@@ -386,16 +517,13 @@ const imps = {
     paddingLeft:'10px'
 }
 
-const station = {
-    width:'130px',
-    height:'30px',
-    marginTop:'10px',
-    outline:'none',
-    borderRadius:'20px',
-    color:'#000',
-    border: '3px solid #143d59',
-    paddingLeft:'5px',
-    background: 'transparent'
+const add = {
+    width:'100%',
+    display: 'flex',
+    flexDirection:'row',
+    justifyContent:'center',
+    alignItems:'center',
+    marginTop:'30px'
 }
 
 export default PumpUpdateComponent;

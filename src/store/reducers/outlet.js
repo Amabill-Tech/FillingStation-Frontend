@@ -94,11 +94,18 @@ const outletReducer = (state = initialState, action) => {
         }
 
         case TANK_LIST: {
+            const load = payload.map(data => {
+                let craze = {...data};
+                craze['sales'] = "0";
+                craze['outlet'] = null;
+                craze['pumps'] = [];
+                return craze;
+            })
             return {
                 ...state,
-                tankList: payload,
-                mainTankList: payload.filter(data => data.productType === "PMS"),
-                searchData: payload
+                tankList: load,
+                mainTankList: load.filter(data => data.productType === "PMS"),
+                searchData: load
             }
         }
 
