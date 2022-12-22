@@ -46,6 +46,17 @@ const IncomingService = {
         });
     },
 
+    getAllIncoming3: (data) => {
+        return APIs.post('/incoming-order/allRecords3', data)
+        .then(({data}) => {
+            return data;
+        })
+         .catch(err => {
+            console.log("Auth service err", err);
+            throw err
+        });
+    },
+
     getOneIncoming: (data) => {
         return APIs.post('/incoming-order/oneIncoming', data)
         .then(({data}) => {
