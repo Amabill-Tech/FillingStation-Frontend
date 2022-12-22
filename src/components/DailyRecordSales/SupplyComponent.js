@@ -5,15 +5,17 @@ import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
 import IncomingService from "../../services/IncomingService";
 import OutletService from "../../services/outletService";
-import { createIncomingOrder } from "../../store/actions/incomingOrder";
+import { createIncomingOrder, searchIncoming } from "../../store/actions/incomingOrder";
 import { getAllOutletTanks } from "../../store/actions/outlet";
 import AddIcon from '@mui/icons-material/Add';
 import hr8 from '../../assets/hr8.png';
 import { passRecordSales } from "../../store/actions/dailySales";
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 const SupplyComponent = () => {
 
     const [selected, setSelected] = useState([]);
+    const [menus, setMenus] = useState(false);
     const dispatch = useDispatch();
     const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
     const user = useSelector(state => state.authReducer.user);
@@ -31,14 +33,15 @@ const SupplyComponent = () => {
     const [outletName, setOutletName] = useState("");
 
 
-    const selectedIncomingOrder = (e) => {
-        const value = e.target.options[e.target.options.selectedIndex].value;
+    const selectedIncomingOrder = (data) => {
 
-        setTransporter(JSON.parse(value).transporter);
-        setWaybillNo(JSON.parse(value).wayBillNo);
-        setProductSupply(JSON.parse(value).product);
-        setQuantityLoaded(JSON.parse(value).quantity);
-        setTruckNo(JSON.parse(value).truckNo);
+        setTransporter(data.transporter);
+        setWaybillNo(data.wayBillNo);
+        setProductSupply(data.product);
+        setQuantityLoaded(data.quantity);
+        setTruckNo(data.truckNo);
+
+        setMenus(!menus);
     }
 
     const selectedStation = (e) => {
@@ -132,6 +135,24 @@ const SupplyComponent = () => {
         dispatch(passRecordSales(newList));
     }
 
+    const searchWayBill = (e) => {
+        dispatch(searchIncoming(e.target.value));
+    }
+
+    const getFilteredTanks = () => {
+        const PMS = tankList.filter(data => data.productType === productSupply);
+        const AGO = tankList.filter(data => data.productType === productSupply);
+        const DPK = tankList.filter(data => data.productType === productSupply);
+
+        if(productSupply === "PMS"){
+            return PMS
+        }else if(productSupply === "AGO"){
+            return AGO;
+        }else{
+            return DPK
+        }
+    }
+
     return(
         <div className='inner-body'>
             <div className='left'>
@@ -161,16 +182,26 @@ const SupplyComponent = () => {
                 <div style={{marginTop:'20px'}} className='double-form'>
                     <div className='input-d'>
                         <span style={{color:'green'}}>Incoming Order ID</span>
-                        <select onChange={selectedIncomingOrder} className='text-field'>
-                            <option>Select Incoming Order ID</option>
-                            {
-                                incomingOrder.map((data, index) => {
-                                    return(
-                                        <option value={JSON.stringify(data)} key={index}>{data._id}</option>
-                                    )
-                                })
+                        <div style={{width: '100%', position:'relative'}}>
+                            <div onClick={()=>setMenus(!menus)} className='text-field2'>
+                                <span>{waybillNo}</span>
+                                <KeyboardArrowDownIcon />
+                            </div>
+                            {menus &&
+                                <div className="drop">
+                                    <input onChange={(e => searchWayBill(e))} className="searches" type={'text'} placeholder="Search" />
+                                    <div className="cons">
+                                        {
+                                            incomingOrder.map((data, index) => {
+                                                return(
+                                                    <span key={index} onClick={()=>{selectedIncomingOrder(data)}} className="ids">&nbsp;&nbsp;&nbsp;{`${data.wayBillNo}`}</span>
+                                                )
+                                            })
+                                        }
+                                    </div>
+                                </div>
                             }
-                        </select>
+                        </div>
                     </div>
 
                     <div className='input-d'>
@@ -207,7 +238,7 @@ const SupplyComponent = () => {
                     <div className='input-d'>
                         <span style={{color:'green'}}>Select tanks</span>
                         <MultiSelect
-                            options={tankList}
+                            options={getFilteredTanks()}
                             value = {selected}
                             onChange = {setSelected}
                             className="multiple"

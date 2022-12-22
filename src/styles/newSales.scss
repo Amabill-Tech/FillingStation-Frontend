@@ -93,6 +93,58 @@
                             outline: none;
                         }
 
+                        .text-field2{
+                            width: 100%;
+                            height: 35px;
+                            background: rgba(255, 255, 255, 0.6);
+                            border: 0.860542px solid #606060;
+                            box-shadow: 0px 1.83356px 2.75034px rgba(0, 0, 0, 0.25);
+                            border-radius: 5.16325px;
+                            margin-top: 5px;
+                            padding-left: 10px;
+                            outline: none;
+                            display: flex;
+                            flex-direction: row;
+                            align-items: center;
+                            justify-content: space-between;
+                        }
+
+                        .drop{
+                            position: absolute;
+                            width: 100%;
+                            height: auto;
+                            background: #fff;
+                            margin-top: 1px;
+                            box-shadow: 0px 1.83356px 2.75034px rgba(0, 0, 0, 0.25);
+
+                            .searches{
+                                width: 100%;
+                                height: 35px;
+                                background-color: #f7f7f7;
+                                border: none;
+                                outline: none;
+                                padding-left: 10px;
+                            }
+
+                            .cons{
+                                width: 100%;
+                                height: 160px;
+                                overflow-y: scroll;
+
+                                .ids{
+                                    width: 100%;
+                                    height: 35px;
+                                    display: flex;
+                                    flex-direction: row;
+                                    align-items: center;
+                                }
+
+                                .ids:hover{
+                                    background-color: #e2e2e2;
+                                }
+                            }
+                        }
+
                         .select-wrapper{
                             width: 100%;
                             height: 35px;
@@ -113,8 +165,8 @@
                     --rmsc-h: 35px;
                     box-shadow: 0px 1.83356px 2.75034px rgba(0, 0, 0, 0.25);
                     --rmsc-border:#606060;
-                    --rmsc-bg: rgba(255, 255, 255, 0.6);
                     outline: none;
+                    background: #fff;
                 }
 
                 .single-form{

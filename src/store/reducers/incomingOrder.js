@@ -15,16 +15,19 @@ const incomingOrderReducer = (state = initialState, action) => {
     switch (type) {
 
         case CREATE_INCOMING_ORDER:{
+            const incoming = payload.map(data => {
+                return {...data, value: JSON.stringify(data), label: data.wayBillNo}
+            })
             return {
                 ...state,
-                incomingOrder: payload,
-                searchData: payload
+                incomingOrder: incoming,
+                searchData: incoming
             }
         }
 
         case SEARCH_INCOMING_ORDERS:{
             const search = state.searchData.filter(data => !data.depotStation.toUpperCase().indexOf(payload.toUpperCase()) ||
-                !data.product.toUpperCase().indexOf(payload.toUpperCase())
+                !data.product.toUpperCase().indexOf(payload.toUpperCase()) || !data.wayBillNo.toUpperCase().indexOf(payload.toUpperCase())
             );
             return {
                 ...state,
