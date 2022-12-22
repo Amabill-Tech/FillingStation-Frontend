@@ -298,6 +298,14 @@ const DailyRecordSales = () => {
                 RecordSalesService.saveRecordSales(payload).then(data => {
                     swal("Success!", "Daily sales recorded successfully!", "success");
                 }).then(()=>{
+                    const list = new DoublyLinkedList();
+                    for(let i=7; i > 0 ; i--){
+                        list.addNode({
+                            currentPage: i,
+                            payload: [],
+                        });
+                    }
+                    dispatch(passRecordSales(list));
                     setOpen(false);
                 })
             }

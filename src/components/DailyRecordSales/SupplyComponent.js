@@ -23,6 +23,7 @@ const SupplyComponent = () => {
     const singleAdminStation = useSelector(state => state.dailyRecordReducer.singleAdminStation);
     const incomingOrder = useSelector(state => state.incomingOrderReducer.incomingOrder);
     const tankList = useSelector(state => state.outletReducer.tankList);
+    const [selectedIncomingOrders, setSelectedIncomingOrder] = useState("");
 
     // payload data
     const [transporter, setTransporter] = useState('');
@@ -42,6 +43,7 @@ const SupplyComponent = () => {
         setTruckNo(data.truckNo);
 
         setMenus(!menus);
+        setSelectedIncomingOrder(data);
     }
 
     const selectedStation = (e) => {
@@ -89,6 +91,7 @@ const SupplyComponent = () => {
         if(truckNo === "") return swal("Warning!", "Truck no field cannot be empty", "info");
         if(outletName === "") return swal("Warning!", "Outlet field cannot be empty", "info");
         if(productSupply === "") return swal("Warning!", "Product type field cannot be empty", "info");
+        if(selectedIncomingOrders === "") return swal("Warning!", "Incoming order field cannot be empty", "info");
 
         let discharged = 0;
         for(let data of selected){
@@ -106,6 +109,7 @@ const SupplyComponent = () => {
                 productType: productSupply,
                 shortage: "None",
                 overage: "None",
+                incomingID: selectedIncomingOrders._id,
                 date: "None",
                 tankUpdate: selected,
                 outletID: user.userType === "superAdmin"? JSON.parse(outletName)._id: singleAdminStation._id,

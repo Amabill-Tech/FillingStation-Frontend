@@ -289,6 +289,7 @@ const IncomingOrder = () => {
                         <div className='column'>Quantity</div>
                         <div className='column'>Truck No</div>
                         <div className='column'>Waybill No</div>
+                        <div className='column'>Delivery Status</div>
                     </div>
 
                     <div className='row-container'>
@@ -307,6 +308,7 @@ const IncomingOrder = () => {
                                         <div className='column'>{data.quantity}</div>
                                         <div className='column'>{data.truckNo}</div>
                                         <div className='column'>{data.wayBillNo}</div>
+                                        <div className='column'>{data.deliveryStatus}</div>
                                     </div>
                                 )
                             })
