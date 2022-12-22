@@ -284,10 +284,9 @@ const ProductOrders = () => {
                         <div className='column'>Company</div>
                         <div className='column'>Depot Address</div>
                         <div className='column'>Product</div>
-                        <div className='column'>Quantity (LTR)</div>
-                        <div className='column'>Quantity Ordered</div>
-                        <div className='column'>Quantity Loaded</div>
-                        <div className='column'>Current balance</div>
+                        <div className='column'>Quantity Ordered (ltr)</div>
+                        <div className='column'>Quantity Loaded (ltr)</div>
+                        <div className='column'>Current balance (ltr)</div>
                     </div>
 
                     <div className='row-container'>
@@ -303,9 +302,8 @@ const ProductOrders = () => {
                                         <div className='column'>{data.depotAddress}</div>
                                         <div className='column'>{data.productType}</div>
                                         <div className='column'>{data.quantity}</div>
-                                        <div className='column'>{data.quantity}</div>
-                                        <div className='column'>{data.quantity}</div>
-                                        <div className='column'>{data.quantity}</div>
+                                        <div className='column'>{data.quantityLoaded}</div>
+                                        <div className='column'>{data.currentBalance}</div>
                                     </div> 
                                 )
                             })

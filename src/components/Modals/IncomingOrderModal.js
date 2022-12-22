@@ -16,11 +16,15 @@ import { Radio } from '@mui/material';
 
 const IncomingOrderModal = (props) => {
     const [loading, setLoading] = useState(false);
-    const user = useSelector(state => state.authReducer.user);
+    const [updateQantityLoaded, setUpdateQuantityLoaded] = useState("");
+    const [updateCurrentBalance, setUpdateCurrentBalance] = useState("");
     const [defaultState, setDefault] = useState(0);
     const productOrder = useSelector(state => state.productOrderReducer.productOrder);
     const dispatch = useDispatch();
     const [productType, setProductType] = useState('available');
+    const [quantityOrdered, setQuantityOrdered] = useState("");
+    const [previousBalance, setPreviousBalance] = useState("");
+    const [currentBalance, setCurrentBalance] = useState("");
 
     const [depotStation, setDepotStation] = useState('');
     const [destination, setDestination] = useState('');
@@ -44,7 +48,8 @@ const IncomingOrderModal = (props) => {
         if(dateCreated === "") return swal("Warning!", "Date created field cannot be empty", "info");
         if(productOrderID === "") return swal("Warning!", "Product order ID field cannot be empty", "info");
         if(truckNo === "") return swal("Warning!", "Truck No cannot be empty", "info");
-        if(wayBillNo === "") return swal("Warning!", "Wybill No cannot be empty", "info");
+
+        if(isNaN(Number(quantity))) return swal("Warning!", "Quantity field is not a number", "info");
 
         setLoading(true);
 
@@ -53,6 +58,8 @@ const IncomingOrderModal = (props) => {
             destination: destination,
             product: product,
             quantity: quantity,
+            updateCurrentBalance: updateCurrentBalance,
+            updateQantityLoaded: updateQantityLoaded,
             dateCreated: dateCreated,
             productOrderID: productOrderID,
             truckNo: truckNo,
@@ -92,9 +99,33 @@ const IncomingOrderModal = (props) => {
     const changeMenu = (index, item) => {
         setDefault(index);
         setDepotStation(item.depot);
-        setDestination(item.loadingLocation);
-        setQuantity(item.quantity);
+        setPreviousBalance(item.currentBalance);
+        setQuantityOrdered(item.quantity);
         setProductOrderID(item._id);
+    }
+
+    const loadedQuantity = (e) => {
+        setQuantity(e);
+        if(quantityOrdered !== ""){
+
+            const room = Number(quantityOrdered) - Number(previousBalance);
+
+            if(e > room){
+                setQuantity("");
+                swal("Warning!", "This product order is fully loaded!", "info");
+            }else if(Number(e) > Number(previousBalance)){
+                setQuantity("");
+                swal("Warning!", "Quantity loaded exceeds current Balance!", "info");
+            }else{
+                const loaded = Number(previousBalance) + Number(e);
+                const balance = Number(quantityOrdered) - Number(loaded);
+
+                setUpdateCurrentBalance(balance);
+                setUpdateQuantityLoaded(loaded);
+            }
+        }else{
+            swal("Warning!", "Quantity field cannot be empty!", "info");
+        }
     }
 
     return(
@@ -221,7 +252,7 @@ const IncomingOrderModal = (props) => {
                             </div>
 
                             <div className='inputs'>
-                                <div className='head-text2'>Quantity</div>
+                                <div className='head-text2'>Quantity Orderd (ltr)</div>
                                 <OutlinedInput 
                                     sx={{
                                         width:'100%',
@@ -231,9 +262,43 @@ const IncomingOrderModal = (props) => {
                                         border:'1px solid #777777',
                                         fontSize:'12px',
                                     }} placeholder="" 
-                                    type='number'
+                                    type='text'
+                                    disabled
+                                    value={quantityOrdered}
+                                />
+                            </div>
+
+                            <div className='inputs'>
+                                <div className='head-text2'>Current Balance (ltr)</div>
+                                <OutlinedInput 
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        border:'1px solid #777777',
+                                        fontSize:'12px',
+                                    }} placeholder="" 
+                                    type='text'
+                                    disabled
+                                    value={previousBalance}
+                                />
+                            </div>
+
+                            <div className='inputs'>
+                                <div className='head-text2'>Quantity Loaded</div>
+                                <OutlinedInput 
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        border:'1px solid #777777',
+                                        fontSize:'12px',
+                                    }} placeholder="" 
+                                    type='text'
                                     value={quantity}
-                                    onChange={e => setQuantity(e.target.value)}
+                                    onChange={e => loadedQuantity(e.target.value)}
                                 />
                             </div>
 
@@ -266,6 +331,7 @@ const IncomingOrderModal = (props) => {
                                         fontSize:'12px',
                                     }} placeholder="" 
                                     type='text'
+                                    disabled
                                     value={productOrderID}
                                     onChange={e => setProductOrderID(e.target.value)}
                                 />
@@ -285,23 +351,6 @@ const IncomingOrderModal = (props) => {
                                     type='text'
                                     value={truckNo}
                                     onChange={e => setTruckNo(e.target.value)}
-                                />
-                            </div>
-
-                            <div className='inputs'>
-                                <div className='head-text2'>Waybill No</div>
-                                <OutlinedInput 
-                                    sx={{
-                                        width:'100%',
-                                        height: '35px', 
-                                        marginTop:'5px', 
-                                        background:'#EEF2F1', 
-                                        border:'1px solid #777777',
-                                        fontSize:'12px',
-                                    }} placeholder="" 
-                                    type='text'
-                                    value={wayBillNo}
-                                    onChange={e => setWayBillNo(e.target.value)}
                                 />
                             </div>
                        </div>

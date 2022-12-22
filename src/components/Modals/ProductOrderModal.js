@@ -10,7 +10,7 @@ import swal from 'sweetalert';
 import '../../styles/lpo.scss';
 import ProductService from '../../services/productService';
 import axios from 'axios';
-import { MenuItem, Select } from '@mui/material';
+import { MenuItem, Select , Input} from '@mui/material';
 import config from '../../constants';
 
 const ProductOrderModal = (props) => {
@@ -21,7 +21,8 @@ const ProductOrderModal = (props) => {
     const [depot, setDepot] = useState('');
     const [depotAddress, setDepotAddress] = useState('');
     const [quantity, setQuantity] = useState('');
-    const [loadingLocation, setLoadingLocation] = useState('');
+    const [quantityLoaded, setQuantityLoaded] = useState('');
+    const [currentBalance, setCurrentBalance] = useState('');
     const [uploadFile, setUpload] = useState('');
     const [loading2, setLoading2] = useState(0);
     const [defaults, setDefaults] = useState(10);
@@ -36,8 +37,13 @@ const ProductOrderModal = (props) => {
         if(depotAddress === "") return swal("Warning!", "Depot address field cannot be empty", "info");
         if(quantity === "") return swal("Warning!", "Quantity field cannot be empty", "info");
         if(productType === "") return swal("Warning!", "Product field cannot be empty", "info");
-        if(loadingLocation === "") return swal("Warning!", "Location field cannot be empty", "info");
+        if(quantityLoaded === "") return swal("Warning!", "Quantity loaded field cannot be empty", "info");
+        if(currentBalance === "") return swal("Warning!", "Current balance field cannot be empty", "info");
         if(uploadFile === "") return swal("Warning!", "File upload cannot be empty", "info");
+
+        if(isNaN(Number(quantity))) return swal("Warning!", "Quantity field is not a number", "info");
+        if(isNaN(Number(quantityLoaded))) return swal("Warning!", "Quantity field is not a number", "info");
+        if(isNaN(Number(currentBalance))) return swal("Warning!", "Quantity field is not a number", "info");
 
         setLoading(true);
 
@@ -46,8 +52,9 @@ const ProductOrderModal = (props) => {
             depot: depot,
             depotAddress: depotAddress,
             quantity: quantity,
+            quantityLoaded: quantityLoaded,
+            currentBalance: currentBalance,
             productType: productType,
-            loadingLocation: loadingLocation,
             attachCertificate: uploadFile,
             outletID: props.station._id,
             organizationID: props.station.organisation
@@ -72,14 +79,14 @@ const ProductOrderModal = (props) => {
         setLoading2(1);
         const formData = new FormData();
         formData.append("file", file);
-        const config = {
+        const httpConfig = {
             headers: {
                 "content-type": "multipart/form-data",
                 "Authorization": "Bearer "+ localStorage.getItem('token'),
             }
         };
         const url = `${config.BASE_URL}/360-station/api/upload`;
-        axios.post(url, formData, config).then((data) => {
+        axios.post(url, formData, httpConfig).then((data) => {
             setUpload(data.data.path);
         }).then(()=>{
             setLoading2(2);
@@ -89,6 +96,17 @@ const ProductOrderModal = (props) => {
     const menuSelection = (e, data) => {
         setDefaults(e);
         setProductType(data);
+    }
+
+    const loadedQuantity = (e) => {
+
+        if(quantity !== ""){
+            setQuantityLoaded(e);
+            setCurrentBalance(Number(quantity) - Number(e));
+        }else{
+            setQuantityLoaded("");
+            swal("Warning!", "Please enter quantity field!", "info");
+        }
     }
 
     return(
@@ -109,14 +127,16 @@ const ProductOrderModal = (props) => {
                        <div className='middleDiv' style={inner}>
                             <div className='inputs'>
                                 <div className='head-text2'>Date Created</div>
-                                <OutlinedInput 
-                                    sx={{
+                                <input 
+                                    style={{
                                         width:'100%',
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
                                         border:'1px solid #777777',
                                         fontSize:'12px',
+                                        paddingLeft: '10px',
+                                        outline: 'none'
                                     }} placeholder="" 
                                     type='date'
                                     onChange={e => setDateCreated(e.target.value)}
@@ -125,14 +145,16 @@ const ProductOrderModal = (props) => {
 
                             <div className='inputs'>
                                 <div className='head-text2'>Company (Product seller)</div>
-                                <OutlinedInput 
-                                    sx={{
+                                <input 
+                                    style={{
                                         width:'100%',
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
                                         border:'1px solid #777777',
                                         fontSize:'12px',
+                                        paddingLeft: '10px',
+                                        outline: 'none'
                                     }} placeholder="" 
                                     onChange={e => setDepot(e.target.value)}
                                 />
@@ -140,14 +162,16 @@ const ProductOrderModal = (props) => {
 
                             <div className='inputs'>
                                 <div className='head-text2'>Depot Address</div>
-                                <OutlinedInput 
-                                    sx={{
+                                <input 
+                                    style={{
                                         width:'100%',
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
                                         border:'1px solid #777777',
                                         fontSize:'12px',
+                                        paddingLeft: '10px',
+                                        outline: 'none'
                                     }} placeholder="" 
                                     onChange={e => setDepotAddress(e.target.value)}
                                 />
@@ -176,7 +200,7 @@ const ProductOrderModal = (props) => {
                             </div>
 
                             <div className='inputs'>
-                                <div className='head-text2'>Quantity (litre)</div>
+                                <div className='head-text2'>Quantity Ordered (litre)</div>
                                 <input 
                                     style={{
                                         width:'100%',
@@ -188,24 +212,47 @@ const ProductOrderModal = (props) => {
                                         outline: 'none',
                                         paddingLeft:'10px',
                                     }} placeholder="" 
-                                    type='number'
+                                    type='text'
                                     onChange={e => setQuantity(e.target.value)}
                                 />
                             </div>
 
                             <div className='inputs'>
-                                <div className='head-text2'>Loading location</div>
-                                <OutlinedInput 
-                                    sx={{
+                                <div className='head-text2'>Quantity Loaded(ltrs)</div>
+                                <input 
+                                    style={{
                                         width:'100%',
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
                                         border:'1px solid #777777',
                                         fontSize:'12px',
+                                        paddingLeft: '10px',
+                                        outline: 'none'
                                     }} placeholder="" 
                                     type='text'
-                                    onChange={e => setLoadingLocation(e.target.value)}
+                                    value={quantityLoaded}
+                                    onChange={e => loadedQuantity(e.target.value)}
+                                />
+                            </div>
+
+                            <div className='inputs'>
+                                <div className='head-text2'>Current Balance(ltr)</div>
+                                <input 
+                                    style={{
+                                        width:'100%',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        border:'1px solid #777777',
+                                        fontSize:'12px',
+                                        paddingLeft: '10px',
+                                        outline: 'none'
+                                    }} placeholder="" 
+                                    type='text'
+                                    disabled
+                                    value={currentBalance}
+                                    onChange={e => setCurrentBalance(e.target.value)}
                                 />
                             </div>
 
@@ -215,7 +262,7 @@ const ProductOrderModal = (props) => {
                                 background: '#427BBE',
                                 borderRadius: '3px',
                                 fontSize:'10px',
-                                marginTop:'20px',
+                                marginTop:'30px',
                                 marginBottom:'20px',
                                 '&:hover': {
                                     backgroundColor: '#427BBE'

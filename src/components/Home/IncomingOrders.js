@@ -287,7 +287,6 @@ const IncomingOrder = () => {
                         <div className='column'>Discharge Station</div>
                         <div className='column'>Products</div>
                         <div className='column'>Quantity</div>
-                        <div className='column'>Current Level</div>
                         <div className='column'>Truck No</div>
                         <div className='column'>Waybill No</div>
                     </div>
@@ -306,7 +305,6 @@ const IncomingOrder = () => {
                                         <div className='column'>{data.destination}</div>
                                         <div className='column'>{data.product}</div>
                                         <div className='column'>{data.quantity}</div>
-                                        <div className='column'>{data.currentLevel}</div>
                                         <div className='column'>{data.truckNo}</div>
                                         <div className='column'>{data.wayBillNo}</div>
                                     </div>
