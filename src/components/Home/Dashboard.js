@@ -21,6 +21,7 @@ import DashboardService from '../../services/dashboard';
 import { addDashboard, dashboardRecordMore } from '../../store/actions/dashboard';
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import DashboardGraph from '../common/DashboardGraph';
+import Skeleton from '@mui/material/Skeleton';
 
 const DashboardImage = (props) => {
 
@@ -58,20 +59,23 @@ const DashboardImage = (props) => {
 
     return(
         <div className='first-image'>
-            <div onClick={goToNextScreen} className='inner-first-image'>
-                <div className='top-first-image'>
-                    <div className='top-icon'>
-                        <img style={{width:'60px', height:'60px'}} src={props.image} alt="icon" />
+            {props.load?
+                <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={110} />:
+                <div onClick={goToNextScreen} className='inner-first-image'>
+                    <div className='top-first-image'>
+                        <div className='top-icon'>
+                            <img style={{width:'60px', height:'60px'}} src={props.image} alt="icon" />
+                        </div>
+                        <div className='top-text'>
+                            <div style={{fontSize:'14px', fontWeight:'bold', fontFamily:'Nunito-Regular'}}>{props.name}</div>
+                            <div style={{fontSize:'16px', fontWeight:'bold', marginRight:'10px', fontFamily:'Nunito-Regular'}}>{props.value}</div>
+                        </div>
                     </div>
-                    <div className='top-text'>
-                        <div style={{fontSize:'14px', fontWeight:'bold', fontFamily:'Nunito-Regular'}}>{props.name}</div>
-                        <div style={{fontSize:'16px', fontWeight:'bold', marginRight:'10px', fontFamily:'Nunito-Regular'}}>{props.value}</div>
+                    <div className='bottom-first-image'>
+                        <img style={{width:'30px', height:'10px'}} src={me6} alt="icon" />
                     </div>
                 </div>
-                <div className='bottom-first-image'>
-                    <img style={{width:'30px', height:'10px'}} src={me6} alt="icon" />
-                </div>
-            </div>
+            }
         </div>
     )
 }
@@ -88,7 +92,7 @@ const Dashboard = (props) => {
     const [defaultState, setDefault] = useState(0);
     const [currentStation, setCurrentStation] = useState(null);
     const [value, setValue] = useState([new Date(), new Date()]);
-    console.log(dashboardRecords, "from redux")
+    const [load, setLoad] = useState(false);
 
     const collectAndAnalyseData = (data) => {
         let activeTank = data.station.tanks.filter(data => data.activeState === "1");
@@ -116,6 +120,7 @@ const Dashboard = (props) => {
         }
 
         if(user.userType === "superAdmin"){
+            setLoad(true);
             OutletService.getAllOutletStations(payload).then(data => {console.log(data, 'dash')
                 dispatch(getAllStations(data.station));
                 if(data.station.length !== 0){
@@ -126,9 +131,12 @@ const Dashboard = (props) => {
             }).then(data => {
                 DashboardService.allAttendanceRecords({id: data?.organisation, outletID: data?._id}).then(data => {
                     collectAndAnalyseData(data);
-                });
+                }).then(()=>{
+                    setLoad(false);
+                })
             });
         }else{
+            setLoad(true);
             OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
                 dispatch(adminOutlet(data.station));
                 setCurrentStation(data.station);
@@ -136,7 +144,9 @@ const Dashboard = (props) => {
             }).then(data => {
                 DashboardService.allAttendanceRecords({id: data.organisation, outletID: data._id}).then(data => {
                     collectAndAnalyseData(data);
-                });
+                }).then(()=>{
+                    setLoad(false);
+                })
             });
         }
         
@@ -332,26 +342,29 @@ const Dashboard = (props) => {
                             </div>
                         </div>
                         <div style={{marginTop:'0px'}} className='dashImages'>
-                            <DashboardImage screen={"employee"} image={me1} name={'Current staff'} value={dashboardData?.count}/>
+                            <DashboardImage load={load} screen={"employee"} image={me1} name={'Current staff'} value={dashboardData?.count}/>
                             <div data-aos="flip-left" className='first-image'>
-                                <div className='inner-first-image'>
-                                    <div className='top-first-image'>
-                                        <div className='top-icon'>
-                                            <img style={{width:'60px', height:'70px'}} src={me2} alt="icon" />
-                                        </div>
-                                        <div className='top-text'>
-                                            <div style={{ width:'100%', fontSize:'14px', textAlign:'right', fontFamily:'Nunito-Regular'}}>
-                                                <div style={{marginTop:'5px', fontWeight:'bold', fontSize:'14px'}}>Liter: <span style={{fontWeight:'bold', fontSize:'14px'}}>{dashboardRecords.sales.totalVolume}</span> LTR</div>
-                                                <div style={{marginTop:'10px', fontWeight:'bold', fontSize:'14px'}}>
-                                                    Total Sales: <span style={{fontWeight:'bold'}}>NGN {dashboardRecords.sales.totalAmount}</span>
+                                {load?
+                                    <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={110} />:
+                                    <div className='inner-first-image'>
+                                        <div className='top-first-image'>
+                                            <div className='top-icon'>
+                                                <img style={{width:'60px', height:'70px'}} src={me2} alt="icon" />
+                                            </div>
+                                            <div className='top-text'>
+                                                <div style={{ width:'100%', fontSize:'14px', textAlign:'right', fontFamily:'Nunito-Regular'}}>
+                                                    <div style={{marginTop:'5px', fontWeight:'bold', fontSize:'14px'}}>Liter: <span style={{fontWeight:'bold', fontSize:'14px'}}>{dashboardRecords.sales.totalVolume}</span> LTR</div>
+                                                    <div style={{marginTop:'10px', fontWeight:'bold', fontSize:'14px'}}>
+                                                        Total Sales: <span style={{fontWeight:'bold'}}>NGN {dashboardRecords.sales.totalAmount}</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
+                                        <div className='bottom-first-image'>
+                                            <img style={{width:'30px', height:'10px'}} src={me6} alt="icon" />
+                                        </div>
                                     </div>
-                                    <div className='bottom-first-image'>
-                                        <img style={{width:'30px', height:'10px'}} src={me6} alt="icon" />
-                                    </div>
-                                </div>
+                                }
                             </div>
                         </div>
                         <div style={{marginTop:'40px', fontWeight:'bold', fontSize:'18px', fontFamily:'Nunito-Regular', color: user.isDark === '0'? '#000': '#fff'}}>Total Sales</div>
@@ -378,12 +391,12 @@ const Dashboard = (props) => {
                             </Button>
                         </div>
                         <div className='dashImages'>
-                            <DashboardImage station={currentStation} screen={"activeTank"} image={me4} name={'Active Tank'} value={dashboardData.tanks.activeTank.count} />
-                            <DashboardImage station={currentStation} screen={"inactiveTank"} image={me4} name={'Inactive Tank'} value={dashboardData.tanks.inActiveTank.count}/>
+                            <DashboardImage load={load} station={currentStation} screen={"activeTank"} image={me4} name={'Active Tank'} value={dashboardData.tanks.activeTank.count} />
+                            <DashboardImage load={load} station={currentStation} screen={"inactiveTank"} image={me4} name={'Inactive Tank'} value={dashboardData.tanks.inActiveTank.count}/>
                         </div>
                         <div style={{marginTop:'15px'}} className='dashImages'>
-                            <DashboardImage station={currentStation} screen={"activePump"} image={me5} name={'Active Pump'} value={dashboardData.pumps.activePumps.count}/>
-                            <DashboardImage station={currentStation} screen={"inactivePump"} image={me5} name={'Inactive Pump'} value={dashboardData.pumps.inActivePumps.count}/>
+                            <DashboardImage load={load} station={currentStation} screen={"activePump"} image={me5} name={'Active Pump'} value={dashboardData.pumps.activePumps.count}/>
+                            <DashboardImage load={load} station={currentStation} screen={"inactivePump"} image={me5} name={'Inactive Pump'} value={dashboardData.pumps.inActivePumps.count}/>
                         </div>
 
                         <div className='section'>
@@ -408,31 +421,46 @@ const Dashboard = (props) => {
                             </div>
                             <div className='inner-section'>
                                 <div className="cardss">
-                                    <div className='left'>
-                                        PMS
-                                    </div>
-                                    <div className='right'>
-                                        <div>Litre Qty</div>
-                                        <div>{dashboardRecords.supply.pmsSupply} Litres</div>
-                                    </div>
+                                    {load?
+                                        <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={90} />:
+                                        <>
+                                            <div className='left'>
+                                                PMS
+                                            </div>
+                                            <div className='right'>
+                                                <div>Litre Qty</div>
+                                                <div>{dashboardRecords.supply.pmsSupply} Litres</div>
+                                            </div>
+                                        </>
+                                    }
                                 </div>
                                 <div className="cardss">
-                                    <div className='left'>
-                                        AGO
-                                    </div>
-                                    <div className='right'>
-                                        <div>Litre Qty</div>
-                                        <div>{dashboardRecords.supply.agoSupply} Litres</div>
-                                    </div>
+                                    {load?
+                                        <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={90} />:
+                                        <>
+                                            <div className='left'>
+                                                AGO
+                                            </div>
+                                            <div className='right'>
+                                                <div>Litre Qty</div>
+                                                <div>{dashboardRecords.supply.agoSupply} Litres</div>
+                                            </div>
+                                        </>
+                                    }
                                 </div>
                                 <div style={{marginRight:'0px'}} className="cardss">
-                                    <div className='left'>
-                                        DPK
-                                    </div>
-                                    <div className='right'>
-                                        <div>Litre Qty</div>
-                                        <div>{dashboardRecords.supply.dpkSupply} Litres</div>
-                                    </div>
+                                    {load?
+                                        <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={90} />:
+                                        <>
+                                            <div className='left'>
+                                                DPK
+                                            </div>
+                                            <div className='right'>
+                                                <div>Litre Qty</div>
+                                                <div>{dashboardRecords.supply.dpkSupply} Litres</div>
+                                            </div>
+                                        </>
+                                    }
                                 </div>
                             </div>
 

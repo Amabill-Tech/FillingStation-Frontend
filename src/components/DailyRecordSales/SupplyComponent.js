@@ -27,7 +27,7 @@ const SupplyComponent = () => {
 
     // payload data
     const [transporter, setTransporter] = useState('');
-    const [waybillNo, setWaybillNo] = useState('');
+    const [waybillNo, setWaybillNo] = useState('Select waybill no');
     const [truckNo, setTruckNo] = useState('');
     const [productSupply, setProductSupply] = useState('');
     const [quantityLoaded, setQuantityLoaded] = useState('');
