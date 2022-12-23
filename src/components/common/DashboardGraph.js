@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button, Skeleton } from "@mui/material";
 import { Line } from "react-chartjs-2";
 import calendar from '../../assets/calendar.png';
 import DashboardService from "../../services/dashboard";
@@ -631,62 +631,65 @@ const DashboardGraph = (props) => {
 
     return(
         <div style={{marginTop:'10px'}} className='dash-records'>
-            <div className='padding-container'>
-                <div className='week'>
-                    <div className='butts'>
-                        <Button onClick={()=>{switchGraphTab("week")}} sx={currentSelection === 0? activeButton: inActive}  variant="contained"> Week </Button>
-                        <Button onClick={()=>{switchGraphTab("month")}} sx={currentSelection === 1? activeButton: inActive}  variant="contained"> Month </Button>
-                        <Button onClick={()=>{switchGraphTab("year")}} sx={currentSelection === 2? activeButton: inActive}  variant="contained"> Year </Button>
-                    </div>
-                    <div className='dates'>
-                        <div style={{width:'100%', display:'flex', flexDirection:'row', justifyContent:'flex-end'}}>
-                            <input 
-                                onChange={updateDate} 
-                                ref={dateHandle} 
-                                style={{
-                                    width:'140px',
-                                    height:'30px',
-                                    background:'#06805B',
-                                    fontSize:'12px',
-                                    borderRadius:'0px',
-                                    textTransform:'capitalize',
-                                    display:'flex',
-                                    flexDirection:'row',
-                                    alignItems:'center',
-                                    color:'#fff',
-                                    border:'none',
-                                    boxShadow:'0px 0px 5px 5px #ccc',
-                                    outline:'none',
-                                    paddingLeft:'6px',
-                                    '&:hover': {
-                                        backgroundColor: '#06805B',
-                                        opacity:'0.9'
-                                    }
-                                }} 
-                                type="date" />
+            {props.load?
+                <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={450} />:
+                <div className='padding-container'>
+                    <div className='week'>
+                        <div className='butts'>
+                            <Button onClick={()=>{switchGraphTab("week")}} sx={currentSelection === 0? activeButton: inActive}  variant="contained"> Week </Button>
+                            <Button onClick={()=>{switchGraphTab("month")}} sx={currentSelection === 1? activeButton: inActive}  variant="contained"> Month </Button>
+                            <Button onClick={()=>{switchGraphTab("year")}} sx={currentSelection === 2? activeButton: inActive}  variant="contained"> Year </Button>
+                        </div>
+                        <div className='dates'>
+                            <div style={{width:'100%', display:'flex', flexDirection:'row', justifyContent:'flex-end'}}>
+                                <input 
+                                    onChange={updateDate} 
+                                    ref={dateHandle} 
+                                    style={{
+                                        width:'140px',
+                                        height:'30px',
+                                        background:'#06805B',
+                                        fontSize:'12px',
+                                        borderRadius:'0px',
+                                        textTransform:'capitalize',
+                                        display:'flex',
+                                        flexDirection:'row',
+                                        alignItems:'center',
+                                        color:'#fff',
+                                        border:'none',
+                                        boxShadow:'0px 0px 5px 5px #ccc',
+                                        outline:'none',
+                                        paddingLeft:'6px',
+                                        '&:hover': {
+                                            backgroundColor: '#06805B',
+                                            opacity:'0.9'
+                                        }
+                                    }} 
+                                    type="date" />
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className='type'>
-                    <div className='single-type'>
-                        <div className='color'></div>
-                        <div className='name'>PMS</div>
+                    <div className='type'>
+                        <div className='single-type'>
+                            <div className='color'></div>
+                            <div className='name'>PMS</div>
+                        </div>
+                        <div style={{marginLeft:'10px'}} className='single-type'>
+                            <div style={{background:'#FFA010'}} className='color'></div>
+                            <div className='name'>AGO</div>
+                        </div>
+                        <div style={{marginLeft:'10px'}} className='single-type'>
+                            <div style={{background:'#35393E'}} className='color'></div>
+                            <div className='name'>DPK</div>
+                        </div>
                     </div>
-                    <div style={{marginLeft:'10px'}} className='single-type'>
-                        <div style={{background:'#FFA010'}} className='color'></div>
-                        <div className='name'>AGO</div>
-                    </div>
-                    <div style={{marginLeft:'10px'}} className='single-type'>
-                        <div style={{background:'#35393E'}} className='color'></div>
-                        <div className='name'>DPK</div>
+                    <div className='graph'>
+                        <Line options={options} data={
+                            currentSelection === 0? weeklyDataSet: currentSelection === 1? monthlyDataSet: currentSelection? annualDataSet: []
+                        } />
                     </div>
                 </div>
-                <div className='graph'>
-                    <Line options={options} data={
-                        currentSelection === 0? weeklyDataSet: currentSelection === 1? monthlyDataSet: currentSelection? annualDataSet: []
-                    } />
-                </div>
-            </div>
+            }
         </div>
     )
 }

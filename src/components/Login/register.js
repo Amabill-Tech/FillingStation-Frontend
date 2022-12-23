@@ -6,6 +6,8 @@ import swal from 'sweetalert';
 import { register, setSpinner } from '../../store/actions/auth';
 import { useDispatch } from 'react-redux';
 import '../../styles/login.scss';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import COUNTRIES from '../common/countryList';
 
 const Register = (props) => {
 
@@ -19,6 +21,11 @@ const Register = (props) => {
     const [confirm, setConfirm] = useState('');
     const [org, setOrg] = useState('');
     const [location, setLocation] = useState('');
+    const [country, setCountry] = useState('');
+    const [menus, setMenus] = useState(false);
+    const [datas, setDatas] = useState(COUNTRIES);
+    const [timezone, setTimeZone] = useState("");
+    const [countryCode, setCountryCode] = useState("");
 
     const switchToRegister = () => props.reg(prev => !prev);
 
@@ -26,6 +33,7 @@ const Register = (props) => {
         if(firstname === "") return swal("Warning!", "First name field cannot be empty", "info");
         if(lastname === "") return swal("Warning!", "Last name field cannot be empty", "info");
         if(email === "") return swal("Warning!", "Email field cannot be empty", "info");
+        if(country === "") return swal("Warning!", "Please select country", "info");
         if(password === "") return swal("Warning!", "Password field cannot be empty", "info");
         if(password !== confirm) return swal("Warning!", "Password must match", "info");
         if(org === "") return swal("Warning!", "Organisation field cannot be empty", "info");
@@ -35,6 +43,9 @@ const Register = (props) => {
             firstname: firstname,
             lastname: lastname,
             email: email,
+            country: country,
+            timezone: timezone,
+            countryCode: countryCode,
             password: password,
             organisation: org,
             location: location,
@@ -44,14 +55,27 @@ const Register = (props) => {
         dispatch(register(data));
     }
 
+    const filterCountry = (e) => {
+        const list = COUNTRIES.filter(data => !data.name.toUpperCase().indexOf(e.target.value.toUpperCase()));
+        setDatas(list);
+    }
+
+    const selectedCountry = (data) => {
+        setCountry(data.name);
+        setTimeZone(data.timezone);
+        setCountryCode(data.code);
+        setMenus(!menus);
+    }
+
     return(
-        <div style={{height:'600px'}} className='login-form-container'>
+        <div style={{height:'auto'}} className='login-form-container'>
             <div className='inner-sign'>
                 <div className='login-text'>Signup</div>
                 <input 
                     className='input-field' 
                     type={'text'} 
                     placeholder="First name"  
+                    value={firstname}
                     onChange = {e => setFirstName(e.target.value)}
                 />
 
@@ -60,14 +84,16 @@ const Register = (props) => {
                     className='input-field' 
                     type={'text'} 
                     placeholder="Last name"  
+                    value={lastname}
                     onChange = {e => setLastName(e.target.value)}
                 />
 
                 <input 
                     style={{marginTop:'20px'}}
                     className='input-field' 
-                    type={'email'} 
+                    type={'text'} 
                     placeholder="Email"  
+                    value={email}
                     onChange = {e => setEmail(e.target.value)}
                 />
 
@@ -76,14 +102,41 @@ const Register = (props) => {
                     className='input-field' 
                     type={'text'} 
                     placeholder="Organisation"  
+                    value={org}
                     onChange = {e => setOrg(e.target.value)}
                 />
+
+                <div className='single-form'>
+                    <div className='input-d'>
+                        <div style={{width: '100%', position:'relative'}}>
+                            <div onClick={()=>setMenus(!menus)} className='text-field2'>
+                                <span style={{fontWeight:'100'}}>{country===""? "Select Country": country}</span>
+                                <KeyboardArrowDownIcon sx={{marginRight:'10px'}} />
+                            </div>
+                            {menus &&
+                                <div className="drop">
+                                    <input onChange={(e)=>{filterCountry(e)}} className="searches" type={'text'} placeholder="Search" />
+                                    <div className="cons">
+                                        {
+                                            datas.map((data, index) => {
+                                                return(
+                                                    <span onClick={()=>{selectedCountry(data)}} key={index} className="ids">&nbsp;&nbsp;&nbsp; {data.name}</span>
+                                                )
+                                            })
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
 
                 <input 
                     style={{marginTop:'20px'}}
                     className='input-field' 
                     type={'password'} 
                     placeholder="Password"  
+                    value={password}
                     onChange = {e => setPassword(e.target.value)}
                 />
 
@@ -92,6 +145,7 @@ const Register = (props) => {
                     className='input-field' 
                     type={'password'} 
                     placeholder="Confirm password"  
+                    value={confirm}
                     onChange = {e => setConfirm(e.target.value)}
                 />
 
@@ -99,7 +153,8 @@ const Register = (props) => {
                     style={{marginTop:'20px'}}
                     className='input-field' 
                     type={'text'} 
-                    placeholder="Location"  
+                    placeholder="Location" 
+                    value={location} 
                     onChange = {e => setLocation(e.target.value)}
                 />
 

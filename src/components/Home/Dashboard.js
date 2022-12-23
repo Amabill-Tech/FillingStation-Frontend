@@ -275,6 +275,7 @@ const Dashboard = (props) => {
     }
 
     const onChange = (data) => {
+        setLoad(true);
         const rangeOne = new Date(data[0]);
         const rangeOneYear = rangeOne.getFullYear();
         const rangeOneMonth = rangeOne.getMonth() + 1;
@@ -297,7 +298,9 @@ const Dashboard = (props) => {
         DashboardService.allSalesRecords(payload).then(data => { console.log(data, "dddattt")
             const evaluatedDashboard = collectAndEvaluateDashboard(data);
             dispatch(dashboardRecordMore(evaluatedDashboard));
-        });
+        }).then(()=>{
+            setLoad(false);
+        })
         setValue(data);
     }
 
@@ -368,40 +371,13 @@ const Dashboard = (props) => {
                             </div>
                         </div>
                         <div style={{marginTop:'40px', fontWeight:'bold', fontSize:'18px', fontFamily:'Nunito-Regular', color: user.isDark === '0'? '#000': '#fff'}}>Total Sales</div>
-                        <DashboardGraph station={currentStation} />
+                        <DashboardGraph load={load} station={currentStation} />
                     </div>
                     <div className='right-dash'>
                         <div className='asset'>
                             <div style={{color: user.isDark === '0'? '#000': '#fff'}} >Asset</div>
-                            <Button 
-                                variant="contained" 
-                                startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} src={slideMenu} alt="icon" />}
-                                sx={{
-                                    width:'165px',
-                                    height:'30px',
-                                    background:'#06805B',
-                                    fontSize:'11px',
-                                    borderRadius:'0px',
-                                    '&:hover': {
-                                        backgroundColor: '#06805B'
-                                    }
-                                }}
-                            >
-                                View in details
-                            </Button>
-                        </div>
-                        <div className='dashImages'>
-                            <DashboardImage load={load} station={currentStation} screen={"activeTank"} image={me4} name={'Active Tank'} value={dashboardData.tanks.activeTank.count} />
-                            <DashboardImage load={load} station={currentStation} screen={"inactiveTank"} image={me4} name={'Inactive Tank'} value={dashboardData.tanks.inActiveTank.count}/>
-                        </div>
-                        <div style={{marginTop:'15px'}} className='dashImages'>
-                            <DashboardImage load={load} station={currentStation} screen={"activePump"} image={me5} name={'Active Pump'} value={dashboardData.pumps.activePumps.count}/>
-                            <DashboardImage load={load} station={currentStation} screen={"inactivePump"} image={me5} name={'Inactive Pump'} value={dashboardData.pumps.inActivePumps.count}/>
-                        </div>
-
-                        <div className='section'>
-                            <div className='asset'>
-                                <div style={{color: user.isDark === '0'? '#000': '#fff'}}>Supply</div>
+                            {load?
+                                <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={130} height={35} />:
                                 <Button 
                                     variant="contained" 
                                     startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} src={slideMenu} alt="icon" />}
@@ -418,6 +394,39 @@ const Dashboard = (props) => {
                                 >
                                     View in details
                                 </Button>
+                            }
+                        </div>
+                        <div className='dashImages'>
+                            <DashboardImage load={load} station={currentStation} screen={"activeTank"} image={me4} name={'Active Tank'} value={dashboardData.tanks.activeTank.count} />
+                            <DashboardImage load={load} station={currentStation} screen={"inactiveTank"} image={me4} name={'Inactive Tank'} value={dashboardData.tanks.inActiveTank.count}/>
+                        </div>
+                        <div style={{marginTop:'15px'}} className='dashImages'>
+                            <DashboardImage load={load} station={currentStation} screen={"activePump"} image={me5} name={'Active Pump'} value={dashboardData.pumps.activePumps.count}/>
+                            <DashboardImage load={load} station={currentStation} screen={"inactivePump"} image={me5} name={'Inactive Pump'} value={dashboardData.pumps.inActivePumps.count}/>
+                        </div>
+
+                        <div className='section'>
+                            <div className='asset'>
+                                <div style={{color: user.isDark === '0'? '#000': '#fff'}}>Supply</div>
+                                {load?
+                                    <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={130} height={35} />:
+                                    <Button 
+                                        variant="contained" 
+                                        startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} src={slideMenu} alt="icon" />}
+                                        sx={{
+                                            width:'165px',
+                                            height:'30px',
+                                            background:'#06805B',
+                                            fontSize:'11px',
+                                            borderRadius:'0px',
+                                            '&:hover': {
+                                                backgroundColor: '#06805B'
+                                            }
+                                        }}
+                                    >
+                                        View in details
+                                    </Button>
+                                }
                             </div>
                             <div className='inner-section'>
                                 <div className="cardss">
@@ -468,127 +477,138 @@ const Dashboard = (props) => {
                                 <span>Net to Bank</span><span>Payments</span><span>Outstanding</span>
                             </div>
                             <div onClick={goToPayments} style={{height:'110px', marginTop:'0px'}} className='inner-section'>
-                                <div className='inner-content'>
-                                    <div className='conts'>
-                                        <div className='row-count'>
-                                            <div style={{color:'green', fontSize:'14px', fontWeight:'600'}} className='item-count'>NGN {dashboardRecords.payments.netToBank}</div>
-                                            <div style={{color:'#0872D4', fontSize:'14px', fontWeight:'600'}} className='item-count'>Teller</div>
-                                            <div style={{color:'#0872D4', fontSize:'14px', fontWeight:'600'}} className='item-count'>NGN {dashboardRecords.payments.totalPayments}</div>
-                                            <div style={{color:'red', fontSize:'14px', fontWeight:'600'}} className='item-count'>NGN {dashboardRecords.payments.totalPosPayments}</div>
-                                        </div>
-                                        <div className='row-count'>
-                                            <div style={{color:'green', fontSize:'14px', fontWeight:'600'}} className='item-count'></div>
-                                            <div style={{color:'#0872D4', fontSize:'12px', fontWeight:'600'}} className='item-count'>POS</div>
-                                            <div style={{color:'#0872D4', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {dashboardRecords.payments.outstanding}</div>
-                                            <div style={{color:'red', fontSize:'14px', fontWeight:'600'}} className='item-count'></div>
-                                        </div>
-                                        <div style={{marginTop:'10px'}} className="arrows">
-                                            <div className="image">
-                                                <img style={{width:'20px', height:'8px', marginRight:'30px'}} src={me6} alt="icon" />
+                                {load?
+                                    <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={90} />:
+                                    <div className='inner-content'>
+                                        <div className='conts'>
+                                            <div className='row-count'>
+                                                <div style={{color:'green', fontSize:'14px', fontWeight:'600'}} className='item-count'>NGN {dashboardRecords.payments.netToBank}</div>
+                                                <div style={{color:'#0872D4', fontSize:'14px', fontWeight:'600'}} className='item-count'>Teller</div>
+                                                <div style={{color:'#0872D4', fontSize:'14px', fontWeight:'600'}} className='item-count'>NGN {dashboardRecords.payments.totalPayments}</div>
+                                                <div style={{color:'red', fontSize:'14px', fontWeight:'600'}} className='item-count'>NGN {dashboardRecords.payments.totalPosPayments}</div>
                                             </div>
-                                            <div className="image">
-                                                <img style={{width:'20px', height:'8px', marginRight:'30px'}} src={me6} alt="icon" />
+                                            <div className='row-count'>
+                                                <div style={{color:'green', fontSize:'14px', fontWeight:'600'}} className='item-count'></div>
+                                                <div style={{color:'#0872D4', fontSize:'12px', fontWeight:'600'}} className='item-count'>POS</div>
+                                                <div style={{color:'#0872D4', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {dashboardRecords.payments.outstanding}</div>
+                                                <div style={{color:'red', fontSize:'14px', fontWeight:'600'}} className='item-count'></div>
                                             </div>
-                                            <div className="image">
-                                                <img style={{width:'20px', height:'8px', marginRight:'30px'}} src={me6} alt="icon" />
+                                            <div style={{marginTop:'10px'}} className="arrows">
+                                                <div className="image">
+                                                    <img style={{width:'20px', height:'8px', marginRight:'30px'}} src={me6} alt="icon" />
+                                                </div>
+                                                <div className="image">
+                                                    <img style={{width:'20px', height:'8px', marginRight:'30px'}} src={me6} alt="icon" />
+                                                </div>
+                                                <div className="image">
+                                                    <img style={{width:'20px', height:'8px', marginRight:'30px'}} src={me6} alt="icon" />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                }
                             </div>
 
                             <div style={{marginTop:'30px', color: user.isDark === '0'? '#000': '#fff'}} className='bank'>Expenses</div>
                             <div onClick={goToExpenses} style={{height:'110px'}} className='inner-section'>
-                                <div style={{
-                                    backgroundImage:`url(${expense})`, 
-                                    backgroundSize:'contain',
-                                    backgroundRepeat:'no-repeat',
-                                    display:'flex',
-                                    flexDirection:'row',
-                                    justifyContent:'flex-end',
-                                    alignItems:'center',
-                                    }} className='inner-content'>
-                                    <span style={{marginRight:'30px', fontSize:'14px', fontWeight:'900'}}>NGN {dashboardRecords.totalExpenses}</span>
-                                </div>
+                                {load?
+                                    <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={90} />:
+                                    <div style={{
+                                        backgroundImage:`url(${expense})`, 
+                                        backgroundSize:'contain',
+                                        backgroundRepeat:'no-repeat',
+                                        display:'flex',
+                                        flexDirection:'row',
+                                        justifyContent:'flex-end',
+                                        alignItems:'center',
+                                        }} className='inner-content'>
+                                        <span style={{marginRight:'30px', fontSize:'14px', fontWeight:'900'}}>NGN {dashboardRecords.totalExpenses}</span>
+                                    </div>
+                                }
                             </div>
                         </div>
 
                         <div className='station'>
                             <div style={{ color: user.isDark === '0'? '#000': '#fff'}} className='bank'>Station</div>
                             <div className='station-container'>
-                                <div className='station-content'>
-                                    <div className='inner-stat'>
-                                        <div className='inner-header'>Ammasco Oil, Albasu, Kano</div>
-                                        <div className='station-slider'>
-                                            <div className='slideName'>
-                                                <div className='pms'>PMS</div>
-                                                <progress className='prog' value="70" max="100"> 70% </progress>
+                                {load?
+                                    <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={300} />:
+                                    <>
+                                        <div className='station-content'>
+                                        <div className='inner-stat'>
+                                            <div className='inner-header'>Ammasco Oil, Albasu, Kano</div>
+                                            <div className='station-slider'>
+                                                <div className='slideName'>
+                                                    <div className='pms'>PMS</div>
+                                                    <progress className='prog' value="70" max="100"> 70% </progress>
+                                                </div>
+                                                <div className='slideQty'>2500 Ltr</div>
                                             </div>
-                                            <div className='slideQty'>2500 Ltr</div>
-                                        </div>
-                                        <div className='station-slider'>
-                                            <div className='slideName'>
-                                                <div className='pms'>AGO</div>
-                                                <progress className='prog' value="50" max="100"> 50% </progress>
+                                            <div className='station-slider'>
+                                                <div className='slideName'>
+                                                    <div className='pms'>AGO</div>
+                                                    <progress className='prog' value="50" max="100"> 50% </progress>
+                                                </div>
+                                                <div className='slideQty'>2500 Ltr</div>
                                             </div>
-                                            <div className='slideQty'>2500 Ltr</div>
-                                        </div>
-                                        <div className='station-slider'>
-                                            <div className='slideName'>
-                                                <div className='pms'>DPK</div>
-                                                <progress className='prog' value="32" max="100"> 32% </progress>
+                                            <div className='station-slider'>
+                                                <div className='slideName'>
+                                                    <div className='pms'>DPK</div>
+                                                    <progress className='prog' value="32" max="100"> 32% </progress>
+                                                </div>
+                                                <div className='slideQty'>2500 Ltr</div>
                                             </div>
-                                            <div className='slideQty'>2500 Ltr</div>
-                                        </div>
-                                        <div className='butom'>
-                                            <div className='pump-cont'>
-                                                <div>No of Pump</div>
-                                                <div className='amount'>2</div>
-                                            </div>
-                                            <div style={{marginLeft:'20px'}} className='pump-cont'>
-                                                <div>No of Pump</div>
-                                                <div className='amount'>2</div>
+                                            <div className='butom'>
+                                                <div className='pump-cont'>
+                                                    <div>No of Pump</div>
+                                                    <div className='amount'>2</div>
+                                                </div>
+                                                <div style={{marginLeft:'20px'}} className='pump-cont'>
+                                                    <div>No of Pump</div>
+                                                    <div className='amount'>2</div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div style={{marginTop:'0px'}} className='station-content'>
-                                    <div className='inner-stat'>
-                                        <div className='inner-header'>Ammasco Oil, Albasu, Kano</div>
-                                        <div className='station-slider'>
-                                            <div className='slideName'>
-                                                <div className='pms'>PMS</div>
-                                                <progress className='prog' value="70" max="100"> 70% </progress>
+                                    <div style={{marginTop:'0px'}} className='station-content'>
+                                        <div className='inner-stat'>
+                                            <div className='inner-header'>Ammasco Oil, Albasu, Kano</div>
+                                            <div className='station-slider'>
+                                                <div className='slideName'>
+                                                    <div className='pms'>PMS</div>
+                                                    <progress className='prog' value="70" max="100"> 70% </progress>
+                                                </div>
+                                                <div className='slideQty'>2500 Ltr</div>
                                             </div>
-                                            <div className='slideQty'>2500 Ltr</div>
-                                        </div>
-                                        <div className='station-slider'>
-                                            <div className='slideName'>
-                                                <div className='pms'>AGO</div>
-                                                <progress className='prog' value="50" max="100"> 50% </progress>
+                                            <div className='station-slider'>
+                                                <div className='slideName'>
+                                                    <div className='pms'>AGO</div>
+                                                    <progress className='prog' value="50" max="100"> 50% </progress>
+                                                </div>
+                                                <div className='slideQty'>2500 Ltr</div>
                                             </div>
-                                            <div className='slideQty'>2500 Ltr</div>
-                                        </div>
-                                        <div className='station-slider'>
-                                            <div className='slideName'>
-                                                <div className='pms'>DPK</div>
-                                                <progress className='prog' value="32" max="100"> 32% </progress>
+                                            <div className='station-slider'>
+                                                <div className='slideName'>
+                                                    <div className='pms'>DPK</div>
+                                                    <progress className='prog' value="32" max="100"> 32% </progress>
+                                                </div>
+                                                <div className='slideQty'>2500 Ltr</div>
                                             </div>
-                                            <div className='slideQty'>2500 Ltr</div>
-                                        </div>
-                                        <div className='butom'>
-                                            <div className='pump-cont'>
-                                                <div>No of Pump</div>
-                                                <div className='amount'>2</div>
-                                            </div>
-                                            <div style={{marginLeft:'20px'}} className='pump-cont'>
-                                                <div>No of Pump</div>
-                                                <div className='amount'>2</div>
+                                            <div className='butom'>
+                                                <div className='pump-cont'>
+                                                    <div>No of Pump</div>
+                                                    <div className='amount'>2</div>
+                                                </div>
+                                                <div style={{marginLeft:'20px'}} className='pump-cont'>
+                                                    <div>No of Pump</div>
+                                                    <div className='amount'>2</div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                    </>
+                                }
                             </div>
                         </div>
 
