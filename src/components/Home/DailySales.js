@@ -22,6 +22,7 @@ import { useRef } from 'react';
 import DailySalesService from '../../services/DailySales';
 import { bulkReports, dailySupplies, lpoRecords, passAllDailySales, passCummulative, passExpensesAndPayments, passIncomingOrder, paymentRecords } from '../../store/actions/dailySales';
 import BarChartGraph from '../common/BarChartGraph';
+import { Skeleton } from '@mui/material';
 
 const months = {
     '01' : 'Jan',
@@ -47,6 +48,7 @@ const DailySales = (props) => {
     const user = useSelector(state => state.authReducer.user);
     const dispatch = useDispatch();
     const history = useHistory();
+    const [load, setLoads] = useState(false);
     const tankList = useSelector(state => state.outletReducer.tankList);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
@@ -327,6 +329,7 @@ const DailySales = (props) => {
         }
 
         if(user.userType === "superAdmin"){
+            setLoads(true);
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
                 if(data.station.length !== 0){
@@ -336,14 +339,17 @@ const DailySales = (props) => {
                 return data.station[0];
             }).then(async(data)=>{
                 getAndAnalyzeDailySales(data, true, "");
+                setLoads(false);
             });
         }else{
+            setLoads(true);
             OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
                 dispatch(adminOutlet(data.station));
                 setCurrentStation(data.station);
                 return data.station;
             }).then(async(data)=>{
                 getAndAnalyzeDailySales(data, true, "");
+                setLoads(false);
             });
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -420,6 +426,7 @@ const DailySales = (props) => {
     const changeMenu = (index, item ) => {
         setDefault(index);
         setCurrentStation(item);
+        setLoads(true);
 
         getAndAnalyzeDailySales(item, true, "");
 
@@ -429,6 +436,7 @@ const DailySales = (props) => {
         }
         OutletService.getAllOutletTanks(payload).then(data => {
             dispatch(getAllOutletTanks(data.stations));
+            setLoads(false);
         });
     }
 
@@ -517,89 +525,101 @@ const DailySales = (props) => {
 
                         <div className='item-dash-daily'>
                             <div data-aos="flip-left" className="dash-item">
-                                <div onClick={()=>{openDailySales("pms")}} className="inner-dash-item">
-                                    <div className="dash-image">
-                                        <img style={{width:'60px', height:'50px'}} src={me5} alt="icon" />
-                                    </div>
-                                    <div className="dash-details">
-                                        <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
-                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', fontSize:'14px'}}>PMS</div>
-                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Litre {
-                                                dailySales.hasOwnProperty("PMS")? Number(dailySales.PMS.total.totalDifference) + Number(dailySales.PMS.total.totalLpo) - Number(dailySales.PMS.total.totalrt): 0.00
-                                            } ltr</div>
-                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Total Amount N {
-                                                dailySales.hasOwnProperty("PMS")? dailySales.PMS.total.amount: 0.00
-                                            }</div>
+                                {load?
+                                    <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={110} />:
+                                    <div onClick={()=>{openDailySales("pms")}} className="inner-dash-item">
+                                        <div className="dash-image">
+                                            <img style={{width:'60px', height:'50px'}} src={me5} alt="icon" />
+                                        </div>
+                                        <div className="dash-details">
+                                            <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
+                                                <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', fontSize:'14px'}}>PMS</div>
+                                                <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Litre {
+                                                    dailySales.hasOwnProperty("PMS")? Number(dailySales.PMS.total.totalDifference) + Number(dailySales.PMS.total.totalLpo) - Number(dailySales.PMS.total.totalrt): 0.00
+                                                } ltr</div>
+                                                <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Total Amount N {
+                                                    dailySales.hasOwnProperty("PMS")? dailySales.PMS.total.amount: 0.00
+                                                }</div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                }
                             </div>
                             <div data-aos="flip-left" className="dash-item">
-                                <div onClick={()=>{openDailySales("ago")}} className="inner-dash-item">
-                                    <div className="dash-image">
-                                        <img style={{width:'60px', height:'50px'}} src={me5} alt="icon" />
-                                    </div>
-                                    <div className="dash-details">
-                                        <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
-                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', fontSize:'14px'}}>AGO</div>
-                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Litre {
-                                                dailySales.hasOwnProperty("PMS")? Number(dailySales.AGO.total.totalDifference) + Number(dailySales.AGO.total.totalLpo) - Number(dailySales.AGO.total.totalrt): 0.00
-                                            } ltr</div>
-                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Total Amount N {
-                                                dailySales.hasOwnProperty("AGO")? dailySales.AGO.total.amount: 0.00
-                                            }</div>
+                                {load?
+                                    <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={110} />:
+                                    <div onClick={()=>{openDailySales("ago")}} className="inner-dash-item">
+                                        <div className="dash-image">
+                                            <img style={{width:'60px', height:'50px'}} src={me5} alt="icon" />
+                                        </div>
+                                        <div className="dash-details">
+                                            <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
+                                                <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', fontSize:'14px'}}>AGO</div>
+                                                <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Litre {
+                                                    dailySales.hasOwnProperty("PMS")? Number(dailySales.AGO.total.totalDifference) + Number(dailySales.AGO.total.totalLpo) - Number(dailySales.AGO.total.totalrt): 0.00
+                                                } ltr</div>
+                                                <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Total Amount N {
+                                                    dailySales.hasOwnProperty("AGO")? dailySales.AGO.total.amount: 0.00
+                                                }</div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                }
                             </div>
                             <div data-aos="flip-left" className="dash-item">
-                                <div onClick={()=>{openDailySales("dpk")}} className="inner-dash-item">
-                                    <div className="dash-image">
-                                        <img style={{width:'60px', height:'50px'}} src={me5} alt="icon" />
-                                    </div>
-                                    <div className="dash-details">
-                                        <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
-                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', fontSize:'14px'}}>DPK</div>
-                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Litre {
-                                                dailySales.hasOwnProperty("PMS")? Number(dailySales.DPK.total.totalDifference) + Number(dailySales.DPK.total.totalLpo) - Number(dailySales.DPK.total.totalrt): 0.00
-                                            } ltr</div>
-                                            <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Total Amount N {
-                                                dailySales.hasOwnProperty("DPK")? dailySales.DPK.total.amount: 0.00
-                                            }</div>
+                                {load?
+                                    <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={110} />:
+                                    <div onClick={()=>{openDailySales("dpk")}} className="inner-dash-item">
+                                        <div className="dash-image">
+                                            <img style={{width:'60px', height:'50px'}} src={me5} alt="icon" />
+                                        </div>
+                                        <div className="dash-details">
+                                            <div style={{display:'flex',marginRight:'10px', flexDirection:'column', alignItems:'flex-start'}}>
+                                                <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', fontSize:'14px'}}>DPK</div>
+                                                <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Litre {
+                                                    dailySales.hasOwnProperty("PMS")? Number(dailySales.DPK.total.totalDifference) + Number(dailySales.DPK.total.totalLpo) - Number(dailySales.DPK.total.totalrt): 0.00
+                                                } ltr</div>
+                                                <div style={{fontFamily:'Nunito-Regular', fontWeight:'bold', marginTop:'5px', fontSize:'12px'}}>Total Amount N {
+                                                    dailySales.hasOwnProperty("DPK")? dailySales.DPK.total.amount: 0.00
+                                                }</div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                }
                             </div>
                         </div>
 
                         <div style={{color: user.isDark === '0'? '#000': '#fff'}} className="tank-text">Tank Stock Levels</div>
                         <div className="tank-container">
-                            <div className="tank-inner">
-                                <div className="tanks">
-                                    <div className='tank-head'>PMS</div>
-                                    <div style={{fontWeight:'500'}} className='level'>Level: {cummulative.totalPMS} Litres</div>
-                                    <div style={{fontWeight:'500'}} className='capacity'>Capacity: {cummulative.PMSTankCapacity} Litres</div>
-                                    <div onClick={()=>{goToTanks("PMS")}} className='canvas-container'>
-                                        <PMSTank data = {cummulatives}/>
-                                    </div>
-                                </div>
-                                <div className="tanks">
-                                    <div className='tank-head'>AGO</div>
-                                        <div style={{fontWeight:'500'}} className='level'>Level: {cummulative.totalAGO} Litres</div>
-                                        <div style={{fontWeight:'500'}} className='capacity'>Capacity: {cummulative.AGOTankCapacity} Litres</div>
-                                        <div onClick={()=>{goToTanks("AGO")}} className='canvas-container'>
-                                            <AGOTank data = {cummulatives}/>
+                            {load?
+                                <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={450} />:
+                                <div className="tank-inner">
+                                    <div className="tanks">
+                                        <div className='tank-head'>PMS</div>
+                                        <div style={{fontWeight:'500'}} className='level'>Level: {cummulative.totalPMS} Litres</div>
+                                        <div style={{fontWeight:'500'}} className='capacity'>Capacity: {cummulative.PMSTankCapacity} Litres</div>
+                                        <div onClick={()=>{goToTanks("PMS")}} className='canvas-container'>
+                                            <PMSTank data = {cummulatives}/>
                                         </div>
                                     </div>
-                                <div className="tanks">
-                                    <div className='tank-head'>DPK</div>
+                                    <div className="tanks">
+                                        <div className='tank-head'>AGO</div>
+                                            <div style={{fontWeight:'500'}} className='level'>Level: {cummulative.totalAGO} Litres</div>
+                                            <div style={{fontWeight:'500'}} className='capacity'>Capacity: {cummulative.AGOTankCapacity} Litres</div>
+                                            <div onClick={()=>{goToTanks("AGO")}} className='canvas-container'>
+                                                <AGOTank data = {cummulatives}/>
+                                            </div>
+                                        </div>
+                                    <div className="tanks">
+                                        <div className='tank-head'>DPK</div>
                                         <div style={{fontWeight:'500'}} className='level'>Level: {cummulative.totalDPK} Litres</div>
                                         <div style={{fontWeight:'500'}} className='capacity'>Capacity: {cummulative.DPKTankCapacity} Litres</div>
                                         <div onClick={()=>{goToTanks("DPK")}} className='canvas-container'>
                                             <DPKTank data = {cummulatives}/>
                                         </div>
                                     </div>
-                            </div>
+                                </div>
+                            }
                         </div>
                     </div>
 
@@ -630,68 +650,92 @@ const DailySales = (props) => {
                         </div>
                         <div style={{marginTop:'10px'}} className='expen'>
                             <div style={{background:'#108CFF'}} className='child'>
-                                <div className='ins'>
-                                    <div>Expenses</div>
-                                    <div>N {payments.hasOwnProperty("payments")? payments.expenses: "0.00"}</div>
-                                </div>
+                                {load?
+                                    <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={120} />:
+                                    <div className='ins'>
+                                        <div>Expenses</div>
+                                        <div>N {payments.hasOwnProperty("payments")? payments.expenses: "0.00"}</div>
+                                    </div>
+                                }
                             </div>
                             <div style={{background:'#06805B'}} className='child'>
-                                <div className='ins'>
-                                    <div>Payments</div>
-                                    <div>N {payments.hasOwnProperty("payments")? payments.payments: "0.00"}</div>
-                                </div>
+                                {load?
+                                    <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={120} />:
+                                    <div className='ins'>
+                                        <div>Payments</div>
+                                        <div>N {payments.hasOwnProperty("payments")? payments.payments: "0.00"}</div>
+                                    </div>
+                                }
                             </div>
                         </div>
                         <div style={{color: user.isDark === '0'? '#000': '#fff', marginTop:'30px'}} className="tank-text">Expenses And Payments</div>
-                        <BarChartGraph station={currentStation} />
+                        <BarChartGraph load={load} station={currentStation} />
 
                         <div style={{marginTop:'30px'}} className='asset'>
                             <div style={{color: user.isDark === '0'? '#000': '#fff'}}>Supply</div>
-                            <Button 
-                                variant="contained" 
-                                startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} src={slideMenu} alt="icon" />}
-                                sx={{
-                                    width:'165px',
-                                    height:'30px',
-                                    background:'#06805B',
-                                    fontSize:'11px',
-                                    borderRadius:'0px',
-                                    '&:hover': {
-                                        backgroundColor: '#06805B'
-                                    }
-                                }}
-                                onClick={()=>{history.push("/home/supply")}}
-                            >
-                                View in details
-                            </Button>
+                            {load?
+                                <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'130px'} height={35} />:
+                                <Button 
+                                    variant="contained" 
+                                    startIcon={<img style={{width:'15px', height:'10px', marginRight:'15px'}} src={slideMenu} alt="icon" />}
+                                    sx={{
+                                        width:'165px',
+                                        height:'30px',
+                                        background:'#06805B',
+                                        fontSize:'11px',
+                                        borderRadius:'0px',
+                                        '&:hover': {
+                                            backgroundColor: '#06805B'
+                                        }
+                                    }}
+                                    onClick={()=>{history.push("/home/supply")}}
+                                >
+                                    View in details
+                                </Button>
+                            }
                         </div>
                         <div className='inner-section'>
                             <div className="cardss">
-                                <div className='left'>
-                                    PMS
-                                </div>
-                                <div className='right'>
-                                    <div>Litre Qty</div>
-                                    <div>{dailySupplys.hasOwnProperty("PMS")? dailySupplys.PMS: "0"}</div>
-                                </div>
+                                {load?
+                                    <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'130px'} height={35} />:
+                                    <>
+                                        <div className='left'>
+                                            PMS
+                                        </div>
+                                        <div className='right'>
+                                            <div>Litre Qty</div>
+                                            <div>{dailySupplys.hasOwnProperty("PMS")? dailySupplys.PMS: "0"}</div>
+                                        </div>
+                                    </>
+                                }
                             </div>
                             <div className="cardss">
-                                <div className='left'>
-                                    AGO
-                                </div>
-                                <div className='right'>
-                                    <div>Litre Qty</div>
-                                    <div>{dailySupplys.hasOwnProperty("AGO")? dailySupplys.AGO: "0"}</div>
-                                </div>
+                                {load?
+                                    <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'130px'} height={35} />:
+                                    <>
+                                        <div className='left'>
+                                            AGO
+                                        </div>
+                                        <div className='right'>
+                                            <div>Litre Qty</div>
+                                            <div>{dailySupplys.hasOwnProperty("AGO")? dailySupplys.AGO: "0"}</div>
+                                        </div>
+                                    </>
+                                }
                             </div>
                             <div style={{marginRight:'0px'}} className="cardss">
-                                <div className='left'>
-                                    DPK
-                                </div>
-                                <div className='right'>
-                                    <div>Litre Qty</div>
-                                    <div>{dailySupplys.hasOwnProperty("DPK")? dailySupplys.DPK: "0"}</div>
-                                </div>
+                                {load?
+                                    <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'130px'} height={35} />:
+                                    <>
+                                        <div className='left'>
+                                            DPK
+                                        </div>
+                                        <div className='right'>
+                                            <div>Litre Qty</div>
+                                            <div>{dailySupplys.hasOwnProperty("DPK")? dailySupplys.DPK: "0"}</div>
+                                        </div>
+                                    </>
+                                }
                             </div>
                         </div>
 

@@ -12,6 +12,7 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
 import DailySalesService from '../../services/DailySales';
+import { Skeleton } from '@mui/material';
 
 ChartJS.register(
     CategoryScale,
@@ -300,7 +301,10 @@ const BarChartGraph = (props) => {
     return(
         <div className='bar-chart'>
             <div className='bar'>
-                <Bar options={options} data={monthlyDataSet} />
+                {props.load?
+                    <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={450} />:
+                    <Bar options={options} data={monthlyDataSet} />
+                }
             </div>
         </div>
     )
