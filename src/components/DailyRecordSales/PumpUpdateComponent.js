@@ -5,10 +5,6 @@ import cross from '../../assets/cross.png';
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
 import { passRecordSales } from "../../store/actions/dailySales";
-import IncomingService from "../../services/IncomingService";
-import { createIncomingOrder } from "../../store/actions/incomingOrder";
-import OutletService from "../../services/outletService";
-import { getAllOutletTanks } from "../../store/actions/outlet";
 
 const PumpUpdateComponent = (props) => {
 
