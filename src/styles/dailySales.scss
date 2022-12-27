@@ -1,4 +1,3 @@
-@import "rsuite/dist/rsuite.css";
 .daily-sales-container{
     width: 96%;
     height: auto;
@@ -8,6 +7,7 @@
 
     .daily-left{
         width: 53%;
+        height: auto;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
@@ -129,6 +129,7 @@
 
     .daily-right{
         width: 45%;
+        height: auto;
         display: flex;
         flex-direction: column;
         align-items: flex-start;

@@ -4,10 +4,6 @@ import photo from '../../assets/photo.png';
 import upload from '../../assets/upload.png';
 import cross from '../../assets/cross.png';
 import { useDispatch, useSelector } from "react-redux";
-import IncomingService from "../../services/IncomingService";
-import { createIncomingOrder } from "../../store/actions/incomingOrder";
-import OutletService from "../../services/outletService";
-import { getAllOutletTanks } from "../../store/actions/outlet";
 import ReactCamera from "../Modals/ReactCamera";
 import { useRef } from "react";
 import AddIcon from '@mui/icons-material/Add';
@@ -16,20 +12,16 @@ import swal from 'sweetalert';
 import axios from "axios";
 import config from '../../constants';
 import { passRecordSales } from "../../store/actions/dailySales";
-import LPOService from "../../services/lpo";
-import { createLPO } from "../../store/actions/lpo";
 import { useEffect } from "react";
 
 const LPOComponent = (props) => {
 
     const dispatch = useDispatch();
     const gallery = useRef();
-    const user = useSelector(state => state.authReducer.user);
     const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
-    const allAdminStations = useSelector(state => state.dailyRecordReducer.allAdminStations);
-    const singleAdminStation = useSelector(state => state.dailyRecordReducer.singleAdminStation);
     const pumpList = useSelector(state => state.outletReducer.pumpList);
     const tankList = useSelector(state => state.outletReducer.tankList);
+    const formStation = useSelector(state => state.dailyRecordReducer.formStation);
     const lpos = useSelector(state => state.lpoReducer.lpo);
     const [selectedPMS, setSelectedPMS] = useState(null);
     const [selectedAGO, setSelectedAGO] = useState(null);
@@ -45,7 +37,6 @@ const LPOComponent = (props) => {
     const [productType, setProductType] = useState(null);
     const [dispenseLpo, setDispensedLPO] = useState(null);
     const [dispensedPump, setDispensedPump] = useState(null);
-    const [currentStation, setCurrentStation] = useState(null);
     const [truckNo, setTruckNo] = useState("");
     const [quantity, setQuantity] = useState("");
 
@@ -118,32 +109,6 @@ const LPOComponent = (props) => {
         }
     }
 
-    const selectedStation = (e) => {
-        const value = e.target.options[e.target.options.selectedIndex].value;
-        setCurrentStation(JSON.parse(value));
-
-        const payload = {
-            outletID: JSON.parse(value)?._id, 
-            organisationID: JSON.parse(value)?.organisation
-        }
-
-        IncomingService.getAllIncoming(payload).then((data) => {
-            dispatch(createIncomingOrder(data.incoming.incoming));
-        });
-
-        OutletService.getAllOutletTanks(payload).then(data => {
-            const outletTanks = data.stations.map(data => {
-                const newData = {...data, label: data.tankName, value: data._id};
-                return newData;
-            });
-            dispatch(getAllOutletTanks(outletTanks));
-        });
-
-        LPOService.getAllLPO(payload).then((data) => {
-            dispatch(createLPO(data.lpo.lpo));
-        });
-    }
-
     const selectLPOAccount = (e) => {
         const value = e.target.options[e.target.options.selectedIndex].value;
         setDispensedLPO(JSON.parse(value));
@@ -175,7 +140,7 @@ const LPOComponent = (props) => {
     }
 
     const addDetailsToList = () => {
-        if(currentStation === null) return swal("Warning!", "please select station", "info");
+        if(formStation === null) return swal("Warning!", "please select station", "info");
         if(dispenseLpo === null) return swal("Warning!", "Please select lpo account", "info");
         if(dispensedPump === null) return swal("Warning!", "Please select lpo pump", "info");
         if(truckNo === "") return swal("Warning!", "Truck no field cannot be empty", "info");
@@ -195,14 +160,14 @@ const LPOComponent = (props) => {
             lpoID: dispenseLpo._id,
             pumpID: dispensedPump._id,
             tank: tank,
-            PMSRate: currentStation.PMSPrice,
-            AGORate: currentStation.PMSPrice,
-            DPKRate: currentStation.PMSPrice,
-            PMSCost: currentStation.PMSCost,
-            AGOCost: currentStation.AGOCost,
-            DPKCost: currentStation.DPKCost,
-            outletID: currentStation._id,
-            organizationID: currentStation.organisation,
+            PMSRate: formStation.PMSPrice,
+            AGORate: formStation.PMSPrice,
+            DPKRate: formStation.PMSPrice,
+            PMSCost: formStation.PMSCost,
+            AGOCost: formStation.AGOCost,
+            DPKCost: formStation.DPKCost,
+            outletID: formStation._id,
+            organizationID: formStation.organisation,
         }
 
         const newList = {...linkedData};
@@ -332,30 +297,7 @@ const LPOComponent = (props) => {
             </div>
 
             <div className='inner-body'>
-                <div className='left'>
-
-                    <div className='single-form'>
-                        <div className='input-d'>
-                            <span style={{color:'green'}}>Select Station</span>
-                            {user.userType === "superAdmin" &&
-                                <select onChange={selectedStation} className='text-field'>
-                                    <option>Select station</option>
-                                    {
-                                        allAdminStations.map((data, index) => {
-                                            return(
-                                                <option value={JSON.stringify(data)} key={index}>{data.outletName}</option>
-                                            )
-                                        })
-                                    }
-                                </select>
-                            }
-                            {user.userType === "superAdmin" ||
-                                <select onChange={selectedStation} className='text-field'>
-                                    <option value={JSON.stringify(singleAdminStation)}>{singleAdminStation?.outletName}</option>
-                                </select>
-                            }
-                        </div>
-                    </div>
+                <div className='left-supply'>
 
                     <div className='single-form'>
                         <div className='input-d'>
@@ -457,7 +399,7 @@ const LPOComponent = (props) => {
                     <input onChange={pickFromGallery} ref={gallery} style={{visibility:'hidden'}} type={'file'} />
                 </div>
 
-                <div className='right'>
+                <div className='right-supply'>
                     <div className="table-head">
                         <div className="col">S/N</div>
                         <div className="col">Account</div>

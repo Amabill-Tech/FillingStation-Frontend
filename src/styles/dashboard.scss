@@ -1,11 +1,13 @@
 .dashboardContainer{
     width: 96%;
+    height: auto;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 
     .left-dash{
         width: 49%;
+        height: auto;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
@@ -164,9 +166,9 @@
 
     .right-dash{
         width: 49%;
+        height: auto;
         display: flex;
         flex-direction: column;
-        align-items: flex-start;
 
         .asset{
             width: 100%;

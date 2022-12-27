@@ -5,10 +5,6 @@ import cross from '../../assets/cross.png';
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
 import { passRecordSales } from "../../store/actions/dailySales";
-import IncomingService from "../../services/IncomingService";
-import { createIncomingOrder } from "../../store/actions/incomingOrder";
-import OutletService from "../../services/outletService";
-import { getAllOutletTanks } from "../../store/actions/outlet";
 
 const ReturnToTank = (props) => {
 
@@ -16,14 +12,12 @@ const ReturnToTank = (props) => {
     const user = useSelector(state => state.authReducer.user);
     const [selected, setSelected] = useState([]);
     const [selectedTanks, setSelectedTanks] = useState([]);
-    const [currentStation, setCurrentStation] = useState(null);
+    const formStation = useSelector(state => state.dailyRecordReducer.formStation);
     const dispatch = useDispatch();
     const pumpList = useSelector(state => state.outletReducer.pumpList);
     const tankList = useSelector(state => state.outletReducer.tankList);
     const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
-    const allAdminStations = useSelector(state => state.dailyRecordReducer.allAdminStations);
     const singleAdminStation = useSelector(state => state.dailyRecordReducer.singleAdminStation);
-    console.log(linkedData, "llllllllllll")
 
     const getPMSPump = () => {
         const newList = [...pumpList];
@@ -185,7 +179,7 @@ const ReturnToTank = (props) => {
         if(user.userType === "superAdmin"){
             newTankList[tankID] = {
                 ...newTankList[tankID], 
-                outlet: currentStation
+                outlet: formStation
             }
         }else{
             newTankList[tankID] = {
@@ -202,7 +196,7 @@ const ReturnToTank = (props) => {
         const currentTank = tankList.filter(data => data._id === item.hostTank)[0];
         const quantity = Number(currentTank.currentLevel) + Number(e.target.value);
 
-        if(currentStation === null){
+        if(formStation === null){
             swal("Warning!", "Please select a station", "info");
         }else if(item.identity === null){
 
@@ -220,28 +214,6 @@ const ReturnToTank = (props) => {
                 updateTotalizer(e, item);
             }
         }
-    }
-
-    const selectedStation = (e) => {
-        const value = e.target.options[e.target.options.selectedIndex].value;
-        setCurrentStation(JSON.parse(value))
-
-        const payload = {
-            outletID: JSON.parse(value)?._id, 
-            organisationID: JSON.parse(value)?.organisation
-        }
-
-        IncomingService.getAllIncoming(payload).then((data) => {
-            dispatch(createIncomingOrder(data.incoming.incoming));
-        });
-
-        OutletService.getAllOutletTanks(payload).then(data => {
-            const outletTanks = data.stations.map(data => {
-                const newData = {...data, label: data.tankName, value: data._id};
-                return newData;
-            });
-            dispatch(getAllOutletTanks(outletTanks));
-        });
     }
 
     const saveReturnToTank = () => {
@@ -302,26 +274,6 @@ const ReturnToTank = (props) => {
                     />
                     <div className='head-text2' style={{marginRight:'5px', fontSize:'12px'}}>DPK</div>
                 </div>
-            </div>
-
-            <div>
-                {user.userType === "superAdmin" &&
-                    <select onChange={selectedStation} className='text-field'>
-                        <option>Select a station</option>
-                        {
-                            allAdminStations.map((data, index) => {
-                                return(
-                                    <option value={JSON.stringify(data)} key={index}>{data.outletName}</option>
-                                )
-                            })
-                        }
-                    </select>
-                }
-                {user.userType === "superAdmin" ||
-                    <select onChange={selectedStation} className='text-field'>
-                        <option value={JSON.stringify(singleAdminStation)}>{singleAdminStation?.outletName}</option>
-                    </select>
-                }
             </div>
             
             <div style={{marginTop:'10px', marginBottom:'10px'}}>Select Pump used for the day</div>

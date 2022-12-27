@@ -14,7 +14,7 @@ import AssignmentReturnedIcon from '@mui/icons-material/AssignmentReturned';
 import PaidIcon from '@mui/icons-material/Paid';
 import AddCardIcon from '@mui/icons-material/AddCard';
 import '../../styles/newSales.scss';
-import { Button } from '@mui/material';
+import { Button, MenuItem, Select } from '@mui/material';
 import SupplyComponent from '../DailyRecordSales/SupplyComponent';
 import PumpUpdateComponent from '../DailyRecordSales/PumpUpdateComponent';
 import LPOComponent from '../DailyRecordSales/LPOComponent';
@@ -27,7 +27,7 @@ import { useDispatch } from 'react-redux';
 import { passRecordSales } from '../../store/actions/dailySales';
 import { useSelector } from 'react-redux';
 import OutletService from '../../services/outletService';
-import { dailyRecordAdminStation, dailyRecordAllStations } from '../../store/actions/dailyRecordSales';
+import { dailyRecordAdminStation, dailyRecordAllStations, dailyRecordFormStation } from '../../store/actions/dailyRecordSales';
 import IncomingService from '../../services/IncomingService';
 import { createIncomingOrder } from '../../store/actions/incomingOrder';
 import { getAllOutletTanks, getAllPumps } from '../../store/actions/outlet';
@@ -168,6 +168,9 @@ const DailyRecordSales = () => {
     const dispatch = useDispatch();
     const user = useSelector(state => state.authReducer.user);
     const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
+    const allOutlets = useSelector(state => state.outletReducer.allOutlets);
+    const [defaultState, setDefault] = useState(0);
     const [open, setOpen] = useState(false);
 
     useEffect(()=>{
@@ -189,6 +192,7 @@ const DailyRecordSales = () => {
     
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(dailyRecordAllStations(data.station));
+                dispatch(dailyRecordFormStation(data.station[0]));
                 return data.station[0];
             }).then((data)=>{
                 const payload = {
@@ -219,6 +223,7 @@ const DailyRecordSales = () => {
         }else{
             OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
                 dispatch(dailyRecordAdminStation(data.station));
+                dispatch(dailyRecordFormStation(data.station));
                 return data.station;
             }).then((data)=>{
                 const payload = {
@@ -312,6 +317,33 @@ const DailyRecordSales = () => {
         });
     }
 
+    const changeMenu = (index, item ) => {
+        setDefault(index);
+
+        const payload = {
+            outletID: item._id, 
+            organisationID: item.organisation
+        }
+
+        IncomingService.getAllIncoming(payload).then((data) => {
+            dispatch(createIncomingOrder(data.incoming.incoming));
+        });
+
+        OutletService.getAllOutletTanks(payload).then(data => {
+            const outletTanks = data.stations.map(data => {
+                const newData = {...data, label: data.tankName, value: data._id};
+                return newData;
+            });
+            dispatch(getAllOutletTanks(outletTanks));
+        });
+
+        LPOService.getAllLPO(payload).then((data) => {
+            dispatch(createLPO(data.lpo.lpo));
+        });
+        
+        dispatch(dailyRecordFormStation(item));
+    }
+
     return (
         <div className='salesRecordStyle'>
             <Backdrop
@@ -330,6 +362,36 @@ const DailyRecordSales = () => {
                     visible={true}
                 />
             </Backdrop>
+            <div style={{width:'90%', display:'flex', justifyContent:'flex-start'}}>
+                {oneStationData.hasOwnProperty("outletName") ||
+                    <Select
+                        labelId="demo-select-small"
+                        id="demo-select-small"
+                        value={defaultState}
+                        sx={selectStyle2}
+                    >
+                        <MenuItem style={menu} value={0}>Select Station</MenuItem>
+                        {
+                            allOutlets.map((item, index) => {
+                                return(
+                                    <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.city}</MenuItem>
+                                )
+                            })  
+                        }
+                    </Select>
+                }
+                {oneStationData.hasOwnProperty("outletName") &&
+                    <Select
+                        labelId="demo-select-small"
+                        id="demo-select-small"
+                        value={0}
+                        sx={selectStyle2}
+                        disabled
+                    >
+                        <MenuItem style={menu} value={0}>{oneStationData.hasOwnProperty("outletName")?oneStationData.outletName+", "+oneStationData.city: "No station created"}</MenuItem>
+                    </Select>
+                }
+            </div>
             <Stack sx={{ width: '100%', marginTop:'20px' }} spacing={4}>
                 <Stepper alternativeLabel activeStep={linkedData.page - 1} connector={<ColorlibConnector />}>
                     {steps.map((label) => (
@@ -415,6 +477,22 @@ const DailyRecordSales = () => {
             </div>
         </div>
     );
+}
+
+const menu = {
+    fontSize:'14px',
+    fontFamily:'Nunito-Regular'
+}
+
+const selectStyle2 = {
+    width:'200px', 
+    height:'35px', 
+    borderRadius:'5px',
+    background: '#F2F1F1B2',
+    color:'#000',
+    fontFamily: 'Nunito-Regular',
+    fontSize:'14px',
+    outline:'none'
 }
 
 export default DailyRecordSales;

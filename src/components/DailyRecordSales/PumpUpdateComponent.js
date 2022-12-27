@@ -13,7 +13,7 @@ import { getAllOutletTanks } from "../../store/actions/outlet";
 const PumpUpdateComponent = (props) => {
 
     const [productType, setProductType] = useState("PMS");
-    const [currentStation, setCurrentStation] = useState(null);
+    const formStation = useSelector(state => state.dailyRecordReducer.formStation);
     const [selected, setSelected] = useState([]);
     const [selectedTanks, setSelectedTanks] = useState([]);
     const dispatch = useDispatch();
@@ -21,7 +21,6 @@ const PumpUpdateComponent = (props) => {
     const pumpList = useSelector(state => state.outletReducer.pumpList);
     const tankList = useSelector(state => state.outletReducer.tankList);
     const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
-    const allAdminStations = useSelector(state => state.dailyRecordReducer.allAdminStations);
     const singleAdminStation = useSelector(state => state.dailyRecordReducer.singleAdminStation);
 
     const getPMSPump = () => {
@@ -187,7 +186,7 @@ const PumpUpdateComponent = (props) => {
         if(user.userType === "superAdmin"){
             newTankList[tankID] = {
                 ...newTankList[tankID], 
-                outlet: currentStation
+                outlet: formStation
             }
         }else{
             newTankList[tankID] = {
@@ -204,7 +203,7 @@ const PumpUpdateComponent = (props) => {
         const totalizerDiff = Number(e.target.value) - Number(item.totalizerReading);
         const quantity = Number(currentTank.currentLevel) - Number(currentTank.deadStockLevel);
 
-        if(currentStation === null){
+        if(formStation === null){
             swal("Warning!", "Please select a station", "info");
         }else if(item.identity === null){
 
@@ -222,28 +221,6 @@ const PumpUpdateComponent = (props) => {
                 updateTotalizer(e.target.value, totalizerDiff, item);
             }
         }
-    }
-
-    const selectedStation = (e) => {
-        const value = e.target.options[e.target.options.selectedIndex].value;
-        setCurrentStation(JSON.parse(value))
-
-        const payload = {
-            outletID: JSON.parse(value)?._id, 
-            organisationID: JSON.parse(value)?.organisation
-        }
-
-        IncomingService.getAllIncoming(payload).then((data) => {
-            dispatch(createIncomingOrder(data.incoming.incoming));
-        });
-
-        OutletService.getAllOutletTanks(payload).then(data => {
-            const outletTanks = data.stations.map(data => {
-                const newData = {...data, label: data.tankName, value: data._id};
-                return newData;
-            });
-            dispatch(getAllOutletTanks(outletTanks));
-        });
     }
 
     const savePumpUpdate = () => {
@@ -304,26 +281,6 @@ const PumpUpdateComponent = (props) => {
                     />
                     <div className='head-text2' style={{marginRight:'5px', fontSize:'12px'}}>DPK</div>
                 </div>
-            </div>
-
-            <div>
-                {user.userType === "superAdmin" &&
-                    <select onChange={selectedStation} className='text-field'>
-                        <option>Select a station</option>
-                        {
-                            allAdminStations.map((data, index) => {
-                                return(
-                                    <option value={JSON.stringify(data)} key={index}>{data.outletName}</option>
-                                )
-                            })
-                        }
-                    </select>
-                }
-                {user.userType === "superAdmin" ||
-                    <select onChange={selectedStation} className='text-field'>
-                        <option value={JSON.stringify(singleAdminStation)}>{singleAdminStation?.outletName}</option>
-                    </select>
-                }
             </div>
             
             <div style={{marginTop:'10px', marginBottom:'10px'}}>Select Pump used for the day</div>

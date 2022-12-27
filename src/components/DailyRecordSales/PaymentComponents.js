@@ -4,11 +4,7 @@ import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import photo from '../../assets/photo.png';
 import upload from '../../assets/upload.png';
-import IncomingService from "../../services/IncomingService";
-import OutletService from "../../services/outletService";
 import { passRecordSales } from "../../store/actions/dailySales";
-import { createIncomingOrder } from "../../store/actions/incomingOrder";
-import { getAllOutletTanks } from "../../store/actions/outlet";
 import ReactCamera from "../Modals/ReactCamera";
 import AddIcon from '@mui/icons-material/Add';
 import hr8 from '../../assets/hr8.png';
@@ -18,16 +14,13 @@ import config from '../../constants';
 const PaymentsComponents = (props) => {
 
     const [selected, setSelected] = useState(false);
-    const user = useSelector(state => state.authReducer.user);
     const dispatch = useDispatch();
     const gallery = useRef();
     const [open, setOpen] = useState(false);
     const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
-    const allAdminStations = useSelector(state => state.dailyRecordReducer.allAdminStations);
-    const singleAdminStation = useSelector(state => state.dailyRecordReducer.singleAdminStation);
+    const formStation = useSelector(state => state.dailyRecordReducer.formStation);
 
     // payload data
-    const [currentStation, setCurrentStation] = useState(null);
     const [bankName, setBankName] = useState(null);
     const [posName, setPosName] = useState(null);
     const [terminalID, setTerminalID] = useState(null);
@@ -36,28 +29,6 @@ const PaymentsComponents = (props) => {
     const [paymentDate, setPaymentDate] = useState("");
     const [cam, setCam] = useState(null);
     const [gall, setGall] = useState(null);
-
-    const selectedStation = (e) => {
-        const value = e.target.options[e.target.options.selectedIndex].value;
-        setCurrentStation(JSON.parse(value));
-
-        const payload = {
-            outletID: JSON.parse(value)?._id, 
-            organisationID: JSON.parse(value)?.organisation
-        }
-
-        IncomingService.getAllIncoming(payload).then((data) => {
-            dispatch(createIncomingOrder(data.incoming.incoming));
-        });
-
-        OutletService.getAllOutletTanks(payload).then(data => {
-            const outletTanks = data.stations.map(data => {
-                const newData = {...data, label: data.tankName, value: data._id};
-                return newData;
-            });
-            dispatch(getAllOutletTanks(outletTanks));
-        });
-    }
 
     const switchPay = (data) => {
         if(data === "bank") setSelected(false);
@@ -96,7 +67,7 @@ const PaymentsComponents = (props) => {
     }
 
     const addDetailsToList = () => {
-        if(currentStation === null) return swal("Warning!", "please select station", "info");
+        if(formStation === null) return swal("Warning!", "please select station", "info");
         if(typeof(bankName) === "object" && typeof(posName) === "object") return swal("Warning!", "Please add bank or pos name", "info");
         if(typeof(tellerID) === "object" && typeof(terminalID) === "object") return swal("Warning!", "Please add teller or terminal ID", "info");
         if(amountPaid === "") return swal("Warning!", "Amount field should not be empty", "info");
@@ -112,8 +83,8 @@ const PaymentsComponents = (props) => {
             paymentDate: paymentDate,
             camera: cam,
             gallery: gall,
-            outletID: currentStation._id,
-            organizationID: currentStation.organisation,
+            outletID: formStation._id,
+            organizationID: formStation.organisation,
         }
 
         const newList = {...linkedData};
@@ -137,7 +108,7 @@ const PaymentsComponents = (props) => {
             <ReactCamera open={open} close={setOpen} setDataUri={setCam} />
 
             <div className='inner-body'>
-                <div className='left'>
+                <div className='left-supply'>
                     <div className="butts">
                         <Button 
                             variant="contained" 
@@ -154,29 +125,6 @@ const PaymentsComponents = (props) => {
                         >
                             POS Payment
                         </Button>
-                    </div>
-
-                    <div className='single-form'>
-                        <div className='input-d'>
-                            <span>Select Station</span>
-                            {user.userType === "superAdmin" &&
-                                <select onChange={selectedStation} className='text-field'>
-                                    <option>Select station</option>
-                                    {
-                                        allAdminStations.map((data, index) => {
-                                            return(
-                                                <option value={JSON.stringify(data)} key={index}>{data.outletName}</option>
-                                            )
-                                        })
-                                    }
-                                </select>
-                            }
-                            {user.userType === "superAdmin" ||
-                                <select onChange={selectedStation} className='text-field'>
-                                    <option value={JSON.stringify(singleAdminStation)}>{singleAdminStation?.outletName}</option>
-                                </select>
-                            }
-                        </div>
                     </div>
 
                     {selected ||
@@ -285,7 +233,7 @@ const PaymentsComponents = (props) => {
 
                 </div>
 
-                <div className='right'>
+                <div className='right-supply'>
                     <div className="table-head">
                         <div className="col">S/N</div>
                         <div className="col">Bank/POS</div>

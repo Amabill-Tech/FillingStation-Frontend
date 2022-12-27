@@ -2,10 +2,6 @@ import { Button } from "@mui/material";
 import photo from '../../assets/photo.png';
 import upload from '../../assets/upload.png';
 import { useDispatch, useSelector } from "react-redux";
-import IncomingService from "../../services/IncomingService";
-import { createIncomingOrder } from "../../store/actions/incomingOrder";
-import { getAllOutletTanks } from "../../store/actions/outlet";
-import OutletService from "../../services/outletService";
 import AddIcon from '@mui/icons-material/Add';
 import hr8 from '../../assets/hr8.png';
 import swal from 'sweetalert';
@@ -18,43 +14,18 @@ import ReactCamera from "../Modals/ReactCamera";
 
 const ExpenseComponents = (props) => {
 
-    const user = useSelector(state => state.authReducer.user);
     const gallery = useRef();
     const [open, setOpen] = useState(false);
     const dispatch = useDispatch();
     const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
-    const allAdminStations = useSelector(state => state.dailyRecordReducer.allAdminStations);
-    const singleAdminStation = useSelector(state => state.dailyRecordReducer.singleAdminStation);
+    const formStation = useSelector(state => state.dailyRecordReducer.formStation);
 
     // payload data
-    const [currentStation, setCurrentStation] = useState(null);
     const [expenseName, setExpenseName] = useState("");
     const [description, setDescription] = useState("");
     const [expenseAmount, setExpenseAmount] = useState("");
     const [cam, setCam] = useState(null);
     const [gall, setGall] = useState(null);
-
-    const selectedStation = (e) => {
-        const value = e.target.options[e.target.options.selectedIndex].value;
-        setCurrentStation(JSON.parse(value));
-
-        const payload = {
-            outletID: JSON.parse(value)?._id, 
-            organisationID: JSON.parse(value)?.organisation
-        }
-
-        IncomingService.getAllIncoming(payload).then((data) => {
-            dispatch(createIncomingOrder(data.incoming.incoming));
-        });
-
-        OutletService.getAllOutletTanks(payload).then(data => {
-            const outletTanks = data.stations.map(data => {
-                const newData = {...data, label: data.tankName, value: data._id};
-                return newData;
-            });
-            dispatch(getAllOutletTanks(outletTanks));
-        });
-    }
 
     const deleteFromList = (index) => {
         const newList = {...linkedData};
@@ -88,7 +59,7 @@ const ExpenseComponents = (props) => {
     }
 
     const addDetailsToList = () => {
-        if(currentStation === null) return swal("Warning!", "please select station", "info");
+        if(formStation === null) return swal("Warning!", "please select station", "info");
         if(expenseName === "") return swal("Warning!", "Expense name field should not be empty", "info");
         if(description === "") return swal("Warning!", "Description field should not be empty", "info");
         if(expenseAmount === "") return swal("Warning!", "Expense amount field should not be empty", "info");
@@ -100,8 +71,8 @@ const ExpenseComponents = (props) => {
             expenseAmount: expenseAmount,
             camera: cam,
             gallery: gall,
-            outletID: currentStation._id,
-            organizationID: currentStation.organisation,
+            outletID: formStation._id,
+            organizationID: formStation.organisation,
         }
 
         const newList = {...linkedData};
@@ -121,30 +92,7 @@ const ExpenseComponents = (props) => {
             <ReactCamera open={open} close={setOpen} setDataUri={setCam} />
 
             <div className='inner-body'>
-                <div className='left'>
-
-                    <div className='single-form'>
-                        <div className='input-d'>
-                            <span>Select Station</span>
-                            {user.userType === "superAdmin" &&
-                                <select onChange={selectedStation} className='text-field'>
-                                    <option>Select station</option>
-                                    {
-                                        allAdminStations.map((data, index) => {
-                                            return(
-                                                <option value={JSON.stringify(data)} key={index}>{data.outletName}</option>
-                                            )
-                                        })
-                                    }
-                                </select>
-                            }
-                            {user.userType === "superAdmin" ||
-                                <select onChange={selectedStation} className='text-field'>
-                                    <option value={JSON.stringify(singleAdminStation)}>{singleAdminStation?.outletName}</option>
-                                </select>
-                            }
-                        </div>
-                    </div>
+                <div className='left-supply'>
 
                     <div className='single-form'>
                         <div className='input-d'>
@@ -230,7 +178,7 @@ const ExpenseComponents = (props) => {
                     </div>
                 </div>
 
-                <div className='right'>
+                <div className='right-supply'>
                     <div className="table-head">
                         <div className="col">S/N</div>
                         <div className="col">Expense Name</div>

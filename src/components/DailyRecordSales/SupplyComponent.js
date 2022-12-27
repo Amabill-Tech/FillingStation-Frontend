@@ -3,10 +3,7 @@ import { useState } from "react";
 import { MultiSelect } from "react-multi-select-component";
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
-import IncomingService from "../../services/IncomingService";
-import OutletService from "../../services/outletService";
-import { createIncomingOrder, searchIncoming } from "../../store/actions/incomingOrder";
-import { getAllOutletTanks } from "../../store/actions/outlet";
+import { searchIncoming } from "../../store/actions/incomingOrder";
 import AddIcon from '@mui/icons-material/Add';
 import hr8 from '../../assets/hr8.png';
 import { passRecordSales } from "../../store/actions/dailySales";
@@ -18,10 +15,8 @@ const SupplyComponent = () => {
     const [menus, setMenus] = useState(false);
     const dispatch = useDispatch();
     const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
-    const user = useSelector(state => state.authReducer.user);
-    const allAdminStations = useSelector(state => state.dailyRecordReducer.allAdminStations);
-    const singleAdminStation = useSelector(state => state.dailyRecordReducer.singleAdminStation);
     const incomingOrder = useSelector(state => state.incomingOrderReducer.incomingOrder);
+    const formStation = useSelector(state => state.dailyRecordReducer.formStation);
     const tankList = useSelector(state => state.outletReducer.tankList);
     const [selectedIncomingOrders, setSelectedIncomingOrder] = useState("");
 
@@ -44,29 +39,6 @@ const SupplyComponent = () => {
 
         setMenus(!menus);
         setSelectedIncomingOrder(data);
-    }
-
-    const selectedStation = (e) => {
-        const value = e.target.options[e.target.options.selectedIndex].value;
-
-        setOutletName(value);
-
-        const payload = {
-            outletID: JSON.parse(value)?._id, 
-            organisationID: JSON.parse(value)?.organisation
-        }
-
-        IncomingService.getAllIncoming(payload).then((data) => {
-            dispatch(createIncomingOrder(data.incoming.incoming));
-        });
-
-        OutletService.getAllOutletTanks(payload).then(data => {
-            const outletTanks = data.stations.map(data => {
-                const newData = {...data, label: data.tankName, value: data._id};
-                return newData;
-            });
-            dispatch(getAllOutletTanks(outletTanks));
-        });
     }
 
 
@@ -105,15 +77,15 @@ const SupplyComponent = () => {
                 wayBillNo: waybillNo,
                 truckNo: truckNo,
                 quantity: String(discharged),
-                outletName: user.userType === "superAdmin"? JSON.parse(outletName).outletName: singleAdminStation.outletName,
+                outletName: formStation.outletName,
                 productType: productSupply,
                 shortage: "None",
                 overage: "None",
                 incomingID: selectedIncomingOrders._id,
                 date: "None",
                 tankUpdate: selected,
-                outletID: user.userType === "superAdmin"? JSON.parse(outletName)._id: singleAdminStation._id,
-                organizationID: user.userType === "superAdmin"? JSON.parse(outletName).organisation: singleAdminStation.organisation,
+                outletID: formStation._id,
+                organizationID: formStation.organisation,
             }
 
             const newList = {...linkedData};
@@ -159,34 +131,12 @@ const SupplyComponent = () => {
 
     return(
         <div className='inner-body'>
-            <div className='left'>
-                <div className='single-form'>
-                    <div className='input-d'>
-                        <span style={{color:'green'}}>Select Station</span>
-                        {user.userType === "superAdmin" &&
-                            <select onChange={selectedStation} className='text-field'>
-                                <option>Select a station</option>
-                                {
-                                    allAdminStations.map((data, index) => {
-                                        return(
-                                            <option value={JSON.stringify(data)} key={index}>{data.outletName}</option>
-                                        )
-                                    })
-                                }
-                            </select>
-                        }
-                        {user.userType === "superAdmin" ||
-                            <select onChange={selectedStation} className='text-field'>
-                                <option value={JSON.stringify(singleAdminStation)}>{singleAdminStation?.outletName}</option>
-                            </select>
-                        }
-                    </div>
-                </div>
+            <div className='left-supply'>
 
                 <div style={{marginTop:'20px'}} className='double-form'>
                     <div className='input-d'>
                         <span style={{color:'green'}}>Incoming Order ID</span>
-                        <div style={{width: '100%', position:'relative'}}>
+                        <div style={{width: '95%', position:'relative'}}>
                             <div onClick={()=>setMenus(!menus)} className='text-field2'>
                                 <span>{waybillNo}</span>
                                 <KeyboardArrowDownIcon />
@@ -297,7 +247,7 @@ const SupplyComponent = () => {
                 </div>
             </div>
 
-            <div className='right'>
+            <div className='right-supply'>
                 <div className="table-head">
                     <div className="col">S/N</div>
                     <div className="col">Transporter</div>
