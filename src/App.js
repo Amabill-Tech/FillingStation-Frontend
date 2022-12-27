@@ -2,7 +2,7 @@ import './App.scss';
 import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
 import ProtectedRoute from './screens/ProtectedRoute';
-import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import {HashRouter, Route, Switch} from 'react-router-dom';
 import AOS from 'aos';
 import "aos/dist/aos.css";
 import { useEffect } from 'react';
@@ -25,10 +25,11 @@ function App() {
   }, [])
 
   return (
-    <Router>
+    <HashRouter>
       <div className="App">
         <Switch>
-          <ProtectedRoute exact path='/home' component={HomeScreen}/>
+          <Route exact path='/' component={LOGIN} />
+          <ProtectedRoute path='/home' component={HomeScreen}/>
           <Route path='/home/daily-sales' component={HomeScreen} />
           <Route path='/home/tank-list' component={HomeScreen} />
           <Route path='/home/pump-list' component={HomeScreen} />
@@ -63,11 +64,10 @@ function App() {
           <Route path='/home/hr/recruitment' component={HomeScreen} />
           <Route path='/home/hr/attendance' component={HomeScreen} />
           <Route path='/login' component={LoginScreen} />
-          <Route path='/' component={LOGIN} />
           <Route render = {() => <h1>404 page not found</h1>} />
         </Switch>
       </div>
-    </Router>
+    </HashRouter>
   );
 }
 
