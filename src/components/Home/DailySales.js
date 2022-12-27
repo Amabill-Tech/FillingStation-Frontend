@@ -468,9 +468,9 @@ const DailySales = (props) => {
     }
 
     return(
-        <div style={{marginTop:'20px'}} className='daily-sales-container'>
+        <>
             { props.activeRoute.split('/').length === 3 &&
-                <>
+                <div style={{marginTop:'20px'}} className='daily-sales-container'>
                     <div className='daily-left'>
                         <div style={{display:'flex', flexDirection:'row'}}>
                             <div>
@@ -883,7 +883,7 @@ const DailySales = (props) => {
                             }
                         </div>  
                     </div>
-                </>
+                </div>
             }
             { props.activeRoute.split('/').length === 4 &&
                 <div style={contain}>
@@ -906,7 +906,7 @@ const DailySales = (props) => {
                     </Switch>
                 </div>
             }
-        </div>
+        </>
     )
 }
 
