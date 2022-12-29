@@ -285,7 +285,7 @@ const StationTanks = () => {
                                 fontSize:'12px',
                             }} placeholder="" 
                             disabled
-                            value={utils?.station.state}
+                            value={utils?.station?.state}
                         />
                     </div>
 
@@ -298,7 +298,7 @@ const StationTanks = () => {
                             sx={selectStyle2}
                             disabled
                         >
-                            <MenuItem style={menu} value={0}>{utils?.station.outletName+ ', ' +utils?.station.city}</MenuItem>
+                            <MenuItem style={menu} value={0}>{utils?.station?.outletName+ ', ' +utils?.station?.city}</MenuItem>
                         </Select>
                     </div>
 
@@ -314,7 +314,7 @@ const StationTanks = () => {
                                 fontSize:'12px',
                             }} placeholder="" 
                             disabled
-                            value={utils?.station.city}
+                            value={utils?.station?.city}
                         />
                     </div>
 
@@ -330,7 +330,7 @@ const StationTanks = () => {
                                 fontSize:'12px',
                             }} placeholder="" 
                             disabled
-                            value={utils?.station._id}
+                            value={utils?.station?._id}
                         />
                     </div>
 
@@ -346,7 +346,7 @@ const StationTanks = () => {
                                 fontSize:'12px',
                             }} placeholder="" 
                             disabled
-                            value={utils?.station.lga}
+                            value={utils?.station?.lga}
                         />
                     </div>
 
@@ -362,7 +362,7 @@ const StationTanks = () => {
                                 fontSize:'12px',
                             }} placeholder="" 
                             disabled
-                            value={utils?.station.area}
+                            value={utils?.station?.area}
                         />
                     </div>
                 </div>
