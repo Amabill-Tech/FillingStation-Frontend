@@ -59,6 +59,7 @@ function App() {
           <Route path='/home/settings' component={HomeScreen} />
           <Route path='/home/hr/manager' component={HomeScreen} />
           <Route path='/home/hr/employee' component={HomeScreen} />
+          <Route path='/home/dashEmp' component={HomeScreen} />
           <Route path='/home/hr/salary' component={HomeScreen} />
           <Route path='/home/hr/query' component={HomeScreen} />
           <Route path='/home/hr/recruitment' component={HomeScreen} />

@@ -1,6 +1,8 @@
 import { 
     DASHBOARD,
-    DASHBOARD_RECORDS
+    DASHBOARD_RECORDS,
+    DASHBOARD_EMPLOYEES,
+    SEARCH_DASH
 } from '../types'
 
 const initialState = {
@@ -33,7 +35,10 @@ const initialState = {
             totalPosPayments: 0,
             netToBank: 0
         }
-    }
+    },
+
+    employees:[],
+    searchData: [],
 }
 
 const dashboardReducer = (state = initialState, action) => {
@@ -53,6 +58,24 @@ const dashboardReducer = (state = initialState, action) => {
             return{
                 ...state,
                 dashboardRecords: payload
+            }
+        }
+
+        case DASHBOARD_EMPLOYEES:{
+            return{
+                ...state,
+                employees: payload,
+                searchData: payload,
+            }
+        }
+
+        case SEARCH_DASH:{
+            const search = state.searchData.filter(data => !data.staffName.toUpperCase().indexOf(payload.toUpperCase()) ||
+                !data.email.toUpperCase().indexOf(payload.toUpperCase())
+            );
+            return {
+                ...state,
+                employees: search,
             }
         }
 

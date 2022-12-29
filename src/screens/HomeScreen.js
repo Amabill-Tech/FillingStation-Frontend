@@ -59,6 +59,7 @@ import StationTanks from '../components/Home/StationTanks';
 import StationPumps from '../components/Home/StationPumps'; 
 import config from '../constants';
 import DailyRecordSales from '../components/Home/DailyRecordSales';
+import DashboardEmployee from '../components/DashboardComponents/DashboardEmp';
 
 const HomeScreen = ({history}) => {
 
@@ -91,6 +92,7 @@ const HomeScreen = ({history}) => {
                 '/home/daily-record-sales/rt': 'Return To Tank',
                 '/home/analysis': 'Analysis',
                 '/home/lpo': 'LPO',
+                '/home/dashEmp': '← Employee List',
                 '/home/lpo/list': 'LPO',
                 '/home/product-orders': 'Product Orders',
                 '/home/inc-orders': 'Incoming Orders',
@@ -179,7 +181,7 @@ const HomeScreen = ({history}) => {
     }
 
     const navigateBack = (name) => {
-        if(name === "← Station Tanks" || name === "← Station Pumps"){
+        if(name === "← Station Tanks" || name === "← Station Pumps" || name === '← Employee List'){
             history.goBack();
         }
     }
@@ -317,6 +319,12 @@ const HomeScreen = ({history}) => {
                     </Route>
                     <Route path='/home/hr'>
                         <HumanResources 
+                            history={history}
+                            activeRoute={activeRoute}
+                        />
+                    </Route>
+                    <Route path='/home/dashEmp'>
+                        <DashboardEmployee 
                             history={history}
                             activeRoute={activeRoute}
                         />

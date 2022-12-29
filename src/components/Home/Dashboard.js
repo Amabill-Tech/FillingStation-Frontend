@@ -18,7 +18,7 @@ import { useState } from 'react';
 import {useHistory} from 'react-router-dom';
 import expense from '../../assets/expense.png';
 import DashboardService from '../../services/dashboard';
-import { addDashboard, dashboardRecordMore } from '../../store/actions/dashboard';
+import { addDashboard, dashboardRecordMore, dashEmployees } from '../../store/actions/dashboard';
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import DashboardGraph from '../common/DashboardGraph';
 import Skeleton from '@mui/material/Skeleton';
@@ -30,7 +30,7 @@ const DashboardImage = (props) => {
     const goToNextScreen = () => {
         switch(props.screen){
             case "employee":{
-                history.push("/home/hr/employee");
+                history.push("/home/dashEmp");
                 break;
             }
 
@@ -121,7 +121,7 @@ const Dashboard = (props) => {
 
         if(user.userType === "superAdmin"){
             setLoad(true);
-            OutletService.getAllOutletStations(payload).then(data => {console.log(data, 'dash')
+            OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
                 if(data.station.length !== 0){
                     setDefault(1);
@@ -130,6 +130,7 @@ const Dashboard = (props) => {
                 return data.station[0];
             }).then(data => {
                 DashboardService.allAttendanceRecords({id: data?.organisation, outletID: data?._id}).then(data => {
+                    dispatch(dashEmployees(data.employees));
                     collectAndAnalyseData(data);
                 }).then(()=>{
                     setLoad(false);
@@ -143,6 +144,7 @@ const Dashboard = (props) => {
                 return data.station;
             }).then(data => {
                 DashboardService.allAttendanceRecords({id: data.organisation, outletID: data._id}).then(data => {
+                    dispatch(dashEmployees(data.employees));
                     collectAndAnalyseData(data);
                 }).then(()=>{
                     setLoad(false);
