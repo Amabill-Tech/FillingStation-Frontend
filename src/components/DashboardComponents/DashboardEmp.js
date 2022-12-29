@@ -4,77 +4,19 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import avatar from '../../assets/avatar.png';
-import hr6 from '../../assets/hr6.png';
-import StaffModal from '../Modals/CreateStaffModal';
-import EmployeeDetails from '../Modals/EmployeeModal';
 import OutlinedInput from '@mui/material/OutlinedInput';
-import { adminOutlet, getAllStations } from '../../store/actions/outlet';
-import OutletService from '../../services/outletService';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import AdminUserService from '../../services/adminUsers';
-import { searchStaffs, storeStaffUsers } from '../../store/actions/staffUsers';
 import PrintStaffRecords from '../Reports/StaffRecord';
 import { searchdashStaffs } from '../../store/actions/dashboard';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 
 const DashboardEmployee = () => {
-
-    const [open, setOpen] = useState(false);
-    const [open2, setOpen2] = useState(false);
-    const [defaultState, setDefault] = useState(0);
-    const [currentStaff, setCurrentStaff] = useState({});
     const [prints, setPrints] = useState(false);
-    const [currentStation, setCurrentStation] = useState({});
-    const [entries, setEntries] = useState(10);
-    const [skip, setSkip] = useState(0);
 
-    const user = useSelector(state => state.authReducer.user);
-    const allOutlets = useSelector(state => state.outletReducer.allOutlets);
-    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
-    const staffUsers = useSelector(state => state.staffUserReducer.staffUsers);
     const employees = useSelector(state => state.dashboardReducer.employees);
-    console.log(employees, "dashhhhhhhhhhhhhhhhhhhhhhhh")
     const dispatch = useDispatch();
-
-    const openModal = () => {
-        setOpen(true);
-    }
-
-    const openEmployee = (item) => {
-        setCurrentStaff(item);
-        setOpen2(true);
-    }
-
-    const getAllEmployeeData = useCallback(() => {
-
-        const payload = {
-            organisation: user._id
-        }
-
-        if(user.userType === "superAdmin"){
-            OutletService.getAllOutletStations(payload).then(data => {
-                dispatch(getAllStations(data.station));
-                if(data.station.length !== 0){
-                    setDefault(1);
-                }
-                setCurrentStation(data.station[0]);
-                return data.station[0];
-            });
-        }else{
-            OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
-                dispatch(adminOutlet(data.station));
-                setCurrentStation(data.station);
-                return data.station;
-            })
-        }
-
-    }, [user._id, user.userType, user.outletID, dispatch]);
-
-    useEffect(()=>{
-        getAllEmployeeData();
-    },[getAllEmployeeData]);
 
     const printReport = () => {
         setPrints(true);
@@ -86,9 +28,7 @@ const DashboardEmployee = () => {
 
     return(
         <div data-aos="zoom-in-down" className='paymentsCaontainer'>
-            {<StaffModal open={open} close={setOpen} allOutlets={allOutlets} refresh={getAllEmployeeData} />}
-            {<EmployeeDetails open={open2} close={setOpen2} data={currentStaff} />}
-            { prints && <PrintStaffRecords allOutlets={staffUsers} open={prints} close={setPrints}/>}
+            { prints && <PrintStaffRecords allOutlets={employees} open={prints} close={setPrints}/>}
             <div className='inner-pay'>
                 <div className='action'>
                     <div style={{width:'150px'}} className='butt2'>
@@ -99,7 +39,6 @@ const DashboardEmployee = () => {
                             sx={{...selectStyle2, backgroundColor:"#06805B", color:'#fff'}}
                         >
                             <MenuItem style={menu} value={10}>Action</MenuItem>
-                            <MenuItem onClick={openModal} style={menu} value={20}>Add Staff</MenuItem>
                             <MenuItem style={menu} value={30}>History</MenuItem>
                             <MenuItem onClick={printReport} style={menu} value={40}>Print</MenuItem>
                         </Select>

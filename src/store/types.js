@@ -68,3 +68,4 @@ export const FORM_STATION = "FORM_STATION";
 export const TANK_LIST_TYPE = "TANK_LIST_TYPE";
 export const DASHBOARD_EMPLOYEES = "DASHBOARD_EMPLOYEES";
 export const SEARCH_DASH = "SEARCH_DASH";
+export const UTILS = "UTILS";

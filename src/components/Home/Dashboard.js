@@ -18,7 +18,7 @@ import { useState } from 'react';
 import {useHistory} from 'react-router-dom';
 import expense from '../../assets/expense.png';
 import DashboardService from '../../services/dashboard';
-import { addDashboard, dashboardRecordMore, dashEmployees } from '../../store/actions/dashboard';
+import { addDashboard, dashboardRecordMore, dashEmployees, utils } from '../../store/actions/dashboard';
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import DashboardGraph from '../common/DashboardGraph';
 import Skeleton from '@mui/material/Skeleton';
@@ -26,6 +26,7 @@ import Skeleton from '@mui/material/Skeleton';
 const DashboardImage = (props) => {
 
     const history = useHistory();
+    const dispatch = useDispatch();
 
     const goToNextScreen = () => {
         switch(props.screen){
@@ -35,21 +36,25 @@ const DashboardImage = (props) => {
             }
 
             case "activeTank":{
-                history.push("/home/tank-list", {state: "activeTank", station: props.station});
+                dispatch(utils({state: "activeTank", station: props.station}));
+                history.push("/home/tank-list");
                 break;
             }
 
             case "inactiveTank":{
-                history.push("/home/tank-list", {state: "inActiveTank", station: props.station});
+                dispatch(utils({state: "inActiveTank", station: props.station}));
+                history.push("/home/tank-list");
                 break;
             }
             case "activePump":{
-                history.push("/home/pump-list", {state: "activePump", station: props.station});
+                dispatch(utils({state: "activePump", station: props.station}));
+                history.push("/home/pump-list");
                 break;
             }
 
             case "inactivePump":{
-                history.push("/home/pump-list", {state: "inActivePump", station: props.station});
+                dispatch(utils({state: "inActivePump", station: props.station}));
+                history.push("/home/pump-list");
                 break;
             }
 
@@ -297,7 +302,7 @@ const Dashboard = (props) => {
             endDate: formatTwo
         }
 
-        DashboardService.allSalesRecords(payload).then(data => { console.log(data, "dddattt")
+        DashboardService.allSalesRecords(payload).then(data => { 
             const evaluatedDashboard = collectAndEvaluateDashboard(data);
             dispatch(dashboardRecordMore(evaluatedDashboard));
         }).then(()=>{

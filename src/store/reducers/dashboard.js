@@ -2,7 +2,8 @@ import {
     DASHBOARD,
     DASHBOARD_RECORDS,
     DASHBOARD_EMPLOYEES,
-    SEARCH_DASH
+    SEARCH_DASH, 
+    UTILS
 } from '../types'
 
 const initialState = {
@@ -39,6 +40,7 @@ const initialState = {
 
     employees:[],
     searchData: [],
+    utils:{}
 }
 
 const dashboardReducer = (state = initialState, action) => {
@@ -76,6 +78,13 @@ const dashboardReducer = (state = initialState, action) => {
             return {
                 ...state,
                 employees: search,
+            }
+        }
+
+        case UTILS:{
+            return{
+                ...state,
+                utils: payload
             }
         }
 

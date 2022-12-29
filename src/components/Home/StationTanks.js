@@ -2,7 +2,6 @@ import { Button, MenuItem, OutlinedInput, Select, Switch } from "@mui/material";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
 import { styled } from '@mui/material/styles';
 import me5 from '../../assets/me5.png';
 import "../../styles/stationTanks.scss";
@@ -14,22 +13,21 @@ const StationTanks = () => {
     const [AGOTank, setAGOTank] = useState([]);
     const [DPKTank, setDPKTank] = useState([]);
     const [allTanks, setAllTanks] = useState([]);
-    const location = useLocation();
     const [defaultState] = useState(0);
     const dashboardData = useSelector(state => state.dashboardReducer.dashboardData);
-    console.log(location, "from sub redux")
+    const utils = useSelector(state => state.dashboardReducer.utils);
 
     useEffect(()=>{
-        if(location.state.state === "activeTank"){
+        if(utils?.state === "activeTank"){
             getSeparateTanks(dashboardData.tanks.activeTank.list);
-        }else if(location.state.state === "inActiveTank"){
+        }else if(utils?.state === "inActiveTank"){
             getSeparateTanks(dashboardData.tanks.inActiveTank.list);
-        }else if(location.state.state === "activePump"){
+        }else if(utils?.state === "activePump"){
             getSeparateTanks(dashboardData.pumps.activePumps.list);
-        }else if(location.state.state === "inActivePump"){
+        }else if(utils?.state === "inActivePump"){
             getSeparateTanks(dashboardData.pumps.inActivePumps.list);
         }
-    },[dashboardData.pumps.activePumps.list, dashboardData.pumps.inActivePumps.list, dashboardData.tanks.activeTank.list, dashboardData.tanks.inActiveTank.list, location.state.state]);
+    },[dashboardData.pumps.activePumps.list, dashboardData.pumps.inActivePumps.list, dashboardData.tanks.activeTank.list, dashboardData.tanks.inActiveTank.list, utils.state]);
 
     const getSeparateTanks = (data) => {
 
@@ -273,7 +271,7 @@ const StationTanks = () => {
 
     return(
         <div className="stationTanksContainer">
-            <div className="left-form">
+            <div style={{marginRight:'10px'}} className="left-form">
                 <div className="inner-tanks">
                     <div className="inpt" style={{width:'100%'}}>
                         <div style={{width:'100%', textAlign:'left'}}>State</div>
@@ -287,7 +285,7 @@ const StationTanks = () => {
                                 fontSize:'12px',
                             }} placeholder="" 
                             disabled
-                            value={location.state.station.state}
+                            value={utils?.station.state}
                         />
                     </div>
 
@@ -300,7 +298,7 @@ const StationTanks = () => {
                             sx={selectStyle2}
                             disabled
                         >
-                            <MenuItem style={menu} value={0}>{location.state.station.outletName+ ', ' +location.state.station.city}</MenuItem>
+                            <MenuItem style={menu} value={0}>{utils?.station.outletName+ ', ' +utils?.station.city}</MenuItem>
                         </Select>
                     </div>
 
@@ -316,7 +314,7 @@ const StationTanks = () => {
                                 fontSize:'12px',
                             }} placeholder="" 
                             disabled
-                            value={location.state.station.city}
+                            value={utils?.station.city}
                         />
                     </div>
 
@@ -332,7 +330,7 @@ const StationTanks = () => {
                                 fontSize:'12px',
                             }} placeholder="" 
                             disabled
-                            value={location.state.station._id}
+                            value={utils?.station._id}
                         />
                     </div>
 
@@ -348,7 +346,7 @@ const StationTanks = () => {
                                 fontSize:'12px',
                             }} placeholder="" 
                             disabled
-                            value={location.state.station.lga}
+                            value={utils?.station.lga}
                         />
                     </div>
 
@@ -364,7 +362,7 @@ const StationTanks = () => {
                                 fontSize:'12px',
                             }} placeholder="" 
                             disabled
-                            value={location.state.station.area}
+                            value={utils?.station.area}
                         />
                     </div>
                 </div>
