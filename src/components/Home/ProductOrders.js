@@ -53,7 +53,6 @@ const ProductOrders = () => {
                 const payload = {
                     skip: skip * limit,
                     limit: limit,
-                    outletID: data._id, 
                     organisationID: data.organisation
                 }
     
@@ -70,8 +69,7 @@ const ProductOrders = () => {
             }).then((data)=>{
                 const payload = {
                     skip: skip * limit,
-                    limit: limit,
-                    outletID: data._id, 
+                    limit: limit, 
                     organisationID: data.organisation
                 }
     

@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import OutletService from '../../services/outletService';
 import { getAllOutletTanks, getAllStations } from '../../store/actions/outlet';
 import '../../styles/listTanks.scss';
-import {useLocation} from 'react-router-dom';
 import PMSTank from './PMSTank';
 import AGOTank from './AGOTank';
 import DPKTank from './DPKTank';
@@ -18,13 +17,11 @@ const ListAllTanks = () => {
     const tankList = useSelector(state => state.outletReducer.tankList);
     const user = useSelector(state => state.authReducer.user);
     const dispatch = useDispatch();
-    const location = useLocation();
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const [defaultState, setDefault] = useState(0);
     const [currentStation, setCurrentStation] = useState({});
     const [list, setList] = useState({});
-
-    console.log(location, 'LOCATION')
+    const tankListType = useSelector(state => state.outletReducer.tankListType);
 
     const getAllProductData = useCallback(() => {
 
@@ -200,7 +197,7 @@ const ListAllTanks = () => {
                         {
                             !("PMS" in list)?
                             <div>No data records</div>:
-                            location.state.state === "PMS"?
+                            tankListType === "PMS"?
                             list.PMS.map((item, index) => {
                                 return(
                                     <div className='item'>
@@ -239,7 +236,7 @@ const ListAllTanks = () => {
                                     </div>
                                 )
                             })
-                            : location.state.state === "AGO"?
+                            : tankListType === "AGO"?
                             list.AGO.map((item, index) => {
                                 return(
                                     <div className='item'>
@@ -278,7 +275,7 @@ const ListAllTanks = () => {
                                     </div>
                                 )
                             })
-                            : location.state.state === "AGO"?
+                            : tankListType === "AGO"?
                             list.DPK.map((item, index) => {
                                 return(
                                     <div className='item'>

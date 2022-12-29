@@ -107,17 +107,15 @@ const IncomingOrderModal = (props) => {
     const loadedQuantity = (e) => {
         setQuantity(e);
         if(quantityOrdered !== ""){
-
-            const room = Number(quantityOrdered) - Number(previousBalance);
-
-            if(e > room){
+            
+            if(Number(previousBalance) <= 0){
                 setQuantity("");
                 swal("Warning!", "This product order is fully loaded!", "info");
             }else if(Number(e) > Number(previousBalance)){
                 setQuantity("");
                 swal("Warning!", "Quantity loaded exceeds current Balance!", "info");
             }else{
-                const loaded = Number(previousBalance) + Number(e);
+                const loaded = Number(quantityOrdered) - Number(previousBalance) + Number(e);
                 const balance = Number(quantityOrdered) - Number(loaded);
 
                 setUpdateCurrentBalance(balance);

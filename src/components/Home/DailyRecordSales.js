@@ -193,6 +193,7 @@ const DailyRecordSales = () => {
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(dailyRecordAllStations(data.station));
                 dispatch(dailyRecordFormStation(data.station[0]));
+                setDefault(1);
                 return data.station[0];
             }).then((data)=>{
                 const payload = {
@@ -340,7 +341,7 @@ const DailyRecordSales = () => {
         LPOService.getAllLPO(payload).then((data) => {
             dispatch(createLPO(data.lpo.lpo));
         });
-        
+
         dispatch(dailyRecordFormStation(item));
     }
 

@@ -6,7 +6,6 @@ import Switch from '@mui/material/Switch';
 import { styled } from '@mui/material/styles';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Button from '@mui/material/Button';
-import { useLocation } from 'react-router-dom';
 import { openModal, getAllOutletTanks } from '../../store/actions/outlet';
 import { useDispatch } from 'react-redux';
 import AddTank from '../Modals/AddTankModal';
@@ -24,9 +23,9 @@ const Tank = (props) => {
     const [activeTank, setActiveTank] = useState([]);
     const [inActiveTank, setInactiveTank] = useState([]);
     const [currentTank, setCurrentTank] = useState({});
-    const location = useLocation();
     const open = useSelector(state => state.outletReducer.openModal);
     const tankList = useSelector(state => state.outletReducer.tankList);
+    const oneStation = useSelector(state => state.outletReducer.oneStation);
     const dispatch = useDispatch();
 
     const handleAddTanks = () => {
@@ -35,13 +34,13 @@ const Tank = (props) => {
 
     const getAllStationTanks = useCallback(() => {
         const payload = {
-            organisationID: location.state.state.organisation,
-            outletID: location.state.state._id
+            organisationID: oneStation?.organisation,
+            outletID: oneStation?._id
         }
         OutletService.getAllOutletTanks(payload).then(data => {
             dispatch(getAllOutletTanks(data.stations));
         });
-    }, [location.state.state._id, location.state.state.organisation, dispatch]);
+    }, [oneStation?._id, oneStation?.organisation, dispatch]);
 
     useEffect(()=>{
         getAllStationTanks();
@@ -375,7 +374,7 @@ const Tank = (props) => {
 
     return(
         <div className='tanksContainer'>
-            { open ===2 && <AddTank tabs={tabs} data={location.state} refresh={getAllStationTanks} outRefresh={props.refresh} /> }
+            { open ===2 && <AddTank tabs={tabs} data={oneStation?.state} refresh={getAllStationTanks} outRefresh={props.refresh} /> }
             { open ===3 && <AddPump tabs={tabs} currentTank={currentTank} allTank={tankList} outRefresh={props.refresh} /> }
             <div className='pump-container'>
                 <div className='head'>

@@ -17,14 +17,12 @@ import me5 from '../../assets/me5.png';
 import PMSTank from './PMSTank';
 import AGOTank from './AGOTank';
 import DPKTank from './DPKTank';
-import { useLocation } from 'react-router-dom';
 import OutletService from '../../services/outletService';
 import { getAllOutletTanks, getAllPumps } from '../../store/actions/outlet';
 import { useCallback } from 'react';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
-import {useHistory} from 'react-router-dom';
 
 ChartJS.register(
     CategoryScale,
@@ -83,19 +81,16 @@ const options = {
 
 const Sales = (props) => {
 
-    const {state} = useLocation();
     const dispatch = useDispatch();
-    const history = useHistory();
     const tankList = useSelector(state => state.outletReducer.tankList);
     const pumpList = useSelector(state => state.outletReducer.pumpList);
-    const [cummulatives, setCummulatives] = useState({});
+    const oneStation = useSelector(state => state.outletReducer.oneStation);
     const [pumpAndTankMetric, setTankAndPumpMetrics] = useState({});
-    console.log(tankList, "tanks")
 
     const getAllStationTanks = useCallback(() => {
         const payload = {
-            organisationID: state.state.organisation,
-            outletID: state.state._id
+            organisationID: oneStation?.organisation,
+            outletID: oneStation?._id
         }
         OutletService.getAllOutletTanks(payload).then(data => {
             dispatch(getAllOutletTanks(data.stations));
@@ -105,7 +100,7 @@ const Sales = (props) => {
             dispatch(getAllPumps(data));
         });
 
-    }, [state.state._id, state.state.organisation, dispatch]);
+    }, [oneStation?._id, oneStation?.organisation, dispatch]);
 
     useEffect(()=>{
         getAllStationTanks();
@@ -270,18 +265,18 @@ const Sales = (props) => {
                             <div className='row'>
                                 <div className='name1'>
                                     <div className='label'> License Code</div>
-                                    <div className='value'>{state.state.licenseCode}</div>
+                                    <div className='value'>{oneStation?.licenseCode}</div>
                                 </div>
                                 <div className='name2'>
                                     <div className='label'>Sealed</div>
-                                    <div className='value'>{state.state.activeState === 0? 'Yes': 'No'}</div>
+                                    <div className='value'>{oneStation?.activeState === 0? 'Yes': 'No'}</div>
                                 </div>
                             </div>
 
                             <div style={{marginTop:'10px'}} className='row'>
                                 <div className='name1'>
                                     <div className='label'> Name </div>
-                                    <div className='value'>{state.state.outletName}</div>
+                                    <div className='value'>{oneStation?.outletName}</div>
                                 </div>
                                 <div className='name2'></div>
                             </div>
@@ -297,7 +292,7 @@ const Sales = (props) => {
                             <div style={{marginTop:'10px'}} className='row'>
                                 <div className='name1'>
                                     <div className='label'> No of Tanks</div>
-                                    <div className='value'>{state.state.noOfTanks}</div>
+                                    <div className='value'>{oneStation?.noOfTanks}</div>
                                 </div>
                                 <div className='name2'></div>
                             </div>
@@ -305,7 +300,7 @@ const Sales = (props) => {
                             <div style={{marginTop:'10px'}} className='row'>
                                 <div className='name1'>
                                     <div className='label'> No of Pumps</div>
-                                    <div className='value'>{state.state.noOfPumps}</div>
+                                    <div className='value'>{oneStation?.noOfPumps}</div>
                                 </div>
                                 <div className='name2'></div>
                             </div>
@@ -313,7 +308,7 @@ const Sales = (props) => {
                             <div style={{marginTop:'10px'}} className='row'>
                                 <div className='name1'>
                                     <div className='label'> State </div>
-                                    <div className='value'>{state.state.state}</div>
+                                    <div className='value'>{oneStation?.state}</div>
                                 </div>
                                 <div className='name2'></div>
                             </div>
@@ -321,7 +316,7 @@ const Sales = (props) => {
                             <div style={{marginTop:'10px'}} className='row'>
                                 <div className='name1'>
                                     <div className='label'> City/Town</div>
-                                    <div className='value'>{state.state.city}</div>
+                                    <div className='value'>{oneStation?.city}</div>
                                 </div>
                                 <div className='name2'></div>
                             </div>
@@ -329,7 +324,7 @@ const Sales = (props) => {
                             <div style={{marginTop:'10px'}} className='row'>
                                 <div className='name1'>
                                     <div className='label'> LGA </div>
-                                    <div className='value'>{state.state.lga}</div>
+                                    <div className='value'>{oneStation?.lga}</div>
                                 </div>
                                 <div className='name2'></div>
                             </div>
@@ -337,7 +332,7 @@ const Sales = (props) => {
                             <div style={{marginTop:'10px'}} className='row'>
                                 <div className='name1'>
                                     <div className='label'> Street</div>
-                                    <div className='value'>{state.state.area}</div>
+                                    <div className='value'>{oneStation?.area}</div>
                                 </div>
                                 <div className='name2'></div>
                             </div>

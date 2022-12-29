@@ -20,6 +20,7 @@ const AddTank = (props) => {
     const dispatch = useDispatch();
     const open = useSelector(state => state.outletReducer.openModal);
     const loadingSpinner = useSelector(state => state.authReducer.loadingSpinner);
+    const oneStation = useSelector(state => state.outletReducer.oneStation);
 
     const handleClose = () => dispatch(closeModal(0));
     const [tankName, setTankName] = useState('');
@@ -53,10 +54,10 @@ const AddTank = (props) => {
             tankCapacity: tankCapacity,
             deadStockLevel: deadStockLevel,
             calibrationDate: calibrationDate,
-            organisationID: props.data.state.organisation,
-            outletID: props.data.state._id,
+            organisationID: oneStation?.organisation,
+            outletID: oneStation?._id,
             dateUpdated: day,
-            station: props.data.state.outletName,
+            station: oneStation?.outletName,
             previousLevel: "None",
             quantityAdded: "None",
             currentLevel: currentStock,

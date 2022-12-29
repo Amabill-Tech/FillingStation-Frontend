@@ -17,7 +17,8 @@ import {
     DESELECTED_PUMPS,
     ADMIN_OUTLET,
     FILTER_PUMPS_RECORD,
-    FILTER_TANKS_RECORD
+    FILTER_TANKS_RECORD,
+    TANK_LIST_TYPE
 } from '../types';
 
 export const createFillingStation = (params) => dispatch => {
@@ -112,6 +113,10 @@ export const filterPumpsRecordSales = (params) => dispatch => {
 
 export const filterTanksRecordSales = (params) => dispatch => {
     dispatch({ type: FILTER_TANKS_RECORD, payload: params });
+}
+
+export const tankListType = (params) => dispatch => {
+    dispatch({ type: TANK_LIST_TYPE, payload: params });
 }
 
 

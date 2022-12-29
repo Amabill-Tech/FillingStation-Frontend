@@ -8,7 +8,7 @@ import eye from '../../assets/eye.png';
 import filling from '../../assets/filling.png';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import { useSelector } from 'react-redux';
-import { openModal, getAllStations, searchStations } from '../../store/actions/outlet';
+import { openModal, getAllStations, searchStations, oneStation, tankListType } from '../../store/actions/outlet';
 import { useDispatch } from 'react-redux';
 import Tank from '../Outlet/Tanks';
 import Pumps from '../Outlet/Pumps';
@@ -43,19 +43,23 @@ const Outlets = (props) => {
     const handleOpenModal = (value) => dispatch(openModal(value))
 
     const goToSales = (item) => {
-        props.history.push('/home/outlets/sales', {state: item});
+        dispatch(oneStation(item));
+        props.history.push('/home/outlets/sales');
     }
 
     const goToTanks = (item) => {
-        props.history.push('/home/outlets/tanks', {state: item});
+        dispatch(oneStation(item));
+        props.history.push('/home/outlets/tanks');
     }
 
     const goToPumps = (item) => {
-        props.history.push('/home/outlets/pumps', {state: item});
+        dispatch(oneStation(item));
+        props.history.push('/home/outlets/pumps');
     }
 
     const goToTankList = (item) => {
-        props.history.push('/home/outlets/list', {state: item});
+        dispatch(tankListType(item));
+        props.history.push('/home/outlets/list');
     }
 
     const getAllStationData = useCallback(() => {

@@ -17,7 +17,8 @@ import {
     LOGOUT,
     ADMIN_OUTLET,
     FILTER_PUMPS_RECORD,
-    FILTER_TANKS_RECORD
+    FILTER_TANKS_RECORD,
+    TANK_LIST_TYPE
 } from '../types'
 
 const initialState = {
@@ -35,6 +36,7 @@ const initialState = {
     oneStation: {},
     searchStation:[],
     adminOutlet: {},
+    tankListType: ""
 }
 
 const outletReducer = (state = initialState, action) => {
@@ -42,6 +44,13 @@ const outletReducer = (state = initialState, action) => {
     const { type, payload } = action
 
     switch (type) {
+
+        case TANK_LIST_TYPE: {
+            return{
+                ...state,
+                tankListType: payload
+            }
+        }
 
         case OPEN_MODAL:{
             return {

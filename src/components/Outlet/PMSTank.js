@@ -1,37 +1,14 @@
 import React, {useRef, useEffect} from 'react';
-import { useState } from 'react';
 import Tooltip from '@mui/material/Tooltip';
 
 const TankComponent = (props) => {
 
     const canvas = useRef();
-    const [currentLevel, setCurrentLevel] = useState(props.data.totalPMS || 0);
-    const [capacity, setCapacity] = useState(props.data.PMSTankCapacity || 33000);
-    const [deadstock, setDeadStock] = useState(props.data.PMSDeadStock || 0);
 
     useEffect(()=>{
-        setCapacity(props.data.PMSTankCapacity);
-        setCurrentLevel(props.data.totalPMS);
-        setDeadStock(props.data.PMSDeadStock);
-
-        return () => {
-            setCurrentLevel(0);
-            setCapacity(33000);
-            setDeadStock(0);
-        }
-
-    }, [props.data.PMSDeadStock, props.data.PMSTankCapacity, props.data.totalPMS])
-
-    useEffect(()=>{
-        createTankCanvas(currentLevel, capacity, deadstock);
-
-        return () => {
-            setCurrentLevel(0);
-            setCapacity(33000);
-            setDeadStock(0);
-        }
+        createTankCanvas(props.data.totalPMS, props.data.PMSTankCapacity, props.data.PMSDeadStock);
         
-    }, [capacity, currentLevel, deadstock]);
+    }, [props.data.PMSDeadStock, props.data.PMSTankCapacity, props.data.totalPMS]);
 
     const createTankCanvas = (level, capacity, deadstock) => {
 

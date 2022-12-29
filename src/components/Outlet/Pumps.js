@@ -7,7 +7,6 @@ import { styled } from '@mui/material/styles';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Button from '@mui/material/Button';
 import OutletService from '../../services/outletService';
-import { useLocation } from 'react-router-dom';
 import swal from 'sweetalert';
 import {getAllPumps, getAllOutletTanks} from '../../store/actions/outlet';
 import { useDispatch } from 'react-redux';
@@ -23,15 +22,15 @@ const Pump = (props) => {
     const [activePump, setActiveTank] = useState([]);
     const [inActivePump, setInactiveTank] = useState([]);
     const [open, setOpen] = useState(false);
-    const location = useLocation();
     const dispatch = useDispatch();
     const pumpList = useSelector(state => state.outletReducer.pumpList);
     const tankList = useSelector(state => state.outletReducer.tankList);
+    const oneStation = useSelector(state => state.outletReducer.oneStation);
 
     const getAllStationPumps = useCallback(() => {
         const payload = {
-            organisationID: location.state.state.organisation,
-            outletID: location.state.state._id
+            organisationID: oneStation?.organisation,
+            outletID: oneStation?._id
         }
         OutletService.getAllStationPumps(payload).then(data => {
             dispatch(getAllPumps(data));
@@ -40,7 +39,7 @@ const Pump = (props) => {
         OutletService.getAllOutletTanks(payload).then(data => {
             dispatch(getAllOutletTanks(data.stations));
         });
-    }, [location.state.state._id, location.state.state.organisation, dispatch]);
+    }, [oneStation?._id, oneStation?.organisation, dispatch]);
 
     useEffect(()=>{
         getAllStationPumps();
@@ -78,7 +77,7 @@ const Pump = (props) => {
             id: data._id,
             activeState: e.target.checked? '1': '0'
         }
-        OutletService.activatePumps(payload).then((data) => {console.log('hello', data)
+        OutletService.activatePumps(payload).then((data) => {
             if(data.code === 200) swal("Success!", "Tank active state updated successfully", "success");
             getAllStationPumps();
         });

@@ -65,3 +65,4 @@ export const RECORD_SALES = "RECORD_SALES";
 export const DAILY_ALL_STATIONS = "DAILY_ALL_STATIONS";
 export const ADMIN_STATION = "ADMIN_STATION";
 export const FORM_STATION = "FORM_STATION";
+export const TANK_LIST_TYPE = "TANK_LIST_TYPE";

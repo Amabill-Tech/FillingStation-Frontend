@@ -1,21 +1,18 @@
 import React, { useState, useRef } from 'react';
-import { useSelector } from 'react-redux';
 import close from '../../assets/close.png';
 import upload from '../../assets/upload.png';
 import Button from '@mui/material/Button';
-import OutlinedInput from '@mui/material/OutlinedInput';
 import Modal from '@mui/material/Modal';
 import { ThreeDots } from  'react-loader-spinner';
 import swal from 'sweetalert';
 import '../../styles/lpo.scss';
 import ProductService from '../../services/productService';
 import axios from 'axios';
-import { MenuItem, Select , Input} from '@mui/material';
+import { MenuItem, Select } from '@mui/material';
 import config from '../../constants';
 
 const ProductOrderModal = (props) => {
     const [loading, setLoading] = useState(false);
-    const user = useSelector(state => state.authReducer.user);
 
     const [dateCreated, setDateCreated] = useState('');
     const [depot, setDepot] = useState('');
@@ -56,7 +53,6 @@ const ProductOrderModal = (props) => {
             currentBalance: currentBalance,
             productType: productType,
             attachCertificate: uploadFile,
-            outletID: props.station._id,
             organizationID: props.station.organisation
         }
 
