@@ -919,6 +919,10 @@ const dats = {
 
 const contain = {
     width:'100%',
+    display:'flex',
+    flexDirection:'column',
+    alignItems:'center',
+    marginTop:'20px'
 }
 
 const menu = {

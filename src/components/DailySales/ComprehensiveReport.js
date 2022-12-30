@@ -16,18 +16,33 @@ const LeftTableView = (props) => {
         const DPK = props?.data?.filter(data => data.productType === "DPK") || [];
 
         PMS?.sort(function(a, b){
-            return Number(a.currentLevel) - Number(b.currentLevel);
+            let res = [0];
+            if(typeof a.currentLevel === "undefined"){
+                return res;
+            }else{
+                return Number(a.currentLevel) - Number(b.currentLevel);
+            }
         });
 
         AGO?.sort(function(a, b){
-            return Number(a.currentLevel) - Number(b.currentLevel);
+            let res = [0];
+            if(typeof a.currentLevel === "undefined"){
+                return res;
+            }else{
+                return Number(a.currentLevel) - Number(b.currentLevel);
+            }
         });
 
         DPK?.sort(function(a, b){
-            return Number(a.currentLevel) - Number(b.currentLevel);
+            let res = [0];
+            if(typeof a.currentLevel === "undefined"){
+                return res;
+            }else{
+                return Number(a.currentLevel) - Number(b.currentLevel);
+            }
         });
 
-        const balances = {pms: typeof PMS[0] === "undefined"? 0: PMS[0].currentLevel, ago: typeof AGO[0] === "undefined"? 0: AGO[0].currentLevel,  dpk:typeof AGO[0] === "undefined"? 0: AGO[0].currentLevel};
+        const balances = {pms: PMS[0]?.currentLevel, ago: AGO[0]?.currentLevel,  dpk: DPK[0]?.currentLevel};
         
         return balances;
     }
@@ -491,18 +506,33 @@ const ProductDailySales = (props) => {
         const DPK = props?.data?.filter(data => data.productType === "DPK");
 
         PMS?.sort(function(a, b){
-            return Number(a.currentLevel) - Number(b.currentLevel);
+            let res = [0];
+            if(typeof a.currentLevel === "undefined"){
+                return res;
+            }else{
+                return Number(a.currentLevel) - Number(b.currentLevel);
+            }
         });
 
         AGO?.sort(function(a, b){
-            return Number(a.currentLevel) - Number(b.currentLevel);
+            let res = [0];
+            if(typeof a.currentLevel === "undefined"){
+                return res;
+            }else{
+                return Number(a.currentLevel) - Number(b.currentLevel);
+            }
         });
 
         DPK?.sort(function(a, b){
-            return Number(a.currentLevel) - Number(b.currentLevel);
+            let res = [0];
+            if(typeof a.currentLevel === "undefined"){
+                return res;
+            }else{
+                return Number(a.currentLevel) - Number(b.currentLevel);
+            }
         });
 
-        const balances = {pms: PMS?.length === 0? 0: PMS[0], ago: AGO?.length === 0? 0: AGO[0],  dpk: DPK?.length === 0? 0: DPK[0]};
+        const balances = {pms: PMS?.shift(), ago: AGO?.shift(),  dpk: DPK?.shift()};
 
         return balances;
     }
@@ -522,19 +552,19 @@ const ProductDailySales = (props) => {
 
                     <div className='table-heads2'>
                         <div className='col'>PMS</div>
-                        <div className='col'>{getBalance().pms === 0? 0: getBalance().pms.currentLevel}</div>
+                        <div className='col'>{getBalance().pms === 0? 0: getBalance().pms?.currentLevel}</div>
                         {/* <div style={{marginRight:'0px'}} className='col'></div> */}
                     </div>
 
                     <div className='table-heads2'>
                         <div className='col'>AGO</div>
-                        <div className='col'>{getBalance().ago === 0? 0: getBalance().ago.currentLevel}</div>
+                        <div className='col'>{getBalance().ago === 0? 0: getBalance().ago?.currentLevel}</div>
                         {/* <div style={{marginRight:'0px'}} className='col'></div> */}
                     </div>
 
                     <div className='table-heads2'>
                         <div className='col'>DPK</div>
-                        <div className='col'>{getBalance().dpk === 0? 0: getBalance().dpk.currentLevel}</div>
+                        <div className='col'>{getBalance().dpk === 0? 0: getBalance().dpk?.currentLevel}</div>
                         {/* <div style={{marginRight:'0px'}} className='col'></div> */}
                     </div>
                 </div>
@@ -545,9 +575,9 @@ const ProductDailySales = (props) => {
 
 const DippingDailySales = (props) => {
 
-    const PMSTanks = props?.data?.filter(data => data.productType === "PMS");
-    const AGOTanks = props?.data?.filter(data => data.productType === "AGO");
-    const DPKTanks = props?.data?.filter(data => data.productType === "DPK");
+    const PMSTanks = props?.data?.filter(data => data.productType === "PMS") || [];
+    const AGOTanks = props?.data?.filter(data => data.productType === "AGO") || [];
+    const DPKTanks = props?.data?.filter(data => data.productType === "DPK") || [];
 
     const totalDippings = () => {
         let pms = 0;
@@ -584,9 +614,9 @@ const DippingDailySales = (props) => {
                     </div>
 
                     {
-                        props.data.length === 0?
+                        props?.data?.length === 0?
                         <div style={dats}> No Data </div>:
-                        props.data.map((data, index) => {
+                        props?.data?.map((data, index) => {
                             return(
                                 <div key={index} className='table-heads2'>
                                     <div className='col'>{data.tankName}</div>

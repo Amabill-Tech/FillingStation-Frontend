@@ -60,9 +60,9 @@ const AGODailySales = () => {
                     </div>
 
                     {
-                        dailySales.AGO.rows.length === 0?
+                        dailySales?.AGO?.rows?.length === 0?
                         <div style={dats}> No Data </div>:
-                        dailySales.AGO.rows.map(data => {
+                        dailySales?.AGO?.rows?.map(data => {
                             return(
                                 <div className='table-heads2'>
                                     <div className='col'>{data.pumpName}</div>
@@ -80,16 +80,16 @@ const AGODailySales = () => {
                         })
                     }
 
-                    {dailySales.AGO.rows.length === 0 ||
+                    {dailySales?.AGO?.rows?.length === 0 ||
                         <div className='table-heads2'>
                             <div style={{background: "transparent"}} className='col'></div>
                             <div style={{background: "transparent"}} className='col'></div>
                             <div className='col'>Total</div>
-                            <div className='col'>{dailySales.AGO.total.totalDifference}</div>
-                            <div className='col'>{dailySales.AGO.total.totalLpo}</div>
+                            <div className='col'>{dailySales?.AGO?.total?.totalDifference}</div>
+                            <div className='col'>{dailySales?.AGO?.total?.totalLpo}</div>
                             <div className='col'></div>
-                            <div className='col'>{dailySales.AGO.total.totalrt}</div>
-                            <div style={{marginRight:'0px'}} className='col'>{dailySales.AGO.total.amount}</div>
+                            <div className='col'>{dailySales?.AGO?.total?.totalrt}</div>
+                            <div style={{marginRight:'0px'}} className='col'>{dailySales?.AGO?.total?.amount}</div>
                         </div>
                     }
                 </div>

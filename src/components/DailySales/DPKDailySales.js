@@ -60,9 +60,9 @@ const DPKDailySales = () => {
                     </div>
 
                     {
-                        dailySales.DPK.rows.length === 0?
+                        dailySales?.DPK?.rows?.length === 0?
                         <div style={dats}> No Data </div>:
-                        dailySales.DPK.rows.map(data => {
+                        dailySales?.DPK?.rows.map(data => {
                             return(
                                 <div className='table-heads2'>
                                     <div className='col'>{data.pumpName}</div>
@@ -81,16 +81,16 @@ const DPKDailySales = () => {
                     }
 
                     {
-                        dailySales.DPK.rows.length === 0 ||
+                        dailySales?.DPK?.rows?.length === 0 ||
                         <div className='table-heads2'>
                             <div style={{background: "transparent"}} className='col'></div>
                             <div style={{background: "transparent"}} className='col'></div>
                             <div className='col'>Total</div>
-                            <div className='col'>{dailySales.DPK.total.totalDifference}</div>
-                            <div className='col'>{dailySales.DPK.total.totalLpo}</div>
+                            <div className='col'>{dailySales?.DPK?.total?.totalDifference}</div>
+                            <div className='col'>{dailySales?.DPK?.total?.totalLpo}</div>
                             <div className='col'></div>
-                            <div className='col'>{dailySales.DPK.total.totalrt}</div>
-                            <div style={{marginRight:'0px'}} className='col'>{dailySales.DPK.total.amount}</div>
+                            <div className='col'>{dailySales?.DPK?.total?.totalrt}</div>
+                            <div style={{marginRight:'0px'}} className='col'>{dailySales?.DPK?.total?.amount}</div>
                         </div>
                     }
 
