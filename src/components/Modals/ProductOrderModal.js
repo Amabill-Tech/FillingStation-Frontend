@@ -18,12 +18,12 @@ const ProductOrderModal = (props) => {
     const [depot, setDepot] = useState('');
     const [depotAddress, setDepotAddress] = useState('');
     const [quantity, setQuantity] = useState('');
-    const [quantityLoaded, setQuantityLoaded] = useState('');
-    const [currentBalance, setCurrentBalance] = useState('');
     const [uploadFile, setUpload] = useState('');
     const [loading2, setLoading2] = useState(0);
     const [defaults, setDefaults] = useState(10);
     const [productType, setProductType] = useState("");
+    const [costPerLitre, setCostPerLitre] = useState("");
+    const [pricePerLitre, setPricePerLitre] = useState("");
     const attach = useRef();
 
     const handleClose = () => props.close(false);
@@ -34,13 +34,13 @@ const ProductOrderModal = (props) => {
         if(depotAddress === "") return swal("Warning!", "Depot address field cannot be empty", "info");
         if(quantity === "") return swal("Warning!", "Quantity field cannot be empty", "info");
         if(productType === "") return swal("Warning!", "Product field cannot be empty", "info");
-        if(quantityLoaded === "") return swal("Warning!", "Quantity loaded field cannot be empty", "info");
-        if(currentBalance === "") return swal("Warning!", "Current balance field cannot be empty", "info");
+        if(costPerLitre === "") return swal("Warning!", "Cost price field cannot be empty", "info");
+        if(pricePerLitre === "") return swal("Warning!", "Selling price field cannot be empty", "info");
         if(uploadFile === "") return swal("Warning!", "File upload cannot be empty", "info");
 
         if(isNaN(Number(quantity))) return swal("Warning!", "Quantity field is not a number", "info");
-        if(isNaN(Number(quantityLoaded))) return swal("Warning!", "Quantity field is not a number", "info");
-        if(isNaN(Number(currentBalance))) return swal("Warning!", "Quantity field is not a number", "info");
+        if(isNaN(Number(costPerLitre))) return swal("Warning!", "Cost field is not a number", "info");
+        if(isNaN(Number(pricePerLitre))) return swal("Warning!", "Price field is not a number", "info");
 
         setLoading(true);
 
@@ -49,8 +49,8 @@ const ProductOrderModal = (props) => {
             depot: depot,
             depotAddress: depotAddress,
             quantity: quantity,
-            quantityLoaded: quantityLoaded,
-            currentBalance: currentBalance,
+            costPerLitre: costPerLitre,
+            pricePerLitre: pricePerLitre,
             productType: productType,
             attachCertificate: uploadFile,
             organizationID: props.station.organisation
@@ -92,17 +92,6 @@ const ProductOrderModal = (props) => {
     const menuSelection = (e, data) => {
         setDefaults(e);
         setProductType(data);
-    }
-
-    const loadedQuantity = (e) => {
-
-        if(quantity !== ""){
-            setQuantityLoaded(e);
-            setCurrentBalance(Number(quantity) - Number(e));
-        }else{
-            setQuantityLoaded("");
-            swal("Warning!", "Please enter quantity field!", "info");
-        }
     }
 
     return(
@@ -214,7 +203,7 @@ const ProductOrderModal = (props) => {
                             </div>
 
                             <div className='inputs'>
-                                <div className='head-text2'>Quantity Loaded(ltrs)</div>
+                                <div className='head-text2'>Cost per ltr</div>
                                 <input 
                                     style={{
                                         width:'100%',
@@ -227,13 +216,13 @@ const ProductOrderModal = (props) => {
                                         outline: 'none'
                                     }} placeholder="" 
                                     type='text'
-                                    value={quantityLoaded}
-                                    onChange={e => loadedQuantity(e.target.value)}
+                                    value={costPerLitre}
+                                    onChange={e => setCostPerLitre(e.target.value)}
                                 />
                             </div>
 
                             <div className='inputs'>
-                                <div className='head-text2'>Current Balance(ltr)</div>
+                                <div className='head-text2'>Price per ltr</div>
                                 <input 
                                     style={{
                                         width:'100%',
@@ -246,9 +235,8 @@ const ProductOrderModal = (props) => {
                                         outline: 'none'
                                     }} placeholder="" 
                                     type='text'
-                                    disabled
-                                    value={currentBalance}
-                                    onChange={e => setCurrentBalance(e.target.value)}
+                                    value={pricePerLitre}
+                                    onChange={e => setPricePerLitre(e.target.value)}
                                 />
                             </div>
 

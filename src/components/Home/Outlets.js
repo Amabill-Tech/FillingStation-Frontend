@@ -174,7 +174,6 @@ const Outlets = (props) => {
                                     sx={{...selectStyle2,
                                         backgroundColor:"#F36A4C", 
                                         color:'#fff',
-                                        backgroundColor:"#06805B", 
                                         fontSize:'14px'
                                     }}
                                 >
@@ -275,13 +274,13 @@ const Outlets = (props) => {
                             <div ref={tablePrints} className="table-container">
                             <div className='table-head'>
                                 <div className='column'>S/N</div>
-                                <div className='column'>Licence Code</div>
+                                <div className='column'>State</div>
                                 <div className='column'>Name</div>
                                 <div className='column'>Outlet Code</div>
                                 <div className='column'>No of Tanks</div>
                                 <div className='column'>No of Pumps</div>
-                                <div className='column'>Area</div>
-                                <div className='column'>State</div>
+                                <div className='column'>Alias</div>
+                                <div className='column'>city</div>
                                 <div className='column'>Actions</div>
                             </div>
         
@@ -293,13 +292,13 @@ const Outlets = (props) => {
                                         <div data-aos="fade-down" key={index} className='row-container'>
                                             <div className='table-head2'>
                                                 <div className='column'>{index + 1}</div>
-                                                <div className='column'>{item.licenseCode}</div>
+                                                <div className='column'>{item.state}</div>
                                                 <div className='column'>{item.outletName}</div>
-                                                <div className='column'>{item._id}</div>
+                                                <div className='column'>{item._id.substring(0, 6)}</div>
                                                 <div className='column'>{item.noOfTanks}</div>
                                                 <div className='column'>{item.noOfPumps}</div>
+                                                <div className='column'>{item.alias}</div>
                                                 <div className='column'>{item.city}</div>
-                                                <div className='column'>{item.state}</div>
                                                 <div className='column'>
                                                     <div className='actions'>
                                                         <img onClick={()=>{goToSales(item)}} style={{width:'27px', height:'27px'}} src={eye} alt="icon" />

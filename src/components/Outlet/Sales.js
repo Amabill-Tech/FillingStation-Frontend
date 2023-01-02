@@ -264,27 +264,17 @@ const Sales = (props) => {
                         <div className='bod'>
                             <div className='row'>
                                 <div className='name1'>
-                                    <div className='label'> License Code</div>
-                                    <div className='value'>{oneStation?.licenseCode}</div>
-                                </div>
-                                <div className='name2'>
                                     <div className='label'>Sealed</div>
                                     <div className='value'>{oneStation?.activeState === 0? 'Yes': 'No'}</div>
                                 </div>
+                                <div className='name2'></div>
+                                
                             </div>
 
                             <div style={{marginTop:'10px'}} className='row'>
                                 <div className='name1'>
                                     <div className='label'> Name </div>
                                     <div className='value'>{oneStation?.outletName}</div>
-                                </div>
-                                <div className='name2'></div>
-                            </div>
-
-                            <div style={{marginTop:'10px'}} className='row'>
-                                <div className='name1'>
-                                    <div className='label'> Outlet Code</div>
-                                    <div className='value'>NG5WSE3174AFGJ18</div>
                                 </div>
                                 <div className='name2'></div>
                             </div>
@@ -307,8 +297,8 @@ const Sales = (props) => {
 
                             <div style={{marginTop:'10px'}} className='row'>
                                 <div className='name1'>
-                                    <div className='label'> State </div>
-                                    <div className='value'>{oneStation?.state}</div>
+                                    <div className='label'> Alias </div>
+                                    <div className='value'>{oneStation?.alias}</div>
                                 </div>
                                 <div className='name2'></div>
                             </div>
@@ -332,7 +322,7 @@ const Sales = (props) => {
                             <div style={{marginTop:'10px'}} className='row'>
                                 <div className='name1'>
                                     <div className='label'> Street</div>
-                                    <div className='value'>{oneStation?.area}</div>
+                                    <div className='value'>{oneStation?.alias}</div>
                                 </div>
                                 <div className='name2'></div>
                             </div>

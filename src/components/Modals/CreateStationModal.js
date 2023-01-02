@@ -28,8 +28,7 @@ const CreateFillingStation = (props) => {
     const [state, setState] = useState(states.listOfStates[0].state);
     const [city, setCity] = useState('');
     const [lga, setLga] = useState(states.listOfStates[0].lgas[0]);
-    const [area, setArea] = useState('');
-    const [license, setLicense] = useState('');
+    const [alias, setAlias] = useState('');
     const [pmsCost, setPMSCost] = useState('');
     const [pmsPrice, setPMSPrice] = useState('');
     const [agoCost, setAGOCost] = useState('');
@@ -50,8 +49,7 @@ const CreateFillingStation = (props) => {
         if(agoPrice === "") return swal("Warning!", "AGO Price field cannot be empty", "info");
         if(dpkCost === "") return swal("Warning!", "DPK Cost field cannot be empty", "info");
         if(dpkPrice === "") return swal("Warning!", "DPK Price field cannot be empty", "info");
-        if(area === "") return swal("Warning!", "Area field cannot be empty", "info");
-        if(license === "") return swal("Warning!", "License code field cannot be empty", "info");
+        if(alias === "") return swal("Warning!", "Alias field cannot be empty", "info");
         setLoadingSpinner(true);
 
         const data = {
@@ -59,8 +57,7 @@ const CreateFillingStation = (props) => {
             state: state,
             city: city,
             lga: lga,
-            area: area,
-            licenseCode: license,
+            alias: alias,
             noOfTanks: "",
             noOfPumps: "",
             PMSCost: pmsCost,
@@ -276,7 +273,7 @@ const CreateFillingStation = (props) => {
                             </div>
 
                             <div style={{marginTop:'15px'}} className='inputs'>
-                                <div className='head-text2'>Area/Street</div>
+                                <div className='head-text2'>Alias</div>
                                 <OutlinedInput 
                                     sx={{
                                         width:'100%',
@@ -286,22 +283,7 @@ const CreateFillingStation = (props) => {
                                         border:'1px solid #777777',
                                         fontSize:'12px',
                                     }} placeholder="" 
-                                    onChange={e => setArea(e.target.value)}
-                                />
-                            </div>
-
-                            <div style={{marginTop:'15px'}} className='inputs'>
-                                <div className='head-text2'>License code</div>
-                                <OutlinedInput 
-                                    sx={{
-                                        width:'100%',
-                                        height: '35px', 
-                                        marginTop:'5px', 
-                                        background:'#EEF2F1', 
-                                        border:'1px solid #777777',
-                                        fontSize:'12px',
-                                    }} placeholder="" 
-                                    onChange={e => setLicense(e.target.value)}
+                                    onChange={e => setAlias(e.target.value)}
                                 />
                             </div>
                         </div>

@@ -12,10 +12,10 @@ export const login = (params, history) => dispatch => {
     })
 }
 
-export const register = (params) => {
+export const register = (params, props) => {
     return AuthService.register(params)
-    .then(data => {
-        console.log(data)
+    .then(() => {
+        props.reg(prev => !prev);
     })
     .catch(err => {
             

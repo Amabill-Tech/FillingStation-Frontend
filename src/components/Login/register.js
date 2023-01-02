@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux';
 import '../../styles/login.scss';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import COUNTRIES from '../common/countryList';
+const moment = require('moment-timezone');
 
 const Register = (props) => {
 
@@ -23,9 +24,11 @@ const Register = (props) => {
     const [location, setLocation] = useState('');
     const [country, setCountry] = useState('');
     const [menus, setMenus] = useState(false);
+    const [menus2, setMenus2] = useState(false);
     const [datas, setDatas] = useState(COUNTRIES);
     const [timezone, setTimeZone] = useState("");
     const [countryCode, setCountryCode] = useState("");
+    const [zones, setZones] = useState([]);
 
     const switchToRegister = () => props.reg(prev => !prev);
 
@@ -52,7 +55,7 @@ const Register = (props) => {
         }
 
         dispatch(setSpinner());
-        dispatch(register(data));
+        dispatch(register(data, props));
     }
 
     const filterCountry = (e) => {
@@ -60,11 +63,22 @@ const Register = (props) => {
         setDatas(list);
     }
 
+    const filterTimeZone = (e) => {
+        const list = zones.filter(data => !data.toUpperCase().indexOf(e.target.value.toUpperCase()));
+        setZones(list);
+    }
+
     const selectedCountry = (data) => {
         setCountry(data.name);
-        setTimeZone(data.timezone);
         setCountryCode(data.code);
         setMenus(!menus);
+        setZones(moment.tz.zonesForCountry(data.code))
+        setTimeZone(moment.tz.zonesForCountry(data.code)[0]);
+    }
+
+    const selectedTimeZone = (data) => {
+        setTimeZone(data);
+        setMenus2(false);
     }
 
     return(
@@ -108,9 +122,9 @@ const Register = (props) => {
 
                 <div className='single-form'>
                     <div className='input-d'>
-                        <div style={{width: '100%', position:'relative'}}>
-                            <div onClick={()=>setMenus(!menus)} className='text-field2'>
-                                <span style={{fontWeight:'100'}}>{country===""? "Select Country": country}</span>
+                        <div style={{width: '96%', position:'relative'}}>
+                            <div onClick={()=>{setMenus(!menus); setMenus2(false)}} className='text-field2'>
+                                <span style={{fontWeight:'100', fontSize:'13px'}}>{country===""? "Select Country": country}</span>
                                 <KeyboardArrowDownIcon sx={{marginRight:'10px'}} />
                             </div>
                             {menus &&
@@ -121,6 +135,31 @@ const Register = (props) => {
                                             datas.map((data, index) => {
                                                 return(
                                                     <span onClick={()=>{selectedCountry(data)}} key={index} className="ids">&nbsp;&nbsp;&nbsp; {data.name}</span>
+                                                )
+                                            })
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div className='single-form'>
+                    <div className='input-d'>
+                        <div style={{width: '96%', position:'relative'}}>
+                            <div onClick={()=>{setMenus2(!menus2); setMenus(false)}} className='text-field2'>
+                                <span style={{fontWeight:'100', fontSize:'13px'}}>{timezone===""? "Select Timezone": timezone}</span>
+                                <KeyboardArrowDownIcon sx={{marginRight:'10px'}} />
+                            </div>
+                            {menus2 &&
+                                <div className="drop">
+                                    <input onChange={(e)=>{filterTimeZone(e)}} className="searches" type={'text'} placeholder="Search" />
+                                    <div className="cons">
+                                        {
+                                            zones.map((data, index) => {
+                                                return(
+                                                    <span onClick={()=>{selectedTimeZone(data)}} key={index} className="ids">&nbsp;&nbsp;&nbsp; {data}</span>
                                                 )
                                             })
                                         }
