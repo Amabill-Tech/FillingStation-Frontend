@@ -38,6 +38,23 @@ import RecordSalesService from '../../services/DailyRecordSales';
 import Backdrop from '@mui/material/Backdrop';
 import { BallTriangle } from 'react-loader-spinner';
 import { useState } from 'react';
+import { useRef } from 'react';
+import calendar from '../../assets/calendar.png';
+
+const months = {
+    '01' : 'Jan',
+    '02': 'Feb',
+    '03': 'Mar',
+    '04': 'Apr',
+    '05': 'May',
+    '06': 'Jun',
+    '07': 'Jul',
+    '08': 'Aug',
+    '09': 'Sep',
+    '10': 'Oct',
+    '11': 'Nov',
+    '12': 'Dec',
+}
 
 function DoublyLinkedListNode(data){
     this.data = data;
@@ -47,6 +64,7 @@ function DoublyLinkedListNode(data){
 
 function DoublyLinkedList(){
     this.head = null;
+    this.currentDate = null;
     this.size = 0;
     this.page = 1;
     this.correctAnswers = [];
@@ -164,7 +182,12 @@ ColorlibStepIcon.propTypes = {
 const steps = ['Supply', 'Pump Update', 'Return to Tank', 'LPO', 'Expenses', 'Payments', 'Dipping'];
 
 const DailyRecordSales = () => {
+    const date = new Date();
+    const toString = date.toDateString();
+    const [month, day, year] = toString.split(' ');
+    const date2 = `${day} ${month} ${year}`;
 
+    const dateHandle = useRef();
     const dispatch = useDispatch();
     const user = useSelector(state => state.authReducer.user);
     const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
@@ -172,6 +195,7 @@ const DailyRecordSales = () => {
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const [defaultState, setDefault] = useState(0);
     const [open, setOpen] = useState(false);
+    const [currentDate, setCurrentDate] = useState(date2);
 
     useEffect(()=>{
 
@@ -192,8 +216,6 @@ const DailyRecordSales = () => {
     
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(dailyRecordAllStations(data.station));
-                dispatch(dailyRecordFormStation(data.station[0]));
-                setDefault(1);
                 return data.station[0];
             }).then((data)=>{
                 const payload = {
@@ -278,13 +300,17 @@ const DailyRecordSales = () => {
     const finishAndSubmit = () => {
 
         let payload = {
-            7: linkedData.head.data.payload,
+            currentDate: linkedData.currentDate,
+            load: {
+                '8':[],
+                '7': linkedData.head.data.payload,
+            }
         }
 
         let dataLoad = {...linkedData.head}
         while(true){
             dataLoad = dataLoad.prev;
-            payload[dataLoad.data.currentPage] = dataLoad.data.payload;
+            payload.load[dataLoad.data.currentPage] = dataLoad.data.payload;
 
             if(dataLoad.prev === null){
                 break;
@@ -345,6 +371,21 @@ const DailyRecordSales = () => {
         dispatch(dailyRecordFormStation(item));
     }
 
+    const dateHandleInputDate = () => {
+        dateHandle.current.showPicker();
+    }
+
+    const updateDate = (e) => {
+        const date = e.target.value.split('-');
+        const format = `${date[2]} ${months[date[1]]} ${date[0]}`;
+        setCurrentDate(format);
+
+        const newList = {...linkedData};
+        newList.currentDate = e.target.value;
+        dispatch(passRecordSales(newList));
+    }
+
+
     return (
         <div className='salesRecordStyle'>
             <Backdrop
@@ -363,35 +404,63 @@ const DailyRecordSales = () => {
                     visible={true}
                 />
             </Backdrop>
-            <div style={{width:'90%', display:'flex', justifyContent:'flex-start'}}>
-                {oneStationData.hasOwnProperty("outletName") ||
-                    <Select
-                        labelId="demo-select-small"
-                        id="demo-select-small"
-                        value={defaultState}
-                        sx={selectStyle2}
-                    >
-                        <MenuItem style={menu} value={0}>Select Station</MenuItem>
-                        {
-                            allOutlets.map((item, index) => {
-                                return(
-                                    <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.city}</MenuItem>
-                                )
-                            })  
-                        }
-                    </Select>
-                }
-                {oneStationData.hasOwnProperty("outletName") &&
-                    <Select
-                        labelId="demo-select-small"
-                        id="demo-select-small"
-                        value={0}
-                        sx={selectStyle2}
-                        disabled
-                    >
-                        <MenuItem style={menu} value={0}>{oneStationData.hasOwnProperty("outletName")?oneStationData.outletName+", "+oneStationData.city: "No station created"}</MenuItem>
-                    </Select>
-                }
+            <div style={{width:'90%', marginTop:'20px', display:'flex', justifyContent:'space-between'}}>
+                <div>
+                    {oneStationData.hasOwnProperty("outletName") ||
+                        <Select
+                            labelId="demo-select-small"
+                            id="demo-select-small"
+                            value={defaultState}
+                            sx={selectStyle2}
+                        >
+                            <MenuItem style={menu} value={0}>Select Station</MenuItem>
+                            {
+                                allOutlets.map((item, index) => {
+                                    return(
+                                        <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.city}</MenuItem>
+                                    )
+                                })  
+                            }
+                        </Select>
+                    }
+                    {oneStationData.hasOwnProperty("outletName") &&
+                        <Select
+                            labelId="demo-select-small"
+                            id="demo-select-small"
+                            value={0}
+                            sx={selectStyle2}
+                            disabled
+                        >
+                            <MenuItem style={menu} value={0}>{oneStationData.hasOwnProperty("outletName")?oneStationData.outletName+", "+oneStationData.city: "No station created"}</MenuItem>
+                        </Select>
+                    }
+                </div>
+                <div>
+                    <div style={{width:'100%', display:'flex', flexDirection:'row', justifyContent:'flex-end'}}>
+                        <input onChange={updateDate} ref={dateHandle} style={{position:"absolute", marginTop:'10px', visibility:'hidden'}} type="date" />
+                        <Button 
+                            variant="contained" 
+                            sx={{
+                                width:'170px',
+                                height:'30px',
+                                background:'#06805B',
+                                fontSize:'12px',
+                                borderRadius:'0px',
+                                textTransform:'capitalize',
+                                display:'flex',
+                                flexDirection:'row',
+                                alignItems:'center',
+                                '&:hover': {
+                                    backgroundColor: '#06805B'
+                                }
+                            }}
+                            onClick={dateHandleInputDate}
+                        >
+                            <div style={{marginRight:'10px'}}>{currentDate}</div>
+                            <img style={{width:'20px', height:'20px'}} src={calendar} alt="icon"/>
+                        </Button>
+                    </div>
+                </div>
             </div>
             <Stack sx={{ width: '100%', marginTop:'20px' }} spacing={4}>
                 <Stepper alternativeLabel activeStep={linkedData.page - 1} connector={<ColorlibConnector />}>

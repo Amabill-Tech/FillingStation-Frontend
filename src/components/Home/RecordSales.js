@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import '../../styles/recordSales.scss';
 import Button from '@mui/material/Button';
 import { Switch, Route } from 'react-router-dom';
@@ -19,13 +19,36 @@ import Supply from '../RecordSales/Supply';
 import SupplyService from '../../services/supplyService';
 import { pendingSupply } from '../../store/actions/supply';
 import ReturnToTank from '../RecordSales/ReturnToTank';
+import calendar from '../../assets/calendar.png';
+
+const months = {
+    '01' : 'Jan',
+    '02': 'Feb',
+    '03': 'Mar',
+    '04': 'Apr',
+    '05': 'May',
+    '06': 'Jun',
+    '07': 'Jul',
+    '08': 'Aug',
+    '09': 'Sep',
+    '10': 'Oct',
+    '11': 'Nov',
+    '12': 'Dec',
+}
 
 const RecordSales = (props) => {
+    const date = new Date();
+    const toString = date.toDateString();
+    const [month, day, year] = toString.split(' ');
+    const date2 = `${day} ${month} ${year}`;
+
     const dispatch = useDispatch();
+    const dateHandle = useRef();
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const oneAdminOutlet = useSelector(state => state.outletReducer.adminOutlet);
     const user = useSelector(state => state.authReducer.user);
     const [defaultState, setDefault] = useState(0);
+    const [currentDate, setCurrentDate] = useState(date2);
 
     const handleTabs = (data) => {
         if(data === 'pump'){
@@ -135,38 +158,76 @@ const RecordSales = (props) => {
         });
     }
 
+    const dateHandleInputDate = () => {
+        dateHandle.current.showPicker();
+    }
+
+    const updateDate = (e) => {
+        const date = e.target.value.split('-');
+        const format = `${date[2]} ${months[date[1]]} ${date[0]}`;
+        setCurrentDate(format);
+    }
+
     return(
         <div className='salesContainer2'>
             <div className='inner'>
-                <div className='second-select'>
-                    {oneAdminOutlet.hasOwnProperty("outletName") ||
-                        <Select
-                            labelId="demo-select-small"
-                            id="demo-select-small"
-                            value={defaultState}
-                            sx={selectStyle2}
-                        >
-                            <MenuItem style={menu} value={0}>Select Station</MenuItem>
-                            {
-                                allOutlets.map((item, index) => {
-                                    return(
-                                        <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.city}</MenuItem>
-                                    )
-                                })  
-                            }
-                        </Select>
-                    }
-                    {oneAdminOutlet.hasOwnProperty("outletName") &&
-                        <Select
-                            labelId="demo-select-small"
-                            id="demo-select-small"
-                            value={0}
-                            sx={selectStyle2}
-                            disabled
-                        >
-                            <MenuItem style={menu} value={0}>{oneAdminOutlet.hasOwnProperty("outletName")?oneAdminOutlet.outletName+", "+oneAdminOutlet.city: "No station created"}</MenuItem>
-                        </Select>
-                    }
+                <div style={{background:'green'}} className='second-select'>
+                    <div>
+                        {oneAdminOutlet.hasOwnProperty("outletName") ||
+                            <Select
+                                labelId="demo-select-small"
+                                id="demo-select-small"
+                                value={defaultState}
+                                sx={selectStyle2}
+                            >
+                                <MenuItem style={menu} value={0}>Select Station</MenuItem>
+                                {
+                                    allOutlets.map((item, index) => {
+                                        return(
+                                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.city}</MenuItem>
+                                        )
+                                    })  
+                                }
+                            </Select>
+                        }
+                        {oneAdminOutlet.hasOwnProperty("outletName") &&
+                            <Select
+                                labelId="demo-select-small"
+                                id="demo-select-small"
+                                value={0}
+                                sx={selectStyle2}
+                                disabled
+                            >
+                                <MenuItem style={menu} value={0}>{oneAdminOutlet.hasOwnProperty("outletName")?oneAdminOutlet.outletName+", "+oneAdminOutlet.city: "No station created"}</MenuItem>
+                            </Select>
+                        }
+                    </div>
+                    <div>
+                        <div style={{width:'100%', display:'flex', flexDirection:'row', justifyContent:'flex-end'}}>
+                            <input onChange={updateDate} ref={dateHandle} style={{position:"absolute", marginTop:'10px', visibility:'hidden'}} type="date" />
+                            <Button 
+                                variant="contained" 
+                                sx={{
+                                    width:'170px',
+                                    height:'30px',
+                                    background:'#06805B',
+                                    fontSize:'12px',
+                                    borderRadius:'0px',
+                                    textTransform:'capitalize',
+                                    display:'flex',
+                                    flexDirection:'row',
+                                    alignItems:'center',
+                                    '&:hover': {
+                                        backgroundColor: '#06805B'
+                                    }
+                                }}
+                                onClick={dateHandleInputDate}
+                            >
+                                <div style={{marginRight:'10px'}}>{currentDate}</div>
+                                <img style={{width:'20px', height:'20px'}} src={calendar} alt="icon"/>
+                            </Button>
+                        </div>
+                    </div>
                 </div>
                 <div className='leftContainer'>
                     <div className='tabContainer'>

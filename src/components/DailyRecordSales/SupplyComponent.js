@@ -26,8 +26,8 @@ const SupplyComponent = () => {
     const [truckNo, setTruckNo] = useState('');
     const [productSupply, setProductSupply] = useState('');
     const [quantityLoaded, setQuantityLoaded] = useState('');
-    const [outletName, setOutletName] = useState("");
-
+    const [overage, setOverage] = useState('');
+    const [shortage, setShortage] = useState('');
 
     const selectedIncomingOrder = (data) => {
 
@@ -61,7 +61,7 @@ const SupplyComponent = () => {
         if(transporter === "") return swal("Warning!", "Transporter field cannot be empty", "info");
         if(waybillNo === "") return swal("Warning!", "waybill no field cannot be empty", "info");
         if(truckNo === "") return swal("Warning!", "Truck no field cannot be empty", "info");
-        if(outletName === "") return swal("Warning!", "Outlet field cannot be empty", "info");
+        if(formStation === null) return swal("Warning!", "Outlet field cannot be empty", "info");
         if(productSupply === "") return swal("Warning!", "Product type field cannot be empty", "info");
         if(selectedIncomingOrders === "") return swal("Warning!", "Incoming order field cannot be empty", "info");
 
@@ -79,8 +79,8 @@ const SupplyComponent = () => {
                 quantity: String(discharged),
                 outletName: formStation.outletName,
                 productType: productSupply,
-                shortage: "None",
-                overage: "None",
+                shortage: shortage,
+                overage: overage,
                 incomingID: selectedIncomingOrders._id,
                 date: "None",
                 tankUpdate: selected,
@@ -95,7 +95,6 @@ const SupplyComponent = () => {
             setTransporter("");
             setWaybillNo("");
             setTruckNo("");
-            setOutletName("");
             setQuantityLoaded("");
             setProductSupply("");
             setSelected([]);
@@ -126,6 +125,24 @@ const SupplyComponent = () => {
             return AGO;
         }else{
             return DPK
+        }
+    }
+
+    const quantityToBeDischarged = (data) => {
+        const loaded = Number(quantityLoaded);
+        const toDischarge = Number(data);
+
+        if(toDischarge > loaded){
+            const shortage = toDischarge - loaded;
+            setShortage(shortage);
+            setOverage("None");
+        }else if(toDischarge < loaded){
+            const overage = loaded - toDischarge;
+            setOverage(overage);
+            setShortage("None");
+        }else if(toDischarge === loaded){
+            setOverage("None");
+            setShortage("None");
         }
     }
 
@@ -190,6 +207,13 @@ const SupplyComponent = () => {
 
                 <div className='single-form'>
                     <div className='input-d'>
+                        <span style={{color:'green'}}>Quantity to be Discharged (ltr)</span>
+                        <input onChange={(e)=>{quantityToBeDischarged(e.target.value)}} style={{width:'98%'}} className='text-field' type={'text'} />
+                    </div>
+                </div>
+
+                <div className='single-form'>
+                    <div className='input-d'>
                         <span style={{color:'green'}}>Select tanks</span>
                         <MultiSelect
                             options={getFilteredTanks()}
@@ -220,12 +244,12 @@ const SupplyComponent = () => {
                 <div style={{marginTop:'20px'}} className='double-form'>
                     <div className='input-d'>
                         <span style={{color:'green'}}>Shortage</span>
-                        <input className='text-field' type={'text'} />
+                        <input value={shortage} disabled className='text-field' type={'text'} />
                     </div>
 
                     <div className='input-d'>
                         <span style={{color:'green'}}>Overage</span>
-                        <input className='text-field' type={'text'} />
+                        <input value={overage} disabled className='text-field' type={'text'} />
                     </div>
                 </div>
 
