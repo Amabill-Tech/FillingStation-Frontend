@@ -24,7 +24,6 @@ const IncomingOrderModal = (props) => {
     const [productType, setProductType] = useState('available');
     const [quantityOrdered, setQuantityOrdered] = useState("");
     const [previousBalance, setPreviousBalance] = useState("");
-    const [currentBalance, setCurrentBalance] = useState("");
 
     const [depotStation, setDepotStation] = useState('');
     const [destination, setDestination] = useState('');
@@ -35,6 +34,8 @@ const IncomingOrderModal = (props) => {
     const [truckNo, setTruckNo] = useState('');
     const [wayBillNo, setWayBillNo] = useState('');
     const [transporter, setTransporter] = useState('');
+    const [driverName, setDriverName] = useState('');
+    const [phoneNo, setPhoneNumber] = useState('');
     const [val, setVal] = useState(1);
 
     const handleClose = () => props.close(false);
@@ -48,6 +49,8 @@ const IncomingOrderModal = (props) => {
         if(dateCreated === "") return swal("Warning!", "Date created field cannot be empty", "info");
         if(productOrderID === "") return swal("Warning!", "Product order ID field cannot be empty", "info");
         if(truckNo === "") return swal("Warning!", "Truck No cannot be empty", "info");
+        if(driverName === "") return swal("Warning!", "Driver name cannot be empty", "info");
+        if(phoneNo === "") return swal("Warning!", "Phone no cannot be empty", "info");
 
         if(isNaN(Number(quantity))) return swal("Warning!", "Quantity field is not a number", "info");
 
@@ -65,6 +68,8 @@ const IncomingOrderModal = (props) => {
             truckNo: truckNo,
             transporter: transporter,
             wayBillNo: wayBillNo,
+            driverName: driverName,
+            phoneNo: phoneNo,
             outletName: props.station.outletName,
             outletID: props.station._id,
             organizationID: props.station.organisation
@@ -349,6 +354,57 @@ const IncomingOrderModal = (props) => {
                                     type='text'
                                     value={truckNo}
                                     onChange={e => setTruckNo(e.target.value)}
+                                />
+                            </div>
+
+                            <div className='inputs'>
+                                <div className='head-text2'>Waybill No</div>
+                                <OutlinedInput 
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        border:'1px solid #777777',
+                                        fontSize:'12px',
+                                    }} placeholder="" 
+                                    type='text'
+                                    value={wayBillNo}
+                                    onChange={e => setWayBillNo(e.target.value)}
+                                />
+                            </div>
+
+                            <div className='inputs'>
+                                <div className='head-text2'>Driver's Name</div>
+                                <OutlinedInput 
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        border:'1px solid #777777',
+                                        fontSize:'12px',
+                                    }} placeholder="" 
+                                    type='text'
+                                    value={driverName}
+                                    onChange={e => setDriverName(e.target.value)}
+                                />
+                            </div>
+
+                            <div className='inputs'>
+                                <div className='head-text2'>Phone Number</div>
+                                <OutlinedInput 
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        border:'1px solid #777777',
+                                        fontSize:'12px',
+                                    }} placeholder="" 
+                                    type='text'
+                                    value={phoneNo}
+                                    onChange={e => setPhoneNumber(e.target.value)}
                                 />
                             </div>
                        </div>

@@ -11,7 +11,7 @@ import AGOTank from '../Outlet/AGOTank';
 import DPKTank from '../Outlet/DPKTank';
 import { useDispatch, useSelector } from 'react-redux';
 import OutletService from '../../services/outletService';
-import { adminOutlet, getAllOutletTanks, getAllStations } from '../../store/actions/outlet';
+import { adminOutlet, getAllOutletTanks, getAllStations, tankListType } from '../../store/actions/outlet';
 import { Route, Switch, useHistory } from 'react-router-dom';
 import PMSDailySales from '../DailySales/PMSDailySales';
 import AGODailySales from '../DailySales/AGODailySales';
@@ -453,7 +453,8 @@ const DailySales = (props) => {
     }
 
     const goToTanks = (product) => {
-        history.push('/home/outlets/list', {state: product});
+        dispatch(tankListType(product));
+        history.push('/home/outlets/list');
     }
 
     const dateHandleInputDate = () => {
