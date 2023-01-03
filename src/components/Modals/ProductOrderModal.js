@@ -23,7 +23,6 @@ const ProductOrderModal = (props) => {
     const [defaults, setDefaults] = useState(10);
     const [productType, setProductType] = useState("");
     const [costPerLitre, setCostPerLitre] = useState("");
-    const [pricePerLitre, setPricePerLitre] = useState("");
     const attach = useRef();
 
     const handleClose = () => props.close(false);
@@ -35,12 +34,10 @@ const ProductOrderModal = (props) => {
         if(quantity === "") return swal("Warning!", "Quantity field cannot be empty", "info");
         if(productType === "") return swal("Warning!", "Product field cannot be empty", "info");
         if(costPerLitre === "") return swal("Warning!", "Cost price field cannot be empty", "info");
-        if(pricePerLitre === "") return swal("Warning!", "Selling price field cannot be empty", "info");
         if(uploadFile === "") return swal("Warning!", "File upload cannot be empty", "info");
 
         if(isNaN(Number(quantity))) return swal("Warning!", "Quantity field is not a number", "info");
         if(isNaN(Number(costPerLitre))) return swal("Warning!", "Cost field is not a number", "info");
-        if(isNaN(Number(pricePerLitre))) return swal("Warning!", "Price field is not a number", "info");
 
         setLoading(true);
 
@@ -50,7 +47,6 @@ const ProductOrderModal = (props) => {
             depotAddress: depotAddress,
             quantity: quantity,
             costPerLitre: costPerLitre,
-            pricePerLitre: pricePerLitre,
             productType: productType,
             attachCertificate: uploadFile,
             organizationID: props.station.organisation
@@ -111,7 +107,7 @@ const ProductOrderModal = (props) => {
 
                        <div className='middleDiv' style={inner}>
                             <div className='inputs'>
-                                <div className='head-text2'>Date Created</div>
+                                <div className='head-text2'>Date of purchase</div>
                                 <input 
                                     style={{
                                         width:'100%',
@@ -218,25 +214,6 @@ const ProductOrderModal = (props) => {
                                     type='text'
                                     value={costPerLitre}
                                     onChange={e => setCostPerLitre(e.target.value)}
-                                />
-                            </div>
-
-                            <div className='inputs'>
-                                <div className='head-text2'>Price per ltr</div>
-                                <input 
-                                    style={{
-                                        width:'100%',
-                                        height: '35px', 
-                                        marginTop:'5px', 
-                                        background:'#EEF2F1', 
-                                        border:'1px solid #777777',
-                                        fontSize:'12px',
-                                        paddingLeft: '10px',
-                                        outline: 'none'
-                                    }} placeholder="" 
-                                    type='text'
-                                    value={pricePerLitre}
-                                    onChange={e => setPricePerLitre(e.target.value)}
                                 />
                             </div>
 

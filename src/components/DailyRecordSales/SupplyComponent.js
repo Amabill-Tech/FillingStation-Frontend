@@ -19,6 +19,7 @@ const SupplyComponent = () => {
     const formStation = useSelector(state => state.dailyRecordReducer.formStation);
     const tankList = useSelector(state => state.outletReducer.tankList);
     const [selectedIncomingOrders, setSelectedIncomingOrder] = useState("");
+    const [quantityToBeDischargedValue, setQuantityToBeDischarged] = useState("");
 
     // payload data
     const [transporter, setTransporter] = useState('');
@@ -54,7 +55,24 @@ const SupplyComponent = () => {
             const total = String(Number(cloneSelectedTanks[findID].currentLevel) + addedQuantity);
             cloneSelectedTanks[findID].newLevel = total;
             cloneSelectedTanks[findID].addedQuantity = addedQuantity;
-        }
+
+            const sumOfQuantity = cloneSelectedTanks.reduce((accum, current) => {
+                return Number(accum) + Number(current.addedQuantity);
+            }, 0);
+
+            if(sumOfQuantity > quantityToBeDischargedValue){
+                const shortage = sumOfQuantity - quantityToBeDischargedValue;
+                setShortage(shortage);
+                setOverage("None");
+            }else if(sumOfQuantity < quantityToBeDischargedValue){
+                const overage = quantityToBeDischargedValue - sumOfQuantity;
+                setOverage(overage);
+                setShortage("None");
+            }else if(quantityToBeDischargedValue === sumOfQuantity){
+                setOverage("None");
+                setShortage("None");
+            }
+        } 
     }
 
     const addDetailsToList = () => {
@@ -120,30 +138,22 @@ const SupplyComponent = () => {
         const DPK = tankList.filter(data => data.productType === productSupply);
 
         if(productSupply === "PMS"){
-            return PMS
+            return PMS.map(data => {
+                return {...data, newLevel: 0, addedQuantity: 0}
+            });
         }else if(productSupply === "AGO"){
-            return AGO;
+            return AGO.map(data => {
+                return {...data, newLevel: 0, addedQuantity: 0}
+            });
         }else{
-            return DPK
+            return DPK.map(data => {
+                return {...data, newLevel: 0, addedQuantity: 0}
+            });
         }
     }
 
     const quantityToBeDischarged = (data) => {
-        const loaded = Number(quantityLoaded);
-        const toDischarge = Number(data);
-
-        if(toDischarge > loaded){
-            const shortage = toDischarge - loaded;
-            setShortage(shortage);
-            setOverage("None");
-        }else if(toDischarge < loaded){
-            const overage = loaded - toDischarge;
-            setOverage(overage);
-            setShortage("None");
-        }else if(toDischarge === loaded){
-            setOverage("None");
-            setShortage("None");
-        }
+        setQuantityToBeDischarged(Number(data));
     }
 
     return(
@@ -152,7 +162,7 @@ const SupplyComponent = () => {
 
                 <div style={{marginTop:'20px'}} className='double-form'>
                     <div className='input-d'>
-                        <span style={{color:'green'}}>Incoming Order ID</span>
+                        <span style={{color:'green'}}>Waybill No</span>
                         <div style={{width: '95%', position:'relative'}}>
                             <div onClick={()=>setMenus(!menus)} className='text-field2'>
                                 <span>{waybillNo}</span>
@@ -181,12 +191,7 @@ const SupplyComponent = () => {
                     </div>
                 </div>
 
-                <div style={{marginTop:'20px'}} className='double-form'>
-                    <div className='input-d'>
-                        <span style={{color:'green'}}>Waybill No</span>
-                        <input disabled value={waybillNo} onChange={e => setWaybillNo(e.target.value)} className='text-field' type={'text'} />
-                    </div>
-
+                <div style={{marginTop:'20px'}} className='single-form'>
                     <div className='input-d'>
                         <span style={{color:'green'}}>Truck No</span>
                         <input disabled value={truckNo} onChange={e => setTruckNo(e.target.value)} className='text-field' type={'text'} />
@@ -208,7 +213,7 @@ const SupplyComponent = () => {
                 <div className='single-form'>
                     <div className='input-d'>
                         <span style={{color:'green'}}>Quantity to be Discharged (ltr)</span>
-                        <input onChange={(e)=>{quantityToBeDischarged(e.target.value)}} style={{width:'98%'}} className='text-field' type={'text'} />
+                        <input value={quantityToBeDischargedValue} onChange={(e)=>{quantityToBeDischarged(e.target.value)}} style={{width:'98%'}} className='text-field' type={'text'} />
                     </div>
                 </div>
 
@@ -233,6 +238,7 @@ const SupplyComponent = () => {
                                     <input 
                                         onChange={(e)=>{incomingTanks(e, data)}} 
                                         className="tank-input" type={'number'} 
+                                        style={{width:'98%'}}
                                         placeholder={`Current level: ${data.currentLevel}`}
                                     />
                                 </div>
