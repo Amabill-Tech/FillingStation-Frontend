@@ -352,7 +352,7 @@ const DailyRecordSales = () => {
             organisationID: item.organisation
         }
 
-        IncomingService.getAllIncoming(payload).then((data) => {
+        IncomingService.getAllIncoming3(payload).then((data) => {
             dispatch(createIncomingOrder(data.incoming.incoming));
         });
 

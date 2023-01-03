@@ -62,12 +62,12 @@ const SupplyComponent = () => {
 
             if(sumOfQuantity > quantityToBeDischargedValue){
                 const shortage = sumOfQuantity - quantityToBeDischargedValue;
-                setShortage(shortage);
-                setOverage("None");
+                setShortage("None");
+                setOverage(shortage);
             }else if(sumOfQuantity < quantityToBeDischargedValue){
                 const overage = quantityToBeDischargedValue - sumOfQuantity;
-                setOverage(overage);
-                setShortage("None");
+                setOverage("None");
+                setShortage(overage);
             }else if(quantityToBeDischargedValue === sumOfQuantity){
                 setOverage("None");
                 setShortage("None");

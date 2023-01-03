@@ -174,6 +174,11 @@ const getMonthlyTotals = (day, dataList) => {
             let currentValue = dataList[1];
             currentValue = currentValue + Number(day.sales);
             dataList[1] = currentValue;
+            for(let i = 0; i < 1; i++){
+                if(dataList[i] === null){
+                    dataList[i] = 0;
+                }
+            }
             break;
         }
 
@@ -181,6 +186,11 @@ const getMonthlyTotals = (day, dataList) => {
             let currentValue = dataList[2];
             currentValue = currentValue + Number(day.sales);
             dataList[2] = currentValue;
+            for(let i = 0; i < 2; i++){
+                if(dataList[i] === null){
+                    dataList[i] = 0;
+                }
+            }
             break;
         }
 
@@ -188,6 +198,11 @@ const getMonthlyTotals = (day, dataList) => {
             let currentValue = dataList[3];
             currentValue = currentValue + Number(day.sales);
             dataList[3] = currentValue;
+            for(let i = 0; i < 3; i++){
+                if(dataList[i] === null){
+                    dataList[i] = 0;
+                }
+            }
             break;
         }
 
@@ -195,6 +210,11 @@ const getMonthlyTotals = (day, dataList) => {
             let currentValue = dataList[4];
             currentValue = currentValue + Number(day.sales);
             dataList[4] = currentValue;
+            for(let i = 0; i < 4; i++){
+                if(dataList[i] === null){
+                    dataList[i] = 0;
+                }
+            }
             break;
         }
 
@@ -202,6 +222,11 @@ const getMonthlyTotals = (day, dataList) => {
             let currentValue = dataList[5];
             currentValue = currentValue + Number(day.sales);
             dataList[5] = currentValue;
+            for(let i = 0; i < 5; i++){
+                if(dataList[i] === null){
+                    dataList[i] = 0;
+                }
+            }
             break;
         }
 
@@ -209,6 +234,11 @@ const getMonthlyTotals = (day, dataList) => {
             let currentValue = dataList[6];
             currentValue = currentValue + Number(day.sales);
             dataList[6] = currentValue;
+            for(let i = 0; i < 6; i++){
+                if(dataList[i] === null){
+                    dataList[i] = 0;
+                }
+            }
             break;
         }
 
@@ -216,6 +246,11 @@ const getMonthlyTotals = (day, dataList) => {
             let currentValue = dataList[7];
             currentValue = currentValue + Number(day.sales);
             dataList[7] = currentValue;
+            for(let i = 0; i < 7; i++){
+                if(dataList[i] === null){
+                    dataList[i] = 0;
+                }
+            }
             break;
         }
 
@@ -223,6 +258,11 @@ const getMonthlyTotals = (day, dataList) => {
             let currentValue = dataList[8];
             currentValue = currentValue + Number(day.sales);
             dataList[8] = currentValue;
+            for(let i = 0; i < 8; i++){
+                if(dataList[i] === null){
+                    dataList[i] = 0;
+                }
+            }
             break;
         }
 
@@ -230,6 +270,11 @@ const getMonthlyTotals = (day, dataList) => {
             let currentValue = dataList[9];
             currentValue = currentValue + Number(day.sales);
             dataList[9] = currentValue;
+            for(let i = 0; i < 9; i++){
+                if(dataList[i] === null){
+                    dataList[i] = 0;
+                }
+            }
             break;
         }
 
@@ -237,6 +282,11 @@ const getMonthlyTotals = (day, dataList) => {
             let currentValue = dataList[10];
             currentValue = currentValue + Number(day.sales);
             dataList[10] = currentValue;
+            for(let i = 0; i < 10; i++){
+                if(dataList[i] === null){
+                    dataList[i] = 0;
+                }
+            }
             break;
         }
 
@@ -244,6 +294,11 @@ const getMonthlyTotals = (day, dataList) => {
             let currentValue = dataList[11];
             currentValue = currentValue + Number(day.sales);
             dataList[11] = currentValue;
+            for(let i = 0; i < 11; i++){
+                if(dataList[i] === null){
+                    dataList[i] = 0;
+                }
+            }
             break;
         }
         default: {}
@@ -265,6 +320,11 @@ const getAnnualTotals = (day, dataList, years) => {
             let currentValue = dataList[1];
             currentValue = currentValue + Number(day.sales);
             dataList[1] = currentValue;
+            for(let i = 0; i < 1; i++){
+                if(dataList[i] === null){
+                    dataList[i] = 0;
+                }
+            }
             break;
         }
 
@@ -272,6 +332,11 @@ const getAnnualTotals = (day, dataList, years) => {
             let currentValue = dataList[2];
             currentValue = currentValue + Number(day.sales);
             dataList[2] = currentValue;
+            for(let i = 0; i < 2; i++){
+                if(dataList[i] === null){
+                    dataList[i] = 0;
+                }
+            }
             break;
         }
 
@@ -279,6 +344,11 @@ const getAnnualTotals = (day, dataList, years) => {
             let currentValue = dataList[3];
             currentValue = currentValue + Number(day.sales);
             dataList[3] = currentValue;
+            for(let i = 0; i < 3; i++){
+                if(dataList[i] === null){
+                    dataList[i] = 0;
+                }
+            }
             break;
         }
 
@@ -286,6 +356,11 @@ const getAnnualTotals = (day, dataList, years) => {
             let currentValue = dataList[4];
             currentValue = currentValue + Number(day.sales);
             dataList[4] = currentValue;
+            for(let i = 0; i < 4; i++){
+                if(dataList[i] === null){
+                    dataList[i] = 0;
+                }
+            }
             break;
         }
 
@@ -293,6 +368,11 @@ const getAnnualTotals = (day, dataList, years) => {
             let currentValue = dataList[5];
             currentValue = currentValue + Number(day.sales);
             dataList[5] = currentValue;
+            for(let i = 0; i < 5; i++){
+                if(dataList[i] === null){
+                    dataList[i] = 0;
+                }
+            }
             break;
         }
 
@@ -300,6 +380,11 @@ const getAnnualTotals = (day, dataList, years) => {
             let currentValue = dataList[6];
             currentValue = currentValue + Number(day.sales);
             dataList[6] = currentValue;
+            for(let i = 0; i < 6; i++){
+                if(dataList[i] === null){
+                    dataList[i] = 0;
+                }
+            }
             break;
         }
 
@@ -307,6 +392,11 @@ const getAnnualTotals = (day, dataList, years) => {
             let currentValue = dataList[7];
             currentValue = currentValue + Number(day.sales);
             dataList[7] = currentValue;
+            for(let i = 0; i < 7; i++){
+                if(dataList[i] === null){
+                    dataList[i] = 0;
+                }
+            }
             break;
         }
 
@@ -314,6 +404,11 @@ const getAnnualTotals = (day, dataList, years) => {
             let currentValue = dataList[8];
             currentValue = currentValue + Number(day.sales);
             dataList[8] = currentValue;
+            for(let i = 0; i < 8; i++){
+                if(dataList[i] === null){
+                    dataList[i] = 0;
+                }
+            }
             break;
         }
 
@@ -321,6 +416,11 @@ const getAnnualTotals = (day, dataList, years) => {
             let currentValue = dataList[9];
             currentValue = currentValue + Number(day.sales);
             dataList[9] = currentValue;
+            for(let i = 0; i < 9; i++){
+                if(dataList[i] === null){
+                    dataList[i] = 0;
+                }
+            }
             break;
         }
 
@@ -328,6 +428,11 @@ const getAnnualTotals = (day, dataList, years) => {
             let currentValue = dataList[10];
             currentValue = currentValue + Number(day.sales);
             dataList[10] = currentValue;
+            for(let i = 0; i < 10; i++){
+                if(dataList[i] === null){
+                    dataList[i] = 0;
+                }
+            }
             break;
         }
 
@@ -335,6 +440,11 @@ const getAnnualTotals = (day, dataList, years) => {
             let currentValue = dataList[11];
             currentValue = currentValue + Number(day.sales);
             dataList[11] = currentValue;
+            for(let i = 0; i < 11; i++){
+                if(dataList[i] === null){
+                    dataList[i] = 0;
+                }
+            }
             break;
         }
         default: {}
@@ -385,7 +495,7 @@ const DashboardGraph = (props) => {
         const newDate = date.setDate(today - currentDay + 7);
         const mainDate = new Date(newDate).toLocaleDateString();
         const format = mainDate.split('/');
-        return format[1].length === 1? `${format[2]}-${format[0]}-0${format[1]}`: `${format[2]}-${format[0]}-${format[1]}`
+        return format[1].length === 1? `${format[2]}-0${format[0]}-0${format[1]}`: `${format[2]}-${format[0]}-${format[1]}`
     }
 
     function getLastSunday(data) {
@@ -395,7 +505,7 @@ const DashboardGraph = (props) => {
         const newDate = date.setDate(today - (currentDay || 7));
         const mainDate = new Date(newDate).toLocaleDateString();
         const format = mainDate.split('/');
-        return format[1].length === 1? `${format[2]}-${format[0]}-0${format[1]}`: `${format[2]}-${format[0]}-${format[1]}`
+        return format[1].length === 1? `${format[2]}-0${format[0]}-0${format[1]}`: `${format[2]}-${format[0]}-${format[1]}`
     }
 
     function getFirstAndLastDayOfTheYear(){
@@ -404,7 +514,17 @@ const DashboardGraph = (props) => {
         const firstDay = new Date(currentYear, 0, 1).toLocaleDateString();
         const format1 = firstDay.split('/');
         const format2 = lastDay.split('/');
-        return {firstDay: `${format1[2]}-${format1[0]}-${format1[1]}`, lastDay: `${format2[2]}-${format2[0]}-${format2[1]}`};
+
+        format1[0] = format1[0].length === 1? `0${format1[0]}`: format1[0]
+        format1[1] = format1[1].length === 1? `0${format1[1]}`: format1[1]
+
+        format2[0] = format2[0].length === 1? `0${format2[0]}`: format2[0]
+        format2[1] = format2[1].length === 1? `0${format2[0]}`: format2[0]
+        
+        return {
+            firstDay: `${format1[2]}-${format1[0]}-${format1[1]}`, 
+            lastDay: `${format2[2]}-${format2[0]}-${format2[1]}`
+        };
     }
 
     function getYearRange(){
@@ -422,25 +542,40 @@ const DashboardGraph = (props) => {
     }
 
     const analyseWeeklyData = (data) => {
-        const dataListPMS = [0, 0, 0, 0, 0, 0, 0];
-        const dataListAGO = [0, 0, 0, 0, 0, 0, 0];
-        const dataListDPK = [0, 0, 0, 0, 0, 0, 0];
+        let dataListPMS = [null, null, null, null, null, null, null];
+        let dataListAGO = [null, null, null, null, null, null, null];
+        let dataListDPK = [null, null, null, null, null, null, null];
 
         for(let day of data.sales){
             if(day.productType === "PMS"){
                 const dates = new Date(day.createdAt);
                 const exactDay = dates.getDay();
                 dataListPMS[exactDay] = Number(day.sales);
+                for(let i = 0; i < exactDay; i++){
+                    if(dataListPMS[i] === null){
+                        dataListPMS[i] = 0;
+                    }
+                }
 
             }else if(day.productType === "AGO"){
                 const dates = new Date(day.createdAt);
                 const exactDay = dates.getDay();
                 dataListAGO[exactDay] = Number(day.sales);
+                for(let i = 0; i < exactDay; i++){
+                    if(dataListAGO[i] === null){
+                        dataListAGO[i] = 0;
+                    }
+                }
 
             }else if(day.productType === "DPK"){
                 const dates = new Date(day.createdAt);
                 const exactDay = dates.getDay();
                 dataListDPK[exactDay] = Number(day.sales);
+                for(let i = 0; i < exactDay; i++){
+                    if(dataListDPK[i] === null){
+                        dataListDPK[i] = 0;
+                    }
+                }
             }
         }
 
@@ -468,9 +603,9 @@ const DashboardGraph = (props) => {
     }
 
     const analyseMonthlyData = (data) => {
-        const dataListPMS = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-        const dataListAGO = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-        const dataListDPK = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        const dataListPMS = [null, null, null, null, null, null, null, null, null, null, null, null];
+        const dataListAGO = [null, null, null, null, null, null, null, null, null, null, null, null];
+        const dataListDPK = [null, null, null, null, null, null, null, null, null, null, null, null];
 
         for(let day of data.sales){
             if(day.productType === "PMS"){
@@ -509,9 +644,9 @@ const DashboardGraph = (props) => {
     }
 
     const analyseAnnualData = (data, range) => {
-        const dataListPMS = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-        const dataListAGO = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-        const dataListDPK = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        const dataListPMS = [null, null, null, null, null, null, null, null, null, null, null, null, null];
+        const dataListAGO = [null, null, null, null, null, null, null, null, null, null, null, null, null];
+        const dataListDPK = [null, null, null, null, null, null, null, null, null, null, null, null, null];
 
         const years = [];
         for(let i = Number(range.firstRange.split("-")[0]); i <= Number(range.secondRange.split("-")[0]); i++){
@@ -565,7 +700,6 @@ const DashboardGraph = (props) => {
             startRange: firstDayOfTheWeek,
             endRange: lastDayOfTheWeek
         }
-        console.log(payload, "week")
 
         DashboardService.getWeeklyDataFromApi(payload).then(data => {
             analyseWeeklyData(data);
@@ -574,6 +708,7 @@ const DashboardGraph = (props) => {
 
     const getAllMonthlyData = () => {
         const dateRange = getFirstAndLastDayOfTheYear();
+        console.log(dateRange, "All monthly data")
 
         const payload = {
             organisation: props.station.organisation,
