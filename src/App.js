@@ -7,6 +7,7 @@ import AOS from 'aos';
 import "aos/dist/aos.css";
 import { useEffect } from 'react';
 import {useHistory} from 'react-router-dom';
+import Homepage from './components/LandingPage/Home';
 
 const LOGIN = () => {
   const history = useHistory();
@@ -28,7 +29,7 @@ function App() {
     <HashRouter>
       <div className="App">
         <Switch>
-          <Route exact path='/' component={LOGIN} />
+          <Route exact path='/' component={Homepage} />
           <ProtectedRoute path='/home' component={HomeScreen}/>
           <Route path='/home/daily-sales' component={HomeScreen} />
           <Route path='/home/tank-list' component={HomeScreen} />
