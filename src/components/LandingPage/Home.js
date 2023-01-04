@@ -3,6 +3,10 @@ import Footer from './Footer';
 import Navbar from './NavBar';
 import '../../styles/landing.scss';
 import HeroArea from './HeroArea';
+import About from './About';
+import Statistics from './Statistics';
+import Pitch from './Pitch';
+import Features from './Features';
 
 const Homepage = () => {
     return(
@@ -10,6 +14,10 @@ const Homepage = () => {
             <div style={background}>
                 <Navbar />
                 <HeroArea />
+                <About />
+                <Statistics />
+                <Pitch />
+                <Features />
                 <Footer />
             </div>
         </React.Fragment>
