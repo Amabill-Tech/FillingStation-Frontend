@@ -6,17 +6,7 @@ import {HashRouter, Route, Switch} from 'react-router-dom';
 import AOS from 'aos';
 import "aos/dist/aos.css";
 import { useEffect } from 'react';
-import {useHistory} from 'react-router-dom';
 import Homepage from './components/LandingPage/Home';
-
-const LOGIN = () => {
-  const history = useHistory();
-  return(
-    <div style={{marginTop:'300px'}}>
-      <button onClick={()=>{history.push('/login')}}>Login</button>
-    </div>
-  )
-}
 
 function App() {
 

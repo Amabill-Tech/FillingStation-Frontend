@@ -1,11 +1,24 @@
-import { Button } from '@mui/material';
+import { Button, IconButton, Menu, MenuItem } from '@mui/material';
 import React from 'react';
 import stationLogo from '../../assets/landing/stationLogo.jpeg';
+import MenuIcon from '@mui/icons-material/Menu';
 
 const Navbar = ({page, setPage}) => {
 
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
     const navigatePages = (data) => {
         setPage(data);
+        handleClose();
     }
 
     return(
@@ -37,7 +50,29 @@ const Navbar = ({page, setPage}) => {
                             </Button>
                         </div>
                     </div>
+
+                    <div className='menu'>
+                        <IconButton onClick={handleClick}>
+                            <MenuIcon />
+                        </IconButton>
+                    </div>
+
                 </div>
+                <Menu
+                    id="basic-menu"
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleClose}
+                    MenuListProps={{
+                    'aria-labelledby': 'basic-button',
+                    }}
+                >
+                    <MenuItem onClick={()=>{navigatePages(0)}}>Home</MenuItem>
+                    <MenuItem onClick={()=>{navigatePages(1)}}>How it works</MenuItem>
+                    <MenuItem onClick={()=>{navigatePages(2)}}>Feature</MenuItem>
+                    <MenuItem onClick={()=>{navigatePages(3)}}>Pricing</MenuItem>
+                    <MenuItem onClick={handleClose}>Contact Us</MenuItem>
+                </Menu>
             </div>
         </React.Fragment>
     )

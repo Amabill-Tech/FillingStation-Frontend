@@ -1,8 +1,12 @@
 import { Button } from '@mui/material';
 import React from 'react';
 import doubleArrow from '../../assets/landing/doubleArrow.png';
+import {useHistory} from 'react-router-dom'
 
 const HeroArea = () => {
+
+    const history = useHistory();
+    
     return(
         <React.Fragment>
             <div className='hero'>
@@ -35,6 +39,7 @@ const HeroArea = () => {
                                 backgroundColor: '#266910'
                             }
                             }}  
+                            onClick={()=>{history.push('/login')}}
                             variant="contained"> 
                             <span style={{marginRight:'20px'}}>Getting started</span>
                             <img style={{width:'20px', height:'20px'}} src={doubleArrow} alt="icon" />

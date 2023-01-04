@@ -39,6 +39,10 @@
                 color: #000000;
             }
         }
+
+        .menu{
+            display: none;
+        }
     }
 }
 
@@ -509,6 +513,19 @@
 }
 
 @media (max-width: 900px){
+
+    .navigation-menu{
+        .inner-nav{
+            .menu-icons{
+                display: none;
+            }
+
+            .menu{
+                display: block;
+            }
+        }
+    }
+
     .hero{
         height: auto;
 
