@@ -66,63 +66,63 @@ const options = {
 const getMonthlyTotals = (exp, expenses) => {
     const dates = exp.createdAt.split('-');
     switch(dates[1]){
-        case "1":{
+        case "01":{
             let currentValue = expenses[0];
             currentValue = currentValue + Number(exp.expenseAmount);
             expenses[0] = currentValue;
             break;
         }
 
-        case "2":{
+        case "02":{
             let currentValue = expenses[1];
             currentValue = currentValue + Number(exp.expenseAmount);
             expenses[1] = currentValue;
             break;
         }
 
-        case "3":{
+        case "03":{
             let currentValue = expenses[2];
             currentValue = currentValue + Number(exp.expenseAmount);
             expenses[2] = currentValue;
             break;
         }
 
-        case "4":{
+        case "04":{
             let currentValue = expenses[3];
             currentValue = currentValue + Number(exp.expenseAmount);
             expenses[3] = currentValue;
             break;
         }
 
-        case "5":{
+        case "05":{
             let currentValue = expenses[4];
             currentValue = currentValue + Number(exp.expenseAmount);
             expenses[4] = currentValue;
             break;
         }
 
-        case "6":{
+        case "06":{
             let currentValue = expenses[5];
             currentValue = currentValue + Number(exp.expenseAmount);
             expenses[5] = currentValue;
             break;
         }
 
-        case "7":{
+        case "07":{
             let currentValue = expenses[6];
             currentValue = currentValue + Number(exp.expenseAmount);
             expenses[6] = currentValue;
             break;
         }
 
-        case "8":{
+        case "08":{
             let currentValue = expenses[7];
             currentValue = currentValue + Number(exp.expenseAmount);
             expenses[7] = currentValue;
             break;
         }
 
-        case "9":{
+        case "09":{
             let currentValue = expenses[8];
             currentValue = currentValue + Number(exp.expenseAmount);
             expenses[8] = currentValue;
@@ -156,63 +156,63 @@ const getMonthlyTotals = (exp, expenses) => {
 const getMonthlyPayTotals = (exp, payments) => {
     const dates = exp.createdAt.split('-');
     switch(dates[1]){
-        case "1":{
+        case "01":{
             let currentValue = payments[0];
             currentValue = currentValue + Number(exp.amountPaid);
             payments[0] = currentValue;
             break;
         }
 
-        case "2":{
+        case "02":{
             let currentValue = payments[1];
             currentValue = currentValue + Number(exp.amountPaid);
             payments[1] = currentValue;
             break;
         }
 
-        case "3":{
+        case "03":{
             let currentValue = payments[2];
             currentValue = currentValue + Number(exp.amountPaid);
             payments[2] = currentValue;
             break;
         }
 
-        case "4":{
+        case "04":{
             let currentValue = payments[3];
             currentValue = currentValue + Number(exp.amountPaid);
             payments[3] = currentValue;
             break;
         }
 
-        case "5":{
+        case "05":{
             let currentValue = payments[4];
             currentValue = currentValue + Number(exp.amountPaid);
             payments[4] = currentValue;
             break;
         }
 
-        case "6":{
+        case "06":{
             let currentValue = payments[5];
             currentValue = currentValue + Number(exp.amountPaid);
             payments[5] = currentValue;
             break;
         }
 
-        case "7":{
+        case "07":{
             let currentValue = payments[6];
             currentValue = currentValue + Number(exp.amountPaid);
             payments[6] = currentValue;
             break;
         }
 
-        case "8":{
+        case "08":{
             let currentValue = payments[7];
             currentValue = currentValue + Number(exp.amountPaid);
             payments[7] = currentValue;
             break;
         }
 
-        case "9":{
+        case "09":{
             let currentValue = payments[8];
             currentValue = currentValue + Number(exp.amountPaid);
             payments[8] = currentValue;
@@ -284,13 +284,13 @@ const BarChartGraph = (props) => {
             outletID: props.station._id,
         }
 
-        DailySalesService.getAllMonthlyReports(payload).then(data => {
+        DailySalesService.getAllMonthlyReports(payload).then(data => { 
             const payments = data.expense.payment.concat(data.expense.posPayment);
             const expense = data.expense.expense;
+            console.log(payments, "from bar graph")
+            console.log(expense, "from bar graph")
 
-             analyseMonthlyData(expense, payments);
-            console.log(payments, "bar records")
-            console.log(expense, 'exp')
+            analyseMonthlyData(expense, payments);
         });
     },[props.station?._id, props.station?.organisation])
 

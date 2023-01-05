@@ -7,7 +7,7 @@ import googlePlus from '../../assets/landing/googlePlus.png';
 const Footer = () => {
     return(
         <React.Fragment>
-            <div className='footer'>
+            <div className='footers'>
                 <div className='innerfoot'>
                     <div style={{textAlign:'left'}} className='detail'>
                         <span className='fir' style={{width:'100%'}}>360-Station</span>

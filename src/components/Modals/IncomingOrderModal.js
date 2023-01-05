@@ -13,22 +13,22 @@ import MenuItem from '@mui/material/MenuItem';
 import ProductService from '../../services/productService';
 import { createProductOrder } from '../../store/actions/productOrder';
 import { Radio } from '@mui/material';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 const IncomingOrderModal = (props) => {
     const [loading, setLoading] = useState(false);
-    const [updateQantityLoaded, setUpdateQuantityLoaded] = useState("");
-    const [updateCurrentBalance, setUpdateCurrentBalance] = useState("");
     const [defaultState, setDefault] = useState(0);
     const productOrder = useSelector(state => state.productOrderReducer.productOrder);
+    const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const dispatch = useDispatch();
     const [productType, setProductType] = useState('available');
     const [quantityOrdered, setQuantityOrdered] = useState("");
     const [previousBalance, setPreviousBalance] = useState("");
+    const [quantityLoaded, setQuantityLoaded] = useState("");
 
     const [depotStation, setDepotStation] = useState('');
     const [destination, setDestination] = useState('');
     const [product, setProduct] = useState('');
-    const [quantity, setQuantity] = useState('');
     const [dateCreated, setDateCreated] = useState('');
     const [productOrderID, setProductOrderID] = useState('');
     const [truckNo, setTruckNo] = useState('');
@@ -37,51 +37,67 @@ const IncomingOrderModal = (props) => {
     const [driverName, setDriverName] = useState('');
     const [phoneNo, setPhoneNumber] = useState('');
     const [val, setVal] = useState(1);
+    const [stationSelect, setStationSelect] = useState(false);
+    const [selected, setSelected] = useState([]);
 
     const handleClose = () => props.close(false);
 
-    const submit = () => {
+    const submit = async() => {
         if(transporter === "") return swal("Warning!", "Transporter cannot be empty", "info");
         if(depotStation === "") return swal("Warning!", "Depot station field cannot be empty", "info");
         if(destination === "") return swal("Warning!", "Destination field cannot be empty", "info");
         if(product === "") return swal("Warning!", "Product field cannot be empty", "info");
-        if(quantity === "") return swal("Warning!", "Quantity field cannot be empty", "info");
         if(dateCreated === "") return swal("Warning!", "Date created field cannot be empty", "info");
         if(productOrderID === "") return swal("Warning!", "Product order ID field cannot be empty", "info");
         if(truckNo === "") return swal("Warning!", "Truck No cannot be empty", "info");
         if(driverName === "") return swal("Warning!", "Driver name cannot be empty", "info");
         if(phoneNo === "") return swal("Warning!", "Phone no cannot be empty", "info");
 
-        if(isNaN(Number(quantity))) return swal("Warning!", "Quantity field is not a number", "info");
+        const totalLoadedQuantity = selected.reduce((accum, current) => {
+            return Number(accum) + Number(current.incomingQuantity);
+        }, 0)
+
+        if(Number(totalLoadedQuantity) > Number(previousBalance)) return swal("Warning!", "Total quantity exceeds current balance", "info");
 
         setLoading(true);
 
-        const payload = {
-            depotStation: depotStation,
-            destination: destination,
-            product: product,
-            quantity: quantity,
-            updateCurrentBalance: updateCurrentBalance,
-            updateQantityLoaded: updateQantityLoaded,
-            dateCreated: dateCreated,
-            productOrderID: productOrderID,
-            truckNo: truckNo,
-            transporter: transporter,
-            wayBillNo: wayBillNo,
-            driverName: driverName,
-            phoneNo: phoneNo,
-            outletName: props.station.outletName,
-            outletID: props.station._id,
-            organizationID: props.station.organisation
+        const selectedStations = [...selected];
+        let previous = previousBalance;
+        let loaded = quantityLoaded;
+
+        for(let station of selectedStations){
+
+            const currentBalanceUpdate = Number(previous) - Number(station.incomingQuantity);
+            const loadedUpdate = Number(loaded) + Number(station.incomingQuantity);
+
+            const payload = {
+                depotStation: depotStation,
+                destination: destination,
+                product: product,
+                quantity: station.incomingQuantity,
+                updateCurrentBalance: currentBalanceUpdate,
+                updateQantityLoaded: loadedUpdate,
+                dateCreated: dateCreated,
+                productOrderID: productOrderID,
+                truckNo: truckNo,
+                transporter: transporter,
+                wayBillNo: wayBillNo,
+                driverName: driverName,
+                phoneNo: phoneNo,
+                outletName: station.outletName,
+                outletID: station._id,
+                organizationID: station.organisation
+            }
+
+            const res = await IncomingService.createIncoming(payload);
+            previous = currentBalanceUpdate;
+            loaded = loadedUpdate;
         }
 
-        IncomingService.createIncoming(payload).then((data) => {
-            swal("Success", "Product order created successfully!", "success");
-        }).then(()=>{
-            setLoading(false);
-            props.refresh();
-            handleClose();
-        })
+        setLoading(false);
+        swal("Success", "Product order created successfully!", "success");
+        props.refresh();
+        handleClose();
     }
 
     const menuSelection = (e, item) => {
@@ -107,27 +123,34 @@ const IncomingOrderModal = (props) => {
         setPreviousBalance(item.currentBalance);
         setQuantityOrdered(item.quantity);
         setProductOrderID(item._id);
+        setQuantityLoaded(item.quantityLoaded);
     }
 
-    const loadedQuantity = (e) => {
-        setQuantity(e);
-        if(quantityOrdered !== ""){
-            
-            if(Number(previousBalance) <= 0){
-                setQuantity("");
-                swal("Warning!", "This product order is fully loaded!", "info");
-            }else if(Number(e) > Number(previousBalance)){
-                setQuantity("");
-                swal("Warning!", "Quantity loaded exceeds current Balance!", "info");
-            }else{
-                const loaded = Number(quantityOrdered) - Number(previousBalance) + Number(e);
-                const balance = Number(quantityOrdered) - Number(loaded);
-
-                setUpdateCurrentBalance(balance);
-                setUpdateQuantityLoaded(loaded);
+    const updateSelection = (e, data) => {
+        const dataClone = {...data, incomingQuantity: 0};
+        
+        if(e.target.checked){
+            const cloneSelected = [...selected];
+            const findID = cloneSelected.findIndex(item => dataClone._id === item._id);
+            if(findID === -1){
+                setSelected(prev => [...prev, dataClone]);
             }
         }else{
-            swal("Warning!", "Quantity field cannot be empty!", "info");
+            const cloneSelected = [...selected];
+            const findID = cloneSelected.findIndex(item => dataClone._id === item._id);
+            cloneSelected.pop(findID);
+            setSelected(cloneSelected);
+        }
+    }
+
+    const updateQantity = (e, data) => {
+        const cloneSelected = [...selected];
+        const findID = cloneSelected.findIndex(item => item._id === data._id);
+        if(findID === -1){
+            swal("Warning!", "Please select a field first to add quantity!", "info");
+        }else{
+            cloneSelected[findID] = {...cloneSelected[findID], incomingQuantity: e.target.value}
+            setSelected(cloneSelected);
         }
     }
 
@@ -289,20 +312,28 @@ const IncomingOrderModal = (props) => {
                             </div>
 
                             <div className='inputs'>
-                                <div className='head-text2'>Quantity Loaded</div>
-                                <OutlinedInput 
-                                    sx={{
-                                        width:'100%',
-                                        height: '35px', 
-                                        marginTop:'5px', 
-                                        background:'#EEF2F1', 
-                                        border:'1px solid #777777',
-                                        fontSize:'12px',
-                                    }} placeholder="" 
-                                    type='text'
-                                    value={quantity}
-                                    onChange={e => loadedQuantity(e.target.value)}
-                                />
+                                <div className='head-text2'>Select stations</div>
+                                <div onClick={()=>setStationSelect(!stationSelect)} style={drop} >
+                                    <span style={{marginLeft:'10px'}}>Select ({selected.length})</span>
+                                    <KeyboardArrowDownIcon sx={{marginRight:'10px'}} />
+                                </div>
+                                {stationSelect &&
+                                    <div style={pop}>
+                                        {
+                                            allOutlets.map((data, index) => {
+                                                return(
+                                                    <div key = {index} style={menus}>
+                                                        <div style={{width:'70%'}}>
+                                                            <input onChange={(e)=>{updateSelection(e, data)}} style={{marginLeft:'10px'}} type={'checkbox'} />
+                                                            <span style={{marginLeft:'10px', fontSize:'11px'}}>{data.outletName}, {data.city}</span>
+                                                        </div>
+                                                        <input onChange={(e)=>updateQantity(e, data)} style={{width:'30%', outline:'none'}} type={'text'} />
+                                                    </div>
+                                                )
+                                            })
+                                        }
+                                    </div>
+                                }
                             </div>
 
                             <div className='inputs'>
@@ -443,6 +474,41 @@ const IncomingOrderModal = (props) => {
                 </div>
         </Modal>
     )
+}
+
+const drop = {
+    width:'98%',
+    height: '35px', 
+    marginTop:'5px', 
+    background:'#EEF2F1', 
+    border:'1px solid #777777',
+    fontSize:'12px',
+    display: 'flex',
+    flexDirection:'row',
+    justifyContent:'space-between',
+    alignItems:'center'
+}
+
+const pop = {
+    width: '98%',
+    height: '200px',
+    background:'#e2e2e2',
+    zIndex: '20',
+    marginTop:'5px',
+    overflowY: 'scroll'
+}
+
+const menus = {
+    width: '100%',
+    height:'35px',
+    border: '1px solid #fff',
+    borderTop: 'none',
+    borderLeft:'none', 
+    borderRight: 'none',
+    display:'flex',
+    flexDirection: 'row',
+    alignItems:'center',
+    justifyContent:'space-between'
 }
 
 const inner = {
