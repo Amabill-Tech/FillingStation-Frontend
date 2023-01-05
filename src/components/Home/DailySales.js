@@ -652,7 +652,7 @@ const DailySales = (props) => {
                         <div style={{marginTop:'10px'}} className='expen'>
                             <div style={{background:'#108CFF'}} className='child'>
                                 {load?
-                                    <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={120} />:
+                                    <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={105} />:
                                     <div className='ins'>
                                         <div>Expenses</div>
                                         <div>N {payments.hasOwnProperty("payments")? payments.expenses: "0.00"}</div>
@@ -661,7 +661,7 @@ const DailySales = (props) => {
                             </div>
                             <div style={{background:'#06805B'}} className='child'>
                                 {load?
-                                    <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={120} />:
+                                    <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={105} />:
                                     <div className='ins'>
                                         <div>Payments</div>
                                         <div>N {payments.hasOwnProperty("payments")? payments.payments: "0.00"}</div>
@@ -698,7 +698,7 @@ const DailySales = (props) => {
                         <div className='inner-section'>
                             <div className="cardss">
                                 {load?
-                                    <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'130px'} height={35} />:
+                                    <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={105} />:
                                     <>
                                         <div className='left'>
                                             PMS
@@ -712,7 +712,7 @@ const DailySales = (props) => {
                             </div>
                             <div className="cardss">
                                 {load?
-                                    <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'130px'} height={35} />:
+                                    <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={105} />:
                                     <>
                                         <div className='left'>
                                             AGO
@@ -726,7 +726,7 @@ const DailySales = (props) => {
                             </div>
                             <div style={{marginRight:'0px'}} className="cardss">
                                 {load?
-                                    <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'130px'} height={35} />:
+                                    <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={105} />:
                                     <>
                                         <div className='left'>
                                             DPK

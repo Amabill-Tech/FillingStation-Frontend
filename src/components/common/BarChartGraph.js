@@ -302,7 +302,7 @@ const BarChartGraph = (props) => {
         <div className='bar-chart'>
             <div className='bar'>
                 {props.load?
-                    <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={450} />:
+                    <Skeleton sx={{borderRadius:'5px', background:'#f7f7f7'}} animation="wave" variant="rectangular" width={'100%'} height={300} />:
                     <Bar options={options} data={monthlyDataSet} />
                 }
             </div>
