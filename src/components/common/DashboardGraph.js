@@ -1,6 +1,5 @@
 import { Button, Skeleton } from "@mui/material";
 import { Line } from "react-chartjs-2";
-import calendar from '../../assets/calendar.png';
 import DashboardService from "../../services/dashboard";
 import {
     Chart as ChartJS,
@@ -163,14 +162,14 @@ const options = {
 const getMonthlyTotals = (day, dataList) => {
     const dates = day.createdAt.split('-');
     switch(dates[1]){
-        case "1":{
+        case "01":{
             let currentValue = dataList[0];
             currentValue = currentValue + Number(day.sales);
             dataList[0] = currentValue;
             break;
         }
 
-        case "2":{
+        case "02":{
             let currentValue = dataList[1];
             currentValue = currentValue + Number(day.sales);
             dataList[1] = currentValue;
@@ -182,7 +181,7 @@ const getMonthlyTotals = (day, dataList) => {
             break;
         }
 
-        case "3":{
+        case "03":{
             let currentValue = dataList[2];
             currentValue = currentValue + Number(day.sales);
             dataList[2] = currentValue;
@@ -194,7 +193,7 @@ const getMonthlyTotals = (day, dataList) => {
             break;
         }
 
-        case "4":{
+        case "04":{
             let currentValue = dataList[3];
             currentValue = currentValue + Number(day.sales);
             dataList[3] = currentValue;
@@ -206,7 +205,7 @@ const getMonthlyTotals = (day, dataList) => {
             break;
         }
 
-        case "5":{
+        case "05":{
             let currentValue = dataList[4];
             currentValue = currentValue + Number(day.sales);
             dataList[4] = currentValue;
@@ -218,7 +217,7 @@ const getMonthlyTotals = (day, dataList) => {
             break;
         }
 
-        case "6":{
+        case "06":{
             let currentValue = dataList[5];
             currentValue = currentValue + Number(day.sales);
             dataList[5] = currentValue;
@@ -230,7 +229,7 @@ const getMonthlyTotals = (day, dataList) => {
             break;
         }
 
-        case "7":{
+        case "07":{
             let currentValue = dataList[6];
             currentValue = currentValue + Number(day.sales);
             dataList[6] = currentValue;
@@ -242,7 +241,7 @@ const getMonthlyTotals = (day, dataList) => {
             break;
         }
 
-        case "8":{
+        case "08":{
             let currentValue = dataList[7];
             currentValue = currentValue + Number(day.sales);
             dataList[7] = currentValue;
@@ -254,7 +253,7 @@ const getMonthlyTotals = (day, dataList) => {
             break;
         }
 
-        case "9":{
+        case "09":{
             let currentValue = dataList[8];
             currentValue = currentValue + Number(day.sales);
             dataList[8] = currentValue;
@@ -452,18 +451,17 @@ const getAnnualTotals = (day, dataList, years) => {
 }
 
 const DashboardGraph = (props) => {
+    const moment = require('moment-timezone');
     const date = new Date();
     const toString = date.toDateString();
-    const [name, month, day, year] = toString.split(' ');
+    const [month, day, year] = toString.split(' ');
     const date2 = `${day} ${month} ${year}`;
 
     const [weeklyDataSet, setWeeklyDataSet] = useState(weeklyData);
     const [monthlyDataSet, setMonthlyDataSet] = useState(monthlyData);
     const [annualDataSet, setAnnualDataSet] = useState(annualData);
 
-    const [currentDate, setCurrentDate] = useState(date2);
     const [currentSelection, setCurrentSelection] = useState(0);
-    const [changeDate, setChangeDate] = useState("");
     const dateHandle = useRef();
 
     const updateDate = async(e) => {
@@ -483,7 +481,7 @@ const DashboardGraph = (props) => {
         }
         console.log(payload, "week")
 
-        DashboardService.getWeeklyDataFromApi(payload).then(data => {console.log(data, "ldukgyfjsdh")
+        DashboardService.getWeeklyDataFromApi(payload).then(data => {
             analyseWeeklyData(data);
         })
     }
@@ -510,21 +508,13 @@ const DashboardGraph = (props) => {
 
     function getFirstAndLastDayOfTheYear(){
         const currentYear = new Date().getFullYear();
-        const lastDay = new Date(currentYear, 11, 31).toLocaleDateString();
         const firstDay = new Date(currentYear, 0, 1).toLocaleDateString();
-        const format1 = firstDay.split('/');
-        const format2 = lastDay.split('/');
-
-        format1[0] = format1[0].length === 1? `0${format1[0]}`: format1[0]
-        format1[1] = format1[1].length === 1? `0${format1[1]}`: format1[1]
-
-        format2[0] = format2[0].length === 1? `0${format2[0]}`: format2[0]
-        format2[1] = format2[1].length === 1? `0${format2[0]}`: format2[0]
-        
-        return {
-            firstDay: `${format1[2]}-${format1[0]}-${format1[1]}`, 
-            lastDay: `${format2[2]}-${format2[0]}-${format2[1]}`
-        };
+        const year = firstDay.split('/')[2];
+    
+        const firstRange =  moment([year]).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+        const secondRange = moment([year]).endOf('year').format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+    
+        return {firstDay: firstRange, lastDay: secondRange};
     }
 
     function getYearRange(){
@@ -708,7 +698,6 @@ const DashboardGraph = (props) => {
 
     const getAllMonthlyData = () => {
         const dateRange = getFirstAndLastDayOfTheYear();
-        console.log(dateRange, "All monthly data")
 
         const payload = {
             organisation: props.station.organisation,
