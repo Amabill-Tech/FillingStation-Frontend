@@ -57,19 +57,22 @@ const DippingComponents = (props) => {
         const findID = selected.findIndex(data => data._id === item._id);
 
         if(findID === -1){
-            setSelected(prev => [...prev, clonedPMS])
+            const cloneMe = [...selected, clonedPMS]
+            setSelected(cloneMe);
+
+            const finalList = {...linkedData};
+            finalList.head.data.payload = cloneMe;
+            dispatch(passRecordSales(finalList));
 
         }else{
             const newList = [...selected]
             newList[findID] = clonedPMS;
             setSelected(newList);
-        }
-    }
 
-    const saveDippingValues = () => {
-        const newList = {...linkedData};
-        newList.head.data.payload = selected;
-        dispatch(passRecordSales(newList));
+            const finalList = {...linkedData};
+            finalList.head.data.payload = newList;
+            dispatch(passRecordSales(finalList));
+        }
     }
 
     return(
@@ -158,26 +161,6 @@ const DippingComponents = (props) => {
                             </div>
                         )
                     })
-                }
-            </div>
-
-            <div style={add}>
-                <Button sx={{
-                    width:'80px', 
-                    height:'30px',  
-                    background: '#427BBE',
-                    borderRadius: '3px',
-                    fontSize:'11px',
-                    '&:hover': {
-                        backgroundColor: '#427BBE'
-                    }
-                    }}  
-                    onClick={saveDippingValues}
-                    variant="contained"> 
-                    save
-                </Button>
-                {linkedData.head.data.payload.length !== 0 &&
-                    <span style={{fontWeight:'600', color:'green', marginLeft:'10px'}}>Done !!</span>
                 }
             </div>
         </div>

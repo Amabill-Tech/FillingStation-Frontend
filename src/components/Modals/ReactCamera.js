@@ -1,23 +1,28 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
 import close from '../../assets/close.png';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import { ThreeDots } from  'react-loader-spinner';
-import swal from 'sweetalert';
 import '../../styles/lpo.scss';
-import AtendanceService from '../../services/attendance';
 import Webcam from "react-webcam";
 
 const ReactCamera = (props) => {
-    const [loading, setLoading] = useState(false);
-    const user = useSelector(state => state.authReducer.user);
-    const [defaultState, setDefault] = useState(0);
-    const attendanceData = useSelector(state => state.attendanceReducer.attendance);
-    const [employeeName, setEmployeeName] = useState('');
-    const [clockOut, setClockout] = useState('');
+    const [loading] = useState(false);
 
     const handleClose = () => props.close(false);
+    const [face, setFace] = useState(true);
+
+    const selfie = {
+        facingMode: "user"
+    };
+
+    const backCam = {
+        facingMode: { exact: "environment" }
+    };
+
+    const switchFace = () => {
+        setFace(!face);
+    }
 
     return(
         <Modal
@@ -40,17 +45,48 @@ const ReactCamera = (props) => {
                                     height={400}
                                     screenshotFormat="image/jpg"
                                     width={370}
+                                    videoConstraints={face? selfie: backCam}
                                 >
                                     {({ getScreenshot }) => (
-                                        <button
-                                            onClick={() => {
-                                                const imageSrc = getScreenshot()
-                                                props.setDataUri(imageSrc);
-                                                handleClose();
-                                            }}
-                                        >
-                                            Capture photo
-                                        </button>
+                                        <div style={cams}>
+                                            <Button
+                                                sx={{
+                                                    width:'140px', 
+                                                    height:'30px',  
+                                                    background: '#054834',
+                                                    borderRadius: '20px',
+                                                    fontSize:'11px',
+                                                    color:'#fff',
+                                                    textTransform:'capitalize',
+                                                    '&:hover': {
+                                                        backgroundColor: '#054834'
+                                                    }
+                                                }}
+                                                onClick={() => {
+                                                    const imageSrc = getScreenshot()
+                                                    props.setDataUri(imageSrc);
+                                                    handleClose();
+                                                }}
+                                            >
+                                                Capture photo
+                                            </Button>
+                                            <Button 
+                                                onClick={switchFace}
+                                                sx={{
+                                                    width:'100px', 
+                                                    height:'30px',  
+                                                    background: '#054834',
+                                                    borderRadius: '20px',
+                                                    fontSize:'11px',
+                                                    color:'#fff',
+                                                    textTransform:'capitalize',
+                                                    '&:hover': {
+                                                        backgroundColor: '#054834'
+                                                    }
+                                                }}>
+                                                Flip
+                                            </Button>
+                                        </div>
                                         )}
                                 </Webcam>
                             </div>
@@ -80,12 +116,18 @@ const ReactCamera = (props) => {
 
 const inner = {
     width:'100%',
-    height:'400px',
+    height:'300px',
 }
 
 const cam = {
     width:'100%',
-    height:'400px',
+    height:'300px',
+}
+
+const cams = {
+    display:'flex',
+    flexDirection:'row',
+    justifyContent:'space-between'
 }
 
 export default ReactCamera;

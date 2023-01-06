@@ -188,6 +188,7 @@ const ReturnToTank = (props) => {
             }
         }
         setSelectedTanks(newTankList);
+        saveReturnToTank(newTankList)
     }
 
 
@@ -216,21 +217,21 @@ const ReturnToTank = (props) => {
         }
     }
 
-    const saveReturnToTank = () => {
+    const saveReturnToTank = (newTankList) => {
         let totalSales = 0;
-        for(let tank of selectedTanks){
+        for(let tank of newTankList){
             for(let pump of tank.pumps){
                 totalSales = totalSales + Number(pump.RTlitre);
             }
-            const newTankList = [...selectedTanks];
-            const findID = selectedTanks.findIndex(data => data._id === tank._id);
+            
+            const findID = newTankList.findIndex(data => data._id === tank._id);
             newTankList[findID].RTlitre = totalSales;
             setSelectedTanks(newTankList);
             totalSales = 0
         }
 
         const newList = {...linkedData};
-        newList.head.data.payload = selectedTanks;
+        newList.head.data.payload = newTankList;
         dispatch(passRecordSales(newList));
     }
 
@@ -406,26 +407,6 @@ const ReturnToTank = (props) => {
                             </div>
                         )
                     })
-                }
-            </div>
-
-            <div style={add}>
-                <Button sx={{
-                    width:'80px', 
-                    height:'30px',  
-                    background: '#427BBE',
-                    borderRadius: '3px',
-                    fontSize:'11px',
-                    '&:hover': {
-                        backgroundColor: '#427BBE'
-                    }
-                    }}  
-                    onClick={saveReturnToTank}
-                    variant="contained"> 
-                    save
-                </Button>
-                {linkedData.head.data.payload.length !== 0 &&
-                    <span style={{fontWeight:'600', color:'green', marginLeft:'10px'}}>Done !!</span>
                 }
             </div>
         </div>

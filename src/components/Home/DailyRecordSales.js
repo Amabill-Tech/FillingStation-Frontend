@@ -145,10 +145,10 @@ function ColorlibStepIcon(props) {
   const { active, completed, className } = props;
 
   const icons = {
-    1: <InventoryIcon />,
-    2: <SanitizerIcon />,
-    3: <AssignmentReturnedIcon />,
-    4: <CreditScoreIcon />,
+    1: <SanitizerIcon />,
+    2: <AssignmentReturnedIcon />,
+    3: <CreditScoreIcon />,
+    4: <InventoryIcon />,
     5: <PaidIcon />,
     6: <AddCardIcon />,
     7: <PropaneTankIcon />,
@@ -179,7 +179,7 @@ ColorlibStepIcon.propTypes = {
   icon: PropTypes.node,
 };
 
-const steps = ['Supply', 'Pump Update', 'Return to Tank', 'LPO', 'Expenses', 'Payments', 'Dipping'];
+const steps = ['Pump Update', 'Return to Tank', 'LPO', 'Supply', 'Expenses', 'Payments', 'Dipping'];
 
 const DailyRecordSales = () => {
     const date = new Date();
@@ -417,7 +417,7 @@ const DailyRecordSales = () => {
                             {
                                 allOutlets.map((item, index) => {
                                     return(
-                                        <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.city}</MenuItem>
+                                        <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.alias}</MenuItem>
                                     )
                                 })  
                             }
@@ -431,7 +431,7 @@ const DailyRecordSales = () => {
                             sx={selectStyle2}
                             disabled
                         >
-                            <MenuItem style={menu} value={0}>{oneStationData.hasOwnProperty("outletName")?oneStationData.outletName+", "+oneStationData.city: "No station created"}</MenuItem>
+                            <MenuItem style={menu} value={0}>{oneStationData.hasOwnProperty("outletName")?oneStationData.outletName+", "+oneStationData.alias: "No station created"}</MenuItem>
                         </Select>
                     }
                 </div>
@@ -473,10 +473,10 @@ const DailyRecordSales = () => {
             </Stack>
 
             <div className='form-body'>
-                {linkedData.page === 1 && <SupplyComponent />}
-                {linkedData.page === 2 && <PumpUpdateComponent />}
-                {linkedData.page === 3 && <ReturnToTankComponent />}
-                {linkedData.page === 4 && <LPOComponent />}
+                {linkedData.page === 1 && <PumpUpdateComponent />}
+                {linkedData.page === 2 && <ReturnToTankComponent />}
+                {linkedData.page === 3 && <LPOComponent />}
+                {linkedData.page === 4 && <SupplyComponent />}
                 {linkedData.page === 5 && <ExpenseComponents /> }
                 {linkedData.page === 6 && <PaymentsComponents /> }
                 {linkedData.page === 7 && <DippingComponents /> }
@@ -562,7 +562,10 @@ const selectStyle2 = {
     color:'#000',
     fontFamily: 'Nunito-Regular',
     fontSize:'14px',
-    outline:'none'
+    outline:'none',
+    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+        border:'1px solid #777777',
+    },
 }
 
 export default DailyRecordSales;

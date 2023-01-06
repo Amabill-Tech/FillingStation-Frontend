@@ -1,4 +1,4 @@
-import { Button, Radio } from "@mui/material"
+import { Radio } from "@mui/material"
 import { useState } from "react";
 import pump1 from '../../assets/pump1.png';
 import cross from '../../assets/cross.png';
@@ -191,6 +191,7 @@ const PumpUpdateComponent = (props) => {
             }
         }
         setSelectedTanks(newTankList);
+        savePumpUpdate(newTankList);
     }
 
     const setTotalizer = (e, item) => {
@@ -219,21 +220,21 @@ const PumpUpdateComponent = (props) => {
         }
     }
 
-    const savePumpUpdate = () => {
+    const savePumpUpdate = (newTankList) => {
         let totalSales = 0;
-        for(let tank of selectedTanks){
+        for(let tank of newTankList){
             for(let pump of tank.pumps){
                 totalSales = totalSales + Number(pump.newTotalizer) - Number(pump.totalizerReading);
             }
-            const newTankList = [...selectedTanks];
-            const findID = selectedTanks.findIndex(data => data._id === tank._id);
+
+            const findID = newTankList.findIndex(data => data._id === tank._id);
             newTankList[findID].sales = totalSales;
             setSelectedTanks(newTankList);
             totalSales = 0
         }
 
         const newList = {...linkedData};
-        newList.head.data.payload = selectedTanks;
+        newList.head.data.payload = newTankList;
         dispatch(passRecordSales(newList));
     }
 
@@ -417,26 +418,6 @@ const PumpUpdateComponent = (props) => {
                     })
                 }
             </div>
-
-            <div style={add}>
-                <Button sx={{
-                    width:'80px', 
-                    height:'30px',  
-                    background: '#427BBE',
-                    borderRadius: '3px',
-                    fontSize:'11px',
-                    '&:hover': {
-                        backgroundColor: '#427BBE'
-                    }
-                    }}  
-                    onClick={savePumpUpdate}
-                    variant="contained"> 
-                    save
-                </Button>
-                {linkedData.head.data.payload.length !== 0 &&
-                    <span style={{fontWeight:'600', color:'green', marginLeft:'10px'}}>Done !!</span>
-                }
-            </div>
         </div>
     )
 }
@@ -468,15 +449,6 @@ const imps = {
     outline:'none',
     border:'1px solid #000',
     paddingLeft:'10px'
-}
-
-const add = {
-    width:'100%',
-    display: 'flex',
-    flexDirection:'row',
-    justifyContent:'center',
-    alignItems:'center',
-    marginTop:'30px'
 }
 
 export default PumpUpdateComponent;

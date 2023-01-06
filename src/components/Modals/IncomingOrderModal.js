@@ -72,7 +72,7 @@ const IncomingOrderModal = (props) => {
 
             const payload = {
                 depotStation: depotStation,
-                destination: destination,
+                destination: station.alias,
                 product: product,
                 quantity: station.incomingQuantity,
                 updateCurrentBalance: currentBalanceUpdate,
@@ -331,7 +331,7 @@ const IncomingOrderModal = (props) => {
                             </div>
 
                             <div className='inputs'>
-                                <div className='head-text2'>Select stations</div>
+                                <div className='head-text2'>Select discharge stations</div>
                                 <div onClick={()=>setStationSelect(!stationSelect)} style={drop} >
                                     <span style={{marginLeft:'10px'}}>Select ({selected.length})</span>
                                     <KeyboardArrowDownIcon sx={{marginRight:'10px'}} />
