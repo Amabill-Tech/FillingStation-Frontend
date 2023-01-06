@@ -4,14 +4,10 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import OutlinedInput from '@mui/material/OutlinedInput';
-import ProductOrderModal from '../Modals/ProductOrderModal';
-import ProductService from '../../services/productService';
-import {createProductOrder, searchProduct} from '../../store/actions/productOrder';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import OutletService from '../../services/outletService';
 import { getAllStations } from '../../store/actions/outlet';
-import ProductReport from '../Reports/ProductReport';
 import ExpenseService from '../../services/expense';
 import { allExpenses, searchExpenses } from '../../store/actions/expense';
 import config from '../../constants';
@@ -21,7 +17,7 @@ const mediaMatch = window.matchMedia('(max-width: 530px)');
 
 const Expenses = () => {
 
-    const [open, setOpen] = React.useState(false);
+    const [setOpen] = React.useState(false);
     const dispatch = useDispatch();
     const user = useSelector(state => state.authReducer.user);
     const expense = useSelector(state => state.expenseReducer.expense);
@@ -156,7 +152,7 @@ const Expenses = () => {
                                 {
                                    allOutlets.map((item, index) => {
                                         return(
-                                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.city}</MenuItem>
+                                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.alias}</MenuItem>
                                         )
                                    })  
                                 }
@@ -168,8 +164,10 @@ const Expenses = () => {
                                         width:'100%',
                                         height: '35px',  
                                         background:'#EEF2F1', 
-                                        border:'1px solid #777777',
                                         fontSize:'12px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
                                     }} 
                                     type='text'
                                     placeholder="Search" 
@@ -285,7 +283,10 @@ const selectStyle2 = {
     color:'#000',
     fontFamily: 'Nunito-Regular',
     fontSize:'14px',
-    outline:'none'
+    outline:'none',
+    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+        border:'1px solid #777777',
+    },
 }
 
 const place = {

@@ -186,7 +186,7 @@ const Regulatory = () => {
                                     {
                                         allOutlets.map((item, index) => {
                                             return(
-                                                <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.city}</MenuItem>
+                                                <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.alias}</MenuItem>
                                             )
                                         })  
                                     }
@@ -200,7 +200,7 @@ const Regulatory = () => {
                                     sx={selectStyle2}
                                     disabled
                                 >
-                                    <MenuItem style={menu} value={0}>{oneStationData.hasOwnProperty("outletName")?oneStationData.outletName+", "+oneStationData.city: "No station created"}</MenuItem>
+                                    <MenuItem style={menu} value={0}>{oneStationData.hasOwnProperty("outletName")?oneStationData.outletName+", "+oneStationData.alias: "No station created"}</MenuItem>
                                 </Select>
                             }
                         </div>
@@ -210,8 +210,10 @@ const Regulatory = () => {
                                         width:'100%',
                                         height: '35px',  
                                         background:'#EEF2F1', 
-                                        border:'1px solid #777777',
                                         fontSize:'12px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
                                     }} 
                                     type='text'
                                     placeholder="Search" 
@@ -355,7 +357,10 @@ const selectStyle2 = {
     color:'#000',
     fontFamily: 'Nunito-Regular',
     fontSize:'14px',
-    outline:'none'
+    outline:'none',
+    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+        border:'1px solid #777777',
+    },
 }
 
 const place = {

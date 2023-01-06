@@ -110,8 +110,11 @@ const CreateFillingStation = (props) => {
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
-                                        border:'1px solid #777777',
                                         fontSize:'12px',
+                                        borderRadius:'0px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
                                     }} placeholder="" 
                                     onChange={e => setOutletName(e.target.value)}
                                 />
@@ -128,8 +131,11 @@ const CreateFillingStation = (props) => {
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
-                                        border:'1px solid #777777',
                                         fontSize:'12px',
+                                        borderRadius:'0px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
                                     }}
                                 >
                                     {
@@ -143,111 +149,6 @@ const CreateFillingStation = (props) => {
                             </div>
 
                             <div style={{marginTop:'15px'}} className='inputs'>
-                                <div className='head-text2'>City/Town</div>
-                                <OutlinedInput 
-                                    sx={{
-                                        width:'100%',
-                                        height: '35px', 
-                                        marginTop:'5px', 
-                                        background:'#EEF2F1', 
-                                        border:'1px solid #777777',
-                                        fontSize:'12px',
-                                    }} placeholder="" 
-                                    onChange={e => setCity(e.target.value)}
-                                />
-                            </div>
-
-                            <div style={{marginTop:'15px'}} className='inputs'>
-                                <div className='head-text2'>PMS Cost</div>
-                                <OutlinedInput 
-                                    sx={{
-                                        width:'100%',
-                                        height: '35px', 
-                                        marginTop:'5px', 
-                                        background:'#EEF2F1', 
-                                        border:'1px solid #777777',
-                                        fontSize:'12px',
-                                    }} placeholder="" 
-                                    onChange={e => setPMSCost(e.target.value)}
-                                />
-                            </div>
-
-                            <div style={{marginTop:'15px'}} className='inputs'>
-                                <div className='head-text2'>PMS Price</div>
-                                <OutlinedInput 
-                                    sx={{
-                                        width:'100%',
-                                        height: '35px', 
-                                        marginTop:'5px', 
-                                        background:'#EEF2F1', 
-                                        border:'1px solid #777777',
-                                        fontSize:'12px',
-                                    }} placeholder="" 
-                                    onChange={e => setPMSPrice(e.target.value)}
-                                />
-                            </div>
-
-                            <div style={{marginTop:'15px'}} className='inputs'>
-                                <div className='head-text2'>AGO Cost</div>
-                                <OutlinedInput 
-                                    sx={{
-                                        width:'100%',
-                                        height: '35px', 
-                                        marginTop:'5px', 
-                                        background:'#EEF2F1', 
-                                        border:'1px solid #777777',
-                                        fontSize:'12px',
-                                    }} placeholder="" 
-                                    onChange={e => setAGOCost(e.target.value)}
-                                />
-                            </div>
-
-                            <div style={{marginTop:'15px'}} className='inputs'>
-                                <div className='head-text2'>AGO Price</div>
-                                <OutlinedInput 
-                                    sx={{
-                                        width:'100%',
-                                        height: '35px', 
-                                        marginTop:'5px', 
-                                        background:'#EEF2F1', 
-                                        border:'1px solid #777777',
-                                        fontSize:'12px',
-                                    }} placeholder="" 
-                                    onChange={e => setAGOPrice(e.target.value)}
-                                />
-                            </div>
-
-                            <div style={{marginTop:'15px'}} className='inputs'>
-                                <div className='head-text2'>DPK Cost</div>
-                                <OutlinedInput 
-                                    sx={{
-                                        width:'100%',
-                                        height: '35px', 
-                                        marginTop:'5px', 
-                                        background:'#EEF2F1', 
-                                        border:'1px solid #777777',
-                                        fontSize:'12px',
-                                    }} placeholder="" 
-                                    onChange={e => setDPKCost(e.target.value)}
-                                />
-                            </div>
-
-                            <div style={{marginTop:'15px'}} className='inputs'>
-                                <div className='head-text2'>DPK Price</div>
-                                <OutlinedInput 
-                                    sx={{
-                                        width:'100%',
-                                        height: '35px', 
-                                        marginTop:'5px', 
-                                        background:'#EEF2F1', 
-                                        border:'1px solid #777777',
-                                        fontSize:'12px',
-                                    }} placeholder="" 
-                                    onChange={e => setDPKPrice(e.target.value)}
-                                />
-                            </div>
-
-                            <div style={{marginTop:'15px'}} className='inputs'>
                                 <div className='head-text2'>LGA</div>
                                 <Select
                                     labelId="demo-select-small"
@@ -258,8 +159,11 @@ const CreateFillingStation = (props) => {
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
-                                        border:'1px solid #777777',
                                         fontSize:'12px',
+                                        borderRadius:'0px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
                                     }}
                                 >
                                     {
@@ -273,6 +177,24 @@ const CreateFillingStation = (props) => {
                             </div>
 
                             <div style={{marginTop:'15px'}} className='inputs'>
+                                <div className='head-text2'>Address</div>
+                                <OutlinedInput 
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        fontSize:'12px',
+                                        borderRadius:'0px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
+                                    }} placeholder="" 
+                                    onChange={e => setCity(e.target.value)}
+                                />
+                            </div>
+
+                            <div style={{marginTop:'15px'}} className='inputs'>
                                 <div className='head-text2'>Alias</div>
                                 <OutlinedInput 
                                     sx={{
@@ -280,10 +202,121 @@ const CreateFillingStation = (props) => {
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
-                                        border:'1px solid #777777',
                                         fontSize:'12px',
+                                        borderRadius:'0px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
                                     }} placeholder="" 
                                     onChange={e => setAlias(e.target.value)}
+                                />
+                            </div>
+
+                            <div style={{marginTop:'15px'}} className='inputs'>
+                                <div className='head-text2'>PMS Cost</div>
+                                <OutlinedInput 
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        fontSize:'12px',
+                                        borderRadius:'0px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
+                                    }} placeholder="" 
+                                    onChange={e => setPMSCost(e.target.value)}
+                                />
+                            </div>
+
+                            <div style={{marginTop:'15px'}} className='inputs'>
+                                <div className='head-text2'>PMS Price</div>
+                                <OutlinedInput 
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        fontSize:'12px',
+                                        borderRadius:'0px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
+                                    }} placeholder="" 
+                                    onChange={e => setPMSPrice(e.target.value)}
+                                />
+                            </div>
+
+                            <div style={{marginTop:'15px'}} className='inputs'>
+                                <div className='head-text2'>AGO Cost</div>
+                                <OutlinedInput 
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        fontSize:'12px',
+                                        borderRadius:'0px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
+                                    }} placeholder="" 
+                                    onChange={e => setAGOCost(e.target.value)}
+                                />
+                            </div>
+
+                            <div style={{marginTop:'15px'}} className='inputs'>
+                                <div className='head-text2'>AGO Price</div>
+                                <OutlinedInput 
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        fontSize:'12px',
+                                        borderRadius:'0px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
+                                    }} placeholder="" 
+                                    onChange={e => setAGOPrice(e.target.value)}
+                                />
+                            </div>
+
+                            <div style={{marginTop:'15px'}} className='inputs'>
+                                <div className='head-text2'>DPK Cost</div>
+                                <OutlinedInput 
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        fontSize:'12px',
+                                        borderRadius:'0px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
+                                    }} placeholder="" 
+                                    onChange={e => setDPKCost(e.target.value)}
+                                />
+                            </div>
+
+                            <div style={{marginTop:'15px'}} className='inputs'>
+                                <div className='head-text2'>DPK Price</div>
+                                <OutlinedInput 
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        fontSize:'12px',
+                                        borderRadius:'0px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
+                                    }} placeholder="" 
+                                    onChange={e => setDPKPrice(e.target.value)}
                                 />
                             </div>
                         </div>

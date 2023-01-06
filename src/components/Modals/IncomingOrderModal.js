@@ -90,6 +90,7 @@ const IncomingOrderModal = (props) => {
             }
 
             const res = await IncomingService.createIncoming(payload);
+            if(res)
             previous = currentBalanceUpdate;
             loaded = loadedUpdate;
         }
@@ -195,8 +196,11 @@ const IncomingOrderModal = (props) => {
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
-                                        border:'1px solid #777777',
                                         fontSize:'12px',
+                                        borderRadius:'0px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
                                     }}
                                 >
                                     <MenuItem style={menu} value={1}>Select Product</MenuItem>
@@ -235,8 +239,11 @@ const IncomingOrderModal = (props) => {
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
-                                        border:'1px solid #777777',
                                         fontSize:'12px',
+                                        borderRadius:'0px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
                                     }} placeholder="" 
                                     value={depotStation}
                                     type='text'
@@ -250,10 +257,13 @@ const IncomingOrderModal = (props) => {
                                     sx={{
                                         width:'100%',
                                         height: '35px', 
-                                        marginTop:'5px', 
-                                        background:'#EEF2F1', 
-                                        border:'1px solid #777777',
+                                        marginTop:'5px',  
                                         fontSize:'12px',
+                                        background:'#EEF2F1',
+                                        borderRadius:'0px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
                                     }} placeholder="" 
                                     value={transporter}
                                     type='text'
@@ -269,8 +279,11 @@ const IncomingOrderModal = (props) => {
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
-                                        border:'1px solid #777777',
                                         fontSize:'12px',
+                                        borderRadius:'0px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
                                     }} placeholder="" 
                                     value={destination}
                                     onChange={e => setDestination(e.target.value)}
@@ -285,8 +298,11 @@ const IncomingOrderModal = (props) => {
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
-                                        border:'1px solid #777777',
                                         fontSize:'12px',
+                                        borderRadius:'0px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
                                     }} placeholder="" 
                                     type='text'
                                     disabled
@@ -302,8 +318,11 @@ const IncomingOrderModal = (props) => {
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
-                                        border:'1px solid #777777',
                                         fontSize:'12px',
+                                        borderRadius:'0px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
                                     }} placeholder="" 
                                     type='text'
                                     disabled
@@ -327,7 +346,7 @@ const IncomingOrderModal = (props) => {
                                                             <input onChange={(e)=>{updateSelection(e, data)}} style={{marginLeft:'10px'}} type={'checkbox'} />
                                                             <span style={{marginLeft:'10px', fontSize:'11px'}}>{data.outletName}, {data.city}</span>
                                                         </div>
-                                                        <input onChange={(e)=>updateQantity(e, data)} style={{width:'30%', outline:'none'}} type={'text'} />
+                                                        <input placeholder='quantity' onChange={(e)=>updateQantity(e, data)} style={{width:'30%', outline:'none', fontSize:'11px'}} type={'text'} />
                                                     </div>
                                                 )
                                             })
@@ -344,8 +363,11 @@ const IncomingOrderModal = (props) => {
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
-                                        border:'1px solid #777777',
                                         fontSize:'12px',
+                                        borderRadius:'0px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
                                     }} placeholder="" 
                                     type='date'
                                     value={dateCreated}
@@ -361,8 +383,11 @@ const IncomingOrderModal = (props) => {
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
-                                        border:'1px solid #777777',
                                         fontSize:'12px',
+                                        borderRadius:'0px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
                                     }} placeholder="" 
                                     type='text'
                                     disabled
@@ -379,8 +404,11 @@ const IncomingOrderModal = (props) => {
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
-                                        border:'1px solid #777777',
                                         fontSize:'12px',
+                                        borderRadius:'0px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
                                     }} placeholder="" 
                                     type='text'
                                     value={truckNo}
@@ -396,8 +424,11 @@ const IncomingOrderModal = (props) => {
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
-                                        border:'1px solid #777777',
                                         fontSize:'12px',
+                                        borderRadius:'0px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
                                     }} placeholder="" 
                                     type='text'
                                     value={wayBillNo}
@@ -413,8 +444,11 @@ const IncomingOrderModal = (props) => {
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
-                                        border:'1px solid #777777',
                                         fontSize:'12px',
+                                        borderRadius:'0px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
                                     }} placeholder="" 
                                     type='text'
                                     value={driverName}
@@ -430,8 +464,11 @@ const IncomingOrderModal = (props) => {
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
-                                        border:'1px solid #777777',
                                         fontSize:'12px',
+                                        borderRadius:'0px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
                                     }} placeholder="" 
                                     type='text'
                                     value={phoneNo}
@@ -526,12 +563,15 @@ const menu = {
 const selectStyle2 = {
     width:'100%', 
     height:'35px', 
-    borderRadius:'5px',
-    background: '#F2F1F1B2',
+    background:'#EEF2F1',
     color:'#000',
     fontFamily: 'Nunito-Regular',
     fontSize:'14px',
-    outline:'none'
+    outline:'none',
+    borderRadius:'0px',
+    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+        border:'1px solid #777777',
+    },
 }
 
 export default IncomingOrderModal;

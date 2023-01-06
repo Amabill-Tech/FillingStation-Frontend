@@ -125,8 +125,10 @@ const Manager = (props) => {
                                         width:'100%',
                                         height: '35px',  
                                         background:'#EEF2F1', 
-                                        border:'1px solid #777777',
                                         fontSize:'12px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
                                     }} 
                                     type='text'
                                     placeholder="Search" 

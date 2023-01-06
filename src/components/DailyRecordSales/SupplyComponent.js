@@ -19,7 +19,6 @@ const SupplyComponent = () => {
     const formStation = useSelector(state => state.dailyRecordReducer.formStation);
     const tankList = useSelector(state => state.outletReducer.tankList);
     const [selectedIncomingOrders, setSelectedIncomingOrder] = useState("");
-    const [quantityToBeDischargedValue, setQuantityToBeDischarged] = useState("");
 
     // payload data
     const [transporter, setTransporter] = useState('');
@@ -60,15 +59,15 @@ const SupplyComponent = () => {
                 return Number(accum) + Number(current.addedQuantity);
             }, 0);
 
-            if(sumOfQuantity > quantityToBeDischargedValue){
-                const shortage = sumOfQuantity - quantityToBeDischargedValue;
+            if(sumOfQuantity > Number(quantityLoaded)){
+                const shortage = sumOfQuantity - Number(quantityLoaded);
                 setShortage("None");
                 setOverage(shortage);
-            }else if(sumOfQuantity < quantityToBeDischargedValue){
-                const overage = quantityToBeDischargedValue - sumOfQuantity;
+            }else if(sumOfQuantity < Number(quantityLoaded)){
+                const overage = Number(quantityLoaded) - sumOfQuantity;
                 setOverage("None");
                 setShortage(overage);
-            }else if(quantityToBeDischargedValue === sumOfQuantity){
+            }else if(Number(quantityLoaded) === sumOfQuantity){
                 setOverage("None");
                 setShortage("None");
             }
@@ -152,10 +151,6 @@ const SupplyComponent = () => {
         }
     }
 
-    const quantityToBeDischarged = (data) => {
-        setQuantityToBeDischarged(Number(data));
-    }
-
     return(
         <div className='inner-body'>
             <div className='left-supply'>
@@ -207,13 +202,6 @@ const SupplyComponent = () => {
                     <div className='input-d'>
                         <span style={{color:'green'}}>Quantity Loaded</span>
                         <input disabled value={quantityLoaded} onChange={e => setQuantityLoaded(e.target.value)} className='text-field' type={'text'} />
-                    </div>
-                </div>
-
-                <div className='single-form'>
-                    <div className='input-d'>
-                        <span style={{color:'green'}}>Quantity to be Discharged (ltr)</span>
-                        <input value={quantityToBeDischargedValue} onChange={(e)=>{quantityToBeDischarged(e.target.value)}} style={{width:'98%'}} className='text-field' type={'text'} />
                     </div>
                 </div>
 

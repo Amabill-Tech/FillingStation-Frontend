@@ -110,7 +110,7 @@ const ProductOrderModal = (props) => {
                                 <div className='head-text2'>Date of purchase</div>
                                 <input 
                                     style={{
-                                        width:'100%',
+                                        width:'96%',
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
@@ -128,7 +128,7 @@ const ProductOrderModal = (props) => {
                                 <div className='head-text2'>Company (Product seller)</div>
                                 <input 
                                     style={{
-                                        width:'100%',
+                                        width:'96%',
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
@@ -145,7 +145,7 @@ const ProductOrderModal = (props) => {
                                 <div className='head-text2'>Depot Address</div>
                                 <input 
                                     style={{
-                                        width:'100%',
+                                        width:'96%',
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
@@ -166,11 +166,14 @@ const ProductOrderModal = (props) => {
                                     value={defaults}
                                     sx={{
                                         width:'100%',
-                                        height: '35px', 
+                                        height: '40px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
-                                        border:'1px solid #777777',
                                         fontSize:'12px',
+                                        borderRadius:'0px',
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            border:'1px solid #777777',
+                                        },
                                     }}
                                 >
                                     <MenuItem onClick={() => {menuSelection(10, "")}} style={menu} value={10}>Select Product</MenuItem>
@@ -184,7 +187,7 @@ const ProductOrderModal = (props) => {
                                 <div className='head-text2'>Quantity Ordered (litre)</div>
                                 <input 
                                     style={{
-                                        width:'100%',
+                                        width:'96%',
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
@@ -202,7 +205,7 @@ const ProductOrderModal = (props) => {
                                 <div className='head-text2'>Cost per ltr</div>
                                 <input 
                                     style={{
-                                        width:'100%',
+                                        width:'96%',
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 

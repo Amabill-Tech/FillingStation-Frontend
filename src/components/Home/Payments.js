@@ -3,20 +3,11 @@ import '../../styles/payments.scss';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
-import LPOModal from '../Modals/LPOModal';
-import LPOService from '../../services/lpo';
 import { useSelector } from 'react-redux';
-import { createLPO, searchLPO } from '../../store/actions/lpo';
 import { useDispatch } from 'react-redux';
 import OutletService from '../../services/outletService';
 import { getAllStations } from '../../store/actions/outlet';
 import { OutlinedInput } from '@mui/material';
-import edit2 from '../../assets/edit2.png';
-import eyes from '../../assets/eyes.png';
-import LPORateModal from '../Modals/SetLPORate';
-import { Route, Switch } from 'react-router-dom';
-import ListLPO from '../LPO/ListLPO';
-import LPOReport from '../Reports/LpoReport';
 import RecordPaymentService from '../../services/recordPayment';
 import { allBankPayment, allPosPayment, searchBankPayment, searchPosPayment } from '../../store/actions/recordPayment';
 import config from '../../constants';
@@ -25,7 +16,7 @@ const mediaMatch = window.matchMedia('(max-width: 530px)');
 
 const Payments = (props) => {
 
-    const [lpo, setLpo] = React.useState(false);
+    const [setLpo] = React.useState(false);
     const user = useSelector(state => state.authReducer.user);
     const bank = useSelector(state => state.recordPaymentReducer.bank);
     const pos = useSelector(state => state.recordPaymentReducer.pos);
@@ -38,11 +29,8 @@ const Payments = (props) => {
     const [skip, setSkip] = useState(0);
     const [limit, setLimit] = useState(15);
     const [total1, setTotal1] = useState(0);
-    const [total2, setTotal2] = useState(0);
-    const [prints, setPrints] = useState(false);
-    const [viewLPO, setViewLpo] = useState(false);
-    const [priceModal, setPriceModal] = useState(false);
-    const [currentLPO, setCurrentLPO] = useState();
+    const [setTotal2] = useState(0);
+    const [setPrints] = useState(false);
 
     const openModal = () => {
         setLpo(true);
@@ -74,7 +62,7 @@ const Payments = (props) => {
                 dispatch(allPosPayment(data.pos.pos));
             })
         });
-    }, [dispatch, user.organisationID, user._id, user.userType, skip, limit]);
+    }, [user.userType, user._id, user.organisationID, dispatch, skip, limit, setTotal2]);
 
     useEffect(()=>{
         getAllLPOData();
@@ -158,15 +146,6 @@ const Payments = (props) => {
         refresh();
     }
 
-    const openLPOSales = (data) => {
-        props.history.push('/home/lpo/list', {state: data});
-    }
-
-    const createPrice = (data) => {
-        setPriceModal(true);
-        setCurrentLPO(data);
-    }
-
     return(
         <React.Fragment>
             <div data-aos="zoom-in-down" style={{width:'100%'}} className='paymentsCaontainer'>
@@ -201,7 +180,7 @@ const Payments = (props) => {
                                     {
                                     allOutlets.map((item, index) => {
                                             return(
-                                                <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' + item.city}</MenuItem>
+                                                <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' + item.alias}</MenuItem>
                                             )
                                     })  
                                     }
@@ -213,8 +192,10 @@ const Payments = (props) => {
                                             width:'100%',
                                             height: '35px',  
                                             background:'#EEF2F1', 
-                                            border:'1px solid #777777',
                                             fontSize:'12px',
+                                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                                border:'1px solid #777777',
+                                            },
                                         }} 
                                         type='text'
                                         placeholder="Search" 
@@ -403,7 +384,10 @@ const selectStyle2 = {
     color:'#000',
     fontFamily: 'Nunito-Regular',
     fontSize:'14px',
-    outline:'none'
+    outline:'none',
+    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+        border:'1px solid #777777',
+    },
 }
 
 const place = {
