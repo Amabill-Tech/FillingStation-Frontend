@@ -12,12 +12,14 @@ import { useSelector } from 'react-redux';
 import OutletService from '../../services/outletService';
 import { adminOutlet, getAllStations } from '../../store/actions/outlet';
 import ProductReport from '../Reports/ProductReport';
+import IncomingList from '../Modals/IncomingList';
 
 const mediaMatch = window.matchMedia('(max-width: 530px)');
 
 const ProductOrders = () => {
 
     const [open, setOpen] = React.useState(false);
+    const [open2, setOpen2] = React.useState({id:"", trigger: false});
     const dispatch = useDispatch();
     const user = useSelector(state => state.authReducer.user);
     const productOrder = useSelector(state => state.productOrderReducer.productOrder);
@@ -144,9 +146,14 @@ const ProductOrders = () => {
         refresh();
     }
 
+    const openOrderDetails = (data) => {
+        setOpen2({...open2, id: data._id, trigger: true});
+    }
+
     return(
         <div data-aos="zoom-in-down" className='paymentsCaontainer'>
-            {<ProductOrderModal station = {currentStation} open={open} close={setOpen} refresh={refresh} />}
+            {open && <ProductOrderModal station = {currentStation} open={open} close={setOpen} refresh={refresh} />}
+            {open2.trigger && <IncomingList open={open2} close={setOpen2} />}
             { prints && <ProductReport allOutlets={productOrder} open={prints} close={setPrints}/>}
             <div className='inner-pay'>
                 <div className='action'>
@@ -295,7 +302,7 @@ const ProductOrders = () => {
                             <div style={place}>No product data</div>:
                             productOrder.map((data, index) => {
                                 return(
-                                    <div className='table-head2'>
+                                    <div onClick={()=>{openOrderDetails(data)}} className='table-head2'>
                                         <div className='column'>{index + 1}</div>
                                         <div className='column'>{data.dateCreated}</div>
                                         <div className='column'>{data.depot}</div>
