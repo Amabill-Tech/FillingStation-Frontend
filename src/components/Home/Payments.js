@@ -6,7 +6,7 @@ import Button from '@mui/material/Button';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import OutletService from '../../services/outletService';
-import { getAllStations } from '../../store/actions/outlet';
+import { adminOutlet, getAllStations } from '../../store/actions/outlet';
 import { OutlinedInput } from '@mui/material';
 import RecordPaymentService from '../../services/recordPayment';
 import { allBankPayment, allPosPayment, searchBankPayment, searchPosPayment } from '../../store/actions/recordPayment';
@@ -23,8 +23,8 @@ const Payments = (props) => {
     const dispatch = useDispatch();
     const [defaultState, setDefault] = useState(0);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [activeButton, setActiveButton] = useState(false);
-    const [currentStation, setCurrentStation] = useState({});
     const [entries, setEntries] = useState(10);
     const [skip, setSkip] = useState(0);
     const [limit, setLimit] = useState(15);
@@ -37,32 +37,62 @@ const Payments = (props) => {
     }
 
     const getAllLPOData = useCallback(() => {
-        OutletService.getAllOutletStations({organisation: user.userType === "superAdmin"? user._id : user.organisationID}).then(data => {
-            dispatch(getAllStations(data.station));
-            setCurrentStation(data.station[0]);
-            if(data.station.length !== 0){
-                setDefault(1);
-            }
-            return data.station[0]
-        }).then((data)=>{
-            const payload = {
-                skip: skip * limit,
-                limit: limit,
-                outletID: data._id, 
-                organisationID: data.organisation
-            }
 
-            RecordPaymentService.getBankPayments(payload).then((data) => {
-                setTotal1(data.bank.count);
-                dispatch(allBankPayment(data.bank.bank));
-            })
+        const payload = {
+            organisation: user._id
+        }
+
+        if(user.userType === "superAdmin" || user.userType === "admin"){
+            OutletService.getAllOutletStations(payload).then(data => {
+                dispatch(getAllStations(data.station));
+                if(data.station.length !== 0){
+                    setDefault(1);
+                }
+                dispatch(adminOutlet(data.station[0]));
+                return data.station[0]
+            }).then((data)=>{
+                const payload = {
+                    skip: skip * limit,
+                    limit: limit,
+                    outletID: data._id, 
+                    organisationID: data.organisation
+                }
     
-            RecordPaymentService.getPOSPayments(payload).then((data) => {
-                setTotal2(data.pos.count);
-                dispatch(allPosPayment(data.pos.pos));
-            })
-        });
-    }, [user.userType, user._id, user.organisationID, dispatch, skip, limit, setTotal2]);
+                RecordPaymentService.getBankPayments(payload).then((data) => {
+                    setTotal1(data.bank.count);
+                    dispatch(allBankPayment(data.bank.bank));
+                })
+        
+                RecordPaymentService.getPOSPayments(payload).then((data) => {
+                    setTotal2(data.pos.count);
+                    dispatch(allPosPayment(data.pos.pos));
+                })
+            });
+        }else{
+            OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
+                dispatch(adminOutlet(data.station));
+                return data.station;
+            }).then(data => {
+                const payload = {
+                    skip: skip * limit,
+                    limit: limit,
+                    outletID: data._id, 
+                    organisationID: data.organisation
+                }
+    
+                RecordPaymentService.getBankPayments(payload).then((data) => {
+                    setTotal1(data.bank.count);
+                    dispatch(allBankPayment(data.bank.bank));
+                })
+        
+                RecordPaymentService.getPOSPayments(payload).then((data) => {
+                    setTotal2(data.pos.count);
+                    dispatch(allPosPayment(data.pos.pos));
+                })
+            });
+        }
+        
+    }, [user._id, user.userType, user.outletID, dispatch, skip, limit, setTotal2]);
 
     useEffect(()=>{
         getAllLPOData();
@@ -80,8 +110,8 @@ const Payments = (props) => {
         const payload = {
             skip: skip * limit,
             limit: limit,
-            outletID: currentStation._id, 
-            organisationID: currentStation.organisation
+            outletID: oneStationData?._id, 
+            organisationID: oneStationData?.organisation
         }
 
         RecordPaymentService.getBankPayments(payload).then((data) => {
@@ -97,7 +127,7 @@ const Payments = (props) => {
 
     const changeMenu = (index, item ) => {
         setDefault(index);
-        setCurrentStation(item);
+        dispatch(adminOutlet(item));
 
         const payload = {
             skip: skip * limit,
@@ -170,21 +200,34 @@ const Payments = (props) => {
                     <div className='search'>
                         <div className='input-cont'>
                             <div className='second-select'>
-                                <Select
-                                    labelId="demo-select-small"
-                                    id="demo-select-small"
-                                    value={defaultState}
-                                    sx={selectStyle2}
-                                >
-                                    <MenuItem style={menu} value={0}>Select station</MenuItem>
-                                    {
-                                    allOutlets.map((item, index) => {
-                                            return(
-                                                <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' + item.alias}</MenuItem>
-                                            )
-                                    })  
-                                    }
-                                </Select>
+                                {(user.userType === "superAdmin" || user.userType === "admin") &&
+                                    <Select
+                                        labelId="demo-select-small"
+                                        id="demo-select-small"
+                                        value={defaultState}
+                                        sx={selectStyle2}
+                                    >
+                                        <MenuItem style={menu} value={0}>Select Station</MenuItem>
+                                        {
+                                            allOutlets.map((item, index) => {
+                                                return(
+                                                    <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.alias}</MenuItem>
+                                                )
+                                            })  
+                                        }
+                                    </Select>
+                                }
+                                {user.userType === "staff" &&
+                                    <Select
+                                        labelId="demo-select-small"
+                                        id="demo-select-small"
+                                        value={0}
+                                        sx={selectStyle2}
+                                        disabled
+                                    >
+                                        <MenuItem style={menu} value={0}>{user.userType === "staff"? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
+                                    </Select>
+                                }
                             </div>
                             <div className='second-select'>
                                     <OutlinedInput

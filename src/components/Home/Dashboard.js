@@ -36,24 +36,24 @@ const DashboardImage = (props) => {
             }
 
             case "activeTank":{
-                dispatch(utils({state: "activeTank", station: props.station}));
+                dispatch(utils({state: "activeTank", station: props?.station}));
                 history.push("/home/tank-list");
                 break;
             }
 
             case "inactiveTank":{
-                dispatch(utils({state: "inActiveTank", station: props.station}));
+                dispatch(utils({state: "inActiveTank", station: props?.station}));
                 history.push("/home/tank-list");
                 break;
             }
             case "activePump":{
-                dispatch(utils({state: "activePump", station: props.station}));
+                dispatch(utils({state: "activePump", station: props?.station}));
                 history.push("/home/pump-list");
                 break;
             }
 
             case "inactivePump":{
-                dispatch(utils({state: "inActivePump", station: props.station}));
+                dispatch(utils({state: "inActivePump", station: props?.station}));
                 history.push("/home/pump-list");
                 break;
             }
@@ -95,7 +95,6 @@ const Dashboard = (props) => {
     const dashboardData = useSelector(state => state.dashboardReducer.dashboardData);
     const dashboardRecords = useSelector(state => state.dashboardReducer.dashboardRecords);
     const [defaultState, setDefault] = useState(0);
-    const [currentStation, setCurrentStation] = useState(null);
     const [value, setValue] = useState([new Date(), new Date()]);
     const [load, setLoad] = useState(false);
 
@@ -124,14 +123,14 @@ const Dashboard = (props) => {
             organisation: user._id
         }
 
-        if(user.userType === "superAdmin"){
+        if(user.userType === "superAdmin" || user.userType === "admin"){
             setLoad(true);
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
                 if(data.station.length !== 0){
                     setDefault(1);
                 }
-                setCurrentStation(data.station[0]);
+                dispatch(adminOutlet(data.station[0]));
                 return data.station[0];
             }).then(data => {
                 DashboardService.allAttendanceRecords({id: data?.organisation, outletID: data?._id}).then(data => {
@@ -145,7 +144,6 @@ const Dashboard = (props) => {
             setLoad(true);
             OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
                 dispatch(adminOutlet(data.station));
-                setCurrentStation(data.station);
                 return data.station;
             }).then(data => {
                 DashboardService.allAttendanceRecords({id: data.organisation, outletID: data._id}).then(data => {
@@ -166,7 +164,7 @@ const Dashboard = (props) => {
 
     const changeMenu = (index, item ) => {
         setDefault(index);
-        setCurrentStation(item);
+        dispatch(adminOutlet(item));
     }
 
     const goToPayments = () => {
@@ -308,8 +306,8 @@ const Dashboard = (props) => {
         const formatTwo = rangeTwo[2]+"-"+rangeTwo[0]+"-"+rangeTwo[1];
 
         const payload = {
-            organisation: currentStation.organisation,
-            outletID: currentStation._id,
+            organisation: oneStationData?.organisation,
+            outletID: oneStationData?._id,
             startDate: formatOne,
             endDate: formatTwo
         }
@@ -333,7 +331,7 @@ const Dashboard = (props) => {
                                 <DateRangePicker style={{background:'red'}} onChange={onChange} value={value} />
                             </div>
                             <div className='second-select'>
-                                {oneStationData.hasOwnProperty("outletName") ||
+                                {(user.userType === "superAdmin" || user.userType === "admin") &&
                                     <Select
                                         labelId="demo-select-small"
                                         id="demo-select-small"
@@ -350,7 +348,7 @@ const Dashboard = (props) => {
                                         }
                                     </Select>
                                 }
-                                {oneStationData.hasOwnProperty("outletName") &&
+                                {user.userType === "staff" &&
                                     <Select
                                         labelId="demo-select-small"
                                         id="demo-select-small"
@@ -358,7 +356,7 @@ const Dashboard = (props) => {
                                         sx={selectStyle2}
                                         disabled
                                     >
-                                        <MenuItem style={menu} value={0}>{oneStationData.hasOwnProperty("outletName")?oneStationData.outletName+", "+oneStationData.alias: "No station created"}</MenuItem>
+                                        <MenuItem style={menu} value={0}>{user.userType === "staff"? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
                                     </Select>
                                 }
                             </div>
@@ -390,7 +388,7 @@ const Dashboard = (props) => {
                             </div>
                         </div>
                         <div style={{marginTop:'40px', fontWeight:'bold', fontSize:'18px', fontFamily:'Nunito-Regular', color: user.isDark === '0'? '#000': '#fff'}}>Total Sales</div>
-                        <DashboardGraph load={load} station={currentStation} />
+                        <DashboardGraph load={load} station={oneStationData} />
                     </div>
                     <div className='right-dash'>
                         <div className='asset'>
@@ -416,12 +414,12 @@ const Dashboard = (props) => {
                             }
                         </div>
                         <div className='dashImages'>
-                            <DashboardImage load={load} station={currentStation} screen={"activeTank"} image={me4} name={'Active Tank'} value={dashboardData.tanks.activeTank.count} />
-                            <DashboardImage load={load} station={currentStation} screen={"inactiveTank"} image={me4} name={'Inactive Tank'} value={dashboardData.tanks.inActiveTank.count}/>
+                            <DashboardImage load={load} station={oneStationData} screen={"activeTank"} image={me4} name={'Active Tank'} value={dashboardData.tanks.activeTank.count} />
+                            <DashboardImage load={load} station={oneStationData} screen={"inactiveTank"} image={me4} name={'Inactive Tank'} value={dashboardData.tanks.inActiveTank.count}/>
                         </div>
                         <div style={{marginTop:'15px'}} className='dashImages'>
-                            <DashboardImage load={load} station={currentStation} screen={"activePump"} image={me5} name={'Active Pump'} value={dashboardData.pumps.activePumps.count}/>
-                            <DashboardImage load={load} station={currentStation} screen={"inactivePump"} image={me5} name={'Inactive Pump'} value={dashboardData.pumps.inActivePumps.count}/>
+                            <DashboardImage load={load} station={oneStationData} screen={"activePump"} image={me5} name={'Active Pump'} value={dashboardData.pumps.activePumps.count}/>
+                            <DashboardImage load={load} station={oneStationData} screen={"inactivePump"} image={me5} name={'Inactive Pump'} value={dashboardData.pumps.inActivePumps.count}/>
                         </div>
 
                         <div className='section'>

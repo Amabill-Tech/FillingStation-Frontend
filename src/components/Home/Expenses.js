@@ -7,7 +7,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import OutletService from '../../services/outletService';
-import { getAllStations } from '../../store/actions/outlet';
+import { getAllStations , adminOutlet} from '../../store/actions/outlet';
 import ExpenseService from '../../services/expense';
 import { allExpenses, searchExpenses } from '../../store/actions/expense';
 import config from '../../constants';
@@ -23,7 +23,7 @@ const Expenses = () => {
     const expense = useSelector(state => state.expenseReducer.expense);
     const [defaultState, setDefault] = useState(0);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
-    const [currentStation, setCurrentStation] = useState({});
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [entries, setEntries] = useState(10);
     const [skip, setSkip] = useState(0);
     const [limit, setLimit] = useState(15);
@@ -36,25 +36,51 @@ const Expenses = () => {
 
     const getAllProductData = useCallback(() => {
 
-        OutletService.getAllOutletStations({organisation: user.userType === "superAdmin"? user._id : user.organisationID}).then(data => {
-            dispatch(getAllStations(data.station));
-            setCurrentStation(data.station[0]);
-            return data.station[0]
-        }).then((data)=>{
-            const payload = {
-                skip: skip * limit,
-                limit: limit,
-                outletID: data._id, 
-                organisationID: data.organisation
-            }
+        const payload = {
+            organisation: user._id
+        }
 
-            ExpenseService.getAllExpenses(payload).then((data) => {
-                setTotal(data.expense.count);
-                dispatch(allExpenses(data.expense.expense));
+        if(user.userType === "superAdmin" || user.userType === "admin"){
+            OutletService.getAllOutletStations(payload).then(data => {
+                dispatch(getAllStations(data.station));
+                if(data.station.length !== 0){
+                    setDefault(1);
+                }
+                dispatch(adminOutlet(data.station[0]));
+                return data.station[0]
+            }).then((data)=>{
+                const payload = {
+                    skip: skip * limit,
+                    limit: limit,
+                    outletID: data._id, 
+                    organisationID: data.organisation
+                }
+    
+                ExpenseService.getAllExpenses(payload).then((data) => {
+                    setTotal(data.expense.count);
+                    dispatch(allExpenses(data.expense.expense));
+                });
             });
-        });
+        }else{
+            OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
+                dispatch(adminOutlet(data.station));
+                return data.station;
+            }).then(data => {
+                const payload = {
+                    skip: skip * limit,
+                    limit: limit,
+                    outletID: data._id, 
+                    organisationID: data.organisation
+                }
+    
+                ExpenseService.getAllExpenses(payload).then((data) => {
+                    setTotal(data.expense.count);
+                    dispatch(allExpenses(data.expense.expense));
+                });
+            });
+        }
 
-    }, [dispatch, user.organisationID, user._id, user.userType, skip, limit]);
+    }, [user._id, user.userType, user.outletID, dispatch, skip, limit]);
 
     useEffect(()=>{
         getAllProductData();
@@ -64,8 +90,8 @@ const Expenses = () => {
         const payload = {
             skip: skip * limit,
             limit: limit,
-            outletID: currentStation._id, 
-            organisationID: currentStation.organisation
+            outletID: oneStationData?._id, 
+            organisationID: oneStationData?.organisation
         }
 
         ExpenseService.getAllExpenses(payload).then((data) => {
@@ -76,7 +102,7 @@ const Expenses = () => {
 
     const changeMenu = (index, item ) => {
         setDefault(index);
-        setCurrentStation(item);
+        dispatch(adminOutlet(item));
 
         const payload = {
             skip: skip * limit,
@@ -142,21 +168,34 @@ const Expenses = () => {
                 <div className='search'>
                     <div className='input-cont'>
                         <div className='second-select'>
-                            <Select
-                                labelId="demo-select-small"
-                                id="demo-select-small"
-                                value={defaultState}
-                                sx={selectStyle2}
-                            >
-                                <MenuItem style={menu} value={0}>Select Station</MenuItem>
-                                {
-                                   allOutlets.map((item, index) => {
-                                        return(
-                                            <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.alias}</MenuItem>
-                                        )
-                                   })  
-                                }
-                            </Select>
+                            {(user.userType === "superAdmin" || user.userType === "admin") &&
+                                <Select
+                                    labelId="demo-select-small"
+                                    id="demo-select-small"
+                                    value={defaultState}
+                                    sx={selectStyle2}
+                                >
+                                    <MenuItem style={menu} value={0}>Select Station</MenuItem>
+                                    {
+                                        allOutlets.map((item, index) => {
+                                            return(
+                                                <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.alias}</MenuItem>
+                                            )
+                                        })  
+                                    }
+                                </Select>
+                            }
+                            {user.userType === "staff" &&
+                                <Select
+                                    labelId="demo-select-small"
+                                    id="demo-select-small"
+                                    value={0}
+                                    sx={selectStyle2}
+                                    disabled
+                                >
+                                    <MenuItem style={menu} value={0}>{user.userType === "staff"? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
+                                </Select>
+                            }
                         </div>
                         <div className='second-select'>
                                 <OutlinedInput 

@@ -9,7 +9,6 @@ import { passRecordSales } from "../../store/actions/dailySales";
 const PumpUpdateComponent = (props) => {
 
     const [productType, setProductType] = useState("PMS");
-    const formStation = useSelector(state => state.dailyRecordReducer.formStation);
     const [selected, setSelected] = useState([]);
     const [selectedTanks, setSelectedTanks] = useState([]);
     const dispatch = useDispatch();
@@ -17,7 +16,7 @@ const PumpUpdateComponent = (props) => {
     const pumpList = useSelector(state => state.outletReducer.pumpList);
     const tankList = useSelector(state => state.outletReducer.tankList);
     const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
-    const singleAdminStation = useSelector(state => state.dailyRecordReducer.singleAdminStation);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
 
     const getPMSPump = () => {
         const newList = [...pumpList];
@@ -182,12 +181,12 @@ const PumpUpdateComponent = (props) => {
         if(user.userType === "superAdmin"){
             newTankList[tankID] = {
                 ...newTankList[tankID], 
-                outlet: formStation
+                outlet: oneStationData
             }
         }else{
             newTankList[tankID] = {
                 ...newTankList[tankID], 
-                outlet: singleAdminStation
+                outlet: oneStationData
             }
         }
         setSelectedTanks(newTankList);
@@ -200,7 +199,7 @@ const PumpUpdateComponent = (props) => {
         const totalizerDiff = Number(e.target.value) - Number(item.totalizerReading);
         const quantity = Number(currentTank.currentLevel) - Number(currentTank.deadStockLevel);
 
-        if(formStation === null){
+        if(oneStationData === null){
             swal("Warning!", "Please select a station", "info");
         }else if(item.identity === null){
 

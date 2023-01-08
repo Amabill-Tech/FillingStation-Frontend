@@ -35,7 +35,7 @@ const initialState = {
     oneTank: {},
     oneStation: {},
     searchStation:[],
-    adminOutlet: {},
+    adminOutlet: null,
     tankListType: ""
 }
 

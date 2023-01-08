@@ -39,7 +39,6 @@ import HumanResources from '../components/Home/HumanResource';
 import IncomingOrders from '../components/Home/IncomingOrders';
 import Outlets from '../components/Home/Outlets';
 import ProductOrders from '../components/Home/ProductOrders';
-import RecordSales from '../components/Home/RecordSales';
 import Regulatory from '../components/Home/Regulatory';
 import Settings from '../components/Home/Settings';
 import TankUpdate from '../components/Home/TankUpdate';
@@ -64,6 +63,7 @@ import DashboardEmployee from '../components/DashboardComponents/DashboardEmp';
 const HomeScreen = ({history}) => {
 
     const user = useSelector(state => state.authReducer.user);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const dispatch = useDispatch();
 
     const routes = useMemo(()=>{
@@ -84,12 +84,7 @@ const HomeScreen = ({history}) => {
                 '/home/outlets/pumps': 'Outlet Pumps',
                 '/home/outlets/sales': 'Outlet Sales',
                 '/home/outlets/list': 'Tank Stock Levels',
-                '/home/daily-record-sales/pump': 'Record Sales (End Of the Day)',
-                '/home/daily-record-sales/lpo': 'LPO',
-                '/home/daily-record-sales/expenses': 'Expenses',
-                '/home/daily-record-sales/payment': 'Payment',
-                '/home/daily-record-sales/': 'Supply',
-                '/home/daily-record-sales/rt': 'Return To Tank',
+                '/home/daily-record-sales': 'Record Sales ',
                 '/home/analysis': 'Analysis',
                 '/home/lpo': 'LPO',
                 '/home/dashEmp': '← Employee List',
@@ -281,7 +276,7 @@ const HomeScreen = ({history}) => {
                     <div style={{color: user.isDark === '0'? '#054834': '#fff'}} className='left-lobe'>
                         {(activeRoute.split('/').length === 4 || activeRoute.split('/').length === 5 )&& <img onClick={goBackToPreviousPage} style={{width:'30px', height:'25px', marginRight:'10px'}} src={goBack} alt="icon"  />}
                         <span onClick={()=>{navigateBack(name)}}>
-                            {name}
+                            {name} ({oneStationData?.outletName.concat(", ", oneStationData?.alias)})
                         </span>
                     </div>
                     <div className='right-lobe'>

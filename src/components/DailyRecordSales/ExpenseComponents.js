@@ -18,7 +18,7 @@ const ExpenseComponents = (props) => {
     const [open, setOpen] = useState(false);
     const dispatch = useDispatch();
     const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
-    const formStation = useSelector(state => state.dailyRecordReducer.formStation);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
 
     // payload data
     const [expenseName, setExpenseName] = useState("");
@@ -59,7 +59,7 @@ const ExpenseComponents = (props) => {
     }
 
     const addDetailsToList = () => {
-        if(formStation === null) return swal("Warning!", "please select station", "info");
+        if(oneStationData === null) return swal("Warning!", "please select station", "info");
         if(expenseName === "") return swal("Warning!", "Expense name field should not be empty", "info");
         if(description === "") return swal("Warning!", "Description field should not be empty", "info");
         if(expenseAmount === "") return swal("Warning!", "Expense amount field should not be empty", "info");
@@ -71,8 +71,8 @@ const ExpenseComponents = (props) => {
             expenseAmount: expenseAmount,
             camera: cam,
             gallery: gall,
-            outletID: formStation._id,
-            organizationID: formStation.organisation,
+            outletID: oneStationData?._id,
+            organizationID: oneStationData?.organisation,
         }
 
         const newList = {...linkedData};

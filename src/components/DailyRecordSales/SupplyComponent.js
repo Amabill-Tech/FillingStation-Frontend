@@ -16,8 +16,8 @@ const SupplyComponent = () => {
     const dispatch = useDispatch();
     const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
     const incomingOrder = useSelector(state => state.incomingOrderReducer.incomingOrder);
-    const formStation = useSelector(state => state.dailyRecordReducer.formStation);
     const tankList = useSelector(state => state.outletReducer.tankList);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [selectedIncomingOrders, setSelectedIncomingOrder] = useState("");
 
     // payload data
@@ -78,7 +78,7 @@ const SupplyComponent = () => {
         if(transporter === "") return swal("Warning!", "Transporter field cannot be empty", "info");
         if(waybillNo === "") return swal("Warning!", "waybill no field cannot be empty", "info");
         if(truckNo === "") return swal("Warning!", "Truck no field cannot be empty", "info");
-        if(formStation === null) return swal("Warning!", "Outlet field cannot be empty", "info");
+        if(oneStationData === null) return swal("Warning!", "Outlet field cannot be empty", "info");
         if(productSupply === "") return swal("Warning!", "Product type field cannot be empty", "info");
         if(selectedIncomingOrders === "") return swal("Warning!", "Incoming order field cannot be empty", "info");
 
@@ -94,15 +94,15 @@ const SupplyComponent = () => {
                 wayBillNo: waybillNo,
                 truckNo: truckNo,
                 quantity: String(discharged),
-                outletName: formStation.outletName,
+                outletName: oneStationData?.outletName,
                 productType: productSupply,
                 shortage: shortage,
                 overage: overage,
                 incomingID: selectedIncomingOrders._id,
                 date: "None",
                 tankUpdate: selected,
-                outletID: formStation._id,
-                organizationID: formStation.organisation,
+                outletID: oneStationData?._id,
+                organizationID: oneStationData?.organisation,
             }
 
             const newList = {...linkedData};

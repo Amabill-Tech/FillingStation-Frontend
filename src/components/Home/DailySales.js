@@ -54,7 +54,6 @@ const DailySales = (props) => {
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [defaultState, setDefault] = useState(0);
     const [cummulatives, setCummulatives] = useState({});
-    const [currentStation, setCurrentStation] = useState({});
     const dateHandle = useRef();
     const [currentDate, setCurrentDate] = useState(date2);
     const dailySales = useSelector(state => state.dailySalesReducer.dailySales);
@@ -328,14 +327,14 @@ const DailySales = (props) => {
             organisation: user._id
         }
 
-        if(user.userType === "superAdmin"){
+        if(user.userType === "superAdmin" || user.userType === "admin"){
             setLoads(true);
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
                 if(data.station.length !== 0){
                     setDefault(1);
                 }
-                setCurrentStation(data.station[0]);
+                dispatch(adminOutlet(data.station[0]));
                 return data.station[0];
             }).then(async(data)=>{
                 getAndAnalyzeDailySales(data, true, "");
@@ -345,7 +344,6 @@ const DailySales = (props) => {
             setLoads(true);
             OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
                 dispatch(adminOutlet(data.station));
-                setCurrentStation(data.station);
                 return data.station;
             }).then(async(data)=>{
                 getAndAnalyzeDailySales(data, true, "");
@@ -425,7 +423,7 @@ const DailySales = (props) => {
 
     const changeMenu = (index, item ) => {
         setDefault(index);
-        setCurrentStation(item);
+        dispatch(adminOutlet(item));
         setLoads(true);
 
         getAndAnalyzeDailySales(item, true, "");
@@ -465,7 +463,7 @@ const DailySales = (props) => {
         const date = e.target.value.split('-');
         const format = `${date[2]} ${months[date[1]]} ${date[0]}`;
         setCurrentDate(format);
-        getAndAnalyzeDailySales(currentStation, false, e.target.value);
+        getAndAnalyzeDailySales(oneStationData, false, e.target.value);
     }
 
     return(
@@ -475,7 +473,7 @@ const DailySales = (props) => {
                     <div className='daily-left'>
                         <div style={{display:'flex', flexDirection:'row'}}>
                             <div>
-                                {oneStationData.hasOwnProperty("outletName") ||
+                                {(user.userType === "superAdmin" || user.userType === "admin") &&
                                     <Select
                                         labelId="demo-select-small"
                                         id="demo-select-small"
@@ -492,7 +490,7 @@ const DailySales = (props) => {
                                         }
                                     </Select>
                                 }
-                                {oneStationData.hasOwnProperty("outletName") &&
+                                {user.userType === "staff" &&
                                     <Select
                                         labelId="demo-select-small"
                                         id="demo-select-small"
@@ -500,7 +498,7 @@ const DailySales = (props) => {
                                         sx={selectStyle2}
                                         disabled
                                     >
-                                        <MenuItem style={menu} value={0}>{oneStationData.hasOwnProperty("outletName")?oneStationData.outletName+", "+oneStationData.alias: "No station created"}</MenuItem>
+                                        <MenuItem style={menu} value={0}>{user.userType === "staff" ?oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
                                     </Select>
                                 }
                             </div>
@@ -670,7 +668,7 @@ const DailySales = (props) => {
                             </div>
                         </div>
                         <div style={{color: user.isDark === '0'? '#000': '#fff', marginTop:'30px'}} className="tank-text">Expenses And Payments</div>
-                        <BarChartGraph load={load} station={currentStation} />
+                        <BarChartGraph load={load} station={oneStationData} />
 
                         <div style={{marginTop:'30px'}} className='asset'>
                             <div style={{color: user.isDark === '0'? '#000': '#fff'}}>Supply</div>
@@ -899,7 +897,7 @@ const DailySales = (props) => {
                             <DPKDailySales/>
                         </Route>
                         <Route path='/home/daily-sales/report'>
-                            <ComprehensiveReport refresh = {getAllProductData} station={currentStation}/>
+                            <ComprehensiveReport refresh = {getAllProductData} station={oneStationData}/>
                         </Route>
                         <Route path='/home/outlets/list'>
                             <ListAllTanks refresh={getAllProductData}/>

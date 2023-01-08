@@ -30,7 +30,6 @@ const Analysis = (props) => {
 
     const dispatch = useDispatch();
     const history = useHistory();
-    const [currentStation, setCurrentStation] = useState({PMSCost: 0, PMSPrice: 0 });
     const [defaultState, setDefault] = useState(0);
     const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
@@ -42,13 +41,13 @@ const Analysis = (props) => {
             organisation: user._id
         }
 
-        if(user.userType === "superAdmin"){
+        if(user.userType === "superAdmin" || user.userType === "admin"){
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
                 if(data.station.length !== 0){
                     setDefault(1);
                 }
-                setCurrentStation(data.station[0]);
+                dispatch(adminOutlet(data.station[0]));
                 return data.station[0];
             }).then(data => {
                 const payload = {
@@ -64,7 +63,6 @@ const Analysis = (props) => {
         }else{
             OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
                 dispatch(adminOutlet(data.station));
-                setCurrentStation(data.station);
                 return data.station;
             }).then(data => {
                 const payload = {
@@ -87,7 +85,7 @@ const Analysis = (props) => {
 
     const changeMenu = (index, item ) => {
         setDefault(index);
-        setCurrentStation(item);
+        dispatch(adminOutlet(item));
 
         const payload = {
             organisationID: item.organisation,
@@ -147,8 +145,8 @@ const Analysis = (props) => {
         const formatTwo = String(rangeTwoDay).length === 1? rangeTwoYear+"-"+rangeTwoMonth+"-0"+rangeTwoDay : rangeTwoYear+"-"+rangeTwoMonth+"-"+rangeTwoDay;
     
         const payload = {
-            organisationID: currentStation.organisation,
-            outletID: currentStation._id,
+            organisationID: oneStationData?.organisation,
+            outletID: oneStationData?._id,
             startDate: formatOne,
             endDate: formatTwo
         }
@@ -262,7 +260,7 @@ const Analysis = (props) => {
                     <div style={{marginBottom:'0px'}} className='search'>
                         <div className='input-cont'>
                             <div className='second-select'>
-                                {oneStationData.hasOwnProperty("outletName") ||
+                                {(user.userType === "superAdmin" || user.userType === "admin") &&
                                     <Select
                                         labelId="demo-select-small"
                                         id="demo-select-small"
@@ -279,7 +277,7 @@ const Analysis = (props) => {
                                         }
                                     </Select>
                                 }
-                                {oneStationData.hasOwnProperty("outletName") &&
+                                {user.userType === "staff" &&
                                     <Select
                                         labelId="demo-select-small"
                                         id="demo-select-small"
@@ -287,7 +285,7 @@ const Analysis = (props) => {
                                         sx={selectStyle2}
                                         disabled
                                     >
-                                        <MenuItem style={menu} value={0}>{oneStationData.hasOwnProperty("outletName")?oneStationData.outletName+", "+oneStationData.alias: "No station created"}</MenuItem>
+                                        <MenuItem style={menu} value={0}>{user.userType === "staff"? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
                                     </Select>
                                 }
                             </div>
@@ -299,8 +297,8 @@ const Analysis = (props) => {
 
                     <div style={contain2}>
                         <div className='imgContainer'>
-                            <DashboardImage type={"cost"} right={'10px'} left={'0px'} image={naira} name={'Cost Price'} value={`NGN ${typeof currentStation?.PMSCost === "undefined"? "0": currentStation.PMSCost}`} />
-                            <DashboardImage type={"selling"} right={'10px'} left={'0px'} image={hand} name={'Selling Price'} value={`NGN ${typeof currentStation?.PMSPrice === "undefined"? "0": currentStation.PMSPrice}`} />
+                            <DashboardImage type={"cost"} right={'10px'} left={'0px'} image={naira} name={'Cost Price'} value={`NGN ${oneStationData === null? "0": oneStationData.PMSCost}`} />
+                            <DashboardImage type={"selling"} right={'10px'} left={'0px'} image={hand} name={'Selling Price'} value={`NGN ${oneStationData === null? "0": oneStationData.PMSPrice}`} />
                             <DashboardImage type={"expenses"} right={'10px'} left={'0px'} image={folder} name={'Expenses'} value={`NGN ${calculateExpenses()}`} />
                             <DashboardImage type={"payments"} right={'10px'} left={'0px'} image={folder2} name={'Payments'} value={`NGN ${calculatePayment()}`} />
                             <DashboardImage type={"none"} right={'0px'} left={'0px'} image={analysis2} name={'Profits'} value={`NGN ${calculateTotalSales() - calculateTotalCost() - calculateExpenses()}`} />

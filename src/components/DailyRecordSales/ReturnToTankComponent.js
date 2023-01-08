@@ -12,12 +12,11 @@ const ReturnToTank = (props) => {
     const user = useSelector(state => state.authReducer.user);
     const [selected, setSelected] = useState([]);
     const [selectedTanks, setSelectedTanks] = useState([]);
-    const formStation = useSelector(state => state.dailyRecordReducer.formStation);
     const dispatch = useDispatch();
     const pumpList = useSelector(state => state.outletReducer.pumpList);
     const tankList = useSelector(state => state.outletReducer.tankList);
     const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
-    const singleAdminStation = useSelector(state => state.dailyRecordReducer.singleAdminStation);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
 
     const getPMSPump = () => {
         const newList = [...pumpList];
@@ -179,12 +178,12 @@ const ReturnToTank = (props) => {
         if(user.userType === "superAdmin"){
             newTankList[tankID] = {
                 ...newTankList[tankID], 
-                outlet: formStation
+                outlet: oneStationData
             }
         }else{
             newTankList[tankID] = {
                 ...newTankList[tankID], 
-                outlet: singleAdminStation
+                outlet: oneStationData
             }
         }
         setSelectedTanks(newTankList);
@@ -197,7 +196,7 @@ const ReturnToTank = (props) => {
         const currentTank = tankList.filter(data => data._id === item.hostTank)[0];
         const quantity = Number(currentTank.currentLevel) + Number(e.target.value);
 
-        if(formStation === null){
+        if(oneStationData === null){
             swal("Warning!", "Please select a station", "info");
         }else if(item.identity === null){
 

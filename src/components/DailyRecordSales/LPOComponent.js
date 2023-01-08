@@ -21,12 +21,11 @@ const LPOComponent = (props) => {
     const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
     const pumpList = useSelector(state => state.outletReducer.pumpList);
     const tankList = useSelector(state => state.outletReducer.tankList);
-    const formStation = useSelector(state => state.dailyRecordReducer.formStation);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const lpos = useSelector(state => state.lpoReducer.lpo);
     const [selectedPMS, setSelectedPMS] = useState(null);
     const [selectedAGO, setSelectedAGO] = useState(null);
     const [selectedDPK, setSelectedDPK] = useState(null);
-    console.log(linkedData, "link")
 
     // selections
     const [open, setOpen] = useState(false);
@@ -140,7 +139,7 @@ const LPOComponent = (props) => {
     }
 
     const addDetailsToList = () => {
-        if(formStation === null) return swal("Warning!", "please select station", "info");
+        if(oneStationData === null) return swal("Warning!", "please select station", "info");
         if(dispenseLpo === null) return swal("Warning!", "Please select lpo account", "info");
         if(dispensedPump === null) return swal("Warning!", "Please select lpo pump", "info");
         if(truckNo === "") return swal("Warning!", "Truck no field cannot be empty", "info");
@@ -160,14 +159,14 @@ const LPOComponent = (props) => {
             lpoID: dispenseLpo._id,
             pumpID: dispensedPump._id,
             tank: tank,
-            PMSRate: formStation.PMSPrice,
-            AGORate: formStation.PMSPrice,
-            DPKRate: formStation.PMSPrice,
-            PMSCost: formStation.PMSCost,
-            AGOCost: formStation.AGOCost,
-            DPKCost: formStation.DPKCost,
-            outletID: formStation._id,
-            organizationID: formStation.organisation,
+            PMSRate: oneStationData?.PMSPrice,
+            AGORate: oneStationData?.PMSPrice,
+            DPKRate: oneStationData?.PMSPrice,
+            PMSCost: oneStationData?.PMSCost,
+            AGOCost: oneStationData?.AGOCost,
+            DPKCost: oneStationData?.DPKCost,
+            outletID: oneStationData?._id,
+            organizationID: oneStationData?.organisation,
         }
 
         const newList = {...linkedData};

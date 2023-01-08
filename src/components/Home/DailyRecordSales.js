@@ -30,7 +30,7 @@ import OutletService from '../../services/outletService';
 import { dailyRecordAdminStation, dailyRecordAllStations, dailyRecordFormStation } from '../../store/actions/dailyRecordSales';
 import IncomingService from '../../services/IncomingService';
 import { createIncomingOrder } from '../../store/actions/incomingOrder';
-import { getAllOutletTanks, getAllPumps } from '../../store/actions/outlet';
+import { adminOutlet, getAllOutletTanks, getAllPumps, getAllStations } from '../../store/actions/outlet';
 import LPOService from '../../services/lpo';
 import { createLPO } from '../../store/actions/lpo';
 import swal from "sweetalert";
@@ -191,8 +191,8 @@ const DailyRecordSales = () => {
     const dispatch = useDispatch();
     const user = useSelector(state => state.authReducer.user);
     const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
-    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [defaultState, setDefault] = useState(0);
     const [open, setOpen] = useState(false);
     const [currentDate, setCurrentDate] = useState(date2);
@@ -209,13 +209,17 @@ const DailyRecordSales = () => {
         
         dispatch(passRecordSales(list));
 
-        if(user.userType === "superAdmin"){
+        if(user.userType === "superAdmin" || user.userType === "admin"){
             const payload = {
                 organisation: user._id
             }
     
             OutletService.getAllOutletStations(payload).then(data => {
-                dispatch(dailyRecordAllStations(data.station));
+                dispatch(getAllStations(data.station));
+                dispatch(adminOutlet(data.station[0]));
+                if(data.station.length !== 0){
+                    setDefault(1);
+                }
                 return data.station[0];
             }).then((data)=>{
                 const payload = {
@@ -245,8 +249,7 @@ const DailyRecordSales = () => {
             });
         }else{
             OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
-                dispatch(dailyRecordAdminStation(data.station));
-                dispatch(dailyRecordFormStation(data.station));
+                dispatch(adminOutlet(data.station));
                 return data.station;
             }).then((data)=>{
                 const payload = {
@@ -356,6 +359,10 @@ const DailyRecordSales = () => {
             dispatch(createIncomingOrder(data.incoming.incoming));
         });
 
+        OutletService.getAllStationPumps(payload).then(data => {
+            dispatch(getAllPumps(data));
+        });
+
         OutletService.getAllOutletTanks(payload).then(data => {
             const outletTanks = data.stations.map(data => {
                 const newData = {...data, label: data.tankName, value: data._id};
@@ -368,7 +375,7 @@ const DailyRecordSales = () => {
             dispatch(createLPO(data.lpo.lpo));
         });
 
-        dispatch(dailyRecordFormStation(item));
+        dispatch(adminOutlet(item));
     }
 
     const dateHandleInputDate = () => {
@@ -406,7 +413,7 @@ const DailyRecordSales = () => {
             </Backdrop>
             <div style={{width:'90%', marginTop:'20px', display:'flex', justifyContent:'space-between'}}>
                 <div>
-                    {oneStationData.hasOwnProperty("outletName") ||
+                    {(user.userType === "superAdmin" || user.userType === "admin") &&
                         <Select
                             labelId="demo-select-small"
                             id="demo-select-small"
@@ -423,7 +430,7 @@ const DailyRecordSales = () => {
                             }
                         </Select>
                     }
-                    {oneStationData.hasOwnProperty("outletName") &&
+                    {user.userType === "staff" &&
                         <Select
                             labelId="demo-select-small"
                             id="demo-select-small"
@@ -431,7 +438,7 @@ const DailyRecordSales = () => {
                             sx={selectStyle2}
                             disabled
                         >
-                            <MenuItem style={menu} value={0}>{oneStationData.hasOwnProperty("outletName")?oneStationData.outletName+", "+oneStationData.alias: "No station created"}</MenuItem>
+                            <MenuItem style={menu} value={0}>{user.userType === "staff"? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
                         </Select>
                     }
                 </div>

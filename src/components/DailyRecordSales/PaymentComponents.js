@@ -18,7 +18,7 @@ const PaymentsComponents = (props) => {
     const gallery = useRef();
     const [open, setOpen] = useState(false);
     const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
-    const formStation = useSelector(state => state.dailyRecordReducer.formStation);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
 
     // payload data
     const [bankName, setBankName] = useState(null);
@@ -67,7 +67,7 @@ const PaymentsComponents = (props) => {
     }
 
     const addDetailsToList = () => {
-        if(formStation === null) return swal("Warning!", "please select station", "info");
+        if(oneStationData === null) return swal("Warning!", "please select station", "info");
         if(typeof(bankName) === "object" && typeof(posName) === "object") return swal("Warning!", "Please add bank or pos name", "info");
         if(typeof(tellerID) === "object" && typeof(terminalID) === "object") return swal("Warning!", "Please add teller or terminal ID", "info");
         if(amountPaid === "") return swal("Warning!", "Amount field should not be empty", "info");
@@ -83,8 +83,8 @@ const PaymentsComponents = (props) => {
             paymentDate: paymentDate,
             camera: cam,
             gallery: gall,
-            outletID: formStation._id,
-            organizationID: formStation.organisation,
+            outletID: oneStationData?._id,
+            organizationID: oneStationData?.organisation,
         }
 
         const newList = {...linkedData};
