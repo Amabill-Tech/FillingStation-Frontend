@@ -84,7 +84,7 @@ const Sales = (props) => {
     const dispatch = useDispatch();
     const tankList = useSelector(state => state.outletReducer.tankList);
     const pumpList = useSelector(state => state.outletReducer.pumpList);
-    const oneStation = useSelector(state => state.outletReducer.oneStation);
+    const oneStation = useSelector(state => state.outletReducer.adminOutlet);
     const [pumpAndTankMetric, setTankAndPumpMetrics] = useState({});
 
     const getAllStationTanks = useCallback(() => {

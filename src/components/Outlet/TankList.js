@@ -3,7 +3,7 @@ import { MenuItem, Select, Switch } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import OutletService from '../../services/outletService';
-import { getAllOutletTanks, getAllStations } from '../../store/actions/outlet';
+import { adminOutlet, getAllOutletTanks, getAllStations } from '../../store/actions/outlet';
 import '../../styles/listTanks.scss';
 import PMSTank from './PMSTank';
 import AGOTank from './AGOTank';
@@ -19,7 +19,7 @@ const ListAllTanks = () => {
     const dispatch = useDispatch();
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const [defaultState, setDefault] = useState(0);
-    const [currentStation, setCurrentStation] = useState({});
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [list, setList] = useState({});
     const tankListType = useSelector(state => state.outletReducer.tankListType);
 
@@ -27,7 +27,7 @@ const ListAllTanks = () => {
 
         OutletService.getAllOutletStations({organisation: user.userType === "superAdmin"? user._id : user.organisationID}).then(data => {
             dispatch(getAllStations(data.station));
-            setCurrentStation(data.station[0]);
+            dispatch(adminOutlet(data.station[0]));
             setDefault(1);
             return data.station[0]
         }).then((data)=>{
@@ -67,7 +67,7 @@ const ListAllTanks = () => {
 
     const changeMenu = (index, item ) => {
         setDefault(index);
-        setCurrentStation(item);
+        dispatch(adminOutlet(item));
 
         const payload = {
             organisationID: item.organisation,
@@ -80,8 +80,8 @@ const ListAllTanks = () => {
 
     const refresh = () => {
         const payload = {
-            organisationID: currentStation.organisation,
-            outletID: currentStation._id
+            organisationID: oneStationData?.organisation,
+            outletID: oneStationData?._id
         }
         OutletService.getAllOutletTanks(payload).then(data => {
             dispatch(getAllOutletTanks(data.stations));

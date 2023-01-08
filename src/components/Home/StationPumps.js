@@ -48,7 +48,7 @@ const StationPumps = () => {
                         <div className='top'>
                             <div className='left'>
                                 <img style={{width:'40px', height:'40px'}} src={me5} alt="icon" />
-                                <div>{props.data.pumpName}</div>
+                                <div>{props.data.pumpName} ({props.data.productType})</div>
                             </div>
                             <div className='right'>
                                 <div>{props.data.activeState === '0'? 'Inactive': 'Active'}</div>

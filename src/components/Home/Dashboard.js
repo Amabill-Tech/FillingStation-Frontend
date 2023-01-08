@@ -506,8 +506,8 @@ const Dashboard = (props) => {
                                             </div>
                                             <div className='row-count'>
                                                 <div style={{color:'green', fontSize:'14px', fontWeight:'600'}} className='item-count'></div>
-                                                <div style={{color:'#0872D4', fontSize:'12px', fontWeight:'600'}} className='item-count'>POS</div>
-                                                <div style={{color:'#0872D4', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {dashboardRecords.payments.outstanding}</div>
+                                                <div style={{color:'#000', fontSize:'12px', fontWeight:'600'}} className='item-count'>POS</div>
+                                                <div style={{color:'#000', fontSize:'12px', fontWeight:'600'}} className='item-count'>NGN {dashboardRecords.payments.outstanding}</div>
                                                 <div style={{color:'red', fontSize:'14px', fontWeight:'600'}} className='item-count'></div>
                                             </div>
                                             <div style={{marginTop:'10px'}} className="arrows">

@@ -25,7 +25,7 @@ const Pump = (props) => {
     const dispatch = useDispatch();
     const pumpList = useSelector(state => state.outletReducer.pumpList);
     const tankList = useSelector(state => state.outletReducer.tankList);
-    const oneStation = useSelector(state => state.outletReducer.oneStation);
+    const oneStation = useSelector(state => state.outletReducer.adminOutlet);
 
     const getAllStationPumps = useCallback(() => {
         const payload = {
@@ -119,7 +119,7 @@ const Pump = (props) => {
                         <div className='top'>
                             <div className='left'>
                                 <img style={{width:'40px', height:'40px'}} src={me5} alt="icon" />
-                                <div>{props.data.pumpName}</div>
+                                <div>{props.data.pumpName} ({props.data.productType})</div>
                             </div>
                             <div className='right'>
                                 <div>{props.data.activeState === '0'? 'Inactive': 'Active'}</div>

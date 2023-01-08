@@ -765,7 +765,7 @@ const DailySales = (props) => {
                                         <div className='row-count'>
                                             <div style={{fontSize:'14px', fontWeight:'bold'}} className='item-count'>Net to bank</div>
                                             <div style={{fontSize:'14px', fontWeight:'bold'}} className='item-count'>Payment</div>
-                                            <div style={{fontSize:'14px', fontWeight:'bold', color:'#0872D4'}} className='item-count'>
+                                            <div style={{fontSize:'14px', fontWeight:'bold'}} className='item-count'>
                                                 # {payments.hasOwnProperty("payments")? payments.payments: "0.00"}
                                             </div>
                                             <div style={{fontSize:'14px', fontWeight:'bold'}} className='item-count'>Outstanding</div>
@@ -774,7 +774,7 @@ const DailySales = (props) => {
                                             <div className='item-count'>
                                                 {(dailySales.hasOwnProperty("PMS") && payments.hasOwnProperty("expenses"))? Number(dailySales.PMS.total.noLpoAmount) + Number(dailySales.AGO.total.noLpoAmount) + Number(dailySales.DPK.total.noLpoAmount) - Number(payments.expenses) : "0.00"}
                                             </div>
-                                            <div className='item-count'>Teller</div>
+                                            <div style={{color:'#0872D4'}}  className='item-count'>Teller</div>
                                             <div style={{color:'#0872D4'}} className='item-count'>
                                                 # {payments.hasOwnProperty("oneBankPayment")? payments.oneBankPayment: "0.00"}
                                             </div>
@@ -784,8 +784,8 @@ const DailySales = (props) => {
                                         </div>
                                         <div className='row-count'>
                                             <div className='item-count'></div>
-                                            <div className='item-count'>POS</div>
-                                            <div style={{color:'#0872D4'}} className='item-count'>
+                                            <div style={{color:'#000'}}  className='item-count'>POS</div>
+                                            <div style={{color:'#000'}} className='item-count'>
                                                 # {payments.hasOwnProperty("onePosPayment")? payments.onePosPayment: "0.00"}
                                             </div>
                                             <div className='item-count'></div>
