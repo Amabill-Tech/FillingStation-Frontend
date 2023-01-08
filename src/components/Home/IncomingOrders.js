@@ -23,7 +23,6 @@ const IncomingOrder = () => {
     const [defaultState, setDefault] = useState(0);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
-    const [currentStation, setCurrentStation] = useState({});
     const [entries, setEntries] = useState(10);
     const [skip, setSkip] = useState(0);
     const [limit, setLimit] = useState(15);
@@ -42,13 +41,13 @@ const IncomingOrder = () => {
             organisation: user._id
         }
 
-        if(user.userType === "superAdmin"){
+        if(user.userType === "superAdmin" || user.userType === "admin"){
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
                 if(data.station.length !== 0){
                     setDefault(1);
                 }
-                setCurrentStation(data.station[0]);
+                dispatch(adminOutlet(data.station[0]));
                 return data.station[0];
             }).then((data)=>{
                 const payload = {
@@ -66,7 +65,6 @@ const IncomingOrder = () => {
         }else{
             OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
                 dispatch(adminOutlet(data.station));
-                setCurrentStation(data.station);
                 return data.station;
             }).then((data)=>{
                 const payload = {
@@ -93,8 +91,8 @@ const IncomingOrder = () => {
         const payload = {
             skip: skip * limit,
             limit: limit,
-            outletID: currentStation._id, 
-            organisationID: currentStation.organisation
+            outletID: oneStationData?._id, 
+            organisationID: oneStationData?.organisation
         }
  
         IncomingService.getAllIncoming(payload).then((data) => {
@@ -105,7 +103,7 @@ const IncomingOrder = () => {
 
     const changeMenu = (index, item ) => {
         setDefault(index);
-        setCurrentStation(item);
+        dispatch(adminOutlet(item));
 
         const payload = {
             skip: skip * limit,
@@ -150,7 +148,7 @@ const IncomingOrder = () => {
 
     return(
         <div data-aos="zoom-in-down" className='paymentsCaontainer'>
-            { <IncomingOrderModal station={currentStation} open={open} close={setOpen} refresh={refresh} />}
+            { <IncomingOrderModal station={oneStationData} open={open} close={setOpen} refresh={refresh} />}
             { prints && <IncomingReport allOutlets={incomingOrder} open={prints} close={setPrints}/>}
             <div className='inner-pay'>
                 <div className='action'>
@@ -172,7 +170,7 @@ const IncomingOrder = () => {
                 <div className='search'>
                     <div className='input-cont'>
                         <div className='second-select'>
-                            {oneStationData.hasOwnProperty("outletName") ||
+                            {(user.userType === "superAdmin" || user.userType === "admin") &&
                                 <Select
                                     labelId="demo-select-small"
                                     id="demo-select-small"
@@ -189,7 +187,7 @@ const IncomingOrder = () => {
                                     }
                                 </Select>
                             }
-                            {oneStationData.hasOwnProperty("outletName") &&
+                            {user.userType === "staff" &&
                                 <Select
                                     labelId="demo-select-small"
                                     id="demo-select-small"
@@ -197,7 +195,7 @@ const IncomingOrder = () => {
                                     sx={selectStyle2}
                                     disabled
                                 >
-                                    <MenuItem style={menu} value={0}>{oneStationData.hasOwnProperty("outletName")?oneStationData.outletName+", "+oneStationData.alias: "No station created"}</MenuItem>
+                                    <MenuItem style={menu} value={0}>{user.userType === "staff"? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
                                 </Select>
                             }
                         </div>

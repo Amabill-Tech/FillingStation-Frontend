@@ -22,7 +22,6 @@ const TankUpdate = () => {
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [tanks] = useState([]);
-    const [setCurrentStation] = useState({});
     const [entries, setEntries] = useState(10);
     const [skip, setSkip] = useState(0);
     const [limit, setLimit] = useState(15);
@@ -38,13 +37,13 @@ const TankUpdate = () => {
             organisation: user._id
         }
 
-        if(user.userType === "superAdmin"){
+        if(user.userType === "superAdmin" || user.userType === "admin"){
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
                 if(data.station.length !== 0){
                     setDefault(1);
                 }
-                setCurrentStation(data.station[0]);
+                dispatch(adminOutlet(data.station[0]));
                 return data.station[0];
             }).then((data)=>{
                 const payload = {
@@ -61,7 +60,6 @@ const TankUpdate = () => {
         }else{
             OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
                 dispatch(adminOutlet(data.station));
-                setCurrentStation(data.station);
                 return data.station;
             }).then((data)=>{
                 const payload = {
@@ -76,15 +74,28 @@ const TankUpdate = () => {
                 })
             });
         }
-    }, [user._id, user.userType, user.outletID, dispatch, setCurrentStation, skip, limit]);
+    }, [user._id, user.userType, user.outletID, dispatch, skip, limit]);
 
     useEffect(()=>{
         getTankData();
     },[getTankData]);
 
+    const refresh = () => {
+        const payload = {
+            skip: skip * limit,
+            limit: limit,
+            outletID: oneStationData?._id, 
+            organisationID: oneStationData?.organisation
+        }
+        OutletService.getAllOutletTanks(payload).then(data => {
+            setTotal(data.count);
+            dispatch(getAllOutletTanks(data.stations));
+        })
+    }
+
     const changeMenu = (index, item ) => {
         setDefault(index);
-        setCurrentStation(item);
+        dispatch(adminOutlet(item));
 
         const payload = {
             outletID: item._id, 
@@ -104,20 +115,20 @@ const TankUpdate = () => {
         if(!(skip < 0)){
             setSkip(prev => prev + 1)
         }
-        getTankData();
+        refresh();
     }
 
     const prevPage = () => {
         if(!(skip <= 0)){
             setSkip(prev => prev - 1)
         } 
-        getTankData();
+        refresh();
     }
 
     const entriesMenu = (value, limit) => {
         setEntries(value);
         setLimit(limit);
-        getTankData();
+        refresh();
     }
 
     const printReport = () => {
@@ -148,7 +159,7 @@ const TankUpdate = () => {
                 <div className='search'>
                     <div className='input-cont'>
                         <div className='second-select'>
-                            {oneStationData.hasOwnProperty("outletName") ||
+                            {(user.userType === "superAdmin" || user.userType === "admin") &&
                                 <Select
                                     labelId="demo-select-small"
                                     id="demo-select-small"
@@ -165,7 +176,7 @@ const TankUpdate = () => {
                                     }
                                 </Select>
                             }
-                            {oneStationData.hasOwnProperty("outletName") &&
+                            {user.userType === "staff" &&
                                 <Select
                                     labelId="demo-select-small"
                                     id="demo-select-small"
@@ -173,7 +184,7 @@ const TankUpdate = () => {
                                     sx={selectStyle2}
                                     disabled
                                 >
-                                    <MenuItem style={menu} value={0}>{oneStationData.hasOwnProperty("outletName")?oneStationData.outletName+", "+oneStationData.alias: "No station created"}</MenuItem>
+                                    <MenuItem style={menu} value={0}>{user.userType === "staff"? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
                                 </Select>
                             }
                         </div>

@@ -12,16 +12,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logout, updateUser } from '../../store/actions/auth';
 import swal from 'sweetalert';
 import OutletService from '../../services/outletService';
-import { adminOutlet, getAllStations, oneStation } from '../../store/actions/outlet';
+import { adminOutlet, getAllStations } from '../../store/actions/outlet';
 import { ThreeDots } from 'react-loader-spinner';
 import UserService from '../../services/user';
 import axios from 'axios';
 import config from '../../constants';
 
 const OutletInfo = (props) => {
-    const oneStation = useSelector(state => state.outletReducer.oneStation);
+    const oneStation = useSelector(state => state.outletReducer.adminOutlet);
     const [id, setID] = useState('');
-    const [licenseCode, setLicenseCode] = useState('');
     const [outletName, setOutletName] = useState('');
     const [noOfPump, setNoOfPump] = useState('');
     const [noOfTank, setNoOfTank] = useState('');
@@ -32,29 +31,26 @@ const OutletInfo = (props) => {
     const [loadingSpinner, setLoadingSpinner] = useState(false);
 
     useEffect(()=>{
-        setLicenseCode(oneStation?.licenseCode);
         setOutletName(oneStation?.outletName);
         setNoOfPump(oneStation?.noOfPumps);
         setNoOfTank(oneStation?.noOfTanks);
         setState(oneStation?.state);
         setTown(oneStation?.city);
         setLga(oneStation?.lga);
-        setStreet(oneStation?.area);
+        setStreet(oneStation?.alias);
         setID(oneStation?._id);
     }, [
-        oneStation?.licenseCode,
         oneStation?.outletName,
         oneStation?.noOfPumps,
         oneStation?.noOfTanks,
         oneStation?.state,
         oneStation?.city,
         oneStation?.lga,
-        oneStation?.area,
+        oneStation?.alias,
         oneStation?._id
     ]);
 
     const updateOutlet = () => {
-        if(licenseCode === "") return swal("Warning!", "License code field cannot be empty", "info");
         if(outletName === "") return swal("Warning!", "Outlet name field cannot be empty", "info");
         if(noOfPump === "") return swal("Warning!", "No of pump name field cannot be empty", "info");
         if(noOfTank === "") return swal("Warning!", "No of tank name field cannot be empty", "info");
@@ -71,7 +67,7 @@ const OutletInfo = (props) => {
             city: state,
             lga: lga,
             area: town,
-            licenseCode: licenseCode,
+            alias: street,
             noOfTanks: noOfTank,
             noOfPumps: noOfPump,
             activeState: oneStation.activeState,
@@ -89,21 +85,6 @@ const OutletInfo = (props) => {
         <div className='outlet'>
             <div className='lef'>
                 <div className='title'>Outlet Information</div>
-                <div className='text-group'>
-                    <div className='form-text'>License Code</div>
-                    <OutlinedInput 
-                        sx={{
-                            height: '35px', 
-                            marginTop:'5px', 
-                            background:'#EEF2F1', 
-                            border:'1px solid #777777',
-                            fontSize:'12px'
-                        }} 
-                        value={licenseCode}
-                        onChange={e => setLicenseCode(e.target.value)}
-                        placeholder="" 
-                    />
-                </div>
                 <div className='text-group'>
                     <div className='form-text'>Outlet Name</div>
                     <OutlinedInput 
@@ -198,7 +179,7 @@ const OutletInfo = (props) => {
                 </div>
 
                 <div className='text-group'>
-                    <div className='form-text'>Street</div>
+                    <div className='form-text'>Alias</div>
                     <OutlinedInput 
                         sx={{
                             height: '35px', 
@@ -689,7 +670,7 @@ const Email = () => {
 
 const DeleteOutlet = (props) => {
     const [station, setStation] = useState("");
-    const oneStation = useSelector(state => state.outletReducer.oneStation);
+    const oneStation = useSelector(state => state.outletReducer.adminOutlet);
     const [loadingSpinner, setLoadingSpinner] = useState(false);
 
     useEffect(()=>{
@@ -814,17 +795,18 @@ const Settings = (props) => {
             organisation: user._id
         }
 
-        if(user.userType === "superAdmin"){
+        if(user.userType === "superAdmin" || user.userType === "admin"){
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
-                dispatch(oneStation(data.station[0]));
-                if(data.station.length === 0){setDefault(0)}else{setDefault(1);}
+                if(data.station.length !== 0){
+                    setDefault(1);
+                }
+                dispatch(adminOutlet(data.station[0]));
                 return data.station[0];
             });
         }else{
             OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
                 dispatch(adminOutlet(data.station));
-                dispatch(oneStation(data.station));
                 return data.station;
             });
         }
@@ -836,7 +818,7 @@ const Settings = (props) => {
 
     const changeMenu = (index, item ) => {
         setDefault(index);
-        dispatch(oneStation(item));
+        dispatch(adminOutlet(item));
     }
     
     return(
@@ -903,7 +885,7 @@ const Settings = (props) => {
                     <div className='inner'>
                         <div style={contain}>
                             <div className='second-select'>
-                                {oneStationData.hasOwnProperty("outletName") ||
+                                {(user.userType === "superAdmin" || user.userType === "admin") &&
                                     <Select
                                         labelId="demo-select-small"
                                         id="demo-select-small"
@@ -914,13 +896,13 @@ const Settings = (props) => {
                                         {
                                             allOutlets.map((item, index) => {
                                                 return(
-                                                    <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.city}</MenuItem>
+                                                    <MenuItem key={index} style={menu} onClick={()=>{changeMenu(index + 1, item)}} value={index + 1}>{item.outletName+ ', ' +item.alias}</MenuItem>
                                                 )
                                             })  
                                         }
                                     </Select>
                                 }
-                                {oneStationData.hasOwnProperty("outletName") &&
+                                {user.userType === "staff" &&
                                     <Select
                                         labelId="demo-select-small"
                                         id="demo-select-small"
@@ -928,7 +910,7 @@ const Settings = (props) => {
                                         sx={selectStyle2}
                                         disabled
                                     >
-                                        <MenuItem style={menu} value={0}>{oneStationData.hasOwnProperty("outletName")?oneStationData.outletName+", "+oneStationData.city: "No station created"}</MenuItem>
+                                        <MenuItem style={menu} value={0}>{user.userType === "staff"? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
                                     </Select>
                                 }
                             </div>

@@ -25,7 +25,6 @@ const Regulatory = () => {
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const payment = useSelector(state => state.paymentReducer.payment);
-    const [currentStation, setCurrentStation] = useState({});
     const [entries, setEntries] = useState(10);
     const [skip, setSkip] = useState(0);
     const [limit, setLimit] = useState(15);
@@ -44,13 +43,13 @@ const Regulatory = () => {
             organisation: user._id
         }
 
-        if(user.userType === "superAdmin"){
+        if(user.userType === "superAdmin" || user.userType === "admin"){
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
                 if(data.station.length !== 0){
                     setDefault(1);
                 }
-                setCurrentStation(data.station[0]);
+                dispatch(adminOutlet(data.station[0]));
                 return data.station[0];
             }).then((data)=>{
                 const payload = {
@@ -67,7 +66,6 @@ const Regulatory = () => {
         }else{
             OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
                 dispatch(adminOutlet(data.station));
-                setCurrentStation(data.station);
                 return data.station;
             }).then((data)=>{
                 const payload = {
@@ -92,8 +90,8 @@ const Regulatory = () => {
         const payload = {
             skip: skip * limit,
             limit: limit,
-            outletID: currentStation._id, 
-            organisationID: currentStation.organisation
+            outletID: oneStationData?._id, 
+            organisationID: oneStationData?.organisation
         }
         PaymentService.getAllPayment(payload).then((data) => {
             setTotal(data.count);
@@ -103,7 +101,7 @@ const Regulatory = () => {
 
     const changeMenu = (index, item ) => {
         setDefault(index);
-        setCurrentStation(item);
+        dispatch(adminOutlet(item));
         
         const payload = {
             skip: skip * limit,
@@ -138,7 +136,7 @@ const Regulatory = () => {
     const entriesMenu = (value, limit) => {
         setEntries(value);
         setLimit(limit);
-        getTankData();
+        refresh();
     }
 
     const printReport = () => {
@@ -152,7 +150,7 @@ const Regulatory = () => {
 
     return(
         <div data-aos="zoom-in-down" className='paymentsCaontainer'>
-            { <PaymentModal station={currentStation} open={open} close={setOpen} refresh={refresh} /> }
+            { <PaymentModal station={oneStationData} open={open} close={setOpen} refresh={refresh} /> }
             { prints && <RegulatoryReports allOutlets={payment} open={prints} close={setPrints}/>}
             {openPayment && <ViewPayment open={openPayment} close={setOpenPayment} desc={description} />}
             <div className='inner-pay'>
@@ -175,7 +173,7 @@ const Regulatory = () => {
                 <div className='search'>
                     <div className='input-cont'>
                         <div className='second-select'>
-                            {oneStationData.hasOwnProperty("outletName") ||
+                            {(user.userType === "superAdmin" || user.userType === "admin") &&
                                 <Select
                                     labelId="demo-select-small"
                                     id="demo-select-small"
@@ -192,7 +190,7 @@ const Regulatory = () => {
                                     }
                                 </Select>
                             }
-                            {oneStationData.hasOwnProperty("outletName") &&
+                            {user.userType === "staff" &&
                                 <Select
                                     labelId="demo-select-small"
                                     id="demo-select-small"
@@ -200,7 +198,7 @@ const Regulatory = () => {
                                     sx={selectStyle2}
                                     disabled
                                 >
-                                    <MenuItem style={menu} value={0}>{oneStationData.hasOwnProperty("outletName")?oneStationData.outletName+", "+oneStationData.alias: "No station created"}</MenuItem>
+                                    <MenuItem style={menu} value={0}>{user.userType === "staff"? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
                                 </Select>
                             }
                         </div>

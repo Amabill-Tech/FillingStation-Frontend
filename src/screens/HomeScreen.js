@@ -276,7 +276,7 @@ const HomeScreen = ({history}) => {
                     <div style={{color: user.isDark === '0'? '#054834': '#fff'}} className='left-lobe'>
                         {(activeRoute.split('/').length === 4 || activeRoute.split('/').length === 5 )&& <img onClick={goBackToPreviousPage} style={{width:'30px', height:'25px', marginRight:'10px'}} src={goBack} alt="icon"  />}
                         <span onClick={()=>{navigateBack(name)}}>
-                            {name} ({oneStationData?.outletName.concat(", ", oneStationData?.alias)})
+                            {name} {name === "Admin Department"? null: "(" + oneStationData?.outletName.concat(", ", oneStationData?.alias) + ")"}
                         </span>
                     </div>
                     <div className='right-lobe'>

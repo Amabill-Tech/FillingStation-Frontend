@@ -29,7 +29,6 @@ const Salary = () => {
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [currentSalary, setCurrentSalary] = useState(false);
-    const [currentStation, setCurrentStation] = useState({});
     const [entries, setEntries] = useState(10);
     const [skip, setSkip] = useState(0);
     const [limit, setLimit] = useState(15);
@@ -46,13 +45,13 @@ const Salary = () => {
             organisation: user._id
         }
 
-        if(user.userType === "superAdmin"){
+        if(user.userType === "superAdmin" || user.userType === "admin"){
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
                 if(data.station.length !== 0){
                     setDefault(1);
                 }
-                setCurrentStation(data.station[0]);
+                dispatch(adminOutlet(data.station[0]));
                 return data.station[0];
             }).then((data)=>{
                 const payload = {
@@ -69,7 +68,6 @@ const Salary = () => {
         }else{
             OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
                 dispatch(adminOutlet(data.station));
-                setCurrentStation(data.station);
                 return data.station;
             }).then((data)=>{
                 const payload = {
@@ -91,9 +89,22 @@ const Salary = () => {
         getAllSalaryData();
     },[getAllSalaryData]);
 
+    const refresh = () => {
+        const payload = {
+            skip: skip * limit,
+            limit: limit,
+            outletID: oneStationData._id, 
+            organisationID: oneStationData.organisation
+        }
+        SalaryService.allSalaryRecords(payload).then(data => {
+            setTotal(data.salary.count);
+            dispatch(createSalary(data.salary.salary));
+        });
+    }
+
     const changeMenu = (index, item ) => {
         setDefault(index);
-        setCurrentStation(item);
+        dispatch(adminOutlet(item));
 
         const payload = {
             skip: skip * limit,
@@ -141,14 +152,14 @@ const Salary = () => {
         if(!(skip < 0)){
             setSkip(prev => prev + 1)
         }
-        getAllSalaryData();
+        refresh();
     }
 
     const prevPage = () => {
         if(!(skip <= 0)){
             setSkip(prev => prev - 1)
         } 
-        getAllSalaryData();
+        refresh();
     }
 
     const entriesMenu = (value, limit) => {
@@ -163,8 +174,8 @@ const Salary = () => {
 
     return(
         <div data-aos="zoom-in-down" className='paymentsCaontainer'>
-            {<SalaryModal station={currentStation} open={open} close={setOpen} refresh={getAllSalaryData} />}
-            {<UpdateSalary open={open2} id={currentSalary} close={setOpen2} refresh={getAllSalaryData} />}
+            {<SalaryModal station={oneStationData} open={open} close={setOpen} refresh={refresh} />}
+            {<UpdateSalary open={open2} id={currentSalary} close={setOpen2} refresh={refresh} />}
             { prints && <SalaryReports allOutlets={salaryData} open={prints} close={setPrints}/>}
             <div className='inner-pay'>
                 <div className='action'>
@@ -186,7 +197,7 @@ const Salary = () => {
                 <div className='search'>
                     <div className='input-cont'>
                         <div className='second-select'>
-                            {oneStationData.hasOwnProperty("outletName") ||
+                            {(user.userType === "superAdmin" || user.userType === "admin") &&
                                 <Select
                                     labelId="demo-select-small"
                                     id="demo-select-small"
@@ -203,7 +214,7 @@ const Salary = () => {
                                     }
                                 </Select>
                             }
-                            {oneStationData.hasOwnProperty("outletName") &&
+                            {user.userType === "staff" &&
                                 <Select
                                     labelId="demo-select-small"
                                     id="demo-select-small"
@@ -211,7 +222,7 @@ const Salary = () => {
                                     sx={selectStyle2}
                                     disabled
                                 >
-                                    <MenuItem style={menu} value={0}>{oneStationData.hasOwnProperty("outletName")?oneStationData.outletName+", "+oneStationData.alias: "No station created"}</MenuItem>
+                                    <MenuItem style={menu} value={0}>{user.userType === "staff"? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
                                 </Select>
                             }
                         </div>

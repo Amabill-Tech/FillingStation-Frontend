@@ -22,6 +22,7 @@ const Attendance = () => {
     const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
     const [defaultState, setDefault] = useState(0);
+    const moment = require('moment-timezone');
     const dispatch = useDispatch();
     const user = useSelector(state => state.authReducer.user);
     const attendanceData = useSelector(state => state.attendanceReducer.attendance);
@@ -32,8 +33,6 @@ const Attendance = () => {
     const [limit, setLimit] = useState(15);
     const [entries, setEntries] = useState(10);
     const [prints, setPrints] = useState(false);
-    const [rangeDate, setRangeDate] = useState('');
-    const [currentMenu, setCurrentMenu] = useState({});
 
     const openModal = () => {
         setOpen(true);
@@ -45,13 +44,20 @@ const Attendance = () => {
 
     const getAllAtendanceData = useCallback((getDataRange) => {
 
-        if(user.userType === 'staff'){
+        const payload = {
+            organisation: user._id
+        }
 
-            OutletService.getAllOutletStations({organisation: user.userType === "superAdmin"? user._id : user.organisationID}).then(data => {
+        if(user.userType === "superAdmin" || user.userType === "admin"){
+
+            OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
+                if(data.station.length !== 0){
+                    setDefault(1);
+                }
+                dispatch(adminOutlet(data.station[0]));
                 return data.station[0]
             }).then((data)=>{
-                setCurrentMenu(data);
                 const payload = {
                     skip: skip * limit,
                     limit: limit,
@@ -72,10 +78,8 @@ const Attendance = () => {
         }else{
             OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
                 dispatch(adminOutlet(data.station));
-                // setCurrentStation(data.station);
                 return data.station;
             }).then((data)=>{
-                setCurrentMenu(data);
                 const payload = {
                     skip: skip * limit,
                     limit: limit,
@@ -95,32 +99,58 @@ const Attendance = () => {
             })
         }
         
-    }, [user.userType, user._id, user.organisationID, user.outletID, dispatch, skip, limit]);
+    }, [user.userType, user._id, user.outletID, dispatch, skip, limit]);
+
+    const getTodayAndTomorrow = () => {
+        const today = moment();
+        const todayMoment = moment().format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+        const tomorrowMoment = today.clone().add(1,'days');
+        return {today: todayMoment, tomorrow: tomorrowMoment.format('YYYY-MM-DD HH:mm:ss').split(' ')[0]};
+    }
 
     useEffect(()=>{
-        const now = new Date();
-        const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const toISOType = startOfToday.toISOString().split('T')[0];
-        const getDataRange = getTodayAndTomorrow(toISOType);
-        setRangeDate(getDataRange);
+        const getDataRange = getTodayAndTomorrow();
         getAllAtendanceData(getDataRange);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[getAllAtendanceData]);
 
-    const changeMenu = (index, item ) => {
-        setDefault(index);
-        setCurrentMenu(item);
+    const refresh = () => {
+        const range  =  getTodayAndTomorrow();
         const payload = {
             skip: skip * limit,
             limit: limit,
-            today: rangeDate.today,
-            tomorrow: rangeDate.tomorrow,
+            today: range.today,
+            tomorrow: range.tomorrow,
+            outletID: oneStationData?._id,
+            organisationID: oneStationData?.organisation,
+        }
+        AdminUserService.allStaffUserRecords(payload).then(data => {
+            dispatch(storeStaffUsers(data.staff.staff));
+        }).then(()=>{
+            AtendanceService.allAttendanceRecords(payload).then(data => {
+                setTotal(data.attendance.count)
+                dispatch(createAttendance(data.attendance.attendance));
+            });
+        });
+    }
+
+    const changeMenu = (index, item ) => {
+        setDefault(index);
+        const range  =  getTodayAndTomorrow();
+        dispatch(adminOutlet(item));
+
+        const payload = {
+            skip: skip * limit,
+            limit: limit,
+            today: range.today,
+            tomorrow: range.tomorrow,
             outletID: item._id,
             organisationID: item.organisation,
         }
 
         const menyPayload = {
-            today: rangeDate.today,
-            tomorrow: rangeDate.tomorrow,
+            today: range.today,
+            tomorrow: range.tomorrow,
             outletID: item._id,
             organisationID: item.organisation,
         }
@@ -138,74 +168,20 @@ const Attendance = () => {
             dispatch(createAttendance(data.attendance.attendance));
         });
     }
-
-    const getTodayAndTomorrow = (value) => {
-        const today = value;
-        let tomorrow;
-        const [year, month, day] = today.split('-');
-
-        switch(month){
-            case "02":{
-                if(day === "28"){
-                    let newMonth = String(Number(month) + 1);
-                    tomorrow = `${year}-${newMonth.length === 1? `0${newMonth}`: newMonth}-01`;
-                }else{
-                    let newDay = String(Number(day) + 1);
-                    tomorrow = `${year}-${month}-${newDay.length === 1? `0${newDay}`: newDay}`;
-                }
-                break
-            }
-
-            case "01":
-            case "03":
-            case "05":
-            case "07":
-            case "08":
-            case "10":
-            case "12":{
-                if(day === "31"){
-                    let newMonth = String(Number(month) + 1);
-                    tomorrow = `${year}-${newMonth.length === 1? `0${newMonth}`: newMonth}-01`;
-                }else{
-                    let newDay = String(Number(day) + 1);
-                    tomorrow = `${year}-${month}-${newDay.length === 1? `0${newDay}`: newDay}`;
-                }
-                break
-            }
-
-            case "04":
-            case "06":
-            case "09":
-            case "11":{
-                if(day === "30"){
-                    let newDay = String(Number(day) + 1);
-                    tomorrow = `${year}-${month}-${newDay.length === 1? `0${newDay}`: newDay}`;
-                }else{
-                    let newDay = String(Number(day) + 1);
-                    tomorrow = `${year}-${month}-${newDay.length === 1? `0${newDay}`: newDay}`;
-                }
-                break
-            }
-
-            default:{
-                tomorrow = today;
-            }
-        }
-
-        return {today, tomorrow}
-    }
     
     const searchTable = (value, e) => {
         e.preventDefault();
-        const dateRange = getTodayAndTomorrow(value);
-        setRangeDate(dateRange);
+        const today = moment(value);
+        const todayMoment = moment(value).format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+        const tomorrowMoment = today.clone().add(1,'days').format('YYYY-MM-DD HH:mm:ss').split(' ')[0];
+
         const payload = {
             skip: skip * limit,
             limit: limit,
-            today: dateRange.today,
-            tomorrow: dateRange.tomorrow,
-            outletID: currentMenu._id,
-            organisationID: currentMenu.organisation,
+            today: todayMoment,
+            tomorrow: tomorrowMoment,
+            outletID: oneStationData?._id,
+            organisationID: oneStationData?.organisation,
         }
         AtendanceService.allAttendanceRecords(payload).then(data => {
             setTotal(data.attendance.count)
@@ -229,20 +205,20 @@ const Attendance = () => {
         if(!(skip < 0)){
             setSkip(prev => prev + 1)
         }
-        getAllAtendanceData();
+        refresh();
     }
 
     const prevPage = () => {
         if(!(skip <= 0)){
             setSkip(prev => prev - 1)
         } 
-        getAllAtendanceData();
+        refresh();
     }
 
     const entriesMenu = (value, limit) => {
         setEntries(value);
         setLimit(limit);
-        getAllAtendanceData();
+        refresh();
     }
 
     const printReport = () => {
@@ -251,8 +227,8 @@ const Attendance = () => {
 
     return(
         <div data-aos="zoom-in-down" className='paymentsCaontainer'>
-            {<AttendanceModal currentOutlet={currentMenu} open={open} close={setOpen} refresh={getAllAtendanceData} getDate={getTodayAndTomorrow} />}
-            {<ClockOutModal currentOutlet={currentMenu} open={open2} close={setOpen2} refresh={getAllAtendanceData} />}
+            {<AttendanceModal currentOutlet={oneStationData} open={open} close={setOpen} refresh={refresh} getDate={getTodayAndTomorrow} />}
+            {<ClockOutModal currentOutlet={oneStationData} open={open2} close={setOpen2} refresh={refresh} />}
             { prints && <PrintAttendanceRecords allOutlets={attendanceData} open={prints} close={setPrints}/>}
             <div className='inner-pay'>
                 <div className='action'>
@@ -274,7 +250,7 @@ const Attendance = () => {
                 <div className='search'>
                     <div className='input-cont'>
                         <div className='second-select'>
-                            {oneStationData.hasOwnProperty("outletName") ||
+                            {(user.userType === "superAdmin" || user.userType === "admin") &&
                                 <Select
                                     labelId="demo-select-small"
                                     id="demo-select-small"
@@ -291,7 +267,7 @@ const Attendance = () => {
                                     }
                                 </Select>
                             }
-                            {oneStationData.hasOwnProperty("outletName") &&
+                            {user.userType === "staff" &&
                                 <Select
                                     labelId="demo-select-small"
                                     id="demo-select-small"
@@ -299,7 +275,7 @@ const Attendance = () => {
                                     sx={selectStyle2}
                                     disabled
                                 >
-                                    <MenuItem style={menu} value={0}>{oneStationData.hasOwnProperty("outletName")?oneStationData.outletName+", "+oneStationData.alias: "No station created"}</MenuItem>
+                                    <MenuItem style={menu} value={0}>{user.userType === "staff"? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
                                 </Select>
                             }
                         </div>

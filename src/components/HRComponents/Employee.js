@@ -52,13 +52,13 @@ const Employee = () => {
             organisation: user._id
         }
 
-        if(user.userType === "superAdmin"){
+        if(user.userType === "superAdmin" || user.userType === "admin"){
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
                 if(data.station.length !== 0){
                     setDefault(1);
                 }
-                setCurrentStation(data.station[0]);
+                dispatch(adminOutlet(data.station[0]));
                 return data.station[0];
             }).then((data)=>{
                 const payload = {
@@ -75,7 +75,6 @@ const Employee = () => {
         }else{
             OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
                 dispatch(adminOutlet(data.station));
-                setCurrentStation(data.station);
                 return data.station;
             }).then((data)=>{
                 const payload = {
@@ -91,15 +90,28 @@ const Employee = () => {
             });
         }
 
-    }, [user._id, user.userType, user.outletID, dispatch, setCurrentStation, skip, limit]);
+    }, [user._id, user.userType, user.outletID, dispatch, skip, limit]);
 
     useEffect(()=>{
         getAllEmployeeData();
     },[getAllEmployeeData]);
 
+    const refresh = () => {
+        const payload = {
+            skip: skip * limit,
+            limit: limit,
+            outletID: oneStationData?._id, 
+            organisationID: oneStationData?.organisation
+        }
+        AdminUserService.allStaffUserRecords(payload).then(data => {
+            setTotal(data.staff.count);
+            dispatch(storeStaffUsers(data.staff.staff));
+        });
+    }
+
     const changeMenu = (index, item ) => {
         setDefault(index);
-        setCurrentStation(item);
+        dispatch(adminOutlet(item));
 
         const payload = {
             skip: skip * limit,
@@ -125,14 +137,14 @@ const Employee = () => {
         if(!(skip < 0)){
             setSkip(prev => prev + 1)
         }
-        getAllEmployeeData();
+        refresh();
     }
 
     const prevPage = () => {
         if(!(skip <= 0)){
             setSkip(prev => prev - 1)
         } 
-        getAllEmployeeData();
+        refresh();
     }
 
     const entriesMenu = (value, limit) => {
@@ -166,7 +178,7 @@ const Employee = () => {
                 <div className='search'>
                     <div className='input-cont'>
                         <div className='second-select'>
-                            {oneStationData.hasOwnProperty("outletName") ||
+                            {(user.userType === "superAdmin" || user.userType === "admin") &&
                                 <Select
                                     labelId="demo-select-small"
                                     id="demo-select-small"
@@ -183,7 +195,7 @@ const Employee = () => {
                                     }
                                 </Select>
                             }
-                            {oneStationData.hasOwnProperty("outletName") &&
+                            {user.userType === "staff" &&
                                 <Select
                                     labelId="demo-select-small"
                                     id="demo-select-small"
@@ -191,7 +203,7 @@ const Employee = () => {
                                     sx={selectStyle2}
                                     disabled
                                 >
-                                    <MenuItem style={menu} value={0}>{oneStationData.hasOwnProperty("outletName")?oneStationData.outletName+", "+oneStationData.alias: "No station created"}</MenuItem>
+                                    <MenuItem style={menu} value={0}>{user.userType === "staff"? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
                                 </Select>
                             }
                         </div>

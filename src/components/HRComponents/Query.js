@@ -48,13 +48,13 @@ const Query = () => {
             organisation: user._id
         }
 
-        if(user.userType === "superAdmin"){
+        if(user.userType === "superAdmin" || user.userType === "admin"){
             OutletService.getAllOutletStations(payload).then(data => {
                 dispatch(getAllStations(data.station));
                 if(data.station.length !== 0){
                     setDefault(1);
                 }
-                // setCurrentStation(data.station[0]);
+                dispatch(adminOutlet(data.station[0]));
                 return data.station[0];
             }).then((data)=>{
                 const payload = {
@@ -71,7 +71,6 @@ const Query = () => {
         }else{
             OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
                 dispatch(adminOutlet(data.station));
-                // setCurrentStation(data.station);
                 return data.station;
             }).then((data)=>{
                 const payload = {
@@ -92,8 +91,23 @@ const Query = () => {
         getAllQueryData();
     },[getAllQueryData]);
 
+    const refresh = () => {
+        const payload = {
+            skip: skip * limit,
+            limit: limit,
+            outletID: oneStationData._id, 
+            organisationID: oneStationData.organisation
+        }
+        QueryService.allQueryRecords(payload).then(data => {
+            setTotal(data.query.count);
+            dispatch(createQuery(data.query.query));
+        });
+    }
+
     const changeMenu = (index, item ) => {
         setDefault(index);
+        dispatch(adminOutlet(item));
+        
         const payload = {
             skip: skip * limit,
             limit: limit,
@@ -146,26 +160,26 @@ const Query = () => {
         if(!(skip < 0)){
             setSkip(prev => prev + 1)
         }
-        getAllQueryData();
+        refresh();
     }
 
     const prevPage = () => {
         if(!(skip <= 0)){
             setSkip(prev => prev - 1)
         } 
-        getAllQueryData();
+        refresh();
     }
 
     const entriesMenu = (value, limit) => {
         setEntries(value);
         setLimit(limit);
-        getAllQueryData();
+        refresh();
     }
 
     return(
         <div data-aos="zoom-in-down" className='paymentsCaontainer'>
-            {<QueryModal open={open} close={setOpen} refresh={getAllQueryData}/>}
-            {<UpdateQuery open={openUpdate} close={setUpdate} id={currentQuery} refresh={getAllQueryData} />}
+            {<QueryModal open={open} close={setOpen} refresh={refresh}/>}
+            {<UpdateQuery open={openUpdate} close={setUpdate} id={currentQuery} refresh={refresh} />}
             { prints && <QueryReport allOutlets={queryData} open={prints} close={setPrints}/>}
             {openQuery && <ViewQuery open={openQuery} close={setOpenQuery} desc={description} />}
             <div className='inner-pay'>
@@ -188,7 +202,7 @@ const Query = () => {
                 <div className='search'>
                     <div className='input-cont'>
                         <div className='second-select'>
-                            {oneStationData.hasOwnProperty("outletName") ||
+                            {(user.userType === "superAdmin" || user.userType === "admin") &&
                                 <Select
                                     labelId="demo-select-small"
                                     id="demo-select-small"
@@ -205,7 +219,7 @@ const Query = () => {
                                     }
                                 </Select>
                             }
-                            {oneStationData.hasOwnProperty("outletName") &&
+                            {user.userType === "staff" &&
                                 <Select
                                     labelId="demo-select-small"
                                     id="demo-select-small"
@@ -213,7 +227,7 @@ const Query = () => {
                                     sx={selectStyle2}
                                     disabled
                                 >
-                                    <MenuItem style={menu} value={0}>{oneStationData.hasOwnProperty("outletName")?oneStationData.outletName+", "+oneStationData.alias: "No station created"}</MenuItem>
+                                    <MenuItem style={menu} value={0}>{user.userType === "staff"? oneStationData?.outletName+", "+oneStationData?.alias: "No station created"}</MenuItem>
                                 </Select>
                             }
                         </div>
