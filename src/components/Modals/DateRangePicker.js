@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import close from '../../assets/close.png';
 import Modal from '@mui/material/Modal';
 
@@ -25,12 +25,6 @@ const DatePickerModal = (props) => {
                 </div>
         </Modal>
     )
-}
-
-const inner = {
-    width:'100%',
-    height:'270px',
-    background:'red'
 }
 
 export default DatePickerModal;

@@ -15,6 +15,7 @@ const PumpUpdate = (props) => {
     const [totalizer, setTotalizer] = useState('');
     const [remark, setRemark] = useState('');
     const oneTank = useSelector(state => state.outletReducer.oneTank);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
 
     const handleClose = () => props.close(false);
 
@@ -27,6 +28,7 @@ const PumpUpdate = (props) => {
         const detail = oneTank.currentLevel==="None"? true : prev;
         const difference = Number(totalizer) - Number(props.current.totalizerReading)
 
+        if(oneStationData === null) return swal("Warning!", "Please create a station", "info");
         if(totalizer === "") return swal("Warning!", "Quantity field cannot be empty", "info");
         if(props.current.activeState === "0") return swal("Warning!", "Pump is currently inactive, contact admin", "info");
         if(oneTank.activeState === "0") return swal("Warning!", "Tank is currently inactive, contact admin", "info");
@@ -41,8 +43,8 @@ const PumpUpdate = (props) => {
             previousLevel: oneTank.currentLevel,
             totalizer: totalizer,
             currentLevel: oneTank.currentLevel === "None"? null: String(Number(oneTank.currentLevel) - difference),
-            outletID: props.currentStation._id,
-            organisationID: props.currentStation.organisation,
+            outletID: oneStationData?._id,
+            organisationID: oneStationData?.organisation,
         }
 
         if(payload.currentLevel !== null){

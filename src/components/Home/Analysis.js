@@ -218,17 +218,17 @@ const Analysis = (props) => {
 
         let cost = 0;
         for(let sale of analysisData.sales){
-            cost = cost + sale.productType === "PMS"? Number(sale.sales)*Number(sale.PMSCostPrice): sale.productType === "AGO"? Number(sale.sales)*Number(sale.AGOCostPrice): Number(sale.sales)*Number(sale.DPKCostPrice);
+            cost = cost + sale.productType === "PMS"? Number(sale.sales)*Number(sale?.PMSCostPrice): sale.productType === "AGO"? Number(sale.sales)*Number(sale?.AGOCostPrice): Number(sale.sales)*Number(sale?.DPKCostPrice);
         }
 
         let lpo = 0;
         for(let sale of analysisData.lpo){
-            lpo = lpo + sale.productType === "PMS"? Number(sale.lpoLitre)*Number(sale.PMSCost): sale.productType === "AGO"? Number(sale.lpoLitre)*Number(sale.AGOCost): Number(sale.lpoLitre)*Number(sale.DPKCost);
+            lpo = lpo + sale.productType === "PMS"? Number(sale.lpoLitre)*Number(sale?.PMSCost): sale.productType === "AGO"? Number(sale.lpoLitre)*Number(sale?.AGOCost): Number(sale.lpoLitre)*Number(sale?.DPKCost);
         }
 
         let rtPrice = 0;
         for(let sale of analysisData.rtVolumes){
-            rtPrice = rtPrice + sale.productType === "PMS"? Number(sale.rtLitre)*Number(sale.PMSCost): sale.productType === "AGO"? Number(sale.rtLitre)*Number(sale.AGOCost): Number(sale.rtLitre)*Number(sale.DPKCost);
+            rtPrice = rtPrice + sale.productType === "PMS"? Number(sale.rtLitre)*Number(sale?.PMSCost): sale.productType === "AGO"? Number(sale.rtLitre)*Number(sale?.AGOCost): Number(sale.rtLitre)*Number(sale?.DPKCost);
         }
 
         const total = cost + lpo - rtPrice;
@@ -297,8 +297,8 @@ const Analysis = (props) => {
 
                     <div style={contain2}>
                         <div className='imgContainer'>
-                            <DashboardImage type={"cost"} right={'10px'} left={'0px'} image={naira} name={'Cost Price'} value={`NGN ${oneStationData === null? "0": oneStationData.PMSCost}`} />
-                            <DashboardImage type={"selling"} right={'10px'} left={'0px'} image={hand} name={'Selling Price'} value={`NGN ${oneStationData === null? "0": oneStationData.PMSPrice}`} />
+                            <DashboardImage type={"cost"} right={'10px'} left={'0px'} image={naira} name={'Cost Price'} value={`NGN ${oneStationData === null? "0": oneStationData?.PMSCost}`} />
+                            <DashboardImage type={"selling"} right={'10px'} left={'0px'} image={hand} name={'Selling Price'} value={`NGN ${oneStationData === null? "0": oneStationData?.PMSPrice}`} />
                             <DashboardImage type={"expenses"} right={'10px'} left={'0px'} image={folder} name={'Expenses'} value={`NGN ${calculateExpenses()}`} />
                             <DashboardImage type={"payments"} right={'10px'} left={'0px'} image={folder2} name={'Payments'} value={`NGN ${calculatePayment()}`} />
                             <DashboardImage type={"none"} right={'0px'} left={'0px'} image={analysis2} name={'Profits'} value={`NGN ${calculateTotalSales() - calculateTotalCost() - calculateExpenses()}`} />

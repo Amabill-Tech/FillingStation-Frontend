@@ -20,6 +20,7 @@ const IncomingOrderModal = (props) => {
     const [defaultState, setDefault] = useState(0);
     const productOrder = useSelector(state => state.productOrderReducer.productOrder);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
+    
     const dispatch = useDispatch();
     const [productType, setProductType] = useState('available');
     const [quantityOrdered, setQuantityOrdered] = useState("");

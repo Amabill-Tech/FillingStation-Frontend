@@ -280,8 +280,8 @@ const BarChartGraph = (props) => {
 
     const getAllMonthlyRecords = useCallback(() => {
         const payload = {
-            organisationID: props.station.organisation,
-            outletID: props.station._id,
+            organisationID: props.station?.organisation,
+            outletID: props.station?._id,
         }
 
         DailySalesService.getAllMonthlyReports(payload).then(data => { 

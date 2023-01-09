@@ -18,6 +18,7 @@ const AddPump = (props) => {
     const dispatch = useDispatch();
     const open = useSelector(state => state.outletReducer.openModal);
     const loadingSpinner = useSelector(state => state.authReducer.loadingSpinner);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
 
     const [defaultState, setDefaultState] = useState(0);
     const [productType, setProduct] = useState('');
@@ -27,6 +28,7 @@ const AddPump = (props) => {
     const handleClose = () => dispatch(closeModal(0));
 
     const handleOpen = () => {
+        if(oneStationData === null) return swal("Warning!", "Please create a station", "info");
         if(pumpName === "") return swal("Warning!", "Pump name field cannot be empty", "info");
         if(defaultState === "") return swal("Warning!", "Tank name field cannot be empty", "info");
         if(productType === "") return swal("Warning!", "Product type field cannot be empty", "info");
@@ -34,12 +36,12 @@ const AddPump = (props) => {
 
         const payload = {
             pumpName: pumpName,
-            hostTank: props.currentTank._id,
-            hostTankName: props.currentTank.tankName,
+            hostTank: oneStationData?._id,
+            hostTankName: oneStationData?.tankName,
             productType: productType,
             totalizerReading: totalizer,
-            organisationID: props.currentTank.organisationID,
-            outletID: props.currentTank.outletID
+            organisationID: oneStationData?.organisationID,
+            outletID: oneStationData?.outletID
         }
 
         OutletService.registerPumps(payload).then(data => {
@@ -53,9 +55,9 @@ const AddPump = (props) => {
     }
 
     useEffect(()=>{
-        setDefaultState(props.currentTank.tankName);
-        setProduct(props.currentTank.productType);
-    },[props.currentTank.tankName, props.currentTank.productType]);
+        setDefaultState(oneStationData?.tankName);
+        setProduct(oneStationData?.productType);
+    },[oneStationData?.tankName, oneStationData?.productType]);
 
     return(
         <Modal
@@ -126,7 +128,7 @@ const AddPump = (props) => {
                                 fontSize:'12px',
                             }}
                         >
-                            <MenuItem style={menu} value={props.currentTank.tankName}>{props.currentTank.tankName}</MenuItem>
+                            <MenuItem style={menu} value={oneStationData?.tankName}>{oneStationData?.tankName}</MenuItem>
                         </Select>
                     </div>
 

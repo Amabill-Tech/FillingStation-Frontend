@@ -1,19 +1,12 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React from 'react';
 import close from '../../assets/close.png';
 import avat from '../../assets/avat.png';
-import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
-import { ThreeDots } from  'react-loader-spinner';
-import swal from 'sweetalert';
 import '../../styles/lpo.scss';
-import LPOService from '../../services/lpo';
 
 const EmployeeDetails = (props) => {
-    const user = useSelector(state => state.authReducer.user);
 
     const handleClose = () => props.close(false);
-    console.log(props.data)
 
     return(
         <Modal

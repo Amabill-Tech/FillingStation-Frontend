@@ -10,9 +10,11 @@ import ProductService from '../../services/productService';
 import axios from 'axios';
 import { MenuItem, Select } from '@mui/material';
 import config from '../../constants';
+import { useSelector } from 'react-redux';
 
 const ProductOrderModal = (props) => {
     const [loading, setLoading] = useState(false);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
 
     const [dateCreated, setDateCreated] = useState('');
     const [depot, setDepot] = useState('');
@@ -28,6 +30,7 @@ const ProductOrderModal = (props) => {
     const handleClose = () => props.close(false);
 
     const submit = () => {
+        if(oneStationData === null) return swal("Warning!", "Please create a station", "info");
         if(dateCreated === "") return swal("Warning!", "Date created field cannot be empty", "info");
         if(depot === "") return swal("Warning!", "Depot field cannot be empty", "info");
         if(depotAddress === "") return swal("Warning!", "Depot address field cannot be empty", "info");
@@ -49,7 +52,7 @@ const ProductOrderModal = (props) => {
             costPerLitre: costPerLitre,
             productType: productType,
             attachCertificate: uploadFile,
-            organizationID: props.station.organisation
+            organizationID: oneStationData?.organisation
         }
 
         ProductService.createProductOrder(payload).then((data) => {

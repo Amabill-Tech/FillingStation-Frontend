@@ -12,9 +12,9 @@ import { MenuItem, Select } from '@mui/material';
 
 const ClockOutModal = (props) => {
     const [loading, setLoading] = useState(false);
-    const user = useSelector(state => state.authReducer.user);
     const [defaultState, setDefault] = useState(0);
     const attendanceData = useSelector(state => state.attendanceReducer.attendance);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [employeeName, setEmployeeName] = useState('');
     const [clockOut, setClockout] = useState('');
 
@@ -23,6 +23,7 @@ const ClockOutModal = (props) => {
     const submit = () => {
         if(employeeName === "" || employeeName === "Select User") return swal("Warning!", "Employee name field cannot be empty", "info");
         if(clockOut === "") return swal("Warning!", "Clock in field cannot be empty", "info");
+        if(oneStationData === null) return swal("Warning!", "Please create a station", "info");
 
         setLoading(true);
 
@@ -32,10 +33,9 @@ const ClockOutModal = (props) => {
             timeIn: employeeName.timeIn,
             workingHour: employeeName.workingHour,
             timeOut: clockOut,
-            outletID: props.currentOutlet._id,
-            organisationID: props.currentOutlet.organisation,
+            outletID: oneStationData?._id,
+            organisationID: oneStationData?.organisation,
         }
-        console.log(payload)
 
         AtendanceService.updateAttendance(payload).then((data) => { 
             swal("Success", "Attendance updated successfully!", "success");

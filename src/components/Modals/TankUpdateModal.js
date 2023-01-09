@@ -28,7 +28,7 @@ const TankUpdateModal = (props) => {
         const fresh = Number(quantity) > Number(currentTank.tankCapacity);
         const prev = (Number(quantity) + Number(currentTank.currentLevel)) > Number(currentTank.tankCapacity)
         const detail = currentTank.currentLevel==="None"? fresh : prev;
-
+        
         if(quantity === "") return swal("Warning!", "Quantity field cannot be empty", "info");
         if(date === "") return swal("Warning!", "Date field cannot be empty", "info");
         if(currentTank.activeState === '0') return swal("Warning!", "Tank is currently inactive, contact admin", "info");

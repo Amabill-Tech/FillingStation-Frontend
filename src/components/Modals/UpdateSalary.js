@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
 import close from '../../assets/close.png';
 import Button from '@mui/material/Button';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -11,7 +10,6 @@ import SalaryService from '../../services/salary';
 
 const UpdateSalary = (props) => {
     const [loading, setLoading] = useState(false);
-    const user = useSelector(state => state.authReducer.user);
     const [position, setPosition] = useState('');
     const [level, setLevel] = useState('');
     const [low, setLow] = useState('');

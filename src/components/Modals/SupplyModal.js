@@ -13,7 +13,7 @@ import SupplyService from '../../services/supplyService';
 
 const SupplyModal = (props) => {
     const [loading, setLoading] = useState(false);
-    const user = useSelector(state => state.authReducer.user);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [productType, setProductType] = useState('PMS');
 
     const [transportationName, setTransportationName] = useState('');
@@ -26,6 +26,7 @@ const SupplyModal = (props) => {
     const handleClose = () => props.close(false);
 
     const submit = () => {
+        if(oneStationData === null) return swal("Warning!", "Please create a station", "info");
         if(transportationName === "") return swal("Warning!", "Transportation name field cannot be empty", "info");
         if(truckNo === "") return swal("Warning!", "Truck no field cannot be empty", "info");
         if(wayBillNo === "") return swal("Warning!", "Waybill no field cannot be empty", "info");
@@ -43,8 +44,8 @@ const SupplyModal = (props) => {
             productType: productType,
             shortage: shortage,
             date: date,
-            outletID: props.station._id,
-            organizationID: props.station.organisation
+            outletID: oneStationData?._id,
+            organizationID: oneStationData?.organisation
         }
 
         SupplyService.createSupply(payload).then((data) => { 

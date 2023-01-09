@@ -12,9 +12,9 @@ import { MenuItem, Select } from '@mui/material';
 
 const AttendanceModal = (props) => {
     const [loading, setLoading] = useState(false);
-    const user = useSelector(state => state.authReducer.user);
     const [defaultState, setDefault] = useState(0);
     const staffUsers = useSelector(state => state.staffUserReducer.staffUsers);
+    const oneStation = useSelector(state => state.outletReducer.adminOutlet);
     const [employeeName, setEmployeeName] = useState('');
     const [workingHour, setWorkingHour] = useState('');
     const [clockIn, setClockIn] = useState('');
@@ -25,6 +25,7 @@ const AttendanceModal = (props) => {
         if(employeeName === "" || employeeName === "Select User") return swal("Warning!", "Employee name field cannot be empty", "info");
         if(workingHour === "") return swal("Warning!", "Working Hour field cannot be empty", "info");
         if(clockIn === "") return swal("Warning!", "Clock in field cannot be empty", "info");
+        if(oneStation === null) return swal("Warning!", "Please create a station", "info");
 
         setLoading(true);
 
@@ -33,8 +34,8 @@ const AttendanceModal = (props) => {
             employeeName: employeeName.staffName,
             timeIn: clockIn,
             workingHour: workingHour,
-            outletID: props.currentOutlet._id,
-            organisationID: props.currentOutlet.organisation,
+            outletID: oneStation?._id,
+            organisationID: oneStation?.organisation,
         }
 
         AtendanceService.createAttendance(payload).then((data) => { 
@@ -45,11 +46,7 @@ const AttendanceModal = (props) => {
             }
         }).then(()=>{
             setLoading(false);
-            const now = new Date();
-            const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            const toISOType = startOfToday.toISOString().split('T')[0];
-            const getDataRange = props.getDate(toISOType);
-            props.refresh(getDataRange);
+            props.refresh();
             handleClose();
         })
     }

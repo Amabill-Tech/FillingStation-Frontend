@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import close from '../../assets/close.png';
 import Button from '@mui/material/Button';
@@ -7,10 +7,8 @@ import Modal from '@mui/material/Modal';
 import { ThreeDots } from  'react-loader-spinner';
 import swal from 'sweetalert';
 import '../../styles/lpo.scss';
-import axios from 'axios';
 import '../../styles/lpo.scss';
 import Radio from '@mui/material/Radio';
-import Camera from 'react-html5-camera-photo';
 import 'react-html5-camera-photo/build/css/index.css';
 import AdminUserService from '../../services/adminUsers';
 import Select from '@mui/material/Select';
@@ -18,12 +16,11 @@ import MenuItem from '@mui/material/MenuItem';
 
 const StaffModal = (props) => {
     const [loading, setLoading] = useState(false);
-    const [loading2, setLoading2] = useState(false);
     const user = useSelector(state => state.authReducer.user);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
 
     const [staffName, setStaffName] = useState('');
     const [defaultState, setDefaultState] = useState(0);
-    const [selectedOutlet, setSelectedOutlet] = useState(props.allOutlets[0]);
     const [sex, setSex] = useState('Male');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
@@ -40,11 +37,9 @@ const StaffModal = (props) => {
     
     const changeMenu = (index, item) => {
         setDefaultState(index);
-        setSelectedOutlet(item);
     }
 
     const handleClose = () => {
-        setLoading2(0);
         props.close(false)
     };
 
@@ -87,8 +82,8 @@ const StaffModal = (props) => {
     }*/
 
     const submit = () => {
+        if(oneStationData === null) return swal("Warning!", "Please create a station", "info");
         if(staffName === "") return swal("Warning!", "Staff name field cannot be empty", "info");
-        if(!selectedOutlet) return swal("Warning!", "Outlet field cannot be empty", "info");
         if(sex === "") return swal("Warning!", "Sex field cannot be empty", "info");
         if(email === "") return swal("Warning!", "Email field cannot be empty", "info");
         if(phone === "") return swal("Warning!", "Phone field cannot be empty", "info");
@@ -119,7 +114,7 @@ const StaffModal = (props) => {
             jobTitle: jobTitle,
             password: password,
             organisationID: user._id,
-            outletID: selectedOutlet._id,
+            outletID: oneStationData._id,
         }
 
         AdminUserService.createStaffUsers(payload).then((data) => {

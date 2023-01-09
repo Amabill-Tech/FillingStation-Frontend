@@ -11,7 +11,7 @@ import LPOService from '../../services/lpo';
 
 const LPORateModal = (props) => {
     const [loading, setLoading] = useState(false);
-    const user = useSelector(state => state.authReducer.user);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [pms, setPMS] = useState('');
     const [ago, setAGO] = useState('');
     const [dpk, setDPK] = useState('');
@@ -19,6 +19,7 @@ const LPORateModal = (props) => {
     const handleClose = () => props.close(false);
 
     const submit = () => {
+        if(oneStationData === null) return swal("Warning!", "Please create a station", "info");
         if(pms === "") return swal("Warning!", "Employee name field cannot be empty", "info");
         if(ago === "") return swal("Warning!", "Query title field cannot be empty", "info");
         if(dpk === "") return swal("Warning!", "Description field cannot be empty", "info");
@@ -30,8 +31,8 @@ const LPORateModal = (props) => {
             PMSRate: pms,
             AGORate: ago,
             DPKRate: dpk,
-            outletID: props.station._id,
-            organisationID: props.station.organisation,
+            outletID: oneStationData?._id,
+            organisationID: oneStationData?.organisation,
         }
 
         LPOService.updateLPO(payload).then((data) => {

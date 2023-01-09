@@ -83,7 +83,8 @@ const outletReducer = (state = initialState, action) => {
         case NEW_OUTLET: {
             return {
                 ...state,
-                newOutlet: payload
+                newOutlet: payload,
+                adminOutlet: payload
             }
         }
 

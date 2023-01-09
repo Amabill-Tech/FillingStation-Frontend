@@ -1,5 +1,4 @@
-import React, {useState, useEffect} from 'react';
-import { useDispatch } from 'react-redux';
+import React, {useState} from 'react';
 import { useSelector } from 'react-redux';
 import close from '../../assets/close.png';
 import Button from '@mui/material/Button';
@@ -11,11 +10,9 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import swal from 'sweetalert';
 import OutletService from '../../services/outletService';
-import { getAllStations } from '../../store/actions/outlet';
 
 const AddPump = (props) => {
 
-    const dispatch = useDispatch();
     const loadingSpinner = useSelector(state => state.authReducer.loadingSpinner);
 
     const [defaultState, setDefaultState] = useState(0);

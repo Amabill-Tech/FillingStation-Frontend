@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import close from '../../assets/close.png';
 import Button from '@mui/material/Button';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -12,12 +12,14 @@ import Radio from '@mui/material/Radio';
 import 'react-html5-camera-photo/build/css/index.css';
 import AdminUserService from '../../services/adminUsers';
 import { MenuItem, Select } from '@mui/material';
+import { adminOutlet } from '../../store/actions/outlet';
 
 const ManagerModal = (props) => {
+    const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
-    const [loading2, setLoading2] = useState(false);
     const user = useSelector(state => state.authReducer.user);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
 
     const [staffName, setStaffName] = useState('');
     const [sex, setSex] = useState('Male');
@@ -33,11 +35,9 @@ const ManagerModal = (props) => {
     const [jobTitle, setJobTitle] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [stationID, setStationID] = useState('');
     const [defaultState, setDefault] = useState(0);
 
     const handleClose = () => {
-        setLoading2(0);
         props.close(false)
     };
 
@@ -80,6 +80,7 @@ const ManagerModal = (props) => {
     }*/
 
     const submit = () => {
+        if(oneStationData === null) return swal("Warning!", "Please create a station", "info");
         if(staffName === "") return swal("Warning!", "Staff name field cannot be empty", "info");
         if(sex === "") return swal("Warning!", "Sex field cannot be empty", "info");
         if(email === "") return swal("Warning!", "Email field cannot be empty", "info");
@@ -92,7 +93,6 @@ const ManagerModal = (props) => {
         if(dateOfBirth === "") return swal("Warning!", "Date of birth field cannot be empty", "info");
         if(role === "") return swal("Warning!", "Role field cannot be empty", "info");
         if(jobTitle === "") return swal("Warning!", "Job title field cannot be empty", "info");
-        if(stationID === "") return swal("Warning!", "Station field cannot be empty", "info");
         if(password === "") return swal("Warning!", "Password field cannot be empty", "info");
         if(confirmPassword !== password) return swal("Warning!", "Confirm password field cannot be empty", "info");
 
@@ -112,7 +112,7 @@ const ManagerModal = (props) => {
             jobTitle: jobTitle,
             password: password,
             organisationID: user._id,
-            outletID: stationID
+            outletID: oneStationData._id
         }
 
         AdminUserService.createAdminUsers(payload).then((data) => {
@@ -123,7 +123,6 @@ const ManagerModal = (props) => {
             }
         }).then(()=>{
             setLoading(false);
-            setLoading2(0);
             props.refresh();
             handleClose();
         })
@@ -209,7 +208,7 @@ const ManagerModal = (props) => {
 
     const changeMenu = (index, item) => {
         setDefault(index);
-        setStationID(item._id);
+        dispatch(adminOutlet(item));
     }
 
     return(
@@ -525,14 +524,6 @@ const inner = {
 const menu = {
     fontSize:'14px',
     fontFamily:'Nunito-Regular'
-}
-
-const photos = {
-    width:'100%',
-    display:'flex',
-    flexDirection:'row',
-    justifyContent:'space-between',
-    marginTop:'10px'
 }
 
 export default ManagerModal;

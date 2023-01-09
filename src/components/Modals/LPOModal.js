@@ -2,19 +2,18 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import close from '../../assets/close.png';
 import Button from '@mui/material/Button';
-import OutlinedInput from '@mui/material/OutlinedInput';
 import Modal from '@mui/material/Modal';
 import { ThreeDots } from  'react-loader-spinner';
 import swal from 'sweetalert';
 import '../../styles/lpo.scss';
 import Radio from '@mui/material/Radio';
 import LPOService from '../../services/lpo';
-import { Input } from '@mui/icons-material';
 
 const LPOModal = (props) => {
     const [productType, setProductType] = useState('Weekly');
     const [loading, setLoading] = useState(false);
-    const user = useSelector(state => state.authReducer.user);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
+
     const [companyName, setCompanyName] = useState('');
     const [address, setAddress] = useState('');
     const [personOfContact, setPersonOfContact] = useState('');
@@ -29,6 +28,7 @@ const LPOModal = (props) => {
     const handleClose = () => props.close(false);
 
     const submit = () => {
+        if(oneStationData === null) return swal("Warning!", "Please create a station", "info");
         if(companyName === "") return swal("Warning!", "Company name field cannot be empty", "info");
         if(address === "") return swal("Warning!", "Address field cannot be empty", "info");
         if(personOfContact === "") return swal("Warning!", "Contact field cannot be empty", "info");
@@ -54,8 +54,8 @@ const LPOModal = (props) => {
             AGORate: AGORate,
             DPKRate: DPKRate,
             paymentStructure: productType,
-            outletID: props.station._id,
-            organizationID: props.station.organisation
+            outletID: oneStationData?._id,
+            organizationID: oneStationData?.organisation
         }
 
         LPOService.createLPO(payload).then((data) => {

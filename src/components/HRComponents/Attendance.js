@@ -227,7 +227,7 @@ const Attendance = () => {
 
     return(
         <div data-aos="zoom-in-down" className='paymentsCaontainer'>
-            {<AttendanceModal currentOutlet={oneStationData} open={open} close={setOpen} refresh={refresh} getDate={getTodayAndTomorrow} />}
+            {<AttendanceModal currentOutlet={oneStationData} open={open} close={setOpen} refresh={refresh} />}
             {<ClockOutModal currentOutlet={oneStationData} open={open2} close={setOpen2} refresh={refresh} />}
             { prints && <PrintAttendanceRecords allOutlets={attendanceData} open={prints} close={setPrints}/>}
             <div className='inner-pay'>

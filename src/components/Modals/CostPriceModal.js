@@ -1,13 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { closeModal, getAllStations, searchStations } from '../../store/actions/outlet';
+import { searchStations } from '../../store/actions/outlet';
 import { useSelector } from 'react-redux';
 import close from '../../assets/close.png';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
-import outletSuccess from '../../assets/outletSuccess.png';
 import { ThreeDots } from  'react-loader-spinner';
-import { useHistory } from 'react-router-dom';
 import swal from 'sweetalert';
 import '../../styles/mode.scss';
 import search from '../../assets/search.png';
@@ -18,12 +16,8 @@ import OutletService from '../../services/outletService';
 const CostPriceModal = (props) => {
 
     const dispatch = useDispatch();
-    const user = useSelector(state => state.authReducer.user);
-    const history = useHistory();
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
-    const open = useSelector(state => state.outletReducer.openModal);
-    const loadingSpinner = useSelector(state => state.authReducer.loadingSpinner);
-    const newOutlet = useSelector(state => state.outletReducer.newOutlet);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [cost, setCost] = useState("");
     const [collections, setCollections] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -63,6 +57,7 @@ const CostPriceModal = (props) => {
         if(collections.length === 0) return swal("Warning!", "Please select a station", "info");
         if(cost === "") return swal("Warning!", "Cost price field cannot be empty", "info");
         if(cost === "pending") return swal("Warning!", "Please enter a real cost price value", "info");
+        if(oneStationData === null) return swal("Warning!", "Please create a station", "info");
         setLoading(true);
 
         const payload = {};

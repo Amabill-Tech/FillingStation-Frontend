@@ -11,15 +11,16 @@ import SalaryService from '../../services/salary';
 
 const SalaryModal = (props) => {
     const [loading, setLoading] = useState(false);
-    const user = useSelector(state => state.authReducer.user);
     const [position, setPosition] = useState('');
     const [level, setLevel] = useState('');
     const [low, setLow] = useState('');
     const [high, setHigh] = useState('');
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
 
     const handleClose = () => props.close(false);
 
     const submit = () => {
+        if(oneStationData === null) return swal("Warning!", "Please create a station", "info");
         if(position === "") return swal("Warning!", "Position field cannot be empty", "info");
         if(level === "") return swal("Warning!", "Level field cannot be empty", "info");
         if(low === "") return swal("Warning!", "Low range field cannot be empty", "info");
@@ -32,10 +33,9 @@ const SalaryModal = (props) => {
             level: level,
             low_range: low,
             high_range: high,
-            outletID: props.station._id,
-            organisationID: props.station.organisation,
+            outletID: oneStationData?._id,
+            organisationID: oneStationData?.organisation,
         }
-        console.log(payload)
 
         SalaryService.createSalary(payload).then((data) => {
             swal("Success", "Salary created successfully!", "success");

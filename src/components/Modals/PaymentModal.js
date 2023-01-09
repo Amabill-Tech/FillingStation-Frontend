@@ -18,9 +18,9 @@ import config from '../../constants';
 
 const PaymentModal = (props) => {
     const [loading, setLoading] = useState(false);
-    const user = useSelector(state => state.authReducer.user);
     const cert = useSelector(state => state.paymentReducer.certificate);
     const reciept = useSelector(state => state.paymentReducer.receipt);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const dispatch = useDispatch();
 
     const [organisation, setOrganisation] = useState('');
@@ -37,6 +37,7 @@ const PaymentModal = (props) => {
 
     const submit = () => { 
         if((typeof(cert) === "string")){
+            if(oneStationData === null) return swal("Warning!", "Please create a station", "info");
             if(organisation === "") return swal("Warning!", "Organisation field cannot be empty", "info");
             if(description === "") return swal("Warning!", "Description field cannot be empty", "info");
             if(amount === "") return swal("Warning!", "Amount field cannot be empty", "info");
@@ -51,8 +52,8 @@ const PaymentModal = (props) => {
                 contactPerson: contact,
                 attachCertificate: cert,
                 paymentReceipt: reciept,
-                outletID: props.station._id,
-                organizationID: props.station.organisation
+                outletID: oneStationData?._id,
+                organizationID: oneStationData?.organisation
             }
            
             const url = config.BASE_URL + "/360-station/api/register-payment/createBase64";
@@ -72,6 +73,7 @@ const PaymentModal = (props) => {
             });
 
         }else{
+            if(oneStationData === null) return swal("Warning!", "Please create a station", "info");
             if(organisation === "") return swal("Warning!", "Organisation field cannot be empty", "info");
             if(description === "") return swal("Warning!", "Description field cannot be empty", "info");
             if(amount === "") return swal("Warning!", "Amount field cannot be empty", "info");
@@ -88,8 +90,8 @@ const PaymentModal = (props) => {
             formData.append("contactPerson", contact);
             formData.append("attachCertificate", cert);
             formData.append("paymentReceipt", reciept);
-            formData.append("outletID", props.station._id);
-            formData.append("organizationID", props.station.organisation);
+            formData.append("outletID", oneStationData?._id);
+            formData.append("organizationID", oneStationData?.organisation);
             const httpConfig = {
                 headers: {
                     "content-type": "multipart/form-data",
@@ -400,12 +402,6 @@ const inner = {
     width:'100%',
     height:'500px',
     overflowY: 'scroll'
-}
-
-
-const menu = {
-    fontSize:'14px',
-    fontFamily:'Nunito-Regular'
 }
 
 const photos = {

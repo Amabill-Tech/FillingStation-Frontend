@@ -7,12 +7,12 @@ import Modal from '@mui/material/Modal';
 import { ThreeDots } from  'react-loader-spinner';
 import swal from 'sweetalert';
 import '../../styles/lpo.scss';
-import LPOService from '../../services/lpo';
 import QueryService from '../../services/query';
 
 const QueryModal = (props) => {
     const [loading, setLoading] = useState(false);
     const user = useSelector(state => state.authReducer.user);
+    const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [employeeName, setEmployeeName] = useState('');
     const [queryTitle, setQueryTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -20,6 +20,7 @@ const QueryModal = (props) => {
     const handleClose = () => props.close(false);
 
     const submit = () => {
+        if(oneStationData === null) return swal("Warning!", "Please create a station", "info");
         if(employeeName === "") return swal("Warning!", "Employee name field cannot be empty", "info");
         if(queryTitle === "") return swal("Warning!", "Query title field cannot be empty", "info");
         if(description === "") return swal("Warning!", "Description field cannot be empty", "info");
@@ -30,7 +31,7 @@ const QueryModal = (props) => {
             employeeName: employeeName,
             queryTitle: queryTitle,
             description: description,
-            outletID: user.outletID,
+            outletID: oneStationData?.outletID,
             organisationID: user.organisationID,
         }
 

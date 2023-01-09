@@ -20,7 +20,7 @@ const AddTank = (props) => {
     const dispatch = useDispatch();
     const open = useSelector(state => state.outletReducer.openModal);
     const loadingSpinner = useSelector(state => state.authReducer.loadingSpinner);
-    const oneStation = useSelector(state => state.outletReducer.oneStation);
+    const oneStation = useSelector(state => state.outletReducer.adminOutlet);
 
     const handleClose = () => dispatch(closeModal(0));
     const [tankName, setTankName] = useState('');
@@ -39,6 +39,7 @@ const AddTank = (props) => {
         if(deadStockLevel === "") return swal("Warning!", "Dead stock level field cannot be empty", "info");
         if(calibrationDate === "") return swal("Warning!", "Calibration date field cannot be empty", "info");
         if(currentStock === "") return swal("Warning!", "Current stock field cannot be empty", "info");
+        if(oneStation === null) return swal("Warning!", "Please create a station", "info");
         dispatch(setSpinner());
 
         const today = new Date();

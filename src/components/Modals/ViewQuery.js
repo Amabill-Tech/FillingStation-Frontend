@@ -1,45 +1,11 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React from 'react';
 import close from '../../assets/close.png';
-import Button from '@mui/material/Button';
-import OutlinedInput from '@mui/material/OutlinedInput';
 import Modal from '@mui/material/Modal';
-import { ThreeDots } from  'react-loader-spinner';
-import swal from 'sweetalert';
 import '../../styles/lpo.scss';
-import QueryService from '../../services/query';
 
 const ViewQuery = (props) => {
-    const [loading, setLoading] = useState(false);
-    const user = useSelector(state => state.authReducer.user);
-    const [employeeName, setEmployeeName] = useState('');
-    const [queryTitle, setQueryTitle] = useState('');
-    const [description, setDescription] = useState('');
 
     const handleClose = () => props.close(false);
-
-    const submit = () => {
-        if(employeeName === "") return swal("Warning!", "Employee name field cannot be empty", "info");
-        if(queryTitle === "") return swal("Warning!", "Query title field cannot be empty", "info");
-        if(description === "") return swal("Warning!", "Description field cannot be empty", "info");
-
-        setLoading(true);
-
-        const payload = {
-            employeeName: employeeName,
-            queryTitle: queryTitle,
-            description: description,
-            organisationID: user._id,
-        }
-
-        QueryService.createQuery(payload).then((data) => {
-            swal("Success", "Query created successfully!", "success");
-        }).then(()=>{
-            setLoading(false);
-            props.refresh();
-            handleClose();
-        })
-    }
 
     return(
         <Modal

@@ -1,18 +1,12 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
 import close from '../../assets/close.png';
 import PMSCost from '../../assets/PMSCost.png';
 import AGOCost from '../../assets/AGOCost.png';
 import DPKCost from '../../assets/DPKCost.png';
-import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
-import createTank from '../../assets/createTank.png';
-import { ThreeDots } from  'react-loader-spinner';
 import '../../styles/cost.scss'
 
 const AddCostPrice = (props) => {
-
-    const dispatch = useDispatch();
 
     const handleClose = () => props.close(false);
 
