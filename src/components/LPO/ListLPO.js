@@ -1,7 +1,5 @@
 import { Button, MenuItem, OutlinedInput, Select } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
-import {DateRange, RateReview} from '@mui/icons-material';
-import { useLocation } from 'react-router-dom';
 import LPOService from '../../services/lpo';
 import { useDispatch, useSelector } from 'react-redux';
 import { createLPOSales, searchLPOList } from '../../store/actions/lpo';
@@ -16,25 +14,25 @@ const ListLPO = () => {
     const [skip, setSkip] = useState(0);
     const [limit, setLimit] = useState(15);
     const [total, setTotal] = useState(0);
-    const location = useLocation();
     const dispatch = useDispatch();
     const lpos = useSelector(state => state.lpoReducer.lpoSales);
+    const singleLPO = useSelector(state => state.lpoReducer.singleLPO);
     const [prints, setPrints] = useState(false);
 
     const getAllLPOData = useCallback(() => {
         const payload = {
             skip: skip * limit,
             limit: limit,
-            lpoID: location.state.state._id,
-            outletID: location.state.state.outletID, 
-            organisationID: location.state.state.organizationID
+            lpoID: singleLPO?._id,
+            outletID: singleLPO?.outletID, 
+            organisationID: singleLPO?.organizationID
         }
 
         LPOService.getAllLPOSales(payload).then((data) => {
             setTotal(data.lpo.count);
             dispatch(createLPOSales(data.lpo.lpo));
         });
-    }, [dispatch, location.state.state.organizationID, location.state.state.outletID, location.state.state._id, skip, limit]);
+    }, [skip, limit, singleLPO?._id, singleLPO?.outletID, singleLPO?.organizationID, dispatch]);
 
     useEffect(()=>{
         getAllLPOData();
@@ -44,9 +42,9 @@ const ListLPO = () => {
         const payload = {
             skip: skip * limit,
             limit: limit,
-            lpoID: location.state.state._id,
-            outletID: location.state.state.outletID, 
-            organisationID: location.state.state.organizationID
+            lpoID: singleLPO?._id,
+            outletID: singleLPO?.outletID, 
+            organisationID: singleLPO?.organizationID
         }
 
         LPOService.getAllLPOSales(payload).then((data) => {
@@ -93,8 +91,10 @@ const ListLPO = () => {
                             width:'100%',
                             height: '35px',  
                             background:'#EEF2F1', 
-                            border:'1px solid #777777',
                             fontSize:'12px',
+                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                border:'1px solid #777777',
+                            },
                         }} 
                         type='text'
                         onChange={searchList}
@@ -173,9 +173,10 @@ const ListLPO = () => {
                                     <div className='column'>{data.accountName}</div>
                                     <div className='column'>{data.truckNo}</div>
                                     <div className='column'>{data.productType}</div>
-                                    <div className='column'>{data.litre}</div>
+                                    <div className='column'>{data.lpoLitre}</div>
                                     <div className='column'>
-                                        <a href={config.BASE_URL + data.attachApproval} target="_blank" rel="noreferrer">Attachment</a>
+                                        {data.attachApproval !== "null" && <a href={config.BASE_URL + data.attachApproval} target="_blank" rel="noreferrer">Attachment</a>}
+                                        {data.attachApproval === "null" && <span>No attachment</span>}
                                     </div>
                                 </div> 
                             )

@@ -12,6 +12,7 @@ import LPOService from '../../services/lpo';
 const LPORateModal = (props) => {
     const [loading, setLoading] = useState(false);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
+    const singleLPO = useSelector(state => state.lpoReducer.singleLPO);
     const [pms, setPMS] = useState('');
     const [ago, setAGO] = useState('');
     const [dpk, setDPK] = useState('');
@@ -27,7 +28,7 @@ const LPORateModal = (props) => {
         setLoading(true);
 
         const payload = {
-            id: props.currentLPO._id,
+            id: singleLPO?._id,
             PMSRate: pms,
             AGORate: ago,
             DPKRate: dpk,

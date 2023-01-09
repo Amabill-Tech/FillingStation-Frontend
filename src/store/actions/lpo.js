@@ -2,7 +2,8 @@ import {
     CREATE_LPO, 
     CREATE_LPO_SALES,
     SEARCH_LPO_LIST,
-    SEARCH_LPO
+    SEARCH_LPO,
+    SINGLE_LPO
 } from '../types';
 
 export const createLPO = (params) => dispatch => {
@@ -19,4 +20,8 @@ export const searchLPOList = (params) => dispatch => {
 
 export const searchLPO = (params) => dispatch => {
     dispatch({ type: SEARCH_LPO, payload: params});
+}
+
+export const singleLPORecord = (params) => dispatch => {
+    dispatch({type: SINGLE_LPO, payload: params});
 }

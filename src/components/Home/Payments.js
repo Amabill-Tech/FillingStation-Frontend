@@ -20,6 +20,7 @@ const Payments = (props) => {
     const user = useSelector(state => state.authReducer.user);
     const bank = useSelector(state => state.recordPaymentReducer.bank);
     const pos = useSelector(state => state.recordPaymentReducer.pos);
+    console.log(pos, "done done")
     const dispatch = useDispatch();
     const [defaultState, setDefault] = useState(0);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
@@ -29,7 +30,6 @@ const Payments = (props) => {
     const [skip, setSkip] = useState(0);
     const [limit, setLimit] = useState(15);
     const [total1, setTotal1] = useState(0);
-    const [setTotal2] = useState(0);
     const [setPrints] = useState(false);
 
     const openModal = () => {
@@ -64,7 +64,6 @@ const Payments = (props) => {
                 })
         
                 RecordPaymentService.getPOSPayments(payload).then((data) => {
-                    setTotal2(data.pos.count);
                     dispatch(allPosPayment(data.pos.pos));
                 })
             });
@@ -86,13 +85,12 @@ const Payments = (props) => {
                 })
         
                 RecordPaymentService.getPOSPayments(payload).then((data) => {
-                    setTotal2(data.pos.count);
                     dispatch(allPosPayment(data.pos.pos));
                 })
             });
         }
         
-    }, [user._id, user.userType, user.outletID, dispatch, skip, limit, setTotal2]);
+    }, [user._id, user.userType, user.outletID, dispatch, skip, limit]);
 
     useEffect(()=>{
         getAllLPOData();
@@ -120,7 +118,6 @@ const Payments = (props) => {
         })
 
         RecordPaymentService.getPOSPayments(payload).then((data) => {
-            setTotal2(data.pos.count);
             dispatch(allPosPayment(data.pos.pos));
         })
     }
@@ -142,7 +139,6 @@ const Payments = (props) => {
         })
 
         RecordPaymentService.getPOSPayments(payload).then((data) => {
-            setTotal2(data.pos.count);
             dispatch(allPosPayment(data.pos.pos));
         })
     }
@@ -357,7 +353,8 @@ const Payments = (props) => {
                                             <div className='column'>{data.paymentDate}</div>
                                             <div className='column'>{data.createdAt.split('T')[0]}</div>
                                             <div className='column'>
-                                                <a href={config.BASE_URL + data.uploadSlip} target="_blank" rel="noreferrer">View Slip</a>
+                                                {data.uploadSlip !== "null" && <a href={config.BASE_URL + data.uploadSlip} target="_blank" rel="noreferrer">View Slip</a>}
+                                                {data.uploadSlip === "null" && <span>No attachment</span>}
                                             </div>
                                         </div>
                                     )
@@ -393,7 +390,8 @@ const Payments = (props) => {
                                                 <div className='column'>{data.paymentDate}</div>
                                                 <div className='column'>{data.createdAt.split('T')[0]}</div>
                                                 <div className='column'>
-                                                    <a href={config.BASE_URL + data.uploadSlip} target="_blank" rel="noreferrer">View Slip</a>
+                                                    {data.uploadSlip !== "null" && <a href={config.BASE_URL + data.uploadSlip} target="_blank" rel="noreferrer">View Slip</a>}
+                                                    {data.uploadSlip === "null" && <span>No attachment</span>}
                                                 </div>
                                             </div> 
                                         )

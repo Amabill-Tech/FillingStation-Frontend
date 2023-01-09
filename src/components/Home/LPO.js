@@ -6,7 +6,7 @@ import Button from '@mui/material/Button';
 import LPOModal from '../Modals/LPOModal';
 import LPOService from '../../services/lpo';
 import { useSelector } from 'react-redux';
-import { createLPO, searchLPO } from '../../store/actions/lpo';
+import { createLPO, searchLPO, singleLPORecord } from '../../store/actions/lpo';
 import { useDispatch } from 'react-redux';
 import OutletService from '../../services/outletService';
 import { adminOutlet, getAllStations } from '../../store/actions/outlet';
@@ -36,7 +36,6 @@ const LPO = (props) => {
     const [total, setTotal] = useState(0);
     const [prints, setPrints] = useState(false);
     const [priceModal, setPriceModal] = useState(false);
-    const [currentLPO, setCurrentLPO] = useState();
 
     const openModal = () => {
         setLpo(true);
@@ -160,19 +159,20 @@ const LPO = (props) => {
     }
 
     const openLPOSales = (data) => {
-        props.history.push('/home/lpo/list', {state: data});
+        dispatch(singleLPORecord(data));
+        props.history.push('/home/lpo/list');
     }
 
     const createPrice = (data) => {
+        dispatch(singleLPORecord(data));
         setPriceModal(true);
-        setCurrentLPO(data);
     }
 
     return(
         <React.Fragment>
             <div data-aos="zoom-in-down" className='paymentsCaontainer'>
                 {<LPOModal station = {oneStationData} open={lpo} close={setLpo} refresh={refresh}/>}
-                {<LPORateModal currentLPO={currentLPO} station ={oneStationData} open={priceModal} close={setPriceModal} refresh={refresh} />}
+                {<LPORateModal station ={oneStationData} open={priceModal} close={setPriceModal} refresh={refresh} />}
                 { prints && <LPOReport allOutlets={lpos} open={prints} close={setPrints}/>}
                 { props.activeRoute.split('/').length === 3 &&
                     <div className='inner-pay'>

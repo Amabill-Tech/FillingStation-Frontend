@@ -2,7 +2,8 @@ import {
     CREATE_LPO ,
     CREATE_LPO_SALES,
     SEARCH_LPO_LIST,
-    SEARCH_LPO
+    SEARCH_LPO,
+    SINGLE_LPO
 } from '../types'
 
 const initialState = {
@@ -10,6 +11,7 @@ const initialState = {
     lpoSales: [],
     searchData: [],
     searchData2: [],
+    singleLPO: {}
 }
 
 const lpoReducer = (state = initialState, action) => {
@@ -23,6 +25,13 @@ const lpoReducer = (state = initialState, action) => {
                 ...state,
                 lpo: payload,
                 searchData2: payload,
+            }
+        }
+
+        case SINGLE_LPO: {
+            return {
+                ...state,
+                singleLPO: payload
             }
         }
 

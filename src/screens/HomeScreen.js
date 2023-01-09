@@ -92,7 +92,7 @@ const HomeScreen = ({history}) => {
                 '/home/product-orders': 'Product Orders',
                 '/home/inc-orders': 'Incoming Orders',
                 '/home/supply': 'Supply',
-                '/home/regulatory': 'Regulatory Pay',
+                '/home/regulatory': 'Regulatory Payment',
                 '/home/tank': 'Tank Update',
                 '/home/hr': 'Human Resources',
                 '/home/hr/manager': 'Admin Department',

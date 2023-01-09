@@ -13,8 +13,8 @@ import '../../styles/lpo.scss';
 import axios from 'axios';
 import '../../styles/lpo.scss';
 import { certificate, reciepts } from '../../store/actions/payment';
-import Camera,  { IMAGE_TYPES } from 'react-html5-camera-photo';
 import config from '../../constants';
+import ReactCamera from './ReactCamera';
 
 const PaymentModal = (props) => {
     const [loading, setLoading] = useState(false);
@@ -44,6 +44,7 @@ const PaymentModal = (props) => {
             if(contact === "") return swal("Warning!", "Contact field cannot be empty", "info");
             if(typeof(cert) !== "string") return swal("Warning!", "Please select a certificate", "info");
             if(typeof(cert) !== "string") return swal("Warning!", "Please select a reciept", "info");
+            setLoading(true);
 
             const payload = {
                 organisationalName: organisation,
@@ -128,10 +129,6 @@ const PaymentModal = (props) => {
         dispatch(reciepts(file));
     }
 
-    const handleCloseCam = () => {
-        setOpen(false);
-    }
-
     const handleTakePhoto = (data) => {
         dispatch(certificate(data));
     }
@@ -140,64 +137,12 @@ const PaymentModal = (props) => {
         setOpen(true);
     }
 
-    const handleCloseCam2 = () => {
-        setOpen2(false);
-    }
-
     const handleTakePhoto2 = (data) => {
         dispatch(reciepts(data));
     }
 
     const takePicFromCamera2 = () => {
         setOpen2(true);
-    }
-
-    const CameraModal = (props) => {
-        return(
-            <Modal
-                open={props.open}
-                onClose={handleCloseCam}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-                sx={{ display:'flex', justifyContent:'center', alignItems:'center'}}
-            >
-               { open?
-                    <Camera
-                        onTakePhoto = { (dataUri) => { handleTakePhoto(dataUri); } }
-                        idealResolution = {{width: 200, height: 200}}
-                        imageCompression = {0.5}
-                        sizeFactor = {0.5}
-                        isFullscreen={false}
-                        imageType = {IMAGE_TYPES.PNG}
-                    />:
-                    <div></div>
-                }
-            </Modal>
-        )
-    }
-
-    const CameraModal2 = (props) => {
-        return(
-            <Modal
-                open={props.open}
-                onClose={handleCloseCam2}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-                sx={{ display:'flex', justifyContent:'center', alignItems:'center'}}
-            >
-                {open2?
-                    <Camera
-                        onTakePhoto = { (dataUri) => { handleTakePhoto2(dataUri); } }
-                        idealResolution = {{width: 200, height: 200}}
-                        imageCompression = {0.5}
-                        sizeFactor = {0.5}
-                        isFullscreen={false}
-                        imageType = {IMAGE_TYPES.PNG}
-                    />:
-                    <div></div>
-                }
-            </Modal>
-        )
     }
 
     return(
@@ -209,8 +154,8 @@ const PaymentModal = (props) => {
             sx={{display:'flex', justifyContent:'center', alignItems:'center'}}
         >
                 <div className='modalContainer2'>
-                    <CameraModal open={open} />
-                    <CameraModal2 open={open2} />
+                    <ReactCamera open={open} close={setOpen} setDataUri={handleTakePhoto} />
+                    <ReactCamera open={open2} close={setOpen2} setDataUri={handleTakePhoto2} />
                     <div className='inner'>
                         <div className='head'>
                             <div className='head-text'>Register Payment</div>

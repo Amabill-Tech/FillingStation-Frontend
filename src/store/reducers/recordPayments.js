@@ -37,6 +37,7 @@ const recordPaymentReducer = (state = initialState, action) => {
         }
 
         case POS_PAYMENT:{
+            console.log(payload, "from reducer")
             return {
                 ...state,
                 pos: payload,

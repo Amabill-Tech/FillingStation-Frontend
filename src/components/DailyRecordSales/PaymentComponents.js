@@ -72,7 +72,6 @@ const PaymentsComponents = (props) => {
         if(typeof(tellerID) === "object" && typeof(terminalID) === "object") return swal("Warning!", "Please add teller or terminal ID", "info");
         if(amountPaid === "") return swal("Warning!", "Amount field should not be empty", "info");
         if(paymentDate === "") return swal("Warning!", "Payment date field should not be empty", "info");
-        if(typeof(gall) === "object" && typeof(cam) === "object") return swal("Warning!", "Please select a file", "info");
 
         const payload = {
             bankName: bankName,
@@ -99,8 +98,6 @@ const PaymentsComponents = (props) => {
         setPaymentDate("");
         setCam(null);
         setGall(null);
-
-        console.log(payload, "jjjjjjjjjj")
     }
 
     return(

@@ -63,7 +63,6 @@ const ExpenseComponents = (props) => {
         if(expenseName === "") return swal("Warning!", "Expense name field should not be empty", "info");
         if(description === "") return swal("Warning!", "Description field should not be empty", "info");
         if(expenseAmount === "") return swal("Warning!", "Expense amount field should not be empty", "info");
-        if(typeof(gall) === "object" && typeof(cam) === "object") return swal("Warning!", "Please select a file", "info");
 
         const payload = {
             expenseName: expenseName,

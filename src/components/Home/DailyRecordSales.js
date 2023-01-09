@@ -27,7 +27,6 @@ import { useDispatch } from 'react-redux';
 import { passRecordSales } from '../../store/actions/dailySales';
 import { useSelector } from 'react-redux';
 import OutletService from '../../services/outletService';
-import { dailyRecordAdminStation, dailyRecordAllStations, dailyRecordFormStation } from '../../store/actions/dailyRecordSales';
 import IncomingService from '../../services/IncomingService';
 import { createIncomingOrder } from '../../store/actions/incomingOrder';
 import { adminOutlet, getAllOutletTanks, getAllPumps, getAllStations } from '../../store/actions/outlet';
@@ -202,7 +201,7 @@ const DailyRecordSales = () => {
         const list = new DoublyLinkedList();
         for(let i=7; i > 0 ; i--){
             list.addNode({
-                currentPage: i,
+                currentPage: String(i),
                 payload: [],
             });
         }
@@ -336,7 +335,7 @@ const DailyRecordSales = () => {
                     const list = new DoublyLinkedList();
                     for(let i=7; i > 0 ; i--){
                         list.addNode({
-                            currentPage: i,
+                            currentPage: String(i),
                             payload: [],
                         });
                     }

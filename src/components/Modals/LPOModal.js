@@ -40,6 +40,13 @@ const LPOModal = (props) => {
         if(DPKRate === "") return swal("Warning!", "DPK rate field cannot be empty", "info");
         if(contactPhone === "") return swal("Warning!", "Contact phone field cannot be empty", "info");
 
+        if(isNaN(Number(PMS))) return swal("Warning!", "PMS limit field is not a number", "info");
+        if(isNaN(Number(AGO))) return swal("Warning!", "AGO limit field is not a number", "info");
+        if(isNaN(Number(DPK))) return swal("Warning!", "DPK limit field is not a number", "info");
+        if(isNaN(Number(PMSRate))) return swal("Warning!", "PMS rate field is not a number", "info");
+        if(isNaN(Number(AGORate))) return swal("Warning!", "AGO rate field is not a number", "info");
+        if(isNaN(Number(DPKRate))) return swal("Warning!", "DPK rate field is not a number", "info");
+
         setLoading(true);
 
         const payload = {
@@ -87,7 +94,7 @@ const LPOModal = (props) => {
                                 <div className='head-text2'>Company Name</div>
                                 <input 
                                     style={{
-                                        width:'100%',
+                                        width:'96%',
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
@@ -104,7 +111,7 @@ const LPOModal = (props) => {
                                 <div className='head-text2'>Address</div>
                                 <input 
                                     style={{
-                                        width:'100%',
+                                        width:'96%',
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
@@ -121,7 +128,7 @@ const LPOModal = (props) => {
                                 <div className='head-text2'>Person of Contact</div>
                                 <input 
                                     style={{
-                                        width:'100%',
+                                        width:'96%',
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
@@ -138,7 +145,7 @@ const LPOModal = (props) => {
                                 <div className='head-text2'>Contact phone</div>
                                 <input 
                                     style={{
-                                        width:'100%',
+                                        width:'96%',
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
@@ -156,7 +163,7 @@ const LPOModal = (props) => {
                                 <div className='head-text2'>PMS Limit (Litres)</div>
                                 <input 
                                     style={{
-                                        width:'100%',
+                                        width:'96%',
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
@@ -165,7 +172,7 @@ const LPOModal = (props) => {
                                         outline:'none',
                                         paddingLeft:'5px',
                                     }} placeholder="" 
-                                    type="number"
+                                    type="text"
                                     onChange={e => setPMS(e.target.value)}
                                 />
                             </div>
@@ -174,7 +181,7 @@ const LPOModal = (props) => {
                                 <div className='head-text2'>AGO Limit (Litres)</div>
                                 <input 
                                     style={{
-                                        width:'100%',
+                                        width:'96%',
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
@@ -183,7 +190,7 @@ const LPOModal = (props) => {
                                         outline:'none',
                                         paddingLeft:'5px',
                                     }} placeholder="" 
-                                    type='number'
+                                    type='text'
                                     onChange={e => setAGO(e.target.value)}
                                 />
                             </div>
@@ -192,7 +199,7 @@ const LPOModal = (props) => {
                                 <div className='head-text2'>DPK Limit (Litres)</div>
                                 <input 
                                     style={{
-                                        width:'100%',
+                                        width:'96%',
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
@@ -201,7 +208,7 @@ const LPOModal = (props) => {
                                         outline:'none',
                                         paddingLeft:'5px',
                                     }} placeholder="" 
-                                    type='number'
+                                    type='text'
                                     onChange={e => setDPK(e.target.value)}
                                 />
                             </div>
@@ -210,7 +217,7 @@ const LPOModal = (props) => {
                                 <div className='head-text2'>PMS Rate (amount)</div>
                                 <input 
                                     style={{
-                                        width:'100%',
+                                        width:'96%',
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
@@ -219,7 +226,7 @@ const LPOModal = (props) => {
                                         outline:'none',
                                         paddingLeft:'5px',
                                     }} placeholder="" 
-                                    type="number"
+                                    type="text"
                                     onChange={e => setPMSRate(e.target.value)}
                                 />
                             </div>
@@ -228,7 +235,7 @@ const LPOModal = (props) => {
                                 <div className='head-text2'>AGO Rate(amount)</div>
                                 <input 
                                     style={{
-                                        width:'100%',
+                                        width:'96%',
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
@@ -237,7 +244,7 @@ const LPOModal = (props) => {
                                         outline:'none',
                                         paddingLeft:'5px',
                                     }} placeholder="" 
-                                    type="number"
+                                    type="text"
                                     onChange={e => setAGORate(e.target.value)}
                                 />
                             </div>
@@ -246,7 +253,7 @@ const LPOModal = (props) => {
                                 <div className='head-text2'>DPK Rate (amount)</div>
                                 <input 
                                     style={{
-                                        width:'100%',
+                                        width:'96%',
                                         height: '35px', 
                                         marginTop:'5px', 
                                         background:'#EEF2F1', 
@@ -255,7 +262,7 @@ const LPOModal = (props) => {
                                         outline:'none',
                                         paddingLeft:'5px',
                                     }} placeholder="" 
-                                    type='number'
+                                    type='text'
                                     onChange={e => setDPKRate(e.target.value)}
                                 />
                             </div>

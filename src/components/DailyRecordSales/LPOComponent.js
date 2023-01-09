@@ -145,7 +145,6 @@ const LPOComponent = (props) => {
         if(truckNo === "") return swal("Warning!", "Truck no field cannot be empty", "info");
         if(quantity === "") return swal("Warning!", "Quantity field cannot be empty", "info");
         if(productType === "") return swal("Warning!", "Product type field cannot be empty", "info");
-        if(typeof(gall) === "object" && typeof(cam) === "object") return swal("Warning!", "Please select a file", "info");
 
         const tank = tankList.filter(data => data._id === dispensedPump.hostTank)[0];
 
