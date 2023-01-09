@@ -355,7 +355,7 @@ const PumpUpdateComponent = (props) => {
                         return(
                             <div style={{height:'300px'}} key={index} className='item'>
                                 <img style={{width:'55px', height:'60px', marginTop:'10px'}} src={pump1}  alt="icon"/>
-                                <div className='pop'>{item.pumpName}</div>
+                                <div className='pop'>{item.pumpName} ({item.hostTankName})</div>
                                 <div style={{marginTop:'10px'}}  className='label'>Date: {item.updatedAt.split('T')[0]}</div>
                                 <div>
                                     <div style={{marginTop:'10px'}} className='label'>Opening meter (Litres)</div>
@@ -377,7 +377,7 @@ const PumpUpdateComponent = (props) => {
                         return(
                             <div style={{height:'300px'}} key={index} className='item'>
                                 <img style={{width:'55px', height:'60px', marginTop:'10px'}} src={pump1}  alt="icon"/>
-                                <div className='pop'>{item.pumpName}</div>
+                                <div className='pop'>{item.pumpName} ({item.hostTankName})</div>
                                 <div style={{marginTop:'10px'}}  className='label'>Date: {item.updatedAt.split('T')[0]}</div>
                                 <div>
                                     <div style={{marginTop:'10px'}} className='label'>Opening meter (Litres)</div>
@@ -398,7 +398,7 @@ const PumpUpdateComponent = (props) => {
                         return(
                             <div style={{height:'300px'}} key={index} className='item'>
                                 <img style={{width:'55px', height:'60px', marginTop:'10px'}} src={pump1}  alt="icon"/>
-                                <div className='pop'>{item.pumpName}</div>
+                                <div className='pop'>{item.pumpName} ({item.hostTankName})</div>
                                 <div style={{marginTop:'10px'}}  className='label'>Date: {item.updatedAt.split('T')[0]}</div>
                                 <div>
                                     <div style={{marginTop:'10px'}} className='label'>Opening meter (Litres)</div>

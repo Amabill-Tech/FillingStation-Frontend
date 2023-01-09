@@ -66,7 +66,10 @@ function DoublyLinkedList(){
     this.currentDate = null;
     this.size = 0;
     this.page = 1;
-    this.correctAnswers = [];
+    this.incoming = [];
+    this.tanks = [];
+    this.pumps = [];
+    this.lpo = [];
 
     this.isEmpty = function(){
         return this.size === 0;
@@ -191,10 +194,12 @@ const DailyRecordSales = () => {
     const user = useSelector(state => state.authReducer.user);
     const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
     const allOutlets = useSelector(state => state.outletReducer.allOutlets);
+    const tankList = useSelector(state => state.outletReducer.tankList);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
     const [defaultState, setDefault] = useState(0);
     const [open, setOpen] = useState(false);
     const [currentDate, setCurrentDate] = useState(date2);
+    console.log(tankList, "updates are here")
 
     useEffect(()=>{
 
@@ -205,7 +210,6 @@ const DailyRecordSales = () => {
                 payload: [],
             });
         }
-        
         dispatch(passRecordSales(list));
 
         if(user.userType === "superAdmin" || user.userType === "admin"){
@@ -227,10 +231,12 @@ const DailyRecordSales = () => {
                 }
         
                 IncomingService.getAllIncoming3(payload).then((data) => {
+                    list.incoming = data.incoming.incoming;
                     dispatch(createIncomingOrder(data.incoming.incoming));
                 });
 
                 OutletService.getAllStationPumps(payload).then(data => {
+                    list.pumps = data;
                     dispatch(getAllPumps(data));
                 });
 
@@ -239,13 +245,17 @@ const DailyRecordSales = () => {
                         const newData = {...data, label: data.tankName, value: data._id};
                         return newData;
                     });
+                    list.tanks = outletTanks;
                     dispatch(getAllOutletTanks(outletTanks));
                 });
 
                 LPOService.getAllLPO(payload).then((data) => {
+                    list.lpo = data.lpo.lpo;
                     dispatch(createLPO(data.lpo.lpo));
                 });
             });
+
+            dispatch(passRecordSales(list));
         }else{
             OutletService.getOneOutletStation({outletID: user.outletID}).then(data => {
                 dispatch(adminOutlet(data.station));
@@ -257,10 +267,12 @@ const DailyRecordSales = () => {
                 }
         
                 IncomingService.getAllIncoming3(payload).then((data) => {
+                    list.incoming = data.incoming.incoming;
                     dispatch(createIncomingOrder(data.incoming.incoming));
                 });
 
                 OutletService.getAllStationPumps(payload).then(data => {
+                    list.pumps = data;
                     dispatch(getAllPumps(data));
                 });
 
@@ -269,18 +281,51 @@ const DailyRecordSales = () => {
                         const newData = {...data, label: data.tankName, value: data._id};
                         return newData;
                     });
+                    list.tanks = outletTanks;
                     dispatch(getAllOutletTanks(outletTanks));
                 });
 
                 LPOService.getAllLPO(payload).then((data) => {
+                    list.lpo = data.lpo.lpo;
                     dispatch(createLPO(data.lpo.lpo));
                 });
             });
+
+            dispatch(passRecordSales(list));
         }
     },[dispatch, user._id, user.outletID, user.userType]);
 
     const nextQuestion = () => {
         let newList = {...linkedData}
+        
+        if(newList.head.data.currentPage === "1"){
+            // update tank locally
+            const fakeTankList = [...tankList];
+            for(let tank of newList.head.data.payload){
+                const findID = fakeTankList.findIndex(data => data._id === tank._id);
+                fakeTankList[findID] = {...fakeTankList[findID], currentLevel: Number(fakeTankList[findID].currentLevel) - Number(tank.sales)};
+            }
+            dispatch(getAllOutletTanks(fakeTankList));
+
+        }else if(newList.head.data.currentPage === "2"){
+            // update tank locally
+            const fakeTankList = [...tankList];
+            for(let tank of newList.head.data.payload){
+                const findID = fakeTankList.findIndex(data => data._id === tank._id);
+                fakeTankList[findID] = {...fakeTankList[findID], currentLevel: Number(fakeTankList[findID].currentLevel) + Number(tank.RTlitre)};
+            }
+            dispatch(getAllOutletTanks(fakeTankList));
+
+        }else if(newList.head.data.currentPage === "3"){
+            // update tank locally
+            const fakeTankList = [...tankList];
+            for(let lpo of newList.head.data.payload){
+                const findID = fakeTankList.findIndex(data => data._id === lpo.tank._id);
+                fakeTankList[findID] = {...fakeTankList[findID], currentLevel: Number(fakeTankList[findID].currentLevel) - Number(lpo.lpoLitre)};
+            }
+            dispatch(getAllOutletTanks(fakeTankList));
+        }
+
         if(newList.head.next !== null){
             newList.nextPage();
             newList.page++;

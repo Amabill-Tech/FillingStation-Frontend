@@ -56,6 +56,14 @@ const AddPump = (props) => {
         setCurrentTank(item);
     }
 
+    const changeType = (data) => {
+        setProduct(data);
+    }
+
+    const getTanks = () => {
+        return props.allTank.filter(data => data.productType === productType);
+    }
+
     return(
         <Modal
             open={props.open}
@@ -75,15 +83,15 @@ const AddPump = (props) => {
                         <div className='head-text2'>Choose product type</div>
                         <div className='radio'>
                             <div className='rad-item'>
-                                <Radio checked={productType === 'PMS'? true: false} />
+                                <Radio onClick={()=>{changeType("PMS")}} checked={productType === 'PMS'? true: false} />
                                 <div className='head-text2' style={{marginRight:'5px'}}>PMS</div>
                             </div>
                             <div className='rad-item'>
-                                <Radio checked={productType === 'AGO'? true: false} />
+                                <Radio onClick={()=>{changeType("AGO")}} checked={productType === 'AGO'? true: false} />
                                 <div className='head-text2' style={{marginRight:'5px'}}>AGO</div>
                             </div>
                             <div className='rad-item'>
-                                <Radio checked={productType === 'DPK'? true: false} />
+                                <Radio onClick={()=>{changeType("DPK")}} checked={productType === 'DPK'? true: false} />
                                 <div className='head-text2' style={{marginRight:'5px'}}>DPK</div>
                             </div>
                         </div>
@@ -120,9 +128,9 @@ const AddPump = (props) => {
                             }}
                         >
                             {
-                                props.allTank.length === 0?
+                                getTanks().length === 0?
                                 <MenuItem style={menu} value={0}>No tanks available</MenuItem>:
-                                props.allTank.map((item, index) => {
+                                getTanks().map((item, index) => {
                                     return(
                                         <MenuItem onClick={()=>{selectMenu(index, item)}} style={menu} value={index}>{item.tankName}</MenuItem>
                                     )

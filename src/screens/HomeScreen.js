@@ -86,7 +86,7 @@ const HomeScreen = ({history}) => {
                 '/home/outlets/list': 'Tank Stock Levels',
                 '/home/daily-record-sales': 'Record Sales ',
                 '/home/analysis': 'Analysis',
-                '/home/lpo': 'LPO',
+                '/home/lpo': 'Corporate Customer',
                 '/home/dashEmp': '← Employee List',
                 '/home/lpo/list': 'LPO',
                 '/home/product-orders': 'Product Orders',
@@ -201,7 +201,7 @@ const HomeScreen = ({history}) => {
                     <SideItems marginT={"90px"} link={'/home/outlets'} name={"My Stations"} icon={outlet2} icon2={outlet} />
                     <SideItems marginT={"135px"} link={'/home/daily-record-sales'} name={"Record Sales"} icon={recordSales2} icon2={recordSales} />
                     <SideItems marginT={"180px"} link={'/home/analysis'} name={"Analysis"} icon={analysis} icon2={analysis} />
-                    <SideItems marginT={"225px"} link={'/home/lpo'} name={"LPO"} icon={lpo} icon2={lpo} />
+                    <SideItems marginT={"225px"} link={'/home/lpo'} name={"Corporate Customer"} icon={lpo} icon2={lpo} />
                     <SideItems marginT={"270px"} link={'/home/product-orders'} name={"Product Orders"} icon={productOrders2} icon2={productOrders} />
                     <SideItems marginT={"315px"} link={'/home/inc-orders'} name={"Incoming Orders"} icon={incOrders2} icon2={incOrders} />
                     <SideItems marginT={"360px"} link={'/home/supply'} name={"Supply"} icon={expenses2} icon2={expenses} />
@@ -224,7 +224,7 @@ const HomeScreen = ({history}) => {
                         <SideItems marginT={"90px"} link={'/home/outlets'} name={"My Stations"} icon={outlet2} icon2={outlet} />
                         <SideItems marginT={"135px"} link={'/home/daily-record-sales'} name={"Record Sales"} icon={recordSales2} icon2={recordSales} />
                         <SideItems marginT={"180px"} link={'/home/analysis'} name={"Analysis"} icon={analysis} icon2={analysis} />
-                        <SideItems marginT={"225px"} link={'/home/lpo'} name={"LPO"} icon={lpo} icon2={lpo} />
+                        <SideItems marginT={"225px"} link={'/home/lpo'} name={"Corporate Customer"} icon={lpo} icon2={lpo} />
                         <SideItems marginT={"270px"} link={'/home/product-orders'} name={"Product Orders"} icon={productOrders2} icon2={productOrders} />
                         <SideItems marginT={"315px"} link={'/home/inc-orders'} name={"Incoming Orders"} icon={incOrders2} icon2={incOrders} />
                         <SideItems marginT={"360px"} link={'/home/supply'} name={"Supply"} icon={expenses2} icon2={expenses} />

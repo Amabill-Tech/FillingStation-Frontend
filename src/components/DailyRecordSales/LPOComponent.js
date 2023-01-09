@@ -147,6 +147,7 @@ const LPOComponent = (props) => {
         if(productType === "") return swal("Warning!", "Product type field cannot be empty", "info");
 
         const tank = tankList.filter(data => data._id === dispensedPump.hostTank)[0];
+        if(Number(tank.currentLevel) < Number(quantity)) return swal("Warning!", "Tank capacity exceeded (current level is "+ tank.currentLevel +" Ltrs)", "info");
 
         const payload = {
             accountName: dispenseLpo.companyName,

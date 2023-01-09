@@ -6,7 +6,7 @@ import Switch from '@mui/material/Switch';
 import { styled } from '@mui/material/styles';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Button from '@mui/material/Button';
-import { openModal, getAllOutletTanks } from '../../store/actions/outlet';
+import { openModal, getAllOutletTanks, getOneTank } from '../../store/actions/outlet';
 import { useDispatch } from 'react-redux';
 import AddTank from '../Modals/AddTankModal';
 import { useSelector } from 'react-redux';
@@ -22,7 +22,6 @@ const Tank = (props) => {
     const [DPKTank, setDPKTank] = useState([]);
     const [activeTank, setActiveTank] = useState([]);
     const [inActiveTank, setInactiveTank] = useState([]);
-    const [currentTank, setCurrentTank] = useState({});
     const open = useSelector(state => state.outletReducer.openModal);
     const tankList = useSelector(state => state.outletReducer.tankList);
     const oneStation = useSelector(state => state.outletReducer.adminOutlet);
@@ -106,7 +105,7 @@ const Tank = (props) => {
     }
 
     const addNewPump = (data) => {
-        setCurrentTank(data);
+        dispatch(getOneTank(data));
         dispatch(openModal(3));
     }
 
@@ -375,7 +374,7 @@ const Tank = (props) => {
     return(
         <div className='tanksContainer'>
             { open ===2 && <AddTank tabs={tabs} data={oneStation?.state} refresh={getAllStationTanks} outRefresh={props.refresh} /> }
-            { open ===3 && <AddPump tabs={tabs} currentTank={currentTank} allTank={tankList} outRefresh={props.refresh} /> }
+            { open ===3 && <AddPump tabs={tabs} allTank={tankList} outRefresh={props.refresh} /> }
             <div className='pump-container'>
                 <div className='head'>
                     <div className='tabs'>

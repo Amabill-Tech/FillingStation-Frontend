@@ -29,6 +29,7 @@ const PaymentModal = (props) => {
     const [contact, setContact] = useState('');
     const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
+    const [phone, setPhone] = useState("");
 
     const attach = useRef();
     const attach2 = useRef();
@@ -42,6 +43,7 @@ const PaymentModal = (props) => {
             if(description === "") return swal("Warning!", "Description field cannot be empty", "info");
             if(amount === "") return swal("Warning!", "Amount field cannot be empty", "info");
             if(contact === "") return swal("Warning!", "Contact field cannot be empty", "info");
+            if(phone === "") return swal("Warning!", "Contact phone field cannot be empty", "info");
             if(typeof(cert) !== "string") return swal("Warning!", "Please select a certificate", "info");
             if(typeof(cert) !== "string") return swal("Warning!", "Please select a reciept", "info");
             setLoading(true);
@@ -51,6 +53,7 @@ const PaymentModal = (props) => {
                 description: description,
                 amount: amount,
                 contactPerson: contact,
+                phone: phone,
                 attachCertificate: cert,
                 paymentReceipt: reciept,
                 outletID: oneStationData?._id,
@@ -79,6 +82,7 @@ const PaymentModal = (props) => {
             if(description === "") return swal("Warning!", "Description field cannot be empty", "info");
             if(amount === "") return swal("Warning!", "Amount field cannot be empty", "info");
             if(contact === "") return swal("Warning!", "Contact field cannot be empty", "info");
+            if(phone === "") return swal("Warning!", "Contact phone field cannot be empty", "info");
             if(typeof(cert.name) === "undefined") return swal("Warning!", "Please select a certificate", "info");
             if(typeof(reciept.name) === "undefined") return swal("Warning!", "Please select a reciept", "info");
 
@@ -89,6 +93,7 @@ const PaymentModal = (props) => {
             formData.append("description", description);
             formData.append("amount", amount);
             formData.append("contactPerson", contact);
+            formData.append("phone", phone);
             formData.append("attachCertificate", cert);
             formData.append("paymentReceipt", reciept);
             formData.append("outletID", oneStationData?._id);
@@ -225,6 +230,21 @@ const PaymentModal = (props) => {
                                         fontSize:'12px',
                                     }} placeholder="" 
                                     onChange={e => setContact(e.target.value)}
+                                />
+                            </div>
+
+                            <div className='inputs'>
+                                <div className='head-text2'>Contact phone</div>
+                                <OutlinedInput 
+                                    sx={{
+                                        width:'100%',
+                                        height: '35px', 
+                                        marginTop:'5px', 
+                                        background:'#EEF2F1', 
+                                        border:'1px solid #777777',
+                                        fontSize:'12px',
+                                    }} placeholder="" 
+                                    onChange={e => setPhone(e.target.value)}
                                 />
                             </div>
 
