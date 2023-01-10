@@ -45,7 +45,7 @@ const Register = (props) => {
         const data = {
             firstname: firstname,
             lastname: lastname,
-            email: email,
+            email: email.toLowerCase(),
             country: country,
             timezone: timezone,
             countryCode: countryCode,

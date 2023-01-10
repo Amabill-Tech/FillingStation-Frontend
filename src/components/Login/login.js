@@ -59,7 +59,7 @@ const Login = (props) => {
         dispatch(setSpinner());
 
         const data = {
-            email: email,
+            email: email.toLowerCase(),
             password: password
         }
 

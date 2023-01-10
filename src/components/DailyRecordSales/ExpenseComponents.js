@@ -19,6 +19,7 @@ const ExpenseComponents = (props) => {
     const dispatch = useDispatch();
     const linkedData = useSelector(state => state.dailySalesReducer.linkedData);
     const oneStationData = useSelector(state => state.outletReducer.adminOutlet);
+    const [reg, setReg] = useState(false);
 
     // payload data
     const [expenseName, setExpenseName] = useState("");
@@ -65,7 +66,7 @@ const ExpenseComponents = (props) => {
         if(expenseAmount === "") return swal("Warning!", "Expense amount field should not be empty", "info");
 
         const payload = {
-            expenseName: expenseName,
+            expenseName: reg? "Regulatory payment": expenseName,
             description: description,
             expenseAmount: expenseAmount,
             camera: cam,
@@ -86,6 +87,10 @@ const ExpenseComponents = (props) => {
 
     }
 
+    const handleChange = (e) => {
+        setReg(e.target.checked);
+    }
+
     return(
         <div style={{width:'98%', display:'flex', flexDirection: 'column', alignItems:'center'}}>
             <ReactCamera open={open} close={setOpen} setDataUri={setCam} />
@@ -93,24 +98,33 @@ const ExpenseComponents = (props) => {
             <div className='inner-body'>
                 <div className='left-supply'>
 
+                    <div style={checkIt}>
+                        <input
+                            onChange={handleChange}
+                            type={'checkbox'}
+                            style={{width:'20px', height:'20px', marginRight:'10px'}}
+                        />
+                        <span style={{fontSize:'14px', fontWeight:'bold', fontFamily:'Nunito-Regular'}}>Regulatory Payment</span>
+                    </div>
+
                     <div className='single-form'>
                         <div className='input-d'>
                             <span>Expense Name</span>
-                            <input value={expenseName} onChange={e => setExpenseName(e.target.value)} className='text-field' type={'text'} />
+                            <input style={{width:'98%'}} value={expenseName} onChange={e => setExpenseName(e.target.value)} className='text-field' type={'text'} />
                         </div>
                     </div>
 
                     <div className='single-form'>
                         <div className='input-d'>
                             <span>Description</span>
-                            <textarea value={description} onChange={e => setDescription(e.target.value)} style={{height:'100px'}} className='text-field' type={'text'}> </textarea>
+                            <textarea value={description} onChange={e => setDescription(e.target.value)} style={{width:'98%', height:'100px'}} className='text-field' type={'text'}> </textarea>
                         </div>
                     </div>
 
                     <div className='single-form'>
                         <div className='input-d'>
                             <span>Expense Amount</span>
-                            <input value={expenseAmount} onChange={e => setExpenseAmount(e.target.value)} className='text-field' type={'text'} />
+                            <input style={{width:'98%'}} value={expenseAmount} onChange={e => setExpenseAmount(e.target.value)} className='text-field' type={'text'} />
                         </div>
                     </div>
 
@@ -210,6 +224,14 @@ const ExpenseComponents = (props) => {
             </div>
         </div>
     )
+}
+
+const checkIt = {
+    width:'100%',
+    display:'flex',
+    flexDirection:'row',
+    justifyContent:'flex-start',
+    alignItems:'center'
 }
 
 const add = {
