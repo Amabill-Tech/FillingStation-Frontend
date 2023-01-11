@@ -39,8 +39,6 @@ import { BallTriangle } from 'react-loader-spinner';
 import { useState } from 'react';
 import { useRef } from 'react';
 import calendar from '../../assets/calendar.png';
-import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
-import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 
 const mediaMatch = window.matchMedia('(max-width: 450px)');
 
@@ -542,7 +540,7 @@ const DailyRecordSales = () => {
                 </Stack>
             </div>
 
-            <div style={text}>{steps[linkedData.page - 1]}</div>
+            <div className='ttx' style={text}>{steps[linkedData.page - 1]}</div>
 
             <div className="mob">
                 <IconButton>
@@ -695,7 +693,7 @@ const menu = {
 }
 
 const selectStyle2 = {
-    width: mediaMatch? '170px': '200px', 
+    width: mediaMatch.matches? '170px': '200px', 
     height:'35px', 
     borderRadius:'5px',
     background: '#F2F1F1B2',
@@ -715,7 +713,7 @@ const text = {
     fontSize:'14px',
     marginTop: '30px',
     marginLeft:'4%',
-    fontWeight:'bold'
+    fontWeight:'bold',
 }
 
 export default DailyRecordSales;

@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
 import { passRecordSales } from "../../store/actions/dailySales";
 
+const mediaMatch = window.matchMedia('(max-width: 450px)');
+
 const ReturnToTank = (props) => {
 
     const [productType, setProductType] = useState("PMS");
@@ -350,16 +352,16 @@ const ReturnToTank = (props) => {
                     productType === "PMS"?
                     pms.map((item, index) => {
                         return(
-                            <div style={{height:'230px'}} key={index} className='item'>
+                            <div style={{width: mediaMatch.matches? '100%': '300px', height:'230px'}} key={index} className='item'>
                                 <img style={{width:'55px', height:'60px', marginTop:'10px'}} src={pump1}  alt="icon"/>
                                 <div className='pop'>{item.pumpName}</div>
                                 <div style={{marginTop:'10px'}}  className='label'>Date: {item.updatedAt.split('T')[0]}</div>
-                                <div>
+                                <div style={{width: '94%',}}>
 
                                     <div style={{marginTop:'10px'}} className='label'>Quantity (Litres)</div>
                                     <input 
                                         onChange={e => setTotalizer(e, item)} 
-                                        style={{...imps, border: (Number(item.totalizerReading) > Number(item.newTotalizer)) && item.newTotalizer !== '0'? '1px solid red': '1px solid black'}} 
+                                        style={{...imps, width:'94%', border: (Number(item.totalizerReading) > Number(item.newTotalizer)) && item.newTotalizer !== '0'? '1px solid red': '1px solid black'}} 
                                         type="number" 
                                         defaultValue={"0"}
                                     />
@@ -370,17 +372,17 @@ const ReturnToTank = (props) => {
                     productType === "AGO"?
                     ago.map((item, index) => {
                         return(
-                            <div style={{height:'230px'}} key={index} className='item'>
+                            <div style={{width: mediaMatch.matches? '100%': '300px', height:'230px'}} key={index} className='item'>
                                 <img style={{width:'55px', height:'60px', marginTop:'10px'}} src={pump1}  alt="icon"/>
                                 <div className='pop'>{item.pumpName}</div>
                                 <div style={{marginTop:'10px'}}  className='label'>Date: {item.updatedAt.split('T')[0]}</div>
-                                <div>
+                                <div style={{width: '94%',}}>
 
                                     <div style={{marginTop:'10px'}} className='label'>Quantity (Litres)</div>
                                     <input 
                                         onChange={e => setTotalizer(e, item)} 
                                         defaultValue={"0"}
-                                        style={{...imps, border: (Number(item.totalizerReading) > Number(item.newTotalizer)) && item.newTotalizer !== '0'? '1px solid red': '1px solid black'}} 
+                                        style={{...imps, width: '94%', border: (Number(item.totalizerReading) > Number(item.newTotalizer)) && item.newTotalizer !== '0'? '1px solid red': '1px solid black'}} 
                                         type="number" 
                                     />
                                 </div>
@@ -389,17 +391,17 @@ const ReturnToTank = (props) => {
                     }):
                     dpk.map((item, index) => {
                         return(
-                            <div style={{height:'230px'}} key={index} className='item'>
+                            <div style={{width: mediaMatch.matches? '100%': '300px', height:'230px'}} key={index} className='item'>
                                 <img style={{width:'55px', height:'60px', marginTop:'10px'}} src={pump1}  alt="icon"/>
                                 <div className='pop'>{item.pumpName}</div>
                                 <div style={{marginTop:'10px'}}  className='label'>Date: {item.updatedAt.split('T')[0]}</div>
-                                <div>
+                                <div style={{width:'94%',}}>
 
                                     <div style={{marginTop:'10px'}} className='label'>Quantity (Litres)</div>
                                     <input 
                                         onChange={e => setTotalizer(e, item)} 
                                         defaultValue={"0"}
-                                        style={{...imps, border: (Number(item.totalizerReading) > Number(item.newTotalizer)) && item.newTotalizer !== '0'? '1px solid red': '1px solid black'}} 
+                                        style={{...imps, width: '94%', border: (Number(item.totalizerReading) > Number(item.newTotalizer)) && item.newTotalizer !== '0'? '1px solid red': '1px solid black'}} 
                                         type="number" 
                                     />
                                 </div>

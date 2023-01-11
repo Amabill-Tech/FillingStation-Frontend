@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
 import { passRecordSales } from "../../store/actions/dailySales";
 
+const mediaMatch = window.matchMedia('(max-width: 500px)');
+
 const PumpUpdateComponent = (props) => {
 
     const [productType, setProductType] = useState("PMS");
@@ -353,18 +355,18 @@ const PumpUpdateComponent = (props) => {
                     productType === "PMS"?
                     pms.map((item, index) => {
                         return(
-                            <div style={{height:'300px'}} key={index} className='item'>
+                            <div style={{width: mediaMatch.matches? '100%': '300px', height:'300px'}} key={index} className='item'>
                                 <img style={{width:'55px', height:'60px', marginTop:'10px'}} src={pump1}  alt="icon"/>
                                 <div className='pop'>{item.pumpName} ({item.hostTankName})</div>
                                 <div style={{marginTop:'10px'}}  className='label'>Date: {item.updatedAt.split('T')[0]}</div>
-                                <div>
+                                <div style={{width:'94%'}}>
                                     <div style={{marginTop:'10px'}} className='label'>Opening meter (Litres)</div>
-                                    <input disabled={true} defaultValue={item.totalizerReading} style={imps} type="text" />
+                                    <input disabled={true} defaultValue={item.totalizerReading} style={{...imps, width: "94%"}} type="text" />
 
                                     <div style={{marginTop:'10px'}} className='label'>Closing meter (Litres)</div>
                                     <input 
                                         onChange={e => setTotalizer(e, item)} 
-                                        style={{...imps, border: (Number(item.totalizerReading) > Number(item.newTotalizer)) && item.newTotalizer !== '0'? '1px solid red': '1px solid black'}} 
+                                        style={{...imps, width:'94%', border: (Number(item.totalizerReading) > Number(item.newTotalizer)) && item.newTotalizer !== '0'? '1px solid red': '1px solid black'}} 
                                         type="number" 
                                         value={item.newTotalizer}
                                     />
@@ -375,19 +377,19 @@ const PumpUpdateComponent = (props) => {
                     productType === "AGO"?
                     ago.map((item, index) => {
                         return(
-                            <div style={{height:'300px'}} key={index} className='item'>
+                            <div style={{width: mediaMatch.matches? '100%': '300px', height:'300px'}} key={index} className='item'>
                                 <img style={{width:'55px', height:'60px', marginTop:'10px'}} src={pump1}  alt="icon"/>
                                 <div className='pop'>{item.pumpName} ({item.hostTankName})</div>
                                 <div style={{marginTop:'10px'}}  className='label'>Date: {item.updatedAt.split('T')[0]}</div>
-                                <div>
-                                    <div style={{marginTop:'10px'}} className='label'>Opening meter (Litres)</div>
+                                <div style={{width:'94%',}}>
+                                    <div style={{ marginTop:'10px'}} className='label'>Opening meter (Litres)</div>
                                     <input disabled={true} defaultValue={item.totalizerReading} style={imps} type="text" />
 
-                                    <div style={{marginTop:'10px'}} className='label'>Closing meter (Litres)</div>
+                                    <div style={{width:'94%', marginTop:'10px'}} className='label'>Closing meter (Litres)</div>
                                     <input 
                                         onChange={e => setTotalizer(e, item)} 
                                         value={item.newTotalizer}
-                                        style={{...imps, border: (Number(item.totalizerReading) > Number(item.newTotalizer)) && item.newTotalizer !== '0'? '1px solid red': '1px solid black'}} 
+                                        style={{...imps, width:'94%', border: (Number(item.totalizerReading) > Number(item.newTotalizer)) && item.newTotalizer !== '0'? '1px solid red': '1px solid black'}} 
                                         type="number" 
                                     />
                                 </div>
@@ -396,19 +398,19 @@ const PumpUpdateComponent = (props) => {
                     }):
                     dpk.map((item, index) => {
                         return(
-                            <div style={{height:'300px'}} key={index} className='item'>
+                            <div style={{width: mediaMatch.matches? '100%': '300px', height:'300px'}} key={index} className='item'>
                                 <img style={{width:'55px', height:'60px', marginTop:'10px'}} src={pump1}  alt="icon"/>
                                 <div className='pop'>{item.pumpName} ({item.hostTankName})</div>
                                 <div style={{marginTop:'10px'}}  className='label'>Date: {item.updatedAt.split('T')[0]}</div>
-                                <div>
+                                <div style={{width: '94%',}}>
                                     <div style={{marginTop:'10px'}} className='label'>Opening meter (Litres)</div>
-                                    <input disabled={true} defaultValue={item.totalizerReading} style={imps} type="text" />
+                                    <input disabled={true} defaultValue={item.totalizerReading} style={{...imps, width: '94%',}} type="text" />
 
                                     <div style={{marginTop:'10px'}} className='label'>Closing meter (Litres)</div>
                                     <input 
                                         onChange={e => setTotalizer(e, item)} 
                                         value={item.newTotalizer}
-                                        style={{...imps, border: (Number(item.totalizerReading) > Number(item.newTotalizer)) && item.newTotalizer !== '0'? '1px solid red': '1px solid black'}} 
+                                        style={{...imps, width: '94%', border: (Number(item.totalizerReading) > Number(item.newTotalizer)) && item.newTotalizer !== '0'? '1px solid red': '1px solid black'}} 
                                         type="number" 
                                     />
                                 </div>

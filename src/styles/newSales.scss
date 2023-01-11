@@ -4,6 +4,10 @@
     flex-direction: column;
     align-items: center;
 
+    .ttx{
+        display: none;
+    }
+
     .form-body{
         width: 90%;
         margin-top: 30px;
@@ -377,6 +381,15 @@
                 .right{
                     width: 100%;
                 }
+
+                .left-supply{
+                    width: 100%;
+                }
+
+                .right-supply{
+                    width: 100%;
+                    margin-top: 30px;
+                }
             }
         }
     }
@@ -396,6 +409,12 @@
 }
 
 @media (max-width: 500px){
+    .salesRecordStyle{
+        .ttx{
+            display: block;
+        }
+    }
+
     .steps{
         display: none;
     }
