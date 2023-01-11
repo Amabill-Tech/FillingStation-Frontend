@@ -31,97 +31,101 @@
                 width: 100%;
                 margin-top: 10px;
 
-                .table-cont{
+                .contains{
                     width: 100%;
-                    height: auto;
-                    display: flex;
-                    flex-direction: row;
-                    justify-content: space-between;
 
-                    .column-head1{
-                        width: 20%;
-                        height: 100%;
-                        border-radius: 4px;
-                        margin-right: 5px;
-
-                        .header1{
-                            width: 100%;
-                            height: 30px;
-                            background: linear-gradient(266.48deg, #525252 8.34%, #525252 52.9%);
+                    .table-cont{
+                        width: 100%;
+                        height: auto;
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: space-between;
+    
+                        .column-head1{
+                            width: 20%;
+                            height: 100%;
                             border-radius: 4px;
-                            color: #fff;
-                            display: flex;
-                            flex-direction: row;
-                            align-items: center;
-                            justify-content: flex-start;
-                            font-size: 12px;
-                        }
-
-                        .row-cont{
-                            width: 100%;
-                            font-size: 12px;
-                            color: #000;
-
-                            .rows{
+                            margin-right: 5px;
+    
+                            .header1{
                                 width: 100%;
                                 height: 30px;
-                                margin-top: 5px;
+                                background: linear-gradient(266.48deg, #525252 8.34%, #525252 52.9%);
+                                border-radius: 4px;
+                                color: #fff;
                                 display: flex;
                                 flex-direction: row;
-
-                                .cell{
+                                align-items: center;
+                                justify-content: flex-start;
+                                font-size: 12px;
+                            }
+    
+                            .row-cont{
+                                width: 100%;
+                                font-size: 12px;
+                                color: #000;
+    
+                                .rows{
                                     width: 100%;
                                     height: 30px;
-                                    background-color: #EDEDED;
+                                    margin-top: 5px;
                                     display: flex;
-                                    justify-content: center;
-                                    align-items: center;
-                                    margin-right: 5px;
-                                    border-radius: 5px;
+                                    flex-direction: row;
+    
+                                    .cell{
+                                        width: 100%;
+                                        height: 30px;
+                                        background-color: #EDEDED;
+                                        display: flex;
+                                        justify-content: center;
+                                        align-items: center;
+                                        margin-right: 5px;
+                                        border-radius: 5px;
+                                    }
                                 }
                             }
                         }
-                    }
-
-                    .column-head2{
-                        width: 60%;
-                        height: 100%;
-                        border-radius: 4px;
-
-                        .header2{
-                            width: 100%;
-                            height: 30px;
-                            background: linear-gradient(266.48deg, #525252 8.34%, #525252 52.9%);
+    
+                        .column-head2{
+                            width: 60%;
+                            height: 100%;
                             border-radius: 4px;
-                            color: #fff;
-                            display: flex;
-                            flex-direction: row;
-                            align-items: center;
-                            justify-content: flex-start;
-                            font-size: 12px;
-                        }
-
-                        .row-cont{
-                            width: 100%;
-                            font-size: 12px;
-                            color: #000;
-
-                            .rows{
+    
+                            .header2{
                                 width: 100%;
                                 height: 30px;
-                                margin-top: 5px;
+                                background: linear-gradient(266.48deg, #525252 8.34%, #525252 52.9%);
+                                border-radius: 4px;
+                                color: #fff;
                                 display: flex;
                                 flex-direction: row;
-
-                                .cell{
+                                align-items: center;
+                                justify-content: flex-start;
+                                font-size: 12px;
+                            }
+    
+                            .row-cont{
+                                width: 100%;
+                                font-size: 12px;
+                                color: #000;
+    
+                                .rows{
                                     width: 100%;
                                     height: 30px;
-                                    background-color: #EDEDED;
+                                    margin-top: 5px;
                                     display: flex;
-                                    justify-content: center;
-                                    align-items: center;
-                                    margin-right: 5px;
-                                    border-radius: 5px;
+                                    flex-direction: row;
+    
+                                    .cell{
+                                        width: 100%;
+                                        height: 30px;
+                                        background-color: #EDEDED;
+                                        display: flex;
+                                        justify-content: center;
+                                        align-items: center;
+                                        margin-right: 5px;
+                                        border-radius: 5px;
+                                    }
                                 }
                             }
                         }
@@ -174,9 +178,20 @@
 
 @media (max-width: 1150px){
     .reportContainer{
+        margin-top: 60px;
         .mains-report{
             .left{
                 .inner-main{
+
+                    .contains{
+                        width: 100%;
+                        overflow-x: scroll;
+
+                        .table-cont{
+                            width: 1150px;
+                        }
+                    }
+
                     .paym{
                         flex-direction: column;
 

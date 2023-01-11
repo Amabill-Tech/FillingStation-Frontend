@@ -292,8 +292,8 @@
 }
 
 .sales{
-    width: 96%;
-    height: 400px;
+    width: 100%;
+    height: auto;
     margin-top: 10px;
 
     .top{
@@ -383,6 +383,19 @@
 @media (max-width: 1150px){
     .daily-sales-container{
         margin-top: 80px;
+    }
+
+    .sales{
+        width: 100%;
+        overflow-x: scroll;
+
+        .main-sales{
+            width: 1100px;
+
+            .inner{
+                width: 100%;
+            }
+        }
     }
 }
 

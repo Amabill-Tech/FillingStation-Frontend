@@ -1,4 +1,3 @@
-import { Button } from '@mui/material';
 import React from 'react';
 import '../../styles/dailySales.scss';
 import { useSelector } from 'react-redux';
@@ -7,43 +6,131 @@ const AGODailySales = () => {
 
     const dailySales = useSelector(state => state.dailySalesReducer.dailySales);
 
+    const getMasterRows = () => {
+        const newRows = [];
+
+        for(let row of dailySales.AGO.sales){
+
+            const findID = newRows.findIndex(data => data.pumpID === row.pumpID);
+            
+            if(findID === -1){
+                const filterUniqueRows = dailySales.AGO.sales.filter(data => data.pumpID === row.pumpID);
+                const filterLPORows = dailySales.AGO.lpo.filter(data => data.pumpID === row.pumpID);
+                const filterRTRows = dailySales.AGO.rt.filter(data => data.pumpID === row.pumpID);
+
+                /*#########################
+                    Pump totalizer reading
+                ##########################*/
+                const openingMeter = filterUniqueRows.reduce((accum, current) => {
+                    return Number(accum) + Number(current.openingMeter);
+                }, 0);
+
+                const closingMeter = filterUniqueRows.reduce((accum, current) => {
+                    return Number(accum) + Number(current.closingMeter);
+                }, 0);
+
+                /*#########################
+                    PMS sales in litres
+                ##########################*/
+                const totalRate = filterUniqueRows.reduce((accum, current) => {
+                    return Number(accum) + Number(current.sales);
+                }, 0);
+
+                const totalLPO = filterLPORows.reduce((accum, current) => {
+                    return Number(accum) + Number(current.lpoLitre);
+                }, 0);
+
+                const totalRT = filterRTRows.reduce((accum, current) => {
+                    return Number(accum) + Number(current.rtLitre);
+                }, 0);
+
+                /*#########################
+                    PMS sales in cash price
+                ##########################*/
+                const totalPrice = filterUniqueRows.reduce((accum, current) => {
+                    return Number(accum) + Number(current.sales)*Number(current.AGOSellingPrice);
+                }, 0);
+
+                const totalLPOPrice = filterLPORows.reduce((accum, current) => {
+                    return Number(accum) + Number(current.lpoLitre)*Number(current.AGORate);
+                }, 0);
+
+                const totalRTPrice = filterRTRows.reduce((accum, current) => {
+                    return Number(accum) + Number(current.rtLitre)*Number(current.AGOPrice);
+                }, 0);
+
+                const uniqueRow = {
+                    id: row.pumpID,
+                    pumpName: row.pumpName, 
+                    openingMeter: openingMeter, 
+                    closingMeter: closingMeter, 
+                    difference: closingMeter - openingMeter,
+                    PMSRate: totalRate/filterUniqueRows.length,
+                    lpoLitre: totalLPO,
+                    rtLitre: totalRT,
+                    amount: totalPrice + totalLPOPrice - totalRTPrice,
+                }
+
+                newRows.push(uniqueRow);
+            }
+        }
+
+        const uniq = Array.from(new Set(newRows.map(s => s.id)))
+        .map(id => {
+            return {
+                pumpName: newRows.find(s => s.id === id).pumpName,
+                openingMeter: newRows.find(s => s.id === id).openingMeter, 
+                closingMeter: newRows.find(s => s.id === id).closingMeter, 
+                difference: newRows.find(s => s.id === id).difference,
+                PMSRate: newRows.find(s => s.id === id).PMSRate,
+                lpoLitre: newRows.find(s => s.id === id).lpoLitre,
+                rtLitre: newRows.find(s => s.id === id).rtLitre,
+                amount: newRows.find(s => s.id === id).amount,
+            }
+        })
+
+        return uniq;
+    }
+
+    const getTotalSums = () => {
+        const rows = getMasterRows();
+
+        const diff = rows.reduce((accum, current) => {
+            return accum + current.difference;
+        }, 0);
+
+        const lpo = rows.reduce((accum, current) => {
+            return accum + current.lpoLitre;
+        }, 0);
+
+        const rate = rows.reduce((accum, current) => {
+            return accum + current.PMSRate;
+        }, 0);
+
+        const rt = rows.reduce((accum, current) => {
+            return accum + current.rtLitre;
+        }, 0);
+
+        const amount = rows.reduce((accum, current) => {
+            return accum + current.amount;
+        }, 0);
+
+        const totals = {
+            difference: diff,
+            lpo: lpo,
+            rate: rate,
+            rt: rt,
+            amount: amount
+        }
+
+        return totals;
+    }
+
     return(
         <div className='sales'>
             <div className='top'>
                 <div className='tex'>Total Amount Of Sales (AGO)</div>
-                <div>
-                    <Button
-                        variant="contained" 
-                        sx={{
-                            width:'80px',
-                            height:'30px',
-                            background:'#F36A4C',
-                            fontSize:'11px',
-                            textTransform:'capitalize',
-                            '&:hover': {
-                                backgroundColor: '#F36A4C'
-                            }
-                        }}
-                    >
-                        print
-                    </Button>
-                    <Button
-                        variant="contained" 
-                        sx={{
-                            width:'100px',
-                            height:'30px',
-                            background:'#0A6147',
-                            fontSize:'11px',
-                            marginLeft:'10px',
-                            textTransform:'capitalize',
-                            '&:hover': {
-                                backgroundColor: '#0A6147'
-                            }
-                        }}
-                    >
-                        Select Date
-                    </Button>
-                </div>
+                <div></div>
             </div>
 
             <div className='main-sales'>
@@ -60,36 +147,36 @@ const AGODailySales = () => {
                     </div>
 
                     {
-                        dailySales?.AGO?.rows?.length === 0?
+                        getMasterRows().length === 0?
                         <div style={dats}> No Data </div>:
-                        dailySales?.AGO?.rows?.map(data => {
+                        getMasterRows().map((data, index) => {
                             return(
-                                <div className='table-heads2'>
+                                <div key={index} className='table-heads2'>
                                     <div className='col'>{data.pumpName}</div>
                                     <div className='col'>{data.openingMeter}</div>
                                     <div className='col'>{data.closingMeter}</div>
-                                    <div className='col'>{Number(data.closingMeter) - Number(data.openingMeter)}</div>
+                                    <div className='col'>{data.difference}</div>
                                     <div className='col'>{data.lpoLitre}</div>
-                                    <div className='col'>{data.AGORate}</div>
+                                    <div className='col'>{data.PMSRate}</div>
                                     <div className='col'>{data.rtLitre}</div>
                                     <div style={{marginRight:'0px'}} className='col'>
-                                        {Number(data.sales)*Number(data.AGOSellingPrice) + Number(data.lpoLitre)*Number(data.AGORate) - Number(data.rtLitre)*Number(data.AGOSellingPrice)}
+                                        {data.amount}
                                     </div>
                                 </div>
                             )
                         })
                     }
 
-                    {dailySales?.AGO?.rows?.length === 0 ||
+                    {getMasterRows().length === 0 ||
                         <div className='table-heads2'>
                             <div style={{background: "transparent"}} className='col'></div>
                             <div style={{background: "transparent"}} className='col'></div>
                             <div className='col'>Total</div>
-                            <div className='col'>{dailySales?.AGO?.total?.totalDifference}</div>
-                            <div className='col'>{dailySales?.AGO?.total?.totalLpo}</div>
+                            <div className='col'>{getTotalSums().difference}</div>
+                            <div className='col'>{getTotalSums().lpo}</div>
                             <div className='col'></div>
-                            <div className='col'>{dailySales?.AGO?.total?.totalrt}</div>
-                            <div style={{marginRight:'0px'}} className='col'>{dailySales?.AGO?.total?.amount}</div>
+                            <div className='col'>{getTotalSums().rt}</div>
+                            <div style={{marginRight:'0px'}} className='col'>{getTotalSums().amount}</div>
                         </div>
                     }
                 </div>

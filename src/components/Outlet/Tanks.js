@@ -13,6 +13,7 @@ import { useSelector } from 'react-redux';
 import OutletService from '../../services/outletService';
 import swal from 'sweetalert';
 import AddPump from '../Modals/AddPumpModal';
+import EditTank from '../Modals/EditTank';
 
 const Tank = (props) => {
 
@@ -26,6 +27,9 @@ const Tank = (props) => {
     const tankList = useSelector(state => state.outletReducer.tankList);
     const oneStation = useSelector(state => state.outletReducer.adminOutlet);
     const dispatch = useDispatch();
+    const [show, setShow] = useState("");
+    const [openEditTank, setOpenEditTank] = useState(false);
+    const [currentTank, setCurrentTank] = useState({});
 
     const handleAddTanks = () => {
         dispatch(openModal(2));
@@ -104,6 +108,25 @@ const Tank = (props) => {
         });
     }
 
+    const actionOnTanks = (data) => {
+        if(show === data._id){
+            setShow("");
+        }else{
+            setShow(data._id);
+        }
+    }
+
+    const handleMenuItem = (e, data) => {
+        if(e === "delete"){
+            deleteTanks(data);
+            setShow("");
+        }else{
+            setCurrentTank(data);
+            setOpenEditTank(true);
+            setShow("");
+        }
+    }
+
     const addNewPump = (data) => {
         dispatch(getOneTank(data));
         dispatch(openModal(3));
@@ -113,123 +136,136 @@ const Tank = (props) => {
         return(
             <div style={{height:"400px"}} className='item'>
                 <div className='inner'>
-                        <div className='top'>
-                            <div className='left'>
-                                <img style={{width:'40px', height:'40px'}} src={me5} alt="icon" />
-                                <div>{props.data.tankName} ({props.data.productType}) </div>
+                    <div className='top'>
+                        <div className='left'>
+                            <img style={{width:'40px', height:'40px'}} src={me5} alt="icon" />
+                            <div>{props.data.tankName} ({props.data.productType}) </div>
+                        </div>
+                        <div className='right'>
+                            <div>{props.data.activeState === '0'? 'Inactive': 'Active'}</div>
+                            <IOSSwitch onClick={(e)=>{activateTank(e, props.data)}} sx={{ m: 1 }} defaultChecked={props.data.activeState === '0'? false: true} />
+                        </div>
+                    </div>
+
+                    <div className='out'>
+                        <div style={{width:'40%', textAlign:'left'}}>Dead Stock Level(Litres)</div>
+                        <OutlinedInput 
+                            placeholder="" 
+                            sx={{
+                                width:'60%',
+                                height:'35px', 
+                                fontSize:'12px',
+                                background:'#F2F1F1',
+                                color:'#000'
+                            }} 
+                            value={props.data.deadStockLevel}
+                        />
+                    </div>
+
+                    <div className='out'>
+                        <div style={{width:'40%', textAlign:'left'}}>Tank Capacity (Litres)</div>
+                        <OutlinedInput 
+                            placeholder="" 
+                            sx={{
+                                width:'60%',
+                                height:'35px', 
+                                fontSize:'12px',
+                                background:'#F2F1F1',
+                                color:'#000'
+                            }} 
+                            value={props.data.tankCapacity}
+                        />
+                    </div>
+
+                    <div className='out'>
+                        <div style={{width:'40%', textAlign:'left'}}>Tank ID</div>
+                        <OutlinedInput 
+                            placeholder="" 
+                            sx={{
+                                width:'60%',
+                                height:'35px', 
+                                fontSize:'12px',
+                                background:'#F2F1F1',
+                                color:'#000'
+                            }} 
+                            value={props.data._id}
+                        />
+                    </div>
+
+                    <div className='out'>
+                        <div style={{width:'40%', textAlign:'left'}}>Current Stock Level (Litres)</div>
+                        <OutlinedInput 
+                            placeholder="" 
+                            sx={{
+                                width:'60%',
+                                height:'35px', 
+                                fontSize:'12px',
+                                background:'#F2F1F1',
+                                color:'#000'
+                            }} 
+                            value={props.data.currentLevel}
+                        />
+                    </div>
+
+                    <div className='out'>
+                        <div style={{width:'40%', textAlign:'left'}}>Calibration Date</div>
+                        <OutlinedInput 
+                            placeholder="" 
+                            sx={{
+                                width:'60%',
+                                height:'35px', 
+                                fontSize:'12px',
+                                background:'#F2F1F1',
+                                color:'#000'
+                            }}
+                            value={props.data.calibrationDate} 
+                        />
+                    </div>
+
+                    <div style={{marginTop:'20px'}} className='delete'>
+                        <Button sx={{
+                            width:'90px', 
+                            height:'30px',  
+                            background: '#06805B',
+                            borderRadius: '3px',
+                            fontSize:'10px',
+                            color:'#fff',
+                            '&:hover': {
+                                backgroundColor: '#06805B'
+                            }
+                            }} 
+                            onClick={()=>{addNewPump(props.data)}}
+                            variant="contained"> Add Pump
+                        </Button>
+                        <Button sx={{
+                            width:'70px', 
+                            height:'30px',  
+                            background: '#ff6347 ',
+                            borderRadius: '3px',
+                            fontSize:'10px',
+                            color:'#fff',
+                            marginLeft:'10px',
+                            '&:hover': {
+                                backgroundColor: '#ff6347 '
+                            }
+                            }} 
+                            onClick={()=>{actionOnTanks(props.data)}}
+                            variant="contained"> Action
+                        </Button>
+
+                        {show === props.data._id &&
+                            <div style={menus}>
+                                <div onClick={()=>{handleMenuItem("edit", props.data)}} style={menuItem}>Edit</div>
+                                <div onClick={()=>{handleMenuItem("delete", props.data)}} style={{
+                                    ...menuItem, 
+                                    border:'1px solid #d7d7d7', 
+                                    borderLeft:'none', 
+                                    borderRight:'none',
+                                    borderBottom:'none',
+                                }}>Delete</div>
                             </div>
-                            <div className='right'>
-                                <div>{props.data.activeState === '0'? 'Inactive': 'Active'}</div>
-                                <IOSSwitch onClick={(e)=>{activateTank(e, props.data)}} sx={{ m: 1 }} defaultChecked={props.data.activeState === '0'? false: true} />
-                            </div>
-                        </div>
-
-                        <div className='out'>
-                            <div style={{width:'40%', textAlign:'left'}}>Dead Stock Level(Litres)</div>
-                            <OutlinedInput 
-                                placeholder="" 
-                                sx={{
-                                    width:'60%',
-                                    height:'35px', 
-                                    fontSize:'12px',
-                                    background:'#F2F1F1',
-                                    color:'#000'
-                                }} 
-                                value={props.data.deadStockLevel}
-                            />
-                        </div>
-
-                        <div className='out'>
-                            <div style={{width:'40%', textAlign:'left'}}>Tank Capacity (Litres)</div>
-                            <OutlinedInput 
-                                placeholder="" 
-                                sx={{
-                                    width:'60%',
-                                    height:'35px', 
-                                    fontSize:'12px',
-                                    background:'#F2F1F1',
-                                    color:'#000'
-                                }} 
-                                value={props.data.tankCapacity}
-                            />
-                        </div>
-
-                        <div className='out'>
-                            <div style={{width:'40%', textAlign:'left'}}>Tank ID</div>
-                            <OutlinedInput 
-                                placeholder="" 
-                                sx={{
-                                    width:'60%',
-                                    height:'35px', 
-                                    fontSize:'12px',
-                                    background:'#F2F1F1',
-                                    color:'#000'
-                                }} 
-                                value={props.data._id}
-                            />
-                        </div>
-
-                        <div className='out'>
-                            <div style={{width:'40%', textAlign:'left'}}>Current Stock Level (Litres)</div>
-                            <OutlinedInput 
-                                placeholder="" 
-                                sx={{
-                                    width:'60%',
-                                    height:'35px', 
-                                    fontSize:'12px',
-                                    background:'#F2F1F1',
-                                    color:'#000'
-                                }} 
-                                value={props.data.currentLevel}
-                            />
-                        </div>
-
-                        <div className='out'>
-                            <div style={{width:'40%', textAlign:'left'}}>Calibration Date</div>
-                            <OutlinedInput 
-                                placeholder="" 
-                                sx={{
-                                    width:'60%',
-                                    height:'35px', 
-                                    fontSize:'12px',
-                                    background:'#F2F1F1',
-                                    color:'#000'
-                                }}
-                                value={props.data.calibrationDate} 
-                            />
-                        </div>
-
-                        <div style={{marginTop:'20px'}} className='delete'>
-                            <Button sx={{
-                                width:'90px', 
-                                height:'30px',  
-                                background: '#06805B',
-                                borderRadius: '3px',
-                                fontSize:'10px',
-                                color:'#fff',
-                                '&:hover': {
-                                    backgroundColor: '#06805B'
-                                }
-                                }} 
-                                onClick={()=>{addNewPump(props.data)}}
-                                variant="contained"> Add Pump
-                            </Button>
-                            <Button sx={{
-                                width:'70px', 
-                                height:'30px',  
-                                background: '#ff6347 ',
-                                borderRadius: '3px',
-                                fontSize:'10px',
-                                color:'#fff',
-                                marginLeft:'10px',
-                                '&:hover': {
-                                    backgroundColor: '#ff6347 '
-                                }
-                                }} 
-                                onClick={()=>{deleteTanks(props.data)}}
-                                variant="contained"> Delete
-                            </Button>
-                        </div>
+                        }
+                    </div>
                 </div>
             </div>
         )
@@ -375,6 +411,7 @@ const Tank = (props) => {
         <div className='tanksContainer'>
             { open ===2 && <AddTank tabs={tabs} data={oneStation?.state} refresh={getAllStationTanks} outRefresh={props.refresh} /> }
             { open ===3 && <AddPump tabs={tabs} allTank={tankList} outRefresh={props.refresh} /> }
+            { openEditTank && <EditTank tabs={tabs} open={openEditTank} close={setOpenEditTank} data = {currentTank} refresh={getAllStationTanks} outRefresh={props.refresh} /> }
             <div className='pump-container'>
                 <div className='head'>
                     <div className='tabs'>
@@ -412,6 +449,27 @@ const Tank = (props) => {
             </div>
         </div>
     )
+}
+
+const menus = {
+    width:'100px',
+    height: '70px',
+    background:'#fff',
+    position: 'absolute',
+    zIndex:'20',
+    marginTop:'40px',
+    boxShadow: '0px 0px 3px 1px'
+}
+
+const menuItem = {
+    width: '100%',
+    height: '35px',
+    display:'flex',
+    justifyContent:'center',
+    alignItems:'center',
+    fontSize:'14px',
+    fontFamily:'Nunito-Regular',
+    cursor: 'grab',
 }
 
 const tab1 = {

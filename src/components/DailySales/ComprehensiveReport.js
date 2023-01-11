@@ -7,6 +7,9 @@ import { useSelector } from 'react-redux';
 import DailySalesService from '../../services/DailySales';
 import '../../styles/report.scss';
 import ComprehensiveReports from '../Reports/ConprehensiveReports';
+import AGODailySales from './AGODailySales';
+import DPKDailySales from './DPKDailySales';
+import PMSDailySales from './PMSDailySales';
 
 const LeftTableView = (props) => {
 
@@ -204,66 +207,6 @@ const RightTableView = (props) => {
     )
 }
 
-const PMSDailySales = (props) => {
-    return(
-        <div className='main-sales'>
-            <div className='inner'>
-                <div className='table-heads'>
-                    <div className='col'>{props?.name}</div>
-                    <div className='col'>Opening</div>
-                    <div className='col'>Closing</div>
-                    <div className='col'>Difference</div>
-                    <div className='col'>LPO</div>
-                    <div className='col'>Rate</div>
-                    <div className='col'>R/T</div>
-                    <div style={{marginRight:'0px'}} className='col'>Amount</div>
-                </div>
-
-                {
-                    props?.data?.rows?.length === 0?
-                    <div style={dats}> No Data </div>:
-                    props?.data?.rows?.map(data => {
-                        return(
-                            <div className='table-heads2'>
-                                <div className='col'>{data.pumpName}</div>
-                                <div className='col'>{data.openingMeter}</div>
-                                <div className='col'>{data.closingMeter}</div>
-                                <div className='col'>{Number(data.closingMeter) - Number(data.openingMeter)}</div>
-                                <div className='col'>{data.lpoLitre}</div>
-                                <div className='col'>
-                                    {data.productType === "PMS" && data.PMSRate}
-                                    {data.productType === "AGO" && data.AGORate}
-                                    {data.productType === "DPK" && data.DPKRate}
-                                </div>
-                                <div className='col'>{data.rtLitre}</div>
-                                <div style={{marginRight:'0px'}} className='col'>
-                                    {data.productType === "PMS" && Number(data.sales)*Number(data.PMSSellingPrice) + Number(data.lpoLitre)*Number(data.PMSRate) - Number(data.rtLitre)*Number(data.PMSSellingPrice)}
-                                    {data.productType === "AGO" && Number(data.sales)*Number(data.AGOSellingPrice) + Number(data.lpoLitre)*Number(data.AGORate) - Number(data.rtLitre)*Number(data.AGOSellingPrice)}
-                                    {data.productType === "DPK" && Number(data.sales)*Number(data.DPKSellingPrice) + Number(data.lpoLitre)*Number(data.DPKRate) - Number(data.rtLitre)*Number(data.DPKSellingPrice)}
-                                </div>
-                            </div>
-                        )
-                    })
-                }
-
-                {
-                    props?.data?.rows?.length === 0 ||
-                    <div className='table-heads2'>
-                        <div style={{background: "transparent"}} className='col'></div>
-                        <div style={{background: "transparent"}} className='col'></div>
-                        <div className='col'>Total</div>
-                        <div className='col'>{props?.data?.total?.totalDifference}</div>
-                        <div className='col'>{props?.data?.total?.totalLpo}</div>
-                        <div className='col'></div>
-                        <div className='col'>{props?.data?.total?.totalrt}</div>
-                        <div style={{marginRight:'0px'}} className='col'>{props?.data?.total?.amount}</div>
-                    </div>
-                }
-            </div>
-        </div>
-    )
-}
-
 const LPODailySales = (props) => {
 
     const getTotal = () => {
@@ -281,7 +224,7 @@ const LPODailySales = (props) => {
     }
 
     return(
-        <div>
+        <div className='sales'>
             <div style={{width:'100%', textAlign:'left', marginBottom:'10px', color:'#06805B', fontSize:'12px', fontWeight:'900'}}>LPO</div>
             <div className='main-sales'>
                 <div className='inner'>
@@ -620,9 +563,9 @@ const DippingDailySales = (props) => {
                             return(
                                 <div key={index} className='table-heads2'>
                                     <div className='col'>{data.tankName}</div>
-                                    <div className='col'>{data.productType === "PMS"? data.currentLevel: 0}</div>
-                                    <div className='col'>{data.productType === "AGO"? data.currentLevel: 0}</div>
-                                    <div style={{marginRight:'0px'}} className='col'>{data.productType === "DPK"? data.currentLevel: 0}</div>
+                                    <div className='col'>{data.productType === "PMS"? data.dipping: 0}</div>
+                                    <div className='col'>{data.productType === "AGO"? data.dipping: 0}</div>
+                                    <div style={{marginRight:'0px'}} className='col'>{data.productType === "DPK"? data.dipping: 0}</div>
                                 </div>
                             )
                         })
@@ -699,6 +642,7 @@ const ComprehensiveReport = (props) => {
                 </Button> */}
                 <Button 
                     variant="contained" 
+                    disabled
                     sx={{
                         width:'80px',
                         height:'30px',
@@ -720,15 +664,17 @@ const ComprehensiveReport = (props) => {
             <div className='mains-report'>
                 <div className='left'>
                     <div className='inner-main'>
-                        <div style={{marginBottom:'30px'}} className='table-cont'>
-                            <LeftTableView data={forwardBalance?.sales} />
-                            <MiddleTableView data={forwardBalance?.supply} />
-                            <RightTableView data={forwardBalance?.dipping} />
+                        <div className="contains">
+                            <div style={{marginBottom:'30px'}} className='table-cont'>
+                                <LeftTableView data={forwardBalance?.sales} />
+                                <MiddleTableView data={forwardBalance?.supply} />
+                                <RightTableView data={forwardBalance?.dipping} />
+                            </div>
                         </div>
 
-                        <PMSDailySales name={'PMS'} data={dailySales.PMS} />
-                        <PMSDailySales name={'AGO'} data={dailySales.AGO} />
-                        <PMSDailySales name={'DPK'} data={dailySales.DPK} />
+                        <PMSDailySales rep={false} />
+                        <AGODailySales rep={false} />
+                        <DPKDailySales rep={false} />
                         <LPODailySales data={lpoRecords} />
                         <ExpensesDailySales data = {paymentRecords.expenses} />
 

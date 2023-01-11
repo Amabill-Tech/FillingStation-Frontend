@@ -12,6 +12,7 @@ import {getAllPumps, getAllOutletTanks} from '../../store/actions/outlet';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import AddPump from '../Modals/AddPumpModal2';
+import EditPump from '../Modals/EditPump';
 
 const Pump = (props) => {
 
@@ -26,6 +27,9 @@ const Pump = (props) => {
     const pumpList = useSelector(state => state.outletReducer.pumpList);
     const tankList = useSelector(state => state.outletReducer.tankList);
     const oneStation = useSelector(state => state.outletReducer.adminOutlet);
+
+    const [openEditPump, setOpenEditPump] = useState(false);
+    const [currentPump, setCurrentPump] = useState({});
 
     const getAllStationPumps = useCallback(() => {
         const payload = {
@@ -112,6 +116,11 @@ const Pump = (props) => {
         }
     }
 
+    const editPumpModal = (data) => {
+        setCurrentPump(data);
+        setOpenEditPump(true);
+    }
+
     const CardItem = (props) => {
         return(
             <div className='item'>
@@ -172,7 +181,52 @@ const Pump = (props) => {
                             />
                         </div>
 
-                        <div className='delete'>
+                        <div style={{marginTop:'30px'}} className='delete'>
+                            <Button sx={{
+                                width:'90px', 
+                                height:'30px',  
+                                background: '#06805B',
+                                borderRadius: '3px',
+                                fontSize:'10px',
+                                color:'#fff',
+                                '&:hover': {
+                                    backgroundColor: '#06805B'
+                                }
+                                }} 
+                                onClick={()=>editPumpModal(props.data)}
+                                variant="contained"> Edit Pump
+                            </Button>
+                            <Button sx={{
+                                width:'70px', 
+                                height:'30px',  
+                                background: '#ff6347 ',
+                                borderRadius: '3px',
+                                fontSize:'10px',
+                                color:'#fff',
+                                marginLeft:'10px',
+                                '&:hover': {
+                                    backgroundColor: '#ff6347 '
+                                }
+                                }} 
+                                onClick={()=>deletePump(props.data)}
+                                variant="contained"> Delete
+                            </Button>
+
+                            {/* {show === props.data._id &&
+                                <div style={menus}>
+                                    <div onClick={()=>{handleMenuItem("edit", props.data)}} style={menuItem}>Edit</div>
+                                    <div onClick={()=>{handleMenuItem("delete", props.data)}} style={{
+                                        ...menuItem, 
+                                        border:'1px solid #d7d7d7', 
+                                        borderLeft:'none', 
+                                        borderRight:'none',
+                                        borderBottom:'none',
+                                    }}>Delete</div>
+                                </div>
+                            } */}
+                        </div>
+
+                        {/* <div className='delete'>
                             <Button sx={{
                                 width:'120px', 
                                 height:'30px',  
@@ -187,7 +241,7 @@ const Pump = (props) => {
                                 onClick={()=>deletePump(props.data)}
                                 variant="contained"> Delete
                             </Button>
-                        </div>
+                        </div> */}
                 </div>
             </div>
         )
@@ -332,6 +386,7 @@ const Pump = (props) => {
     return(
         <div className='tanksContainer'>
             {open && <AddPump allTank={tankList} open={open} close={setOpen} refresh={getAllStationPumps} outRefresh={props.refresh} /> }
+            {openEditPump && <EditPump tabs={tabs} allTank={tankList} data={currentPump} open={openEditPump} close={setOpenEditPump} refresh={getAllStationPumps} outRefresh={props.refresh} /> }
             <div className='pump-container'>
                 <div className='head'>
                     <div className='tabs'>

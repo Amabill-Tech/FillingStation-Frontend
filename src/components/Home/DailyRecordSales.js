@@ -14,7 +14,7 @@ import AssignmentReturnedIcon from '@mui/icons-material/AssignmentReturned';
 import PaidIcon from '@mui/icons-material/Paid';
 import AddCardIcon from '@mui/icons-material/AddCard';
 import '../../styles/newSales.scss';
-import { Button, MenuItem, Select } from '@mui/material';
+import { Button, IconButton, MenuItem, Select } from '@mui/material';
 import SupplyComponent from '../DailyRecordSales/SupplyComponent';
 import PumpUpdateComponent from '../DailyRecordSales/PumpUpdateComponent';
 import LPOComponent from '../DailyRecordSales/LPOComponent';
@@ -39,6 +39,10 @@ import { BallTriangle } from 'react-loader-spinner';
 import { useState } from 'react';
 import { useRef } from 'react';
 import calendar from '../../assets/calendar.png';
+import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
+import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
+
+const mediaMatch = window.matchMedia('(max-width: 450px)');
 
 const months = {
     '01' : 'Jan',
@@ -199,19 +203,8 @@ const DailyRecordSales = () => {
     const [defaultState, setDefault] = useState(0);
     const [open, setOpen] = useState(false);
     const [currentDate, setCurrentDate] = useState(date2);
-    console.log(tankList, "updates are here")
 
-    useEffect(()=>{
-
-        const list = new DoublyLinkedList();
-        for(let i=7; i > 0 ; i--){
-            list.addNode({
-                currentPage: String(i),
-                payload: [],
-            });
-        }
-        dispatch(passRecordSales(list));
-
+    const getAllInitialRecords = React.useCallback((list) => {
         if(user.userType === "superAdmin" || user.userType === "admin"){
             const payload = {
                 organisation: user._id
@@ -293,7 +286,20 @@ const DailyRecordSales = () => {
 
             dispatch(passRecordSales(list));
         }
-    },[dispatch, user._id, user.outletID, user.userType]);
+    }, [dispatch, user._id, user.outletID, user.userType]);
+
+    useEffect(()=>{
+        const list = new DoublyLinkedList();
+        for(let i=7; i > 0 ; i--){
+            list.addNode({
+                currentPage: String(i),
+                payload: [],
+            });
+        }
+        dispatch(passRecordSales(list));
+
+        getAllInitialRecords(list);
+    },[getAllInitialRecords, dispatch]);
 
     const nextQuestion = () => {
         let newList = {...linkedData}
@@ -327,6 +333,10 @@ const DailyRecordSales = () => {
         }
 
         if(newList.head.next !== null){
+            const clonePage = [...pages];
+            clonePage[newList.page] = newList.page;
+            setPages(clonePage);
+
             newList.nextPage();
             newList.page++;
             dispatch(passRecordSales(newList));
@@ -337,6 +347,10 @@ const DailyRecordSales = () => {
     const prevQuestion = () => {
         let newList = {...linkedData}
         if(newList.head.prev !== null){
+            const clonePage = [...pages];
+            clonePage[newList.page - 1] = 0;
+            setPages(clonePage);
+
             newList.previousPage();
             newList.page--;
             dispatch(passRecordSales(newList));
@@ -384,6 +398,7 @@ const DailyRecordSales = () => {
                             payload: [],
                         });
                     }
+                    getAllInitialRecords(list);
                     dispatch(passRecordSales(list));
                     setOpen(false);
                 })
@@ -436,6 +451,7 @@ const DailyRecordSales = () => {
         dispatch(passRecordSales(newList));
     }
 
+    const [pages, setPages] = useState([1, 0, 0, 0, 0, 0, 0]);
 
     return (
         <div className='salesRecordStyle'>
@@ -492,7 +508,7 @@ const DailyRecordSales = () => {
                         <Button 
                             variant="contained" 
                             sx={{
-                                width:'170px',
+                                width: mediaMatch? '140px': '170px',
                                 height:'30px',
                                 background:'#06805B',
                                 fontSize:'12px',
@@ -513,15 +529,88 @@ const DailyRecordSales = () => {
                     </div>
                 </div>
             </div>
-            <Stack sx={{ width: '100%', marginTop:'20px' }} spacing={4}>
-                <Stepper alternativeLabel activeStep={linkedData.page - 1} connector={<ColorlibConnector />}>
-                    {steps.map((label) => (
-                    <Step key={label}>
-                        <StepLabel StepIconComponent={ColorlibStepIcon}>{label}</StepLabel>
-                    </Step>
-                    ))}
-                </Stepper>
-            </Stack>
+            
+            <div className="steps">
+                <Stack sx={{ width: '100%', marginTop:'20px' }} spacing={4}>
+                    <Stepper alternativeLabel activeStep={linkedData.page - 1} connector={<ColorlibConnector />}>
+                        {steps.map((label) => (
+                        <Step key={label}>
+                            <StepLabel StepIconComponent={ColorlibStepIcon}>{label}</StepLabel>
+                        </Step>
+                        ))}
+                    </Stepper>
+                </Stack>
+            </div>
+
+            <div style={text}>{steps[linkedData.page - 1]}</div>
+
+            <div className="mob">
+                <IconButton>
+                    {/* <ArrowCircleLeftIcon sx={{width:'50px', height:'50px', marginLeft:'2%'}} /> */}
+                </IconButton>
+
+                <div className="icons">
+                    <div className='cont' 
+                        style={{
+                            backgroundImage: pages[0]===0? 'linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)': 
+                            'linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)'
+                        }}>
+                        <SanitizerIcon sx = {{color: pages[0] === 0? '#000': '#fff'}} />
+                    </div>
+
+                    <div className='cont' 
+                        style={{
+                            backgroundImage: pages[1]===0? 'linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)': 
+                            'linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)'
+                        }}>
+                            <AssignmentReturnedIcon sx = {{color: pages[0] === 0? '#000': '#fff'}} />
+                    </div>
+
+                    <div className='cont' 
+                        style={{
+                            backgroundImage: pages[2]===0? 'linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)': 
+                            'linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)'
+                        }}>
+                            <CreditScoreIcon sx = {{color: pages[0] === 0? '#000': '#fff'}} />
+                    </div>
+
+                    <div className='cont' 
+                        style={{
+                            backgroundImage: pages[3]===0? 'linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)': 
+                            'linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)'
+                        }}>
+                            <InventoryIcon sx = {{color: pages[0] === 0? '#000': '#fff'}} />
+                    </div>
+
+                    <div className='cont' 
+                        style={{
+                            backgroundImage: pages[4]===0? 'linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)': 
+                            'linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)'
+                        }}>
+                            <PaidIcon sx = {{color: pages[0] === 0? '#000': '#fff'}} />
+                    </div>
+
+                    <div className='cont' 
+                        style={{
+                            backgroundImage: pages[5]===0? 'linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)': 
+                            'linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)'
+                        }}>
+                            <AddCardIcon sx = {{color: pages[0] === 0? '#000': '#fff'}} />
+                    </div>
+
+                    <div className='cont' 
+                        style={{
+                            backgroundImage: pages[6]===0? 'linear-gradient( 136deg, #ccc 0%, #ccc 50%, #ccc 100%)': 
+                            'linear-gradient( 136deg, #06805B 0%, #143d59 50%, #213970 100%)'
+                        }}>
+                            <PropaneTankIcon sx = {{color: pages[0] === 0? '#000': '#fff'}} />
+                    </div>
+                </div>
+
+                <IconButton>
+                    {/* <ArrowCircleRightIcon sx={{width:'50px', height:'50px', marginRight:'2%'}} /> */}
+                </IconButton>
+            </div>
 
             <div className='form-body'>
                 {linkedData.page === 1 && <PumpUpdateComponent />}
@@ -606,7 +695,7 @@ const menu = {
 }
 
 const selectStyle2 = {
-    width:'200px', 
+    width: mediaMatch? '170px': '200px', 
     height:'35px', 
     borderRadius:'5px',
     background: '#F2F1F1B2',
@@ -617,6 +706,16 @@ const selectStyle2 = {
     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
         border:'1px solid #777777',
     },
+}
+
+const text = {
+    width: '96%',
+    textAlign: 'left',
+    fontFamily: 'Nunito-Regular',
+    fontSize:'14px',
+    marginTop: '30px',
+    marginLeft:'4%',
+    fontWeight:'bold'
 }
 
 export default DailyRecordSales;

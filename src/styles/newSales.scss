@@ -327,6 +327,16 @@
     }
 }
 
+.steps{
+    width: 100%;
+    display: block;
+    background: #fff;
+}
+
+.mob{
+    display: none;
+}
+
 @media (max-width: 1250px){
     .salesRecordStyle{
 
@@ -369,6 +379,61 @@
                 }
             }
         }
+    }
+}
+
+.tagss{
+    width:'90%';
+    margin-top:'20px';
+    display:'flex';
+    flex-direction: row;
+    justify-content:'space-between';
+    align-items: center;
+
+    .stations{
+        background-color: red;
+    }
+}
+
+@media (max-width: 500px){
+    .steps{
+        display: none;
+    }
+
+    .mob{
+        display: block;
+        width: 100%;
+        margin-top: 10px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+
+        .icons{
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+
+            .cont{
+                width: 50px;
+                height: 50px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-radius: 50px;
+                margin-top: 10px;
+                margin-right: 10px;
+            }
+        }
+    }
+
+    .tagss{
+        flex-direction: column;
+        width: 100%;
+        background: red;
     }
 }
 
