@@ -324,7 +324,7 @@ const Dashboard = (props) => {
     return(
         <>
             { props.activeRoute.split('/').length === 2 &&
-                <div style={{marginTop:'5px'}} className='dashboardContainer'>
+                <div className='dashboardContainer'>
                     <div className='left-dash'>
                         <div style={{width:'auto'}} className='selectItem'>
                             <div style={{width:'280px', marginRight:'10px'}} className='first-select'>

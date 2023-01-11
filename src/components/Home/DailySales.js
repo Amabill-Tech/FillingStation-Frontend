@@ -476,7 +476,7 @@ const DailySales = (props) => {
     return(
         <>
             { props.activeRoute.split('/').length === 3 &&
-                <div style={{marginTop:'20px'}} className='daily-sales-container'>
+                <div className='daily-sales-container'>
                     <div className='daily-left'>
                         <div style={{display:'flex', flexDirection:'row'}}>
                             <div>
